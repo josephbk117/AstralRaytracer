@@ -410,7 +410,7 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 
-out/**
+out/
 out/build/WSL-GCC-Debug/.ninja_log
 out/build/WSL-GCC-Debug/.ninja_deps
 out/build/WSL-GCC-Debug/.cmake/api/v1/reply/index-2023-07-26T20-41-47-0615.json
