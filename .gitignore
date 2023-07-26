@@ -413,4 +413,3 @@ _deps
 *.ninja_log
 *ninja_deps
 out/
-out/build/WSL-GCC-Debug/.cmake/api/v1/reply/index-2023-07-26T20-41-47-0615.json
