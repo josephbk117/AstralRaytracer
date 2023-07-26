@@ -1,0 +1,3 @@
+D:/Projects/CmakeCppLearn/out/build/x64-Debug/CMakeFiles/YourExecutableName.dir
+D:/Projects/CmakeCppLearn/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+D:/Projects/CmakeCppLearn/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

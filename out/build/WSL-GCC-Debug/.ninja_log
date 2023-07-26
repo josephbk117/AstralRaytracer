@@ -1,0 +1,10 @@
+# ninja log v5
+30	102	1690404064770963200	CMakeFiles/YourExecutableName.dir/src/WindowFramework/WindowUtils.cpp.o	97f97343a4f139c3
+28	356	1690404065026701800	CMakeFiles/YourExecutableName.dir/src/WindowFramework/Window.cpp.o	20c80c07d0b47df9
+26	520	1690404065192772300	CMakeFiles/YourExecutableName.dir/src/main.cpp.o	d6fd31d88dee84d5
+532	733	1690404065410006100	YourExecutableName	5fd0b721d61afe2d
+16	39	0	clean	a31eedcededa8236
+36	97	1690404328796698600	CMakeFiles/YourExecutableName.dir/src/WindowFramework/WindowUtils.cpp.o	97f97343a4f139c3
+33	357	1690404329059114500	CMakeFiles/YourExecutableName.dir/src/WindowFramework/Window.cpp.o	20c80c07d0b47df9
+32	481	1690404329183874500	CMakeFiles/YourExecutableName.dir/src/main.cpp.o	d6fd31d88dee84d5
+486	680	1690404329386405000	YourExecutableName	5fd0b721d61afe2d
