@@ -3,10 +3,11 @@ project(CmakeCppLearn)
 
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-
+file(GLOB IMGUI_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/*")
 # Add the main.cpp and all collected source files to the source files of your executable
-add_executable(${PROJECT_NAME} ./src/main.cpp ${HEADER_FILES} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ./src/main.cpp ${HEADER_FILES} ${SOURCE_FILES} ${IMGUI_FILES})
 include_directories("./includes/WindowFramework")
+include_directories("./external/imgui")
 
 add_subdirectory(external/glfw)
 add_subdirectory(external/glBinding)
