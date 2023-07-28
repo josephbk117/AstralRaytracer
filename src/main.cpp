@@ -8,11 +8,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-
 #include <glbinding/gl/gl.h>
 #include <glbinding/glbinding.h>
-#include "GLFW/glfw3.h"
-
+#include <GLFW/glfw3.h>
+#include <glm.hpp>
 
 const char* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -31,6 +30,8 @@ int main()
 {
     std::cout<<"Hello World!";
     Window window("new window test");
+
+	glm::vec2(0.1f, 0.5f);
 
     std::cout<<"\n window name :"<<window.getName()<<"\nMax window count "<<WindowUtils::GetMaxWindowsAllowed();
 
