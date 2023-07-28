@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19.4)
-project(CmakeCppLearn)
+project(AstralRaytracer)
 
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
