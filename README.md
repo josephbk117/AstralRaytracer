@@ -1,2 +1,2 @@
-# CmakeCppLearn
- Learning Cmake & Dev Ops Tools
+# Astral Raytracer
+A semi decent toy raytracer
