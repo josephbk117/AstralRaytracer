@@ -78,9 +78,14 @@ void DrawingPanel::init(float32 width, float32 height)
 	gl::glBindVertexArray(0);
 }
 
-Transform * DrawingPanel::getTransform() noexcept
+const Transform& DrawingPanel::getTransform() const noexcept
 {
-	return &transform;
+	return transform;
+}
+
+Transform& DrawingPanel::getTransform() noexcept
+{
+	return transform;
 }
 
 void DrawingPanel::setTextureID(uint32 textureID)

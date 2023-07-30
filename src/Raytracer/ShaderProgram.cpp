@@ -148,6 +148,6 @@ void ShaderProgram::compileShader(const std::string & filePath, uint32 ID)
 	}
 	else
 	{
-		std::cout << "Compiled Correctly : " << filePath;
+		std::cout << "Compiled Correctly : " << filePath <<"\n";
 	}
 }

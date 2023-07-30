@@ -25,17 +25,7 @@ const glm::mat4& Transform::getMatrix()const
 {
 	return modelMatrix;
 }
-void Transform::start()
-{
-}
-void Transform::update()
-{
-	if (needsUpdate)
-	{
-		setModelMatrix();
-		needsUpdate = false;
-	}
-}
+
 void Transform::setPosition(const glm::vec2 & position)
 {
 	needsUpdate = true;
