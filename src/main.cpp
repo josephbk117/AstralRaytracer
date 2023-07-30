@@ -73,51 +73,53 @@ int main()
 
 	std::memset(data, 100, NX * NY);
 
-	TextureData texData;
-	texData.setTextureData(data, NX, NY, 3);
-	unsigned int textureId = TextureManager::loadTextureFromData(texData, false);
+	{ // Destructors need to be called before context is removed
+		TextureData texData;
+		texData.setTextureData(data, NX, NY, 3);
+		unsigned int textureId = TextureManager::loadTextureFromData(texData, false);
 
-	DrawingPanel drawingPanel;
-	drawingPanel.init(1, 1);
-	drawingPanel.setTextureID(textureId);
-	drawingPanel.getTransform()->setPosition(0, 0);
-	drawingPanel.getTransform()->setScale(glm::vec2(1, 1));
-	drawingPanel.getTransform()->update();
+		DrawingPanel drawingPanel;
+		drawingPanel.init(1, 1);
+		drawingPanel.setTextureID(textureId);
+		drawingPanel.getTransform()->setPosition(0, 0);
+		drawingPanel.getTransform()->setScale(glm::vec2(1, 1));
+		drawingPanel.getTransform()->update();
 
-	ShaderProgram shader;
-	shader.compileShaders("resources/simpleDisplay.vs", "resources/simpleDisplay.fs");
-	shader.linkShaders();
-	shader.use();
-
-	int drawingPanelModelMatrix = shader.getUniformLocation("model");
-
-	//----------------
-
-    while(!glfwWindowShouldClose(glfwWindow))
-    {
-		gl::glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		gl::glClear(gl::GL_COLOR_BUFFER_BIT);
-
+		ShaderProgram shader;
+		shader.compileShaders("resources/simpleDisplay.vs", "resources/simpleDisplay.fs");
+		shader.linkShaders();
 		shader.use();
-		shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform()->getMatrix());
-		drawingPanel.draw();
 
-		gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-		gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, NX, NY, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, data);
+		int drawingPanelModelMatrix = shader.getUniformLocation("model");
 
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		//----------------
 
-		bool isOpen = true;
-		ImGui::ShowMetricsWindow(&isOpen);
+		while(!glfwWindowShouldClose(glfwWindow))
+		{
+			gl::glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			shader.use();
+			shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform()->getMatrix());
+			drawingPanel.draw();
 
-        glfwSwapBuffers(glfwWindow);
-        glfwPollEvents();
-    }
+			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, NX, NY, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, data);
+
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			bool isOpen = true;
+			ImGui::ShowMetricsWindow(&isOpen);
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			glfwSwapBuffers(glfwWindow);
+			glfwPollEvents();
+		}
+	}
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

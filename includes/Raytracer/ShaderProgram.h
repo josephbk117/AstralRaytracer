@@ -1,4 +1,6 @@
 #pragma once
+#include "Utils/Common.h"
+
 #include <string>
 #include <glm.hpp>
 #include <glbinding/gl/gl.h>
@@ -14,13 +16,13 @@ public:
 	void use();
 	void unuse();
 	gl::GLint getUniformLocation(const std::string& uniformName)const;
-	static void applyShaderUniformMatrix(int uniformId, const glm::mat4& matrixValue);
-	static void applyShaderVector3(int uniformId, const glm::vec3& value);
-	static void applyShaderFloat(int uniformId, float value);
-	static void applyShaderInt(int uniformId, int value);
-	static void applyShaderBool(int uniformId, bool value);
+	static void applyShaderUniformMatrix(int32 uniformId, const glm::mat4& matrixValue);
+	static void applyShaderVector3(int32 uniformId, const glm::vec3& value);
+	static void applyShaderFloat(int32 uniformId, float32 value);
+	static void applyShaderInt(int32 uniformId, int32 value);
+	static void applyShaderBool(int32 uniformId, bool value);
 private:
-	unsigned int programID, vertexShaderID, fragmentShaderID;
-	void compileShader(const std::string& filePath, unsigned int ID);
-	int attributeCount;
+	uint32 programID, vertexShaderID, fragmentShaderID;
+	void compileShader(const std::string& filePath, uint32 ID);
+	int32 attributeCount;
 };

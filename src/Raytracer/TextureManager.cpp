@@ -1,12 +1,12 @@
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/TextureData.h"
 #include <iostream>
-unsigned int TextureManager::loadTextureFromData(TextureData & textureData, bool gamma)
+uint32 TextureManager::loadTextureFromData(TextureData & textureData, bool gamma)
 {
 	using namespace gl;
-	unsigned int textureID;
+	uint32 textureID;
 	glGenTextures(1, &textureID);
-	unsigned char* data = textureData.getTextureData();
+	uint8* data = textureData.getTextureData();
 	if (data)
 	{
 		GLenum format = GL_RED;
@@ -46,7 +46,7 @@ gl::GLenum TextureManager::getTextureFormatFromData(TextureData & textureData)
 	return format;
 }
 
-gl::GLenum TextureManager::getTextureFormatFromData(int componentCount)
+gl::GLenum TextureManager::getTextureFormatFromData(uint8 componentCount)
 {
 	using namespace gl;
 	GLenum format = GL_RED;

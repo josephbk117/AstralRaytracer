@@ -1,7 +1,7 @@
 #include "RayTracer/Transform.h"
 #include <gtc/matrix_transform.hpp>
 
-Transform::Transform(const glm::vec2 & position, float rotation, const glm::vec2 & scale) noexcept
+Transform::Transform(const glm::vec2 & position, float32 rotation, const glm::vec2 & scale) noexcept
 {
 	this->position = position;
 	this->rotation = rotation;
@@ -41,30 +41,30 @@ void Transform::setPosition(const glm::vec2 & position)
 	needsUpdate = true;
 	this->position = position;
 }
-void Transform::setPosition(float xCoord, float yCoord)
+void Transform::setPosition(float32 xCoord, float32 yCoord)
 {
 	position = glm::vec2(xCoord, yCoord);
 }
 
-void Transform::translate(float x, float y)
+void Transform::translate(float32 x, float32 y)
 {
 	this->position = glm::vec2(position.x + x, position.y + y);
 }
 
-void Transform::setX(float xValue)
+void Transform::setX(float32 xValue)
 {
 	setPosition(glm::vec2(xValue, position.y));
 }
-void Transform::setY(float yValue)
+void Transform::setY(float32 yValue)
 {
 	setPosition(glm::vec2(position.x, yValue));
 }
-void Transform::setRotation(float rotation)
+void Transform::setRotation(float32 rotation)
 {
 	needsUpdate = true;
 	this->rotation = rotation;
 }
-void Transform::rotate(float rotation)
+void Transform::rotate(float32 rotation)
 {
 	this->rotation += rotation;
 }
@@ -78,7 +78,7 @@ const glm::vec2 & Transform::getPosition()const noexcept
 {
 	return position;
 }
-float Transform::getRotation()const noexcept
+float32 Transform::getRotation()const noexcept
 {
 	return rotation;
 }

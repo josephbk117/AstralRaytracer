@@ -39,7 +39,7 @@ void ShaderProgram::linkShaders()
 	if (isLinked == static_cast<gl::GLint>(gl::GL_FALSE))
 	{
 		gl::GLint maxLength = 0;
-		gl::glGetProgramiv(programID, gl::GL_INFO_LOG_LENGTH, (int *)&isLinked);
+		gl::glGetProgramiv(programID, gl::GL_INFO_LOG_LENGTH, (int32 *)&isLinked);
 		std::vector<char> infoLog(maxLength);
 		std::cout << &(infoLog[0]);
 		gl::glGetProgramInfoLog(programID, maxLength, &maxLength, &infoLog[0]);
@@ -66,7 +66,7 @@ void ShaderProgram::addAttribute(const std::string & attributeName)
 void ShaderProgram::use()
 {
 	gl::glUseProgram(programID);
-	for (int i = 0; i < attributeCount; i++)
+	for (int32 i = 0; i < attributeCount; i++)
 	{
 		gl::glEnableVertexAttribArray(i);
 	}
@@ -75,7 +75,7 @@ void ShaderProgram::use()
 void ShaderProgram::unuse()
 {
 	gl::glUseProgram(0);
-	for (int i = 0; i < attributeCount; i++)
+	for (int32 i = 0; i < attributeCount; i++)
 	{
 		gl::glDisableVertexAttribArray(i);
 	}
@@ -86,38 +86,38 @@ gl::GLint ShaderProgram::getUniformLocation(const std::string & uniformName)cons
 	return gl::glGetUniformLocation(programID, uniformName.c_str());
 }
 
-void ShaderProgram::applyShaderUniformMatrix(int uniformId, const glm::mat4& matrixValue)
+void ShaderProgram::applyShaderUniformMatrix(int32 uniformId, const glm::mat4& matrixValue)
 {
 	gl::glUniformMatrix4fv(uniformId, 1, gl::GL_FALSE, &matrixValue[0][0]);
 }
 
-void ShaderProgram::applyShaderVector3(int uniformId, const glm::vec3& value)
+void ShaderProgram::applyShaderVector3(int32 uniformId, const glm::vec3& value)
 {
 	gl::glUniform3f(uniformId, value.x, value.y, value.z);
 }
 
-void ShaderProgram::applyShaderFloat(int uniformId, float value)
+void ShaderProgram::applyShaderFloat(int32 uniformId, float32 value)
 {
 	gl::glUniform1f(uniformId, value);
 }
 
-void ShaderProgram::applyShaderInt(int uniformId, int value)
+void ShaderProgram::applyShaderInt(int32 uniformId, int32 value)
 {
 	gl::glUniform1i(uniformId, value);
 }
 
-void ShaderProgram::applyShaderBool(int uniformId, bool value)
+void ShaderProgram::applyShaderBool(int32 uniformId, bool value)
 {
 	gl::glUniform1i(uniformId, value);
 }
 
-void ShaderProgram::compileShader(const std::string & filePath, unsigned int ID)
+void ShaderProgram::compileShader(const std::string & filePath, uint32 ID)
 {
 	std::ifstream shaderFile(filePath);
 	if (shaderFile.fail())
 	{
 		perror(filePath.c_str());
-		std::cout << "ERROR : file : " << filePath << " couldnt be loaded";
+		std::cout << "ERROR : file : " << filePath << " couldn't be loaded";
 	}
 	std::string fileContents = "";
 	std::string line;
