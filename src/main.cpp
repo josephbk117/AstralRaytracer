@@ -1,6 +1,5 @@
 #include <iostream>
-#include "WindowFramework/Window.h"
-#include "WindowFramework/WindowUtils.h"
+#include <cstring>
 
 #define GLFW_INCLUDE_NONE
 
@@ -13,18 +12,14 @@
 #include <GLFW/glfw3.h>
 #include <glm.hpp>
 
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
+#include "WindowFramework/Window.h"
+#include "WindowFramework/WindowUtils.h"
+#include "Raytracer/TextureData.h"
+#include "Raytracer/TextureManager.h"
+#include "Raytracer/DrawingPanel.h"
+#include "Raytracer/ShaderProgram.h"
+
+void windowSizeCallback(GLFWwindow* window, int width, int height);
 
 int main()
 {
@@ -49,6 +44,8 @@ int main()
 
     glfwWindow = glfwCreateWindow(width, height, "Custom Window", nullptr, nullptr);
 
+	glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
+
     if(!glfwWindow)
     {
         glfwTerminate();
@@ -66,97 +63,47 @@ int main()
 
     gl::glViewport(0,0,width,height);
 
+	//----------------
 
+	const int NX = 380;
+	const int NY = 190;
+	const int NS = 40;
 
-	// build and compile our shader program
-   // ------------------------------------
-   // vertex shader
-	unsigned int vertexShader = gl::glCreateShader(gl::GL_VERTEX_SHADER);
-	gl::glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-	gl::glCompileShader(vertexShader);
-	// check for shader compile errors
-	int success;
-	char infoLog[512];
-	gl::glGetShaderiv(vertexShader, gl::GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		gl::glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-	// fragment shader
-	unsigned int fragmentShader = gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
-	gl::glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	gl::glCompileShader(fragmentShader);
-	// check for shader compile errors
-	gl::glGetShaderiv(fragmentShader, gl::GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		gl::glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-	// link shaders
-	unsigned int shaderProgram = gl::glCreateProgram();
-	gl::glAttachShader(shaderProgram, vertexShader);
-	gl::glAttachShader(shaderProgram, fragmentShader);
-	gl::glLinkProgram(shaderProgram);
-	// check for linking errors
-	gl::glGetProgramiv(shaderProgram, gl::GL_LINK_STATUS, &success);
-	if (!success) {
-		gl::glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
-	gl::glDeleteShader(vertexShader);
-	gl::glDeleteShader(fragmentShader);
+	unsigned char *data = new unsigned char[NX * NY * 3];
 
-	// set up vertex data (and buffer(s)) and configure vertex attributes
-	// ------------------------------------------------------------------
-	float vertices[] = {
-		 0.5f,  0.5f, 0.0f,  // top right
-		 0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
-	};
-	unsigned int indices[] = {  // note that we start from 0!
-		0, 1, 3,  // first Triangle
-		1, 2, 3   // second Triangle
-	};
-	unsigned int VBO, VAO, EBO;
-	gl::glGenVertexArrays(1, &VAO);
-	gl::glGenBuffers(1, &VBO);
-	gl::glGenBuffers(1, &EBO);
-	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	gl::glBindVertexArray(VAO);
+	std::memset(data, 100, NX * NY);
 
-	gl::glBindBuffer(gl::GL_ARRAY_BUFFER, VBO);
-	gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(vertices), vertices, gl::GL_STATIC_DRAW);
+	TextureData texData;
+	texData.setTextureData(data, NX, NY, 3);
+	unsigned int textureId = TextureManager::loadTextureFromData(texData, false);
 
-	gl::glBindBuffer(gl::GL_ELEMENT_ARRAY_BUFFER, EBO);
-	gl::glBufferData(gl::GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, gl::GL_STATIC_DRAW);
+	DrawingPanel drawingPanel;
+	drawingPanel.init(1, 1);
+	drawingPanel.setTextureID(textureId);
+	drawingPanel.getTransform()->setPosition(0, 0);
+	drawingPanel.getTransform()->setScale(glm::vec2(1, 1));
+	drawingPanel.getTransform()->update();
 
-	gl::glVertexAttribPointer(0, 3, gl::GL_FLOAT, gl::GL_FALSE, 3 * sizeof(float), (void*)0);
-	gl::glEnableVertexAttribArray(0);
+	ShaderProgram shader;
+	shader.compileShaders("resources/simpleDisplay.vs", "resources/simpleDisplay.fs");
+	shader.linkShaders();
+	shader.use();
 
-	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-	gl::glBindBuffer(gl::GL_ARRAY_BUFFER, 0);
+	int drawingPanelModelMatrix = shader.getUniformLocation("model");
 
-	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-	gl::glBindVertexArray(0);
-
-
+	//----------------
 
     while(!glfwWindowShouldClose(glfwWindow))
     {
 		gl::glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
-		// draw our first triangle
-		gl::glUseProgram(shaderProgram);
-		gl::glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-		gl::glDrawElements(gl::GL_TRIANGLES, 6, gl::GL_UNSIGNED_INT, 0);
+		shader.use();
+		shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform()->getMatrix());
+		drawingPanel.draw();
+
+		gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+		gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, NX, NY, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, data);
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -176,11 +123,11 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	gl::glDeleteVertexArrays(1, &VAO);
-	gl::glDeleteBuffers(1, &VBO);
-	gl::glDeleteBuffers(1, &EBO);
-	gl::glDeleteProgram(shaderProgram);
-
     glfwTerminate();
     return 0;
+}
+
+void windowSizeCallback(GLFWwindow* window, int width, int height)
+{
+	gl::glViewport(0, 0, width, height);
 }

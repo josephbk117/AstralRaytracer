@@ -13,6 +13,7 @@ include_directories("./external/glm")
 
 add_subdirectory(external/glfw)
 add_subdirectory(external/glBinding)
+add_subdirectory(resources/)
 
 target_include_directories(${PROJECT_NAME} 
 	PUBLIC includes/ 
@@ -30,3 +31,12 @@ target_link_libraries(${PROJECT_NAME} glfw glbinding)
     #glbinding::glbinding
     #glbinding::glbinding-aux # for additional, auxiliary features as logging, meta information, or debugging functionality
 #)
+
+add_custom_target(copy_resources ALL
+				COMMAND ${CMAKE_COMMAND} -E copy_directory
+				${PROJECT_SOURCE_DIR}/resources
+				${PROJECT_BINARY_DIR}/resources
+				COMMENT "copying resources into binary directory"
+)
+
+add_dependencies(${PROJECT_NAME} copy_resources)
