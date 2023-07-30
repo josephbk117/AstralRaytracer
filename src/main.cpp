@@ -15,19 +15,20 @@ int main()
 
 	//----------------
 
-	const int NX = 380;
-	const int NY = 190;
-	const int NS = 40;
+	const uint32 xImageSize = 380;
+	const uint32 yImageSize = 190;
+	const uint32 xTotalPixelCount = xImageSize * 3;
 
-	unsigned char *data = new unsigned char[NX * NY * 3];
-
-	std::memset(data, 100, NX * NY);
+	const uint32 NS = 40;
 
 	// Destructors need to be called before context is removed
 	{
 		TextureData texData;
-		texData.setTextureData(data, NX, NY, 3);
-		unsigned int textureId = TextureManager::loadTextureFromData(texData, false);
+		{
+			unsigned char* data = new unsigned char[xImageSize * yImageSize * 3];
+			texData.setTextureData(data, xImageSize, yImageSize, 3);
+		}
+		const uint32 textureId = TextureManager::loadTextureFromData(texData, false);
 
 		DrawingPanel drawingPanel;
 		drawingPanel.init(1, 1);
@@ -46,6 +47,20 @@ int main()
 
 		while(!window.shouldWindowClose())
 		{
+			//-------
+			//Perform ray tracing update to image
+
+			uint8* const texDataPtr = texData.getTextureData();
+			for (uint32 index = 0; index < xTotalPixelCount * yImageSize; index += 3)
+			{				
+				glm::vec2 coord { (index % xTotalPixelCount) / (float32)xTotalPixelCount, (index / xTotalPixelCount) / (float32)yImageSize };
+				texDataPtr[index] = coord.x * 255;
+				texDataPtr[index+1] = coord.y * 255;
+				texDataPtr[index+2] = 0;
+			}
+
+			//-------
+
 			gl::glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			gl::glClear(gl::GL_COLOR_BUFFER_BIT);
 
@@ -53,7 +68,7 @@ int main()
 			shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform().getMatrix());
 
 			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, NX, NY, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, data);
+			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, xImageSize, yImageSize, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, texDataPtr);
 
 			window.startUI();
 
