@@ -13,6 +13,7 @@ public:
 	TextureData();
 	TextureData(uint32 width, uint32 height, uint8 componentCount);
     ~TextureData() = default;
+	void resize(uint32 width, uint32 height);
 	void setTextureData(const std::vector<uint8>& data);
 	const std::vector<uint8>& getTextureData() const;
 	uint32 getWidth() const noexcept;

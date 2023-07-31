@@ -14,6 +14,19 @@ TextureData::TextureData(uint32 width, uint32 height, uint8 componentCount)
 	m_data.resize(width * height * componentCount);
 }
 
+void TextureData::resize(uint32 width, uint32 height)
+{
+	if (m_width == width && m_height == height)
+	{
+		return;
+	}
+
+	m_width = width;
+	m_height = height;
+
+	m_data.resize(width * height * m_componentCount);
+}
+
 void TextureData::setTextureData(const std::vector<uint8>& data)
 {
 	m_data = data;
