@@ -9,6 +9,8 @@ namespace AstralRaytracer
 	public:
 		Camera(float32 fov, float32 nearClip, float32 farClip);
 		void update(float32 deltaTime);
+		const glm::vec3& getPosition() const { return m_position; }
+		const glm::vec3& getDirection() const { return m_direction; }
 		const glm::mat4& getInverseProjection() const { return m_inverseProjection; };
 		const glm::mat4& getInverseView() const { return m_inverseView; };
 

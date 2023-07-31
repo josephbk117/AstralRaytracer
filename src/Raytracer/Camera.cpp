@@ -9,12 +9,21 @@ namespace AstralRaytracer
 
 	Camera::Camera(float32 fov, float32 nearClip, float32 farClip) : m_fov(fov), m_nearClip(nearClip), m_farClip(farClip)
 	{
-		m_direction = {0.0f, 0.0f, -1.0f};
-		m_position = {0.0f, 0.0f, 3.0f};
+		m_direction = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_position = glm::vec3(0.0f, 0.0f, 3.0f);
+		m_lastMousePosition = glm::vec2(0.0f);
+
+		recalculateView();
+		recalculateProjection();
 	}
 
 	void Camera::update(float32 deltaTime)
 	{
+		if (m_lastMousePosition == glm::vec2(0.0f))
+		{
+			m_lastMousePosition = Input::getMousePosition();
+			return;
+		}
 		const glm::vec2& mousePos = Input::getMousePosition();
 		const glm::vec2 delta = (mousePos - m_lastMousePosition);
 		m_lastMousePosition = mousePos;
@@ -32,19 +41,50 @@ namespace AstralRaytracer
 		constexpr glm::vec3 upDir(0.0f, 1.0f, 0.0f);
 		glm::vec3 rightDir = glm::cross(m_direction, upDir);
 
-
 		if (Input::isKeyDown(InputKey::W))
 		{
-			m_position += m_direction * deltaTime;
+			m_position += m_direction * deltaTime * 0.5f;
+			moved = true;
+		}
+
+		if (Input::isKeyDown(InputKey::S))
+		{
+			m_position -= m_direction * deltaTime;
+			moved = true;
+		}
+
+		if (Input::isKeyDown(InputKey::A))
+		{
+			m_position -= rightDir * deltaTime;
+			moved = true;
+		}
+
+		if (Input::isKeyDown(InputKey::D))
+		{
+			m_position += rightDir * deltaTime;
+			moved = true;
+		}
+
+		if (Input::isKeyDown(InputKey::Q))
+		{
+			m_position += glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
+			moved = true;
+		}
+
+		if (Input::isKeyDown(InputKey::E))
+		{
+			m_position -= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
 			moved = true;
 		}
 
 		//Rotation
 
-		if(delta.x != 0.0f || delta.y != 0.0f)
+		if (delta.x != 0.0f || delta.y != 0.0f)
 		{
-			float32 pitchDelta	= delta.y;
-			float32 yawDelta	= delta.x;
+			const float32 rotSpeed = 0.5f;
+
+			float32 pitchDelta = delta.y * deltaTime * rotSpeed;
+			float32 yawDelta = delta.x * deltaTime * rotSpeed;
 
 			glm::quat q = glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, glm::vec3(0.0f, 1.0f, 0.0f))));
 
@@ -62,7 +102,6 @@ namespace AstralRaytracer
 
 	void Camera::recalculateView()
 	{
-		m_view = glm::translate(glm::mat4(1.0f), m_position);
 		m_view = glm::lookAt(m_position, m_position + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
 		m_inverseView = glm::inverse(m_view);
 	}
