@@ -1,74 +1,70 @@
 #include "Raytracer/TextureData.h"
-TextureData::TextureData()
+TextureData::TextureData(uint32 width, uint32 height, uint8 componentCount)
 {
-	data = nullptr;
-	width = 0;
-	height = 0;
-	componentCount = 0;
+	m_width = width;
+	m_height = height;
+	m_componentCount = componentCount;
+
+	assertm(m_componentCount <= 4, "Invalid Component count");
+
+	m_data.resize(width * height * componentCount);
 }
 
-void TextureData::setTextureData(uint8 * data, uint32 width, uint32 height, uint8 componentCount)
+void TextureData::setTextureData(const std::vector<uint8>& data)
 {
-	this->data = data;
-	data = nullptr;
-	this->width = width;
-	this->height = height;
-	this->componentCount = componentCount;
+	m_data = data;
 }
 
-uint8 * TextureData::getTextureData()
+const std::vector<uint8>& TextureData::getTextureData()
 {
-	return data;
+	return m_data;
 }
 
 const uint32 TextureData::getWidth() noexcept
 {
-	return width;
+	return m_width;
 }
 
 const uint32 TextureData::getHeight() noexcept
 {
-	return height;
+	return m_height;
 }
 
 uint8 TextureData::getComponentCount() noexcept
 {
-	return componentCount;
+	return m_componentCount;
+}
+
+void TextureData::setTexelColorAtPixelIndex(uint32 index, int32 r, int32 g, int32 b)
+{
+	assertm(index <= (m_data.size() - m_componentCount), "Can't set color at pixel index, invalid range");
+
+	m_data[index] = r;
+	m_data[index+1] = g;
+	m_data[index+2] = b;
 }
 
 void TextureData::setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y)
 {
-	x = glm::clamp(x, 0u, width);
-	y = glm::clamp(y, 0u, height);
-	int32 i = ((float32)width * (float32)y + (float32)x) * 4.0f;
-	r = glm::clamp(r, 0, 255);
-	g = glm::clamp(g, 0, 255);
-	b = glm::clamp(b, 0, 255);
+	int32 i = ((float32)m_width * (float32)y + (float32)x) * 4.0f;
 
-	data[i] = r;
-	data[i + 1] = g;
-	data[i + 2] = b;
+	m_data[i] = r;
+	m_data[i + 1] = g;
+	m_data[i + 2] = b;
 }
 
 void TextureData::setTexelColor(ColourData & colourData, uint32 x, uint32 y)
 {
-	x = glm::clamp(x, 0u, width);
-	y = glm::clamp(y, 0u, height);
-	int32 i = ((float32)width * (float32)y + (float32)x) * 4.0f;
-	data[i] = colourData.getColour_8_Bit().r;
-	data[i + 1] = colourData.getColour_8_Bit().g;
-	data[i + 2] = colourData.getColour_8_Bit().b;
+	int32 i = ((float32)m_width * (float32)y + (float32)x) * 4.0f;
+	m_data[i] = colourData.getColour_8_Bit().r;
+	m_data[i + 1] = colourData.getColour_8_Bit().g;
+	m_data[i + 2] = colourData.getColour_8_Bit().b;
 }
 
 ColourData TextureData::getTexelColor(uint32 x, uint32 y)
 {
-	int32 i = ((float32)width * (float32)y + (float32)x) * 3.0f;
+	int32 i = ((float32)m_width * (float32)y + (float32)x) * 3.0f;
 	ColourData colData;
-	colData.setColour_8_Bit(data[i], data[i + 1], data[i + 2]);
+	colData.setColour_8_Bit(m_data[i], m_data[i + 1], m_data[i + 2]);
 	return colData;
-}
-
-TextureData::~TextureData()
-{
-	delete[] data;
 }
