@@ -1,5 +1,8 @@
 #pragma once
+#include <cassert>
 #include <cstdint>
+
+#define assertm(exp, msg) assert(((void)msg, exp))
 
 typedef int8_t      int8;
 typedef uint8_t     uint8;
