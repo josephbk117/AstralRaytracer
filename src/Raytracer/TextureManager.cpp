@@ -6,7 +6,7 @@ uint32 TextureManager::loadTextureFromData(TextureData & textureData, bool gamma
 	using namespace gl;
 	uint32 textureID;
 	glGenTextures(1, &textureID);
-	uint8* data = textureData.getTextureData();
+	const uint8* const data = textureData.getTextureData().data();
 	if (data)
 	{
 		GLenum format = GL_RED;
