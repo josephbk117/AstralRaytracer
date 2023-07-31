@@ -14,11 +14,15 @@
 
 #include <string>
 
+
+
 namespace AstralRaytracer
 {
     class Window
     {
         public:
+        friend class Input;
+
         Window():m_name{"default"}{}
         Window(const std::string name):m_name{name}{}
         const std::string& getName() const;
