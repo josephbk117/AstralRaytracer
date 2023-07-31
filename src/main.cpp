@@ -3,31 +3,32 @@
 
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
+#include "WindowFramework/Input.h"
 #include "Raytracer/TextureData.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/DrawingPanel.h"
 #include "Raytracer/ShaderProgram.h"
+#include "Raytracer/Camera.h"
+#include <ext/quaternion_geometric.hpp>
 
 int main()
 {
     AstralRaytracer::Window window("new window test");
 	window.initialize();
+	AstralRaytracer::Input::initialize(window);
 
 	//----------------
 
 	const uint32 xImageSize = 380;
 	const uint32 yImageSize = 190;
+	const uint8	componentCount = 3;
 	const uint32 xTotalPixelCount = xImageSize * 3;
 
 	const uint32 NS = 40;
 
 	// Destructors need to be called before context is removed
 	{
-		TextureData texData;
-		{
-			unsigned char* data = new unsigned char[xImageSize * yImageSize * 3];
-			texData.setTextureData(data, xImageSize, yImageSize, 3);
-		}
+		TextureData texData(xImageSize, yImageSize, componentCount);
 		const uint32 textureId = TextureManager::loadTextureFromData(texData, false);
 
 		DrawingPanel drawingPanel;
@@ -44,19 +45,29 @@ int main()
 		int32 drawingPanelModelMatrix = shader.getUniformLocation("model");
 
 		//----------------
+		AstralRaytracer::Camera cam(45.0f, 1.0f, 10.0f);
 
+		float64 prevTime = AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
 		{
 			//-------
 			//Perform ray tracing update to image
 
-			uint8* const texDataPtr = texData.getTextureData();
-			for (uint32 index = 0; index < xTotalPixelCount * yImageSize; index += 3)
+			cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime);
+			prevTime = AstralRaytracer::Input::getTimeSinceStart();
+
+			const glm::mat4& invProj = cam.getInverseProjection();
+			const glm::mat4& invView = cam.getInverseView();
+
+			for (uint32 index = 0; index < xTotalPixelCount * yImageSize; index += componentCount)
 			{				
 				glm::vec2 coord { (index % xTotalPixelCount) / (float32)xTotalPixelCount, (index / xTotalPixelCount) / (float32)yImageSize };
-				texDataPtr[index] = coord.x * 255;
-				texDataPtr[index+1] = coord.y * 255;
-				texDataPtr[index+2] = 0;
+				coord = (coord * 2.0f) - 1.0f;
+
+				glm::vec4 target = invProj * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+				glm::vec3 rayDir = glm::vec3(invView * glm::vec4(glm::normalize(glm::vec3(target) / target.w), 0));
+
+				texData.setTexelColorAtPixelIndex(index, rayDir.x * 255, rayDir.y * 255, rayDir.z * 255);
 			}
 
 			//-------
@@ -68,7 +79,7 @@ int main()
 			shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform().getMatrix());
 
 			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, xImageSize, yImageSize, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, texDataPtr);
+			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, xImageSize, yImageSize, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, texData.getTextureData().data());
 
 			window.startUI();
 
