@@ -78,8 +78,7 @@ int main()
 			shader.use();
 			shader.applyShaderUniformMatrix(drawingPanelModelMatrix, drawingPanel.getTransform().getMatrix());
 
-			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-			gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, xImageSize, yImageSize, TextureManager::getTextureFormatFromData(3), gl::GL_UNSIGNED_BYTE, texData.getTextureData().data());
+			TextureManager::updateTexture(texData, textureId);
 
 			window.startUI();
 

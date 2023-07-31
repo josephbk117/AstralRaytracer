@@ -33,6 +33,14 @@ uint32 TextureManager::loadTextureFromData(TextureData & textureData, bool gamma
 	return textureID;
 }
 
+void TextureManager::updateTexture(const TextureData& textureData, uint32 textureId)
+{
+	gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+	gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, textureData.getWidth(), textureData.getHeight(), 
+	TextureManager::getTextureFormatFromData(textureData.getComponentCount()), gl::GL_UNSIGNED_BYTE, textureData.getTextureData().data());
+	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
+}
+
 gl::GLenum TextureManager::getTextureFormatFromData(TextureData & textureData)
 {
 	using namespace gl;

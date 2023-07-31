@@ -1,4 +1,8 @@
 #include "Raytracer/TextureData.h"
+
+TextureData::TextureData(): m_width(0), m_height(0), m_componentCount(0)
+{}
+
 TextureData::TextureData(uint32 width, uint32 height, uint8 componentCount)
 {
 	m_width = width;
@@ -15,22 +19,22 @@ void TextureData::setTextureData(const std::vector<uint8>& data)
 	m_data = data;
 }
 
-const std::vector<uint8>& TextureData::getTextureData()
+const std::vector<uint8>& TextureData::getTextureData() const
 {
 	return m_data;
 }
 
-const uint32 TextureData::getWidth() noexcept
+uint32 TextureData::getWidth() const noexcept
 {
 	return m_width;
 }
 
-const uint32 TextureData::getHeight() noexcept
+uint32 TextureData::getHeight() const noexcept
 {
 	return m_height;
 }
 
-uint8 TextureData::getComponentCount() noexcept
+uint8 TextureData::getComponentCount() const noexcept
 {
 	return m_componentCount;
 }
