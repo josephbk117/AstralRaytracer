@@ -1,6 +1,7 @@
 #include "Raytracer/Renderer.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
+#include "Raytracer/Traceable/TriangleTraceable.h"
 
 namespace AstralRaytracer
 {
@@ -16,6 +17,7 @@ namespace AstralRaytracer
 		const uint32 xTotalPixelCount = m_texData.getWidth() * m_texData.getComponentCount();
 
 		SphereTraceable sphere;
+		TriangleTraceable triangle;
 
 		for (uint32 index = 0; index < xTotalPixelCount * m_texData.getHeight(); index += m_texData.getComponentCount())
 		{
@@ -27,7 +29,7 @@ namespace AstralRaytracer
 			const glm::vec3 rayDir = glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
 
 			HitInfo hitInfo;
-			if (sphere.trace({cam.getPosition(), rayDir}, hitInfo))
+			if (triangle.trace({cam.getPosition(), rayDir}, hitInfo))
 			{
 				const glm::u8vec3 color =  hitInfo.colorData.getColour_8_Bit();
 				m_texData.setTexelColorAtPixelIndex(index,color.r, color.g, color.b);
