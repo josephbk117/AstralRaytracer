@@ -40,11 +40,11 @@ public:
 	{
 		return colour;
 	}
-	glm::vec3 getColour_8_Bit()
+	glm::u8vec3 getColour_8_Bit()
 	{
 		uint8 rV = (uint8)(colour.r * 255.0f);
 		uint8 gV = (uint8)(colour.g * 255.0f);
 		uint8 bV = (uint8)(colour.b * 255.0f);
-		return glm::vec3(rV, gV, bV);
+		return glm::u8vec3(rV, gV, bV);
 	}
 };

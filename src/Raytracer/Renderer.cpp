@@ -1,5 +1,6 @@
 #include "Raytracer/Renderer.h"
 #include "Raytracer/TextureManager.h"
+#include "Raytracer/Traceable/SphereTraceable.h"
 
 namespace AstralRaytracer
 {
@@ -14,42 +15,26 @@ namespace AstralRaytracer
 	{
 		const uint32 xTotalPixelCount = m_texData.getWidth() * m_texData.getComponentCount();
 
+		SphereTraceable sphere;
+
 		for (uint32 index = 0; index < xTotalPixelCount * m_texData.getHeight(); index += m_texData.getComponentCount())
 		{
 			glm::vec2 coord { (index % xTotalPixelCount) / (float32)xTotalPixelCount, (index / xTotalPixelCount) / (float32)m_texData.getHeight() };
 			coord = (coord * 2.0f) - 1.0f;
 
-			glm::vec4 target = cam.getInverseProjection() * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-			glm::vec3 targetNormalized = glm::normalize(glm::vec3(target) / target.w);
-			glm::vec3 rayDir = glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
+			const glm::vec4 target = cam.getInverseProjection() * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+			const glm::vec3 targetNormalized = glm::normalize(glm::vec3(target) / target.w);
+			const glm::vec3 rayDir = glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
 
-			float32 radius = 0.5f;
-
-			glm::vec3 rayDirection(coord.x, coord.y, -1.0f);
-
-			float32 a = glm::dot(rayDir, rayDir);
-			float32 b = 2.0f * glm::dot(cam.getPosition(), rayDir);
-			float32 c = glm::dot(cam.getPosition(), cam.getPosition()) - radius * radius;
-
-			float32 discriminant = b * b - 4.0f * a * c;
-
-			if (discriminant >= 0.0f)
+			HitInfo hitInfo;
+			if (sphere.trace({cam.getPosition(), rayDir}, hitInfo))
 			{
-				float32 t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
-				float32 closesrT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
-
-				glm::vec3 hitPoint = cam.getPosition() + rayDir * closesrT;
-				glm::vec3 normal = glm::normalize(hitPoint);
-
-				glm::vec3 lightDir = glm::normalize(glm::vec3(-1,-1,-1));
-
-				float32 d = (glm::dot(normal, -lightDir) + 1.0f) * 0.5f;
-
-				m_texData.setTexelColorAtPixelIndex(index, d * 255.0f, d * 255.0f, d * 255.0f);
+				const glm::u8vec3 color =  hitInfo.colorData.getColour_8_Bit();
+				m_texData.setTexelColorAtPixelIndex(index,color.r, color.g, color.b);
 			}
 			else
 			{
-				m_texData.setTexelColorAtPixelIndex(index, std::max(targetNormalized.x * 255, 0.0f), std::max(targetNormalized.y * 255, 0.0f), targetNormalized.z * 255);
+				m_texData.setTexelColorAtPixelIndex(index, 0,0,0);
 			}
 		}
 
