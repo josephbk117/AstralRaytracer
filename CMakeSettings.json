@@ -9,7 +9,8 @@
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "enableClangTidyCodeAnalysis": true
     },
     {
       "name": "WSL-GCC-Debug",
@@ -22,7 +23,8 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "${defaultWSLPath}"
+      "wslPath": "${defaultWSLPath}",
+      "enableClangTidyCodeAnalysis": true
     },
     {
       "name": "x64-Release",
@@ -33,7 +35,8 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ]
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "enableClangTidyCodeAnalysis": true
     },
     {
       "name": "WSL-GCC-Release",
@@ -47,7 +50,8 @@
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux_x64" ],
       "wslPath": "${defaultWSLPath}",
-      "variables": []
+      "variables": [],
+      "enableClangTidyCodeAnalysis": true
     }
   ]
 }
