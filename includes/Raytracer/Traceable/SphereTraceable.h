@@ -3,9 +3,9 @@
 
 namespace AstralRaytracer
 {
-	class SphereTraceable : public Traceable
+	class SphereTraceable: public Traceable
 	{
 		public:
 		bool trace(const Ray& rayIn, HitInfo& hitInfo) override;
 	};
-}
+} // namespace AstralRaytracer

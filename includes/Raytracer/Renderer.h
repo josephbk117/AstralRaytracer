@@ -1,20 +1,20 @@
-#include "Utils/Common.h"
-#include "TextureData.h"
 #include "Camera.h"
+#include "TextureData.h"
+#include "Utils/Common.h"
 
 namespace AstralRaytracer
 {
 	class Renderer
 	{
-	public:
-	Renderer();
+		public:
+		Renderer();
 
-	void render(const Camera& cam);
-	uint32 getTextureId() const { return m_textureId; }
-	void onResize(uint32 width, uint32 height);
+		void   render(const Camera& cam);
+		uint32 getTextureId() const { return m_textureId; }
+		void   onResize(uint32 width, uint32 height);
 
-	private:
+		private:
 		TextureData m_texData;
-		uint32 m_textureId;
+		uint32      m_textureId;
 	};
-}
+} // namespace AstralRaytracer

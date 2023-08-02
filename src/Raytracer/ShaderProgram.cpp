@@ -1,28 +1,28 @@
 #include "Raytracer/ShaderProgram.h"
-#include <iostream>
+
 #include <fstream>
+#include <iostream>
 #include <vector>
 
 ShaderProgram::ShaderProgram()
 {
-	programID = 0;
-	vertexShaderID = 0;
-	fragmentShaderID = 0;
-	attributeCount = 0;
+	programID       = 0;
+	vertexShaderID  = 0;
+	fragmentShaderID= 0;
+	attributeCount  = 0;
 }
 
-ShaderProgram::~ShaderProgram()
-{
-}
+ShaderProgram::~ShaderProgram() {}
 
-void ShaderProgram::compileShaders(const std::string & vertexShaderPath, const std::string & fragmentShaderPath)
+void ShaderProgram::compileShaders(const std::string& vertexShaderPath,
+																	 const std::string& fragmentShaderPath)
 {
-	programID = gl::glCreateProgram();
-	vertexShaderID = gl::glCreateShader(gl::GL_VERTEX_SHADER);
-	if (vertexShaderID == 0)
+	programID     = gl::glCreateProgram();
+	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
+	if(vertexShaderID == 0)
 		std::cout << "ERROR : Vertex shader creation";
-	fragmentShaderID = gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
-	if (vertexShaderID == 0)
+	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
+	if(vertexShaderID == 0)
 		std::cout << "ERROR : Fragment shader creation";
 	compileShader(vertexShaderPath, vertexShaderID);
 	compileShader(fragmentShaderPath, fragmentShaderID);
@@ -34,12 +34,12 @@ void ShaderProgram::linkShaders()
 	gl::glAttachShader(programID, fragmentShaderID);
 
 	gl::glLinkProgram(programID);
-	gl::GLint isLinked = 0;
+	gl::GLint isLinked= 0;
 	gl::glGetProgramiv(programID, gl::GL_LINK_STATUS, &isLinked);
-	if (isLinked == static_cast<gl::GLint>(gl::GL_FALSE))
+	if(isLinked == static_cast<gl::GLint>(gl::GL_FALSE))
 	{
-		gl::GLint maxLength = 0;
-		gl::glGetProgramiv(programID, gl::GL_INFO_LOG_LENGTH, (int32 *)&isLinked);
+		gl::GLint maxLength= 0;
+		gl::glGetProgramiv(programID, gl::GL_INFO_LOG_LENGTH, (int32*)&isLinked);
 		std::vector<char> infoLog(maxLength);
 		std::cout << &(infoLog[0]);
 		gl::glGetProgramInfoLog(programID, maxLength, &maxLength, &infoLog[0]);
@@ -58,7 +58,7 @@ void ShaderProgram::linkShaders()
 	gl::glDeleteShader(fragmentShaderID);
 }
 
-void ShaderProgram::addAttribute(const std::string & attributeName)
+void ShaderProgram::addAttribute(const std::string& attributeName)
 {
 	gl::glBindAttribLocation(programID, attributeCount++, attributeName.c_str());
 }
@@ -66,7 +66,7 @@ void ShaderProgram::addAttribute(const std::string & attributeName)
 void ShaderProgram::use()
 {
 	gl::glUseProgram(programID);
-	for (int32 i = 0; i < attributeCount; i++)
+	for(int32 i= 0; i < attributeCount; i++)
 	{
 		gl::glEnableVertexAttribArray(i);
 	}
@@ -75,13 +75,13 @@ void ShaderProgram::use()
 void ShaderProgram::unuse()
 {
 	gl::glUseProgram(0);
-	for (int32 i = 0; i < attributeCount; i++)
+	for(int32 i= 0; i < attributeCount; i++)
 	{
 		gl::glDisableVertexAttribArray(i);
 	}
 }
 
-gl::GLint ShaderProgram::getUniformLocation(const std::string & uniformName)const
+gl::GLint ShaderProgram::getUniformLocation(const std::string& uniformName) const
 {
 	return gl::glGetUniformLocation(programID, uniformName.c_str());
 }
@@ -111,31 +111,31 @@ void ShaderProgram::applyShaderBool(int32 uniformId, bool value)
 	gl::glUniform1i(uniformId, value);
 }
 
-void ShaderProgram::compileShader(const std::string & filePath, uint32 ID)
+void ShaderProgram::compileShader(const std::string& filePath, uint32 ID)
 {
 	std::ifstream shaderFile(filePath);
-	if (shaderFile.fail())
+	if(shaderFile.fail())
 	{
 		perror(filePath.c_str());
 		std::cout << "ERROR : file : " << filePath << " couldn't be loaded";
 	}
-	std::string fileContents = "";
+	std::string fileContents= "";
 	std::string line;
-	while (std::getline(shaderFile, line))
+	while(std::getline(shaderFile, line))
 	{
-		fileContents += line + "\n";
+		fileContents+= line + "\n";
 	}
 	shaderFile.close();
-	const char* charPointer = fileContents.c_str();
+	const char* charPointer= fileContents.c_str();
 	gl::glShaderSource(ID, 1, &charPointer, nullptr);
 	gl::glCompileShader(ID);
 
-	gl::GLint success = 0;
+	gl::GLint success= 0;
 	gl::glGetShaderiv(ID, gl::GL_COMPILE_STATUS, &success);
 
-	if (success == static_cast<gl::GLint>(gl::GL_FALSE))
+	if(success == static_cast<gl::GLint>(gl::GL_FALSE))
 	{
-		gl::GLint maxLength = 0;
+		gl::GLint maxLength= 0;
 		gl::glGetShaderiv(ID, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<char> errorLog(maxLength);
 		gl::glGetShaderInfoLog(ID, maxLength, &maxLength, &errorLog[0]);
@@ -148,6 +148,6 @@ void ShaderProgram::compileShader(const std::string & filePath, uint32 ID)
 	}
 	else
 	{
-		std::cout << "Compiled Correctly : " << filePath <<"\n";
+		std::cout << "Compiled Correctly : " << filePath << "\n";
 	}
 }

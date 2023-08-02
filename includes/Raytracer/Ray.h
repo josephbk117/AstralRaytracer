@@ -1,6 +1,7 @@
 #pragma once
-#include <glm.hpp>
 #include "ColourData.h"
+
+#include <glm.hpp>
 
 struct Ray
 {
@@ -10,6 +11,6 @@ struct Ray
 
 struct HitInfo
 {
-	Ray rayOut;
+	Ray        rayOut;
 	ColourData colorData;
 };
