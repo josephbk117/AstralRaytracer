@@ -1,4 +1,4 @@
-#include "RayTracer/DrawingPanel.h"
+#include "Raytracer/DrawingPanel.h"
 #include <glbinding/gl/gl.h>
 
 DrawingPanel::DrawingPanel()

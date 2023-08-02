@@ -1,4 +1,4 @@
-#include "RayTracer/ShaderProgram.h"
+#include "Raytracer/ShaderProgram.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
