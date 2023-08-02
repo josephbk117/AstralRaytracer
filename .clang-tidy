@@ -1,0 +1,4 @@
+Checks: 'clang-diagnostic-*, clang-analyzer-*, cpp-core-guidelines-*,'
+WarningsAsErrors: true
+
+HeaderFilterRegex: ''
