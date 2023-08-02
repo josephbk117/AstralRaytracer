@@ -14,7 +14,7 @@ namespace AstralRaytracer
 
 		if (discriminant >= 0.0f)
 		{
-			float32 t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
+			//float32 t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
 			float32 closesrT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
 
 			glm::vec3 hitPoint = rayIn.origin + rayIn.direction * closesrT;
