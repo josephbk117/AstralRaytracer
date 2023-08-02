@@ -1,7 +1,6 @@
 #pragma once
 class WindowUtils
 {
-    public:
-
-    static int GetMaxWindowsAllowed();
+	public:
+	static int GetMaxWindowsAllowed();
 };

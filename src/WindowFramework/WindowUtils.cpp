@@ -1,6 +1,3 @@
 #include "WindowUtils.h"
 
-int WindowUtils::GetMaxWindowsAllowed()
-{
-    return 1;
-}
+int WindowUtils::GetMaxWindowsAllowed() { return 1; }
