@@ -17,37 +17,39 @@ namespace AstralRaytracer
 
 	float32 TriangleTraceable::getTriangleDistance() const { return glm::dot(m_normal, m_vertexA); }
 
-	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo)
+	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		float32 a= glm::dot(rayIn.direction, m_normal);
+		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
+		const float32    a= glm::dot(rayIn.direction, m_normal);
 
 		if(a == 0.0f)
 		{
 			return false;
 		}
 
-		float32 b= glm::dot(m_normal, rayIn.origin + m_normal - getTriangleDistance()); // TODO
-		float32 distanceToPlane= -1 * b / a;
+		const float32 b= glm::dot(m_normal, adjustedOrigin + m_normal - getTriangleDistance()); // TODO
+		const float32 distanceToPlane= -1.0f * b / a;
 
-		glm::vec3 intersect= rayIn.direction * distanceToPlane + rayIn.origin;
+		const glm::vec3 intersect= rayIn.direction * distanceToPlane + adjustedOrigin;
 
-		glm::vec3 CA= m_vertexC - m_vertexA;
-		glm::vec3 IA= intersect - m_vertexA;
+		const glm::vec3 CA= m_vertexC - m_vertexA;
+		const glm::vec3 IA= intersect - m_vertexA;
 
-		float32 test1= glm::dot(glm::cross(CA, IA), m_normal);
+		const float32 test1= glm::dot(glm::cross(CA, IA), m_normal);
 
-		glm::vec3 BC= m_vertexB - m_vertexC;
-		glm::vec3 IC= intersect - m_vertexC;
+		const glm::vec3 BC= m_vertexB - m_vertexC;
+		const glm::vec3 IC= intersect - m_vertexC;
 
-		float32 test2= glm::dot(glm::cross(BC, IC), m_normal);
+		const float32 test2= glm::dot(glm::cross(BC, IC), m_normal);
 
-		glm::vec3 AB= m_vertexA - m_vertexB;
-		glm::vec3 IB= intersect - m_vertexB;
+		const glm::vec3 AB= m_vertexA - m_vertexB;
+		const glm::vec3 IB= intersect - m_vertexB;
 
-		float32 test3= glm::dot(glm::cross(AB, IB), m_normal);
+		const float32 test3= glm::dot(glm::cross(AB, IB), m_normal);
 
 		if(test1 >= 0.0f && test2 >= 0.0f && test3 >= 0.0f)
 		{
+			hitInfo.hitDistance     = distanceToPlane;
 			hitInfo.rayOut.origin   = intersect;
 			hitInfo.rayOut.direction= m_normal;
 

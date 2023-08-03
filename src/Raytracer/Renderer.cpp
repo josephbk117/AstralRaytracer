@@ -1,5 +1,6 @@
 #include "Raytracer/Renderer.h"
 
+#include "../../includes/Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
@@ -17,8 +18,16 @@ namespace AstralRaytracer
 	{
 		const uint32 xTotalPixelCount= m_texData.getWidth() * m_texData.getComponentCount();
 
-		SphereTraceable   sphere;
-		TriangleTraceable triangle;
+		Scene scene;
+		scene.m_sceneTraceables.push_back(std::make_unique<SphereTraceable>());
+		scene.m_sceneTraceables.push_back(std::make_unique<TriangleTraceable>());
+		scene.m_sceneTraceables.push_back(std::make_unique<SphereTraceable>());
+		scene.m_sceneTraceables.push_back(std::make_unique<TriangleTraceable>());
+
+		static_cast<SphereTraceable*>(scene.m_sceneTraceables.at(0).get())->setRadius(0.5f);
+		static_cast<SphereTraceable*>(scene.m_sceneTraceables.at(2).get())->setRadius(0.5f);
+		scene.m_sceneTraceables.at(2).get()->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
+		scene.m_sceneTraceables.at(3).get()->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
 
 		for(uint32 index= 0; index < xTotalPixelCount * m_texData.getHeight();
 				index+= m_texData.getComponentCount())
@@ -32,9 +41,20 @@ namespace AstralRaytracer
 			const glm::vec3 rayDir= glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
 
 			HitInfo hitInfo;
-			if(triangle.trace({cam.getPosition(), rayDir}, hitInfo))
+			HitInfo closestHitInfo;
+			for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
 			{
-				const glm::u8vec3 color= hitInfo.colorData.getColour_8_Bit();
+				if(scene.m_sceneTraceables[objectIndex]->trace({cam.getPosition(), rayDir}, hitInfo))
+				{
+					if(hitInfo.hitDistance < closestHitInfo.hitDistance)
+					{
+						closestHitInfo= hitInfo;
+					}
+				}
+			}
+			if(closestHitInfo.hitDistance > 0.0f && closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
+			{
+				const glm::u8vec3 color= closestHitInfo.colorData.getColour_8_Bit();
 				m_texData.setTexelColorAtPixelIndex(index, color.r, color.g, color.b);
 			}
 			else

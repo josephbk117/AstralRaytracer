@@ -2,36 +2,37 @@
 
 namespace AstralRaytracer
 {
-	bool SphereTraceable::trace(const Ray& rayIn, HitInfo& hitInfo)
+	bool SphereTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		const float32 radius = 0.5f;
+		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
 
-		const float32 a = glm::dot(rayIn.direction, rayIn.direction);
-		const float32 b = 2.0f * glm::dot(rayIn.origin, rayIn.direction);
-		const float32 c = glm::dot(rayIn.origin, rayIn.origin) - radius * radius;
+		const float32 a= glm::dot(rayIn.direction, rayIn.direction);
+		const float32 b= 2.0f * glm::dot(adjustedOrigin, rayIn.direction);
+		const float32 c= glm::dot(adjustedOrigin, adjustedOrigin) - m_radius * m_radius;
 
-		const float32 discriminant = b * b - 4.0f * a * c;
+		const float32 discriminant= b * b - 4.0f * a * c;
 
-		if (discriminant >= 0.0f)
+		if(discriminant >= 0.0f)
 		{
-			//float32 t0 = (-b + glm::sqrt(discriminant)) / (2.0f * a);
-			float32 closesrT = (-b - glm::sqrt(discriminant)) / (2.0f * a);
+			float32 closestHit= (-b - glm::sqrt(discriminant)) / (2.0f * a);
+			//float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
 
-			glm::vec3 hitPoint = rayIn.origin + rayIn.direction * closesrT;
-			glm::vec3 normal = glm::normalize(hitPoint);
+			glm::vec3 hitPoint= adjustedOrigin + rayIn.direction * closestHit;
+			glm::vec3 normal  = glm::normalize(hitPoint);
 
-			glm::vec3 lightDir = glm::normalize(glm::vec3(-1, -1, -1));
+			glm::vec3 lightDir= glm::normalize(glm::vec3(-1, -1, -1));
 
-			float32 d = (glm::dot(normal, -lightDir) + 1.0f) * 0.5f;
+			float32 d= (glm::dot(normal, -lightDir) + 1.0f) * 0.5f;
 
-			hitInfo.rayOut.origin = hitPoint;
-			hitInfo.rayOut.direction = normal;
+			hitInfo.hitDistance     = closestHit;
+			hitInfo.rayOut.origin   = hitPoint;
+			hitInfo.rayOut.direction= normal;
 
-			hitInfo.colorData = ColourData(d,d,d);
+			hitInfo.colorData= ColourData(d, d, d);
 
 			return true;
 		}
 
 		return false;
 	}
-}
+} // namespace AstralRaytracer

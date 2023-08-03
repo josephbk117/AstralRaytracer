@@ -10,7 +10,7 @@ namespace AstralRaytracer
 		TriangleTraceable();
 		TriangleTraceable(const glm::vec3& vertexA, const glm::vec3& vertexB, const glm::vec3& vertexC);
 		float32 getTriangleDistance() const;
-		bool    trace(const Ray& rayIn, HitInfo& hitInfo) override;
+		bool    trace(const Ray& rayIn, HitInfo& hitInfo) const override;
 
 		private:
 		glm::vec3 m_vertexA, m_vertexB, m_vertexC;

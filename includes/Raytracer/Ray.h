@@ -1,5 +1,6 @@
 #pragma once
 #include "ColourData.h"
+#include <limits>
 
 #include <glm.hpp>
 
@@ -11,6 +12,7 @@ struct Ray
 
 struct HitInfo
 {
+	float32    hitDistance= std::numeric_limits<float32>::max();
 	Ray        rayOut;
 	ColourData colorData;
 };
