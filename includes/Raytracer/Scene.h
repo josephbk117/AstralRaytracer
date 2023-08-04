@@ -1,3 +1,4 @@
+#include "Material.h"
 #include "Traceable/Traceable.h"
 #include "Utils/Common.h"
 
@@ -9,6 +10,7 @@ namespace AstralRaytracer
 	class Scene
 	{
 		public:
+		Scene();
 		/*template<typename T>
 		T* addTraceableToScene(Traceable& traceable)
 		{
@@ -17,5 +19,6 @@ namespace AstralRaytracer
 		const Traceable* const getTraceableInScene(uint32 index);
 		uint32 getTraceableCountInScene() const { return m_sceneTraceables.size(); }*/
 		std::vector<std::unique_ptr<Traceable>> m_sceneTraceables;
+		std::vector<Material>                   m_materials;
 	};
 } // namespace AstralRaytracer

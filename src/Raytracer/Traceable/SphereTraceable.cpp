@@ -24,12 +24,11 @@ namespace AstralRaytracer
 
 			float32 d= (glm::dot(normal, -lightDir) + 1.0f) * 0.5f;
 
+			hitInfo.materialIndex = m_materialIndex;
 			hitInfo.hitDistance     = closestHit;
+			hitInfo.normal = normal;
 			hitInfo.rayOut.origin   = hitPoint;
 			hitInfo.rayOut.direction= normal;
-
-			hitInfo.colorData= ColourData(d, d, d);
-
 			return true;
 		}
 

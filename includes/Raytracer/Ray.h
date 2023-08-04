@@ -1,8 +1,8 @@
 #pragma once
 #include "ColourData.h"
-#include <limits>
 
 #include <glm.hpp>
+#include <limits>
 
 struct Ray
 {
@@ -12,7 +12,8 @@ struct Ray
 
 struct HitInfo
 {
-	float32    hitDistance= std::numeric_limits<float32>::max();
-	Ray        rayOut;
-	ColourData colorData;
+	float32   hitDistance  = std::numeric_limits<float32>::max();
+	uint32    materialIndex= 0;
+	glm::vec3 normal;
+	Ray       rayOut;
 };

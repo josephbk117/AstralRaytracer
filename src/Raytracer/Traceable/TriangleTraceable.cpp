@@ -49,11 +49,12 @@ namespace AstralRaytracer
 
 		if(test1 >= 0.0f && test2 >= 0.0f && test3 >= 0.0f)
 		{
+			hitInfo.materialIndex   = m_materialIndex;
 			hitInfo.hitDistance     = distanceToPlane;
+			hitInfo.normal          = -m_normal;
 			hitInfo.rayOut.origin   = intersect;
 			hitInfo.rayOut.direction= m_normal;
 
-			hitInfo.colorData= ColourData(1.0f, 0.0f, 0.0f);
 			return true;
 		}
 

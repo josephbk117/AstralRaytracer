@@ -52,9 +52,13 @@ namespace AstralRaytracer
 					}
 				}
 			}
-			if(closestHitInfo.hitDistance > 0.0f && closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
+			if(closestHitInfo.hitDistance > 0.0f &&
+				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
 			{
-				const glm::u8vec3 color= closestHitInfo.colorData.getColour_8_Bit();
+				const glm::vec3 lightDir= glm::normalize(glm::vec3(-0.5f, -1, 1));
+				float32         d       = (glm::dot(closestHitInfo.normal, -lightDir) + 1.0f) * 0.5f;
+				const ColourData colorData= d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColourIn_0_1_Range();
+				const glm::u8vec3 color = colorData.getColour_8_Bit();
 				m_texData.setTexelColorAtPixelIndex(index, color.r, color.g, color.b);
 			}
 			else
