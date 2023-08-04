@@ -10,6 +10,7 @@ struct ColourData
 	public:
 	ColourData() { colour= glm::vec3(1.0f, 1.0f, 1.0f); }
 	ColourData(float32 r, float32 g, float32 b) { colour= glm::vec3(r, g, b); }
+	ColourData(const glm::vec3& normalized) { colour= normalized; }
 	void setColour_8_Bit(const glm::vec4& colour)
 	{
 		int32 r     = glm::clamp((int32)colour.r, 0, 255);
@@ -26,8 +27,8 @@ struct ColourData
 	}
 	void      setColour_32_bit(const glm::vec3& colour) { this->colour= colour; }
 	void      setColour_32_bit(float32 r, float32 g, float32 b) { this->colour= glm::vec3(r, g, b); }
-	glm::vec3 getColourIn_0_1_Range() { return colour; }
-	glm::u8vec3 getColour_8_Bit()
+	glm::vec3 getColourIn_0_1_Range() const { return colour; }
+	glm::u8vec3 getColour_8_Bit() const
 	{
 		uint8 rV= (uint8)(colour.r * 255.0f);
 		uint8 gV= (uint8)(colour.g * 255.0f);
@@ -35,3 +36,15 @@ struct ColourData
 		return glm::u8vec3(rV, gV, bV);
 	}
 };
+
+namespace AstralRaytracer
+{
+	namespace Colors
+	{
+		const ColourData Red(1.0f, 0.0f, 0.0f);
+		const ColourData Green(1.0f, 0.0f, 0.0f);
+		const ColourData Blue(1.0f, 0.0f, 0.0f);
+		const ColourData Yellow(1.0f, 1.0f, 0.0f);
+		const ColourData Pink(1.0f, 0.25f, 1.0f);
+	} // namespace Colors
+} // namespace AstralRaytracer
