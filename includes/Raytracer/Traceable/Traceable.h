@@ -8,6 +8,7 @@ namespace AstralRaytracer
 	{
 		public:
 		Traceable(): m_position(0.0f) {}
+		virtual ~Traceable(){};
 		virtual void             setPosition(const glm::vec3& position) { m_position= position; };
 		virtual const glm::vec3& getPosition() const { return m_position; }
 		virtual void   setMaterialIndex(uint32 materialIndex) { m_materialIndex= materialIndex; };
