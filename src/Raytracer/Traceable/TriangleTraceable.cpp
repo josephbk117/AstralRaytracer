@@ -20,44 +20,40 @@ namespace AstralRaytracer
 	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
 		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
-		const float32    a= glm::dot(rayIn.direction, m_normal);
 
-		if(a == 0.0f)
-		{
+		glm::vec3 v0v1= m_vertexB - m_vertexA;
+		glm::vec3 v0v2= m_vertexC - m_vertexA;
+		glm::vec3 pvec= glm::cross(rayIn.direction, v0v2);
+		float32   det = glm::dot(v0v1, pvec);
+
+		const float32 kEpsilon= 0.0f;
+		// if the determinant is negative, the triangle is 'back facing'
+		// if the determinant is close to 0, the ray misses the triangle
+		if(det < kEpsilon)
 			return false;
-		}
+		// ray and triangle are parallel if det is close to 0
+		if(fabs(det) < kEpsilon)
+			return false;
+		float32 invDet= 1 / det;
 
-		const float32 b= glm::dot(m_normal, adjustedOrigin + m_normal - getTriangleDistance()); // TODO
-		const float32 distanceToPlane= -1.0f * b / a;
+		glm::vec3 tvec= adjustedOrigin - m_vertexA;
+		float32   u   = glm::dot(tvec, pvec) * invDet;
+		if(u < 0 || u > 1)
+			return false;
 
-		const glm::vec3 intersect= rayIn.direction * distanceToPlane + adjustedOrigin;
+		glm::vec3 qvec= glm::cross(tvec, v0v1);
+		float32   v   = glm::dot(rayIn.direction, qvec) * invDet;
+		if(v < 0 || u + v > 1)
+			return false;
 
-		const glm::vec3 CA= m_vertexC - m_vertexA;
-		const glm::vec3 IA= intersect - m_vertexA;
+		float32 t= glm::dot(v0v2, qvec) * invDet;
 
-		const float32 test1= glm::dot(glm::cross(CA, IA), m_normal);
+		hitInfo.materialIndex   = m_materialIndex;
+		hitInfo.hitDistance     = t;
+		hitInfo.normal          = -m_normal;
+		hitInfo.rayOut.origin   = rayIn.direction * t;
+		hitInfo.rayOut.direction= m_normal;
 
-		const glm::vec3 BC= m_vertexB - m_vertexC;
-		const glm::vec3 IC= intersect - m_vertexC;
-
-		const float32 test2= glm::dot(glm::cross(BC, IC), m_normal);
-
-		const glm::vec3 AB= m_vertexA - m_vertexB;
-		const glm::vec3 IB= intersect - m_vertexB;
-
-		const float32 test3= glm::dot(glm::cross(AB, IB), m_normal);
-
-		if(test1 >= 0.0f && test2 >= 0.0f && test3 >= 0.0f)
-		{
-			hitInfo.materialIndex   = m_materialIndex;
-			hitInfo.hitDistance     = distanceToPlane;
-			hitInfo.normal          = -m_normal;
-			hitInfo.rayOut.origin   = intersect;
-			hitInfo.rayOut.direction= m_normal;
-
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 } // namespace AstralRaytracer
