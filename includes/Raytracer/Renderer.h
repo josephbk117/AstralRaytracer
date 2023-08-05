@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Scene.h"
 #include "TextureData.h"
 #include "Utils/Common.h"
 
@@ -9,7 +10,7 @@ namespace AstralRaytracer
 		public:
 		Renderer();
 
-		void   render(const Camera& cam);
+		void   render(const Scene& scene, const Camera& cam);
 		uint32 getTextureId() const { return m_textureId; }
 		void   onResize(uint32 width, uint32 height);
 

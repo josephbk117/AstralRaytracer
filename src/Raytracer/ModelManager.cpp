@@ -27,24 +27,41 @@ namespace AstralRaytracer
 
 		if(!error.empty())
 		{
-			std::cout << "\Error: " << error << "\n";
+			std::cout << "\nError: " << error << "\n";
 		}
 
-		const tinygltf::BufferView& bufferView= model.bufferViews[0];
-		const tinygltf::Buffer& buffer= model.buffers[bufferView.buffer];
-		std::cout << "bufferview.target " << bufferView.target << std::endl;
+		const tinygltf::Accessor& accessor=
+				model.accessors[model.meshes.at(0).primitives.at(0).attributes["POSITION"]];
+		const tinygltf::BufferView& bufferView= model.bufferViews[accessor.bufferView];
+		const tinygltf::Buffer&     buffer    = model.buffers[bufferView.buffer];
 
-		StaticMesh staticMesh;
-		std::vector<TriangleTraceable> triangles;
-		
-		for(uint32 index= 0; index < buffer.data.size(); index += 12) 
+		std::vector<glm::vec3> vertexPositions;
+
+		const float32* positions=
+				reinterpret_cast<const float32*>(&buffer.data[bufferView.byteOffset + accessor.byteOffset]);
+		for(size_t i= 0; i < accessor.count; ++i)
 		{
-			float32 x= buffer.data.data()[index];
-			float32 y= buffer.data.data()[index + sizeof(float32)];
-			float32 z= buffer.data.data()[index + sizeof(float32) * 2];
-
-			triangles.push_back(TriangleTraceable(x,y,z));
+			vertexPositions.push_back(
+					glm::vec3(positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2]));
 		}
+
+		const tinygltf::Accessor& indexAccessor=
+				model.accessors[model.meshes.at(0).primitives.at(0).indices];
+		const tinygltf::BufferView& indexBufferView= model.bufferViews[indexAccessor.bufferView];
+		const tinygltf::Buffer&     indexBuffer    = model.buffers[indexBufferView.buffer];
+
+		std::vector<TriangleTraceable> triangles;
+
+		const int16* meshIndices= reinterpret_cast<const int16*>(
+				&indexBuffer.data[indexBufferView.byteOffset + indexAccessor.byteOffset]);
+		for(size_t i= 0; i < indexAccessor.count; i+= 3)
+		{
+			triangles.push_back(TriangleTraceable(vertexPositions[meshIndices[i]],
+																						vertexPositions[meshIndices[i + 1]],
+																						vertexPositions[meshIndices[i + 2]]));
+		}
+
+		return StaticMesh(triangles);
 	}
 
 } // namespace AstralRaytracer
