@@ -1,3 +1,4 @@
+#pragma once
 #include "Material.h"
 #include "Traceable/Traceable.h"
 #include "Utils/Common.h"

@@ -1,3 +1,4 @@
+#pragma  once
 #include "TriangleTraceable.h"
 #include "Utils/Common.h"
 
