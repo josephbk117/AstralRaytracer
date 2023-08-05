@@ -12,9 +12,9 @@ namespace AstralRaytracer
 																			 const glm::vec3& vertexC)
 			: m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC)
 	{
-		m_normal      = glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
-		m_vAvB= m_vertexB - m_vertexA;
-		m_vAvC= m_vertexC - m_vertexA;
+		m_normal= glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
+		m_vAvB  = m_vertexB - m_vertexA;
+		m_vAvC  = m_vertexC - m_vertexA;
 	}
 
 	float32 TriangleTraceable::getTriangleDistance() const { return glm::dot(m_normal, m_vertexA); }
