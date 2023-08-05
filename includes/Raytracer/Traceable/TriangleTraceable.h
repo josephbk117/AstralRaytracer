@@ -15,6 +15,8 @@ namespace AstralRaytracer
 		private:
 		glm::vec3 m_vertexA, m_vertexB, m_vertexC;
 		glm::vec3 m_normal;
+		glm::vec3 m_vAvB;
+		glm::vec3 m_vAvC;
 	};
 
 } // namespace AstralRaytracer
