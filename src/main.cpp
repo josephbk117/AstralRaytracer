@@ -1,9 +1,13 @@
 #include "Raytracer/Camera.h"
 #include "Raytracer/DrawingPanel.h"
+#include "Raytracer/ModelManager.h"
 #include "Raytracer/Renderer.h"
 #include "Raytracer/ShaderProgram.h"
 #include "Raytracer/TextureData.h"
 #include "Raytracer/TextureManager.h"
+#include "Raytracer/Traceable/SphereTraceable.h"
+#include "Raytracer/Traceable/StaticMesh.h"
+#include "Raytracer/Traceable/TriangleTraceable.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
@@ -11,6 +15,7 @@
 #include <cstring>
 #include <ext/quaternion_geometric.hpp>
 #include <iostream>
+#include <memory>
 
 int main()
 {
@@ -23,6 +28,11 @@ int main()
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 
+		AstralRaytracer::Scene scene;
+		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
+		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::StaticMesh>(
+				AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
+
 		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
 		{
@@ -31,7 +41,7 @@ int main()
 			cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime);
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
-			renderer.render(cam);
+			renderer.render(scene, cam);
 
 			window.startUI();
 

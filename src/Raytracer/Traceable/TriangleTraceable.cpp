@@ -3,16 +3,18 @@
 namespace AstralRaytracer
 {
 	TriangleTraceable::TriangleTraceable()
-			: m_vertexA(1.0f, 0.0f, 0.0f), m_vertexB(0.0f, 1.0f, 0.0f), m_vertexC(0.0f, 0.0f, 1.0f)
 	{
-		m_normal= glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
+		TriangleTraceable(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
+											glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
 	TriangleTraceable::TriangleTraceable(const glm::vec3& vertexA, const glm::vec3& vertexB,
 																			 const glm::vec3& vertexC)
 			: m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC)
 	{
-		m_normal= glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
+		m_normal      = glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
+		m_vAvB= m_vertexB - m_vertexA;
+		m_vAvC= m_vertexC - m_vertexA;
 	}
 
 	float32 TriangleTraceable::getTriangleDistance() const { return glm::dot(m_normal, m_vertexA); }
@@ -20,44 +22,38 @@ namespace AstralRaytracer
 	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
 		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
-		const float32    a= glm::dot(rayIn.direction, m_normal);
 
-		if(a == 0.0f)
-		{
+		glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
+		float32   det = glm::dot(m_vAvB, pvec);
+
+		const float32 kEpsilon= 0.0f;
+		// if the determinant is negative, the triangle is 'back facing'
+		// if the determinant is close to 0, the ray misses the triangle
+		if(det < kEpsilon)
 			return false;
-		}
+		// ray and triangle are parallel if det is close to 0
+		if(std::abs(det) < kEpsilon)
+			return false;
+		float32 invDet= 1.0f / det;
 
-		const float32 b= glm::dot(m_normal, adjustedOrigin + m_normal - getTriangleDistance()); // TODO
-		const float32 distanceToPlane= -1.0f * b / a;
+		glm::vec3 tvec= adjustedOrigin - m_vertexA;
+		float32   u   = glm::dot(tvec, pvec) * invDet;
+		if(u < 0.0f || u > 1.0f)
+			return false;
 
-		const glm::vec3 intersect= rayIn.direction * distanceToPlane + adjustedOrigin;
+		glm::vec3 qvec= glm::cross(tvec, m_vAvB);
+		float32   v   = glm::dot(rayIn.direction, qvec) * invDet;
+		if(v < 0.0f || u + v > 1.0f)
+			return false;
 
-		const glm::vec3 CA= m_vertexC - m_vertexA;
-		const glm::vec3 IA= intersect - m_vertexA;
+		float32 t= glm::dot(m_vAvC, qvec) * invDet;
 
-		const float32 test1= glm::dot(glm::cross(CA, IA), m_normal);
+		hitInfo.materialIndex   = m_materialIndex;
+		hitInfo.hitDistance     = t;
+		hitInfo.normal          = -m_normal;
+		hitInfo.rayOut.origin   = rayIn.direction * t;
+		hitInfo.rayOut.direction= m_normal;
 
-		const glm::vec3 BC= m_vertexB - m_vertexC;
-		const glm::vec3 IC= intersect - m_vertexC;
-
-		const float32 test2= glm::dot(glm::cross(BC, IC), m_normal);
-
-		const glm::vec3 AB= m_vertexA - m_vertexB;
-		const glm::vec3 IB= intersect - m_vertexB;
-
-		const float32 test3= glm::dot(glm::cross(AB, IB), m_normal);
-
-		if(test1 >= 0.0f && test2 >= 0.0f && test3 >= 0.0f)
-		{
-			hitInfo.materialIndex   = m_materialIndex;
-			hitInfo.hitDistance     = distanceToPlane;
-			hitInfo.normal          = -m_normal;
-			hitInfo.rayOut.origin   = intersect;
-			hitInfo.rayOut.direction= m_normal;
-
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 } // namespace AstralRaytracer

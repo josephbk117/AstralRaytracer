@@ -1,9 +1,11 @@
 #include "Raytracer/Renderer.h"
 
-#include "../../includes/Raytracer/Scene.h"
+#include "Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
+#include "Raytracer/Traceable/StaticMesh.h"
+#include "Raytracer/ModelManager.h"
 
 namespace AstralRaytracer
 {
@@ -14,20 +16,9 @@ namespace AstralRaytracer
 		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
 	}
 
-	void Renderer::render(const Camera& cam)
+	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
 		const uint32 xTotalPixelCount= m_texData.getWidth() * m_texData.getComponentCount();
-
-		Scene scene;
-		scene.m_sceneTraceables.push_back(std::make_unique<SphereTraceable>());
-		scene.m_sceneTraceables.push_back(std::make_unique<TriangleTraceable>());
-		scene.m_sceneTraceables.push_back(std::make_unique<SphereTraceable>());
-		scene.m_sceneTraceables.push_back(std::make_unique<TriangleTraceable>());
-
-		static_cast<SphereTraceable*>(scene.m_sceneTraceables.at(0).get())->setRadius(0.5f);
-		static_cast<SphereTraceable*>(scene.m_sceneTraceables.at(2).get())->setRadius(0.5f);
-		scene.m_sceneTraceables.at(2).get()->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
-		scene.m_sceneTraceables.at(3).get()->setPosition(glm::vec3(0.0f, -2.0f, 0.0f));
 
 		for(uint32 index= 0; index < xTotalPixelCount * m_texData.getHeight();
 				index+= m_texData.getComponentCount())

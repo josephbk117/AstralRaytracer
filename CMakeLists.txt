@@ -15,6 +15,10 @@ include_directories("./includes/WindowFramework")
 include_directories("./external/imgui")
 include_directories("./external/glm")
 
+set(TINYGLTF_HEADER_ONLY ON CACHE INTERNAL "" FORCE)
+set(TINYGLTF_INSTALL OFF CACHE INTERNAL "" FORCE)
+add_subdirectory(external/tinygltf)
+
 add_subdirectory(external/glfw)
 add_subdirectory(external/glBinding)
 add_subdirectory(resources/)
@@ -23,6 +27,7 @@ target_include_directories(${PROJECT_NAME}
 	PUBLIC includes/ 
 	PUBLIC external/glfw/include
 	PUBLIC external/glBinding/source/glbinding/include
+	PUBLIC external/tinygltf
 )
 
 target_link_directories(${PROJECT_NAME}
