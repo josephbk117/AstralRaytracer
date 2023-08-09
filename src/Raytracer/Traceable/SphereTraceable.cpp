@@ -4,7 +4,7 @@ namespace AstralRaytracer
 {
 	bool SphereTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
+		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_position);
 
 		const float32 a= glm::dot(rayIn.direction, rayIn.direction);
 		const float32 b= 2.0f * glm::dot(adjustedOrigin, rayIn.direction);
@@ -15,20 +15,18 @@ namespace AstralRaytracer
 		if(discriminant >= 0.0f)
 		{
 			float32 closestHit= (-b - glm::sqrt(discriminant)) / (2.0f * a);
-			//float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
+			// float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
 
-			glm::vec3 hitPoint= adjustedOrigin + rayIn.direction * closestHit;
-			glm::vec3 normal  = glm::normalize(hitPoint);
+			if(closestHit < 0.0f) { return false;}
 
-			glm::vec3 lightDir= glm::normalize(glm::vec3(-1, -1, -1));
+			hitInfo.rayOut.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
+			hitInfo.worldSpaceNormal         = glm::normalize(hitInfo.rayOut.worldSpacePosition);
+			hitInfo.rayOut.worldSpacePosition+= m_position;
 
-			float32 d= (glm::dot(normal, -lightDir) + 1.0f) * 0.5f;
-
-			hitInfo.materialIndex = m_materialIndex;
-			hitInfo.hitDistance     = closestHit;
-			hitInfo.normal = normal;
-			hitInfo.rayOut.origin   = hitPoint;
-			hitInfo.rayOut.direction= normal;
+			hitInfo.materialIndex= m_materialIndex;
+			hitInfo.hitDistance  = closestHit;
+			hitInfo.rayOut.direction=
+					glm::normalize(glm::reflect(rayIn.direction, hitInfo.worldSpaceNormal));
 			return true;
 		}
 
