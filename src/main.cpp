@@ -29,9 +29,9 @@ int main()
 		AstralRaytracer::Camera   cam(60.0f, 0.001f, 100.0f);
 
 		AstralRaytracer::Scene scene;
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.5f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.5f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.5f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.1f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.0f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.025f});
 
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
@@ -63,11 +63,9 @@ int main()
 			static ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																		 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
 
-			// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars
-			// etc.) Based on your use case you may want one or the other.
 			const ImGuiViewport* viewport= ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
-			ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+			ImGui::SetNextWindowPos(viewport->WorkPos);
+			ImGui::SetNextWindowSize(viewport->WorkSize);
 
 			bool isOpen= true;
 			if(ImGui::Begin("Main Window", &isOpen, flags))

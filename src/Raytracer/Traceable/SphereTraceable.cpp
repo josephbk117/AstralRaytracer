@@ -17,16 +17,17 @@ namespace AstralRaytracer
 			float32 closestHit= (-b - glm::sqrt(discriminant)) / (2.0f * a);
 			// float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
 
-			if(closestHit < 0.0f) { return false;}
+			if(closestHit < 0.0f)
+			{
+				return false;
+			}
 
-			hitInfo.rayOut.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
-			hitInfo.worldSpaceNormal         = glm::normalize(hitInfo.rayOut.worldSpacePosition);
-			hitInfo.rayOut.worldSpacePosition+= m_position;
+			hitInfo.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
+			hitInfo.worldSpaceNormal  = glm::normalize(hitInfo.worldSpacePosition);
+			hitInfo.worldSpacePosition+= m_position;
 
 			hitInfo.materialIndex= m_materialIndex;
 			hitInfo.hitDistance  = closestHit;
-			hitInfo.rayOut.direction=
-					glm::normalize(glm::reflect(rayIn.direction, hitInfo.worldSpaceNormal));
 			return true;
 		}
 

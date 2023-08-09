@@ -65,8 +65,7 @@ namespace AstralRaytracer
 		hitInfo.materialIndex            = m_materialIndex;
 		hitInfo.hitDistance              = t;
 		hitInfo.worldSpaceNormal         = -m_normal;
-		hitInfo.rayOut.worldSpacePosition= rayIn.worldSpacePosition + (rayIn.direction * t);
-		hitInfo.rayOut.direction         = glm::normalize(glm::reflect(rayIn.direction, -m_normal));
+		hitInfo.worldSpacePosition= rayIn.worldSpacePosition + (rayIn.direction * t);
 
 		return true;
 	}

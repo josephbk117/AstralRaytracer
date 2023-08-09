@@ -1,5 +1,6 @@
 #include "Raytracer/Renderer.h"
 
+#include "../../includes/Utils/Random.h"
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
@@ -23,6 +24,7 @@ namespace AstralRaytracer
 		for(uint32 index= 0; index < xTotalPixelCount * m_texData.getHeight();
 				index+= m_texData.getComponentCount())
 		{
+			uint32    seedVal= index;
 			glm::vec2 coord{(index % xTotalPixelCount) / (float32)xTotalPixelCount,
 											(index / xTotalPixelCount) / (float32)m_texData.getHeight()};
 			coord= (coord * 2.0f) - 1.0f;
@@ -38,10 +40,11 @@ namespace AstralRaytracer
 			glm::vec3 rayOrigin= initialRayOrigin;
 			glm::vec3 rayDir   = initialRayDir;
 
-			const uint32 bounceCount= 3;
+			const uint32 bounceCount= 2;
 
 			for(uint32 bounceIndex= 0; bounceIndex < bounceCount; ++bounceIndex)
 			{
+				seedVal += bounceIndex;
 				HitInfo closestHitInfo;
 				for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
 				{
@@ -58,13 +61,15 @@ namespace AstralRaytracer
 					 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
 				{
 					float32          d= (glm::dot(closestHitInfo.worldSpaceNormal, lightDir) + 1.0f) * 0.5f;
-					const ColourData colorData= 
+					const ColourData colorData=
 							d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColourIn_0_1_Range();
 					outColor+= colorData.getColourIn_0_1_Range();
 
-					rayOrigin=
-							closestHitInfo.rayOut.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.001f;
-					rayDir= closestHitInfo.rayOut.direction;
+					rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.001f;
+					rayDir   = glm::reflect(
+              rayDir, closestHitInfo.worldSpaceNormal +
+                          scene.m_materials.at(closestHitInfo.materialIndex).roughness *
+                          Random::unitSphere(seedVal));
 				}
 				else
 				{

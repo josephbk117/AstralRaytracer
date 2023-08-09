@@ -15,5 +15,5 @@ struct HitInfo
 	float32   hitDistance  = std::numeric_limits<float32>::max();
 	uint32    materialIndex= 0;
 	glm::vec3 worldSpaceNormal;
-	Ray       rayOut;
+	glm::vec3 worldSpacePosition;
 };
