@@ -19,7 +19,7 @@
 
 int main()
 {
-	AstralRaytracer::Window window("new window test");
+	AstralRaytracer::Window window("Astral Raytracer");
 	window.initialize();
 	AstralRaytracer::Input::initialize(window);
 
@@ -53,9 +53,30 @@ int main()
 
 			window.startUI();
 
-			ImGui::Begin("GameWindow");
+			static bool             use_work_area= true;
+			static ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																		 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+
+			// We demonstrate using the full viewport area or the work area (without menu-bars, task-bars
+			// etc.) Based on your use case you may want one or the other.
+			const ImGuiViewport* viewport= ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+			ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+			bool isOpen= true;
+			if(ImGui::Begin("Main Window", &isOpen, flags))
 			{
-				ImGui::BeginChild("GameRender");
+				if(ImGui::BeginMenuBar())
+				{
+					if(ImGui::BeginMenu("File"))
+					{
+						if(ImGui::MenuItem("Open", "Ctrl+O")) {}
+						ImGui::EndMenu();
+					}
+					ImGui::EndMenuBar();
+				}
+
+				ImGui::BeginChild("RaytracerView");
 				ImVec2 wsize= ImGui::GetWindowSize();
 				ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), wsize, ImVec2(0, 1),
 										 ImVec2(1, 0));
