@@ -5,11 +5,11 @@ namespace AstralRaytracer
 
 	bool StaticMesh::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		HitInfo test_hitInfo;
 		HitInfo closestHitInfo;
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
 		{
-			if(m_triangles[triIndex].trace({rayIn.origin, rayIn.direction}, test_hitInfo))
+			HitInfo test_hitInfo;
+			if(m_triangles[triIndex].trace({rayIn.worldSpacePosition, rayIn.direction}, test_hitInfo))
 			{
 				if(test_hitInfo.hitDistance < closestHitInfo.hitDistance)
 				{
@@ -24,6 +24,22 @@ namespace AstralRaytracer
 			return true;
 		}
 		return false;
+	}
+
+void StaticMesh::setPosition(const glm::vec3& position)
+	{
+		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
+		{
+			m_triangles[triIndex].setPosition(position);
+		}
+	}
+
+void StaticMesh::setMaterialIndex(uint32 materialIndex)
+	{
+		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
+		{
+			m_triangles[triIndex].setMaterialIndex(materialIndex);
+		}
 	}
 
 } // namespace AstralRaytracer
