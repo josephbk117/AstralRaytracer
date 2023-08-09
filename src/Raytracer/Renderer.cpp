@@ -1,11 +1,11 @@
 #include "Raytracer/Renderer.h"
 
+#include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
-#include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
-#include "Raytracer/ModelManager.h"
+#include "Raytracer/Traceable/TriangleTraceable.h"
 
 namespace AstralRaytracer
 {
@@ -29,33 +29,53 @@ namespace AstralRaytracer
 
 			const glm::vec4 target= cam.getInverseProjection() * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
 			const glm::vec3 targetNormalized= glm::normalize(glm::vec3(target) / target.w);
-			const glm::vec3 rayDir= glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
+			const glm::vec3 initialRayDir=
+					glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0));
+			const glm::vec3 initialRayOrigin= cam.getPosition();
+			const glm::vec3 lightDir        = glm::normalize(glm::vec3(-0.5f, 1, 1));
 
-			HitInfo hitInfo;
-			HitInfo closestHitInfo;
-			for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
+			glm::vec3 outColor(0.0f);
+			glm::vec3 rayOrigin= initialRayOrigin;
+			glm::vec3 rayDir   = initialRayDir;
+
+			const uint32 bounceCount= 3;
+
+			for(uint32 bounceIndex= 0; bounceIndex < bounceCount; ++bounceIndex)
 			{
-				if(scene.m_sceneTraceables[objectIndex]->trace({cam.getPosition(), rayDir}, hitInfo))
+				HitInfo closestHitInfo;
+				for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
 				{
-					if(hitInfo.hitDistance < closestHitInfo.hitDistance)
+					HitInfo hitInfo;
+					if(scene.m_sceneTraceables[objectIndex]->trace({rayOrigin, rayDir}, hitInfo))
 					{
-						closestHitInfo= hitInfo;
+						if(hitInfo.hitDistance < closestHitInfo.hitDistance)
+						{
+							closestHitInfo= hitInfo;
+						}
 					}
 				}
+				if(closestHitInfo.hitDistance > 0.0f &&
+					 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
+				{
+					float32          d= (glm::dot(closestHitInfo.worldSpaceNormal, lightDir) + 1.0f) * 0.5f;
+					const ColourData colorData= 
+							d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColourIn_0_1_Range();
+					outColor+= colorData.getColourIn_0_1_Range();
+
+					rayOrigin=
+							closestHitInfo.rayOut.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.001f;
+					rayDir= closestHitInfo.rayOut.direction;
+				}
+				else
+				{
+					break;
+				}
 			}
-			if(closestHitInfo.hitDistance > 0.0f &&
-				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
-			{
-				const glm::vec3 lightDir= glm::normalize(glm::vec3(-0.5f, -1, 1));
-				float32         d       = (glm::dot(closestHitInfo.normal, -lightDir) + 1.0f) * 0.5f;
-				const ColourData colorData= d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColourIn_0_1_Range();
-				const glm::u8vec3 color = colorData.getColour_8_Bit();
-				m_texData.setTexelColorAtPixelIndex(index, color.r, color.g, color.b);
-			}
-			else
-			{
-				m_texData.setTexelColorAtPixelIndex(index, 0, 0, 0);
-			}
+
+			const glm::vec3 finalColorData= ColourData(outColor).getColourIn_0_1_Range();
+			m_texData.setTexelColorAtPixelIndex(index, finalColorData.r * 255.0f / bounceCount,
+																					finalColorData.g * 255.0f / bounceCount,
+																					finalColorData.b * 255.0f / bounceCount);
 		}
 
 		TextureManager::updateTexture(m_texData, m_textureId);
