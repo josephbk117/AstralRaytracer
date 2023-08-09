@@ -23,30 +23,44 @@ namespace AstralRaytracer
 	{
 		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_position);
 
-		glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
-		float32   det = glm::dot(m_vAvB, pvec);
+		const glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
+		const float32   det = glm::dot(m_vAvB, pvec);
 
 		const float32 kEpsilon= 0.0001f;
 		// if the determinant is negative, the triangle is 'back facing'
 		// if the determinant is close to 0, the ray misses the triangle
 		if(det < kEpsilon)
+		{
 			return false;
+		}
 		// ray and triangle are parallel if det is close to 0
 		if(std::abs(det) <= kEpsilon)
+		{
 			return false;
-		float32 invDet= 1.0f / det;
+		}
 
-		glm::vec3 tvec= adjustedOrigin - m_vertexA;
-		float32   u   = glm::dot(tvec, pvec) * invDet;
+		const float32 invDet= 1.0f / det;
+
+		const glm::vec3 tvec= adjustedOrigin - m_vertexA;
+		const float32   u   = glm::dot(tvec, pvec) * invDet;
 		if(u < 0.0f || u > 1.0f)
+		{
 			return false;
+		}
 
-		glm::vec3 qvec= glm::cross(tvec, m_vAvB);
-		float32   v   = glm::dot(rayIn.direction, qvec) * invDet;
+		const glm::vec3 qvec= glm::cross(tvec, m_vAvB);
+		const float32   v   = glm::dot(rayIn.direction, qvec) * invDet;
 		if(v < 0.0f || u + v > 1.0f)
+		{
 			return false;
+		}
 
-		float32 t= glm::dot(m_vAvC, qvec) * invDet;
+		const float32 t= glm::dot(m_vAvC, qvec) * invDet;
+
+		if(t <= kEpsilon)
+		{
+			return false;
+		}
 
 		hitInfo.materialIndex            = m_materialIndex;
 		hitInfo.hitDistance              = t;
