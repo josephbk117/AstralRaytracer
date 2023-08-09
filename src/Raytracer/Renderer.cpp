@@ -1,19 +1,21 @@
 #include "Raytracer/Renderer.h"
 
-#include "../../includes/Utils/Random.h"
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
+#include "Utils/Random.h"
 
 namespace AstralRaytracer
 {
 
 	Renderer::Renderer()
 	{
-		m_texData  = TextureData(500, 500, 3);
+		m_texData= TextureData(500, 500, 3);
+		m_accumlatedColorData.resize(500 * 500 * 3);
+		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
 		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
 	}
 
@@ -24,7 +26,7 @@ namespace AstralRaytracer
 		for(uint32 index= 0; index < xTotalPixelCount * m_texData.getHeight();
 				index+= m_texData.getComponentCount())
 		{
-			uint32    seedVal= index;
+			uint32    seedVal= index * m_frameIndex;
 			glm::vec2 coord{(index % xTotalPixelCount) / (float32)xTotalPixelCount,
 											(index / xTotalPixelCount) / (float32)m_texData.getHeight()};
 			coord= (coord * 2.0f) - 1.0f;
@@ -40,11 +42,11 @@ namespace AstralRaytracer
 			glm::vec3 rayOrigin= initialRayOrigin;
 			glm::vec3 rayDir   = initialRayDir;
 
-			const uint32 bounceCount= 2;
+			const uint32 bounceCount= 4;
 
 			for(uint32 bounceIndex= 0; bounceIndex < bounceCount; ++bounceIndex)
 			{
-				seedVal += bounceIndex;
+				seedVal+= bounceIndex;
 				HitInfo closestHitInfo;
 				for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
 				{
@@ -62,28 +64,36 @@ namespace AstralRaytracer
 				{
 					float32          d= (glm::dot(closestHitInfo.worldSpaceNormal, lightDir) + 1.0f) * 0.5f;
 					const ColourData colorData=
-							d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColourIn_0_1_Range();
-					outColor+= colorData.getColourIn_0_1_Range();
+							d * scene.m_materials.at(closestHitInfo.materialIndex).albedo.getColour_32_bit();
+					outColor+= colorData.getColour_32_bit();
 
 					rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.001f;
-					rayDir   = glm::reflect(
-              rayDir, closestHitInfo.worldSpaceNormal +
-                          scene.m_materials.at(closestHitInfo.materialIndex).roughness *
-                          Random::unitSphere(seedVal));
+					rayDir   = glm::reflect(rayDir,
+																	closestHitInfo.worldSpaceNormal +
+																			scene.m_materials.at(closestHitInfo.materialIndex).roughness *
+																					Random::unitSphere(seedVal));
 				}
 				else
 				{
-					break;
+					outColor+= glm::vec3(0.25f, 0.5f, 1.0f);
 				}
 			}
 
-			const glm::vec3 finalColorData= ColourData(outColor).getColourIn_0_1_Range();
-			m_texData.setTexelColorAtPixelIndex(index, finalColorData.r * 255.0f / bounceCount,
-																					finalColorData.g * 255.0f / bounceCount,
-																					finalColorData.b * 255.0f / bounceCount);
+			m_accumlatedColorData[index]+= outColor.r / bounceCount;
+			m_accumlatedColorData[index + 1]+= outColor.g / bounceCount;
+			m_accumlatedColorData[index + 2]+= outColor.b / bounceCount;
+
+			const glm::vec3& finalColorVec=
+					glm::vec3(m_accumlatedColorData[index], m_accumlatedColorData[index + 1],
+										m_accumlatedColorData[index + 2]) /
+					(float32)m_frameIndex;
+			const glm::u8vec3& finalColorData= ColourData(finalColorVec).getColour_8_BitClamped();
+			m_texData.setTexelColorAtPixelIndex(index, finalColorData.r, finalColorData.g,
+																					finalColorData.b);
 		}
 
 		TextureManager::updateTexture(m_texData, m_textureId);
+		++m_frameIndex;
 	}
 
 	void Renderer::onResize(uint32 width, uint32 height)
@@ -93,8 +103,15 @@ namespace AstralRaytracer
 			return;
 		}
 
+		m_accumlatedColorData.resize(width * height * 3);
 		m_texData.resize(width, height);
 		TextureManager::updateTexture(m_texData, m_textureId);
+	}
+
+	void Renderer::resetFrameIndex()
+	{
+		m_frameIndex= 1;
+		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
 	}
 
 } // namespace AstralRaytracer
