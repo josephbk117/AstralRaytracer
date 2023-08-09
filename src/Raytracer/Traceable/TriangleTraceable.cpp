@@ -26,7 +26,7 @@ namespace AstralRaytracer
 		glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
 		float32   det = glm::dot(m_vAvB, pvec);
 
-		const float32 kEpsilon= 0.0f;
+		const float32 kEpsilon= 0.0001f;
 		// if the determinant is negative, the triangle is 'back facing'
 		// if the determinant is close to 0, the ray misses the triangle
 		if(det < kEpsilon)
@@ -51,7 +51,7 @@ namespace AstralRaytracer
 		hitInfo.materialIndex            = m_materialIndex;
 		hitInfo.hitDistance              = t;
 		hitInfo.worldSpaceNormal         = -m_normal;
-		hitInfo.rayOut.worldSpacePosition= (rayIn.direction * t) + m_position;
+		hitInfo.rayOut.worldSpacePosition= rayIn.worldSpacePosition + (rayIn.direction * t);
 		hitInfo.rayOut.direction         = glm::normalize(glm::reflect(rayIn.direction, -m_normal));
 
 		return true;
