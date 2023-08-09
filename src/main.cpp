@@ -26,12 +26,20 @@ int main()
 	// Destructors need to be called before context is removed
 	{
 		AstralRaytracer::Renderer renderer;
-		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
+		AstralRaytracer::Camera   cam(60.0f, 0.001f, 100.0f);
 
 		AstralRaytracer::Scene scene;
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.5f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.5f});
+
+		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::StaticMesh>(
 				AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
+		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+		scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
+		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
 
 		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
