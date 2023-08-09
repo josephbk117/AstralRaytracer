@@ -42,8 +42,8 @@ namespace AstralRaytracer
 	namespace Colors
 	{
 		const ColourData Red(1.0f, 0.0f, 0.0f);
-		const ColourData Green(1.0f, 0.0f, 0.0f);
-		const ColourData Blue(1.0f, 0.0f, 0.0f);
+		const ColourData Green(0.0f, 1.0f, 0.0f);
+		const ColourData Blue(0.0f, 0.0f, 1.0f);
 		const ColourData Yellow(1.0f, 1.0f, 0.0f);
 		const ColourData Pink(1.0f, 0.25f, 1.0f);
 	} // namespace Colors
