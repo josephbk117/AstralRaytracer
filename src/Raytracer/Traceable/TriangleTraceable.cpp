@@ -21,7 +21,7 @@ namespace AstralRaytracer
 
 	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		const glm::vec3& adjustedOrigin(rayIn.origin - m_position);
+		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_position);
 
 		glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
 		float32   det = glm::dot(m_vAvB, pvec);
@@ -32,7 +32,7 @@ namespace AstralRaytracer
 		if(det < kEpsilon)
 			return false;
 		// ray and triangle are parallel if det is close to 0
-		if(std::abs(det) < kEpsilon)
+		if(std::abs(det) <= kEpsilon)
 			return false;
 		float32 invDet= 1.0f / det;
 
@@ -48,11 +48,11 @@ namespace AstralRaytracer
 
 		float32 t= glm::dot(m_vAvC, qvec) * invDet;
 
-		hitInfo.materialIndex   = m_materialIndex;
-		hitInfo.hitDistance     = t;
-		hitInfo.normal          = -m_normal;
-		hitInfo.rayOut.origin   = rayIn.direction * t;
-		hitInfo.rayOut.direction= m_normal;
+		hitInfo.materialIndex            = m_materialIndex;
+		hitInfo.hitDistance              = t;
+		hitInfo.worldSpaceNormal         = -m_normal;
+		hitInfo.rayOut.worldSpacePosition= (rayIn.direction * t) + m_position;
+		hitInfo.rayOut.direction         = glm::normalize(glm::reflect(rayIn.direction, -m_normal));
 
 		return true;
 	}
