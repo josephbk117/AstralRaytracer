@@ -46,5 +46,7 @@ namespace AstralRaytracer
 		const ColourData Blue(0.0f, 0.0f, 1.0f);
 		const ColourData Yellow(1.0f, 1.0f, 0.0f);
 		const ColourData Pink(1.0f, 0.25f, 1.0f);
+		const ColourData White(1.0f, 1.0f, 1.0f);
+		const ColourData Black(0.0f, 0.0f, 0.0f);
 	} // namespace Colors
 } // namespace AstralRaytracer
