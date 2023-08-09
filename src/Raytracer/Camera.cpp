@@ -46,7 +46,7 @@ namespace AstralRaytracer
 
 		if(Input::isKeyDown(InputKey::W))
 		{
-			m_position+= m_direction * deltaTime * 0.5f;
+			m_position+= m_direction * deltaTime;
 			moved= true;
 		}
 
