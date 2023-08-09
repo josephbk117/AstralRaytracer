@@ -1,6 +1,8 @@
 #pragma once
 #include <cassert>
 #include <cstdint>
+#include <limits>
+#include <glm.hpp>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 
