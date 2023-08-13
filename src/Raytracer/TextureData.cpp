@@ -36,19 +36,19 @@ uint32 TextureData::getHeight() const noexcept { return m_height; }
 
 uint8 TextureData::getComponentCount() const noexcept { return m_componentCount; }
 
-void TextureData::setTexelColorAtPixelIndex(uint32 index, int32 r, int32 g, int32 b)
+void TextureData::setTexelColorAtPixelIndex(uint32 index, const glm::u8vec3& rgb)
 {
 	assertm(index <= (m_data.size() - m_componentCount),
 					"Can't set color at pixel index, invalid range");
-
-	m_data[index]    = r;
-	m_data[index + 1]= g;
-	m_data[index + 2]= b;
+	m_data[index]    = rgb.r;
+	m_data[index + 1]= rgb.g;
+	m_data[index + 2]= rgb.b;
 }
+
 
 void TextureData::setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y)
 {
-	int32 i= ((float32)m_width * (float32)y + (float32)x) * 4.0f;
+	const int32 i= ((float32)m_width * (float32)y + (float32)x) * 4.0f;
 
 	m_data[i]    = r;
 	m_data[i + 1]= g;

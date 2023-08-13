@@ -21,7 +21,7 @@ class TextureData
 	uint32                    getWidth() const noexcept;
 	uint32                    getHeight() const noexcept;
 	uint8                     getComponentCount() const noexcept;
-	void                      setTexelColorAtPixelIndex(uint32 index, int32 r, int32 g, int32 b);
+	void                      setTexelColorAtPixelIndex(uint32 index, const glm::u8vec3& rgb);
 	void                      setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y);
 	void                      setTexelColor(ColourData& colourData, uint32 x, uint32 y);
 	ColourData                getTexelColor(uint32 x, uint32 y);
