@@ -38,8 +38,8 @@ int main()
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::StaticMesh>(
 				AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::TriangleTraceable>(
-				glm::vec3(-100.0f, -1.0f, -100.0f),
-				glm::vec3(0.0f, -1.0f, 100.0f), glm::vec3(100.0f, -1.0f, -100.0f)));
+				glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
+				glm::vec3(100.0f, -1.0f, -100.0f)));
 		;
 		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
 		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
@@ -52,7 +52,10 @@ int main()
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime)) { renderer.resetFrameIndex(); }
+			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime))
+			{
+				renderer.resetFrameIndex();
+			}
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
 			renderer.render(scene, cam);

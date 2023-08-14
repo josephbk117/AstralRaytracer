@@ -2,6 +2,7 @@
 
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
+#include "Raytracer/ShaderProgram.h"
 #include "Raytracer/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
@@ -18,6 +19,9 @@ namespace AstralRaytracer
 		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
 		m_cachedRayDirections.resize(500 * 500);
 		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
+
+		ComputeShaderProgram computeProgram;
+		computeProgram.compileAndLinkShader("resources/raytrace.comps");
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
