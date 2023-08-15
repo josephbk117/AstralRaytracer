@@ -14,12 +14,10 @@ namespace AstralRaytracer
 		}
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		glfwWindow= glfwCreateWindow(width, height, m_name.c_str(), nullptr, nullptr);
-
-		glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
 
 		if(!glfwWindow)
 		{
@@ -27,6 +25,7 @@ namespace AstralRaytracer
 			exit(EXIT_FAILURE);
 		}
 
+		glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(glfwWindow);
 		glbinding::initialize(glfwGetProcAddress);
 
@@ -34,7 +33,7 @@ namespace AstralRaytracer
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
 		ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
-		ImGui_ImplOpenGL3_Init("#version 460 core");
+		ImGui_ImplOpenGL3_Init("#version 420 core");
 
 		gl::glViewport(0, 0, width, height);
 	}
