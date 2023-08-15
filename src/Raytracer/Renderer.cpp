@@ -130,7 +130,7 @@ namespace AstralRaytracer
 				const Material& mat= scene.m_materials.at(closestHitInfo.materialIndex);
 				outColor+= d * mat.albedo.getColour_32_bit();
 
-				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.001f;
+				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.0001f;
 				rayDir   = glm::reflect(rayDir, closestHitInfo.worldSpaceNormal +
 																						mat.roughness * Random::unitSphere(seedVal));
 			}
