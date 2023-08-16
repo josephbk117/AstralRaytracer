@@ -12,9 +12,6 @@
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
-#include <cstring>
-#include <ext/quaternion_geometric.hpp>
-#include <iostream>
 #include <memory>
 
 int main()
@@ -40,7 +37,7 @@ int main()
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::TriangleTraceable>(
 				glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
 				glm::vec3(100.0f, -1.0f, -100.0f)));
-		;
+
 		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
@@ -84,7 +81,9 @@ int main()
 					ImGui::EndMenuBar();
 				}
 
-				if(ImGui::BeginTable("viewSplit", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+				constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable;
+
+				if(ImGui::BeginTable("viewSplit", 2, tableFlags))
 				{
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
