@@ -13,6 +13,18 @@
       "enableClangTidyCodeAnalysis": true
     },
     {
+      "name": "x64-Release",
+      "generator": "Ninja",
+      "configurationType": "Release",
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "enableClangTidyCodeAnalysis": true
+    },
+    {
       "name": "WSL-GCC-Debug",
       "generator": "Ninja",
       "configurationType": "Debug",
@@ -27,21 +39,9 @@
       "enableClangTidyCodeAnalysis": true
     },
     {
-      "name": "x64-Release",
-      "generator": "Ninja",
-      "configurationType": "MinSizeRel",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "msvc_x64_x64" ],
-      "enableClangTidyCodeAnalysis": true
-    },
-    {
       "name": "WSL-GCC-Release",
       "generator": "Ninja",
-      "configurationType": "MinSizeRel",
+      "configurationType": "Release",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "cmakeExecutable": "cmake",

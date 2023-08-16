@@ -29,9 +29,9 @@ int main()
 		AstralRaytracer::Camera   cam(60.0f, 0.001f, 100.0f);
 
 		AstralRaytracer::Scene scene;
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.8f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.025f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.25f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.925f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.925f});
+		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.925f});
 
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
 		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
@@ -41,7 +41,7 @@ int main()
 				glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
 				glm::vec3(100.0f, -1.0f, -100.0f)));
 		;
-		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
 		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
@@ -62,7 +62,6 @@ int main()
 
 			window.startUI();
 
-			static bool             use_work_area= true;
 			static ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																		 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
 

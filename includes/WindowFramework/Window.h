@@ -21,6 +21,9 @@ namespace AstralRaytracer
 
 		Window(): m_name{"default"} {}
 		Window(const std::string name): m_name{name} {}
+		Window(const Window&)           = delete;
+		Window& operator=(const Window&)= delete;
+		~Window(){};
 		const std::string& getName() const;
 		bool               shouldWindowClose() const;
 
