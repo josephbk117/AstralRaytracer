@@ -47,14 +47,16 @@ int main()
 		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
 		scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
 
-		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
+		float64 prevTime    = AstralRaytracer::Input::getTimeSinceStart();
+		bool    isSceneDirty= false;
 		while(!window.shouldWindowClose())
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime))
+			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime) || isSceneDirty)
 			{
 				renderer.resetFrameIndex();
+				isSceneDirty= false;
 			}
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
@@ -82,7 +84,7 @@ int main()
 					ImGui::EndMenuBar();
 				}
 
-				if(ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+				if(ImGui::BeginTable("viewSplit", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
 				{
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
@@ -91,9 +93,23 @@ int main()
 											 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 					ImGui::TableSetColumnIndex(1);
 
-					for(int i =0; i < 5;i++) 
+					ImGui::Text("Materials");
+					for(uint32 matIndex= 0; matIndex < scene.m_materials.size(); ++matIndex)
 					{
-						ImGui::Text("my sailor is rich");
+						ImGui::PushID(matIndex);
+						AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
+						if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
+						{
+							isSceneDirty= true;
+						}
+
+						if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f))
+						{
+							isSceneDirty= true;
+						}
+						ImGui::Separator();
+						ImGui::Separator();
+						ImGui::PopID();
 					}
 
 					ImGui::EndTable();
