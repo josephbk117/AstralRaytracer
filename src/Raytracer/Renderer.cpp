@@ -31,24 +31,27 @@ namespace AstralRaytracer
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
-		const uint32 xAxisPixelCount   = m_texData.getWidth() * m_texData.getComponentCount();
-		const uint32 totalPixelCount   = xAxisPixelCount * m_texData.getHeight();
-		const uint32 pixelComponentSize= m_texData.getComponentCount();
+		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
+		const float32    imageHeight      = m_texData.getHeight();
+		const glm::mat4& inverseView      = cam.getInverseView();
+		const glm::mat4& inverseProjection= cam.getInverseProjection();
 		// Cache Ray directions
 		if(m_frameIndex == 1)
 		{
-			for(uint32 index= 0; index < totalPixelCount; index+= pixelComponentSize)
-			{
-				glm::vec2 coord{(index % xAxisPixelCount) / (float32)xAxisPixelCount,
-												(index / xAxisPixelCount) / (float32)m_texData.getHeight()};
-				coord= (coord * 2.0f) - 1.0f;
+			std::for_each(
+					std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
+					[this, xAxisPixelCount, imageHeight, &inverseView, &inverseProjection](uint32 index)
+					{
+						const uint32 pixelIndex= index * 3;
+						glm::vec2    coord{(pixelIndex % xAxisPixelCount) / (float32)xAxisPixelCount,
+                            (pixelIndex / xAxisPixelCount) / imageHeight};
+						coord                  = (coord * 2.0f) - 1.0f;
+						const glm::vec4& target= inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+						const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
 
-				const glm::vec4& target=
-						cam.getInverseProjection() * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-				const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
-				m_cachedRayDirections[index / 3]=
-						glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0.0f));
-			}
+						m_cachedRayDirections[index]=
+								glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
+					});
 		}
 
 		constexpr uint32  bounceCount       = 4;
