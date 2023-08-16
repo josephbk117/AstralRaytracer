@@ -82,11 +82,22 @@ int main()
 					ImGui::EndMenuBar();
 				}
 
-				ImGui::BeginChild("RaytracerView");
-				ImVec2 wsize= ImGui::GetWindowSize();
-				ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), wsize, ImVec2(0, 1),
-										 ImVec2(1, 0));
-				ImGui::EndChild();
+				if(ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable))
+				{
+					ImGui::TableNextRow();
+					ImGui::TableSetColumnIndex(0);
+					ImGui::AlignTextToFramePadding();
+					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()),
+											 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::TableSetColumnIndex(1);
+
+					for(int i =0; i < 5;i++) 
+					{
+						ImGui::Text("my sailor is rich");
+					}
+
+					ImGui::EndTable();
+				}
 			}
 			ImGui::End();
 
