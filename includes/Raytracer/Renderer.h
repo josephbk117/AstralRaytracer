@@ -14,9 +14,9 @@ namespace AstralRaytracer
 		glm::vec3 perPixel(const uint32 bounceCount, uint32& seedVal, const Scene& scene,
 											 glm::vec3& rayOrigin, glm::vec3& rayDir);
 
-		uint32 getTextureId() const { return m_textureId; }
-		void   onResize(uint32 width, uint32 height);
-		void   resetFrameIndex();
+		uintptr getTextureId() const { return m_textureId; }
+		void    onResize(uint32 width, uint32 height);
+		void    resetFrameIndex();
 
 		private:
 		TextureData            m_texData;
