@@ -3,6 +3,7 @@
 #include "Raytracer/TextureData.h"
 
 #include <iostream>
+
 uint32 TextureManager::loadTextureFromData(TextureData& textureData, bool gamma)
 {
 	uint32 textureID;
@@ -20,7 +21,7 @@ uint32 TextureManager::loadTextureFromData(TextureData& textureData, bool gamma)
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
 	}
-	else 
+	else
 	{
 		std::cout << "\nTexture failed to load with texture data " << std::endl;
 	}
