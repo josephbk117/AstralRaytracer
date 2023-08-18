@@ -15,14 +15,14 @@ namespace AstralRaytracer
 
 	Renderer::Renderer()
 	{
-		constexpr uint32 initialWidth = 100;
-		constexpr uint32 initialHeight= 100;
+		constexpr uint32 initialWidth = 16;
+		constexpr uint32 initialHeight= 16;
 
 		// Made initial resolution small so that OnResize can run
 		m_texData  = TextureData(initialWidth, initialHeight, 3);
 		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
 
-		onResize(500, 500);
+		onResize(32, 32);
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
@@ -36,7 +36,7 @@ namespace AstralRaytracer
 		if(m_frameIndex == 1)
 		{
 			std::for_each(
-					/*std::execution::par, */m_rayIterator.begin(), m_rayIterator.end(),
+					std::execution::par,  m_rayIterator.begin(), m_rayIterator.end(),
 					[this, xAxisPixelCount, imageHeight, &inverseView, &inverseProjection](uint32 index)
 					{
 						const uint32 pixelIndex= index * 3;
@@ -56,7 +56,7 @@ namespace AstralRaytracer
 		const float32     oneOverFrameIndex = 1.0f / m_frameIndex;
 
 		std::for_each(
-				/*std::execution::par, */m_rayIterator.begin(), m_rayIterator.end(),
+				std::execution::par,  m_rayIterator.begin(), m_rayIterator.end(),
 				[this, oneOverBounceCount, bounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
 				{
 					uint32    seedVal  = index * m_frameIndex;
@@ -79,6 +79,7 @@ namespace AstralRaytracer
 					const glm::u8vec3& finalColorData= ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
 					m_texData.setTexelColorAtPixelIndex(pixelAcessIndex, finalColorData);
 				});
+		
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
@@ -90,6 +91,7 @@ namespace AstralRaytracer
 		{
 			return;
 		}
+		m_texData.resize(width, height);
 
 		m_accumlatedColorData.resize(width * height * 3);
 		resetFrameIndex();
@@ -100,9 +102,8 @@ namespace AstralRaytracer
 		{
 			m_rayIterator[index]= index;
 		}
-		m_texData.resize(width, height);
 
-		TextureManager::resizeTexture(m_textureId, width, height);
+		TextureManager::resizeTexture(m_texData, m_textureId);
 	}
 
 	void Renderer::resetFrameIndex()
