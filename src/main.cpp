@@ -12,6 +12,7 @@
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
+#include <gtc/type_ptr.hpp>
 #include <memory>
 
 int main()
@@ -44,11 +45,14 @@ int main()
 		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
 		scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
 
-		float64 prevTime    = AstralRaytracer::Input::getTimeSinceStart();
-		bool    isSceneDirty= false;
+		float64     prevTime= AstralRaytracer::Input::getTimeSinceStart();
+		glm::u32vec2 rendererSize{500, 500};
+		bool        isSceneDirty= false;
 		while(!window.shouldWindowClose())
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+
+			renderer.onResize(500,500);
 
 			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime) || isSceneDirty)
 			{
@@ -87,9 +91,12 @@ int main()
 				{
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
-					ImGui::AlignTextToFramePadding();
-					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()),
-											 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+
+					ImVec2 availableRegion= ImGui::GetContentRegionAvail();
+					rendererSize          = {availableRegion.x, availableRegion.y};
+
+					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), availableRegion,
+											 ImVec2(0, 1), ImVec2(1, 0));
 					ImGui::TableSetColumnIndex(1);
 
 					ImGui::Text("Materials");
@@ -114,6 +121,23 @@ int main()
 					ImGui::EndTable();
 				}
 			}
+
+			ImGuizmo::BeginFrame();
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y,
+												window.getResolution().first, window.getResolution().second);
+			glm::mat4 transform= scene.m_sceneTraceables.at(0).get()->getTransformMatrix();
+
+			ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
+													 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
+													 glm::value_ptr(transform));
+
+			if(ImGuizmo::IsUsing())
+			{
+				scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(transform[3]));
+			}
+
 			ImGui::End();
 
 			window.endUI();

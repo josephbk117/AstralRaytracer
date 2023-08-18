@@ -15,18 +15,14 @@ namespace AstralRaytracer
 
 	Renderer::Renderer()
 	{
-		m_texData= TextureData(500, 500, 3);
-		m_accumlatedColorData.resize(500 * 500 * 3);
-		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
-		m_cachedRayDirections.resize(500 * 500);
-		m_rayIterator.resize(500 * 500);
+		constexpr uint32 initialWidth = 100;
+		constexpr uint32 initialHeight= 100;
 
-		for(uint32 index= 0; index < 500 * 500; ++index)
-		{
-			m_rayIterator.push_back(index);
-		}
-
+		// Made initial resolution small so that OnResize can run
+		m_texData  = TextureData(initialWidth, initialHeight, 3);
 		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
+
+		onResize(500, 500);
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
@@ -35,11 +31,12 @@ namespace AstralRaytracer
 		const float32    imageHeight      = m_texData.getHeight();
 		const glm::mat4& inverseView      = cam.getInverseView();
 		const glm::mat4& inverseProjection= cam.getInverseProjection();
+
 		// Cache Ray directions
 		if(m_frameIndex == 1)
 		{
 			std::for_each(
-					std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
+					/*std::execution::par, */m_rayIterator.begin(), m_rayIterator.end(),
 					[this, xAxisPixelCount, imageHeight, &inverseView, &inverseProjection](uint32 index)
 					{
 						const uint32 pixelIndex= index * 3;
@@ -59,7 +56,7 @@ namespace AstralRaytracer
 		const float32     oneOverFrameIndex = 1.0f / m_frameIndex;
 
 		std::for_each(
-				std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
+				/*std::execution::par, */m_rayIterator.begin(), m_rayIterator.end(),
 				[this, oneOverBounceCount, bounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
 				{
 					uint32    seedVal  = index * m_frameIndex;
@@ -79,8 +76,7 @@ namespace AstralRaytracer
 					blueChannel+= (outColor.b * oneOverBounceCount);
 
 					const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
-					const glm::u8vec3& finalColorData=
-							ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
+					const glm::u8vec3& finalColorData= ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
 					m_texData.setTexelColorAtPixelIndex(pixelAcessIndex, finalColorData);
 				});
 
@@ -96,15 +92,24 @@ namespace AstralRaytracer
 		}
 
 		m_accumlatedColorData.resize(width * height * 3);
+		resetFrameIndex();
 		m_cachedRayDirections.resize(width * height);
+		m_rayIterator.resize(width * height);
+
+		for(uint32 index= 0; index < width * height; ++index)
+		{
+			m_rayIterator[index]= index;
+		}
 		m_texData.resize(width, height);
-		TextureManager::updateTexture(m_texData, m_textureId);
+
+		TextureManager::resizeTexture(m_textureId, width, height);
 	}
 
 	void Renderer::resetFrameIndex()
 	{
 		m_frameIndex= 1;
-		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
+		std::memset(m_accumlatedColorData.data(), 0,
+								m_texData.getWidth() * m_texData.getHeight() * 3 * sizeof(float32));
 	}
 
 	glm::vec3 Renderer::perPixel(const uint32 bounceCount, uint32& seedVal, const Scene& scene,

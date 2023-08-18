@@ -44,6 +44,13 @@ void TextureManager::updateTexture(const TextureData& textureData, uint32 textur
 	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 }
 
+void TextureManager::resizeTexture(uint32 textureId, uint32 width, uint32 height) 
+{
+	gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+	gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, width, height, 0, gl::GL_RGBA, gl::GL_UNSIGNED_BYTE, nullptr);
+	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
+}
+
 gl::GLenum TextureManager::getTextureFormatFromData(TextureData& textureData)
 {
 	using namespace gl;
