@@ -85,11 +85,11 @@ namespace AstralRaytracer
 		++m_frameIndex;
 	}
 
-	void Renderer::onResize(uint32 width, uint32 height)
+	bool Renderer::onResize(uint32 width, uint32 height)
 	{
 		if(m_texData.getWidth() == width && m_texData.getHeight() == height)
 		{
-			return;
+			return false;
 		}
 		m_texData.resize(width, height);
 
@@ -104,6 +104,8 @@ namespace AstralRaytracer
 		}
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
+
+		return true;
 	}
 
 	void Renderer::resetFrameIndex()

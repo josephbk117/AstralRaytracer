@@ -17,10 +17,10 @@ namespace AstralRaytracer
 		m_lastMousePosition= glm::vec2(0.0f);
 
 		recalculateView();
-		recalculateProjection();
+		recalculateProjection({500, 500});
 	}
 
-	bool Camera::update(float32 deltaTime)
+	bool Camera::update(float32 deltaTime, const glm::u32vec2& resolution, bool forceRecalculate)
 	{
 		if(m_lastMousePosition == glm::vec2(0.0f))
 		{
@@ -31,7 +31,7 @@ namespace AstralRaytracer
 		const glm::vec2  delta   = (mousePos - m_lastMousePosition);
 		m_lastMousePosition      = mousePos;
 
-		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT))
+		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		{
 			Input::setCursorMode(CursorMode::NORMAL);
 			return false;
@@ -86,8 +86,8 @@ namespace AstralRaytracer
 		{
 			const float32 rotSpeed= 0.5f;
 
-			float32 pitchDelta= delta.y * deltaTime * rotSpeed;
-			float32 yawDelta  = delta.x * deltaTime * rotSpeed;
+			const float32 pitchDelta= delta.y * deltaTime * rotSpeed;
+			const float32 yawDelta  = delta.x * deltaTime * rotSpeed;
 
 			glm::quat q=
 					glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDir),
@@ -98,13 +98,13 @@ namespace AstralRaytracer
 			moved= true;
 		}
 
-		if(moved)
+		if(moved || forceRecalculate)
 		{
 			recalculateView();
-			recalculateProjection();
+			recalculateProjection(resolution);
 		}
 
-		return moved;
+		return moved || forceRecalculate;
 	}
 
 	void Camera::recalculateView()
@@ -113,9 +113,10 @@ namespace AstralRaytracer
 		m_inverseView= glm::inverse(m_view);
 	}
 
-	void Camera::recalculateProjection()
+	void Camera::recalculateProjection(const glm::u32vec2& resolution)
 	{
-		m_projection= glm::perspectiveFov(glm::radians(m_fov), 500.0f, 500.0f, m_nearClip, m_farClip);
+		m_projection       = glm::perspectiveFov(glm::radians(m_fov), (float32)resolution.x,
+																						 (float32)resolution.y, m_nearClip, m_farClip);
 		m_inverseProjection= glm::inverse(m_projection);
 	}
 

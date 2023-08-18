@@ -8,7 +8,7 @@ namespace AstralRaytracer
 	{
 		public:
 		Camera(float32 fov, float32 nearClip, float32 farClip);
-		bool             update(float32 deltaTime);
+		bool update(float32 deltaTime, const glm::u32vec2& resolution, bool forceRecalculate);
 		const glm::vec3& getPosition() const { return m_position; }
 		const glm::vec3& getDirection() const { return m_direction; }
 		const glm::mat4& getView() const { return m_view; }
@@ -18,7 +18,7 @@ namespace AstralRaytracer
 
 		private:
 		void recalculateView();
-		void recalculateProjection();
+		void recalculateProjection(const glm::u32vec2& resolution);
 
 		glm::mat4 m_projection{1.0f};
 		glm::mat4 m_view{1.0f};

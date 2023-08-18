@@ -15,7 +15,7 @@ namespace AstralRaytracer
 											 glm::vec3& rayOrigin, glm::vec3& rayDir);
 
 		uintptr getTextureId() const { return m_textureId; }
-		void    onResize(uint32 width, uint32 height);
+		bool    onResize(uint32 width, uint32 height);
 		void    resetFrameIndex();
 
 		private:

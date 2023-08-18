@@ -45,16 +45,18 @@ int main()
 		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
 		scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
 
-		float64     prevTime= AstralRaytracer::Input::getTimeSinceStart();
+		float64      prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		glm::u32vec2 rendererSize{500, 500};
-		bool        isSceneDirty= false;
+		bool         isSceneDirty= false;
 		while(!window.shouldWindowClose())
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			renderer.onResize(rendererSize.x / 2, rendererSize.y / 2);
+			const float32 deltaTime      = AstralRaytracer::Input::getTimeSinceStart() - prevTime;
+			const bool    rendererResized= renderer.onResize(rendererSize.x / 2, rendererSize.y / 2);
+			const bool    cameraUpdated  = cam.update(deltaTime, rendererSize, rendererResized);
 
-			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime) || isSceneDirty)
+			if(isSceneDirty || cameraUpdated || rendererResized)
 			{
 				renderer.resetFrameIndex();
 				isSceneDirty= false;
@@ -65,8 +67,8 @@ int main()
 
 			window.startUI();
 
-			static ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																		 ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+			constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																				ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
 
 			const ImGuiViewport* viewport= ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->WorkPos);
@@ -125,8 +127,7 @@ int main()
 			ImGuizmo::BeginFrame();
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y,
-												window.getResolution().first, window.getResolution().second);
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,	rendererSize.y);
 			glm::mat4 transform= scene.m_sceneTraceables.at(0).get()->getTransformMatrix();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
@@ -136,6 +137,7 @@ int main()
 			if(ImGuizmo::IsUsing())
 			{
 				scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(transform[3]));
+				isSceneDirty = true;
 			}
 
 			ImGui::End();
