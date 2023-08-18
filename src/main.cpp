@@ -52,7 +52,7 @@ int main()
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			renderer.onResize(500,500);
+			renderer.onResize(rendererSize.x / 2, rendererSize.y / 2);
 
 			if(cam.update(AstralRaytracer::Input::getTimeSinceStart() - prevTime) || isSceneDirty)
 			{
