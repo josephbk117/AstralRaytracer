@@ -32,6 +32,8 @@ void StaticMesh::setPosition(const glm::vec3& position)
 		{
 			m_triangles[triIndex].setPosition(position);
 		}
+
+		Traceable::setPosition(position);
 	}
 
 void StaticMesh::setMaterialIndex(uint32 materialIndex)
