@@ -38,12 +38,13 @@ int main()
 						AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")),
 				"Cube");
 		scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
-													 glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
-													 glm::vec3(100.0f, -1.0f, -100.0f)),
+													 glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
+													 glm::vec3(100.0f, 0.0f, -100.0f)),
 											 "Floor");
 
 		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
+		scene.m_sceneTraceables.at(3)->setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
 		scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
 		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
 		scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
@@ -71,6 +72,10 @@ int main()
 			renderer.render(scene, cam);
 
 			window.startUI();
+			ImGuizmo::BeginFrame();
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,
+												rendererSize.y);
 
 			constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																				ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
@@ -104,6 +109,22 @@ int main()
 
 					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), availableRegion,
 											 ImVec2(0, 1), ImVec2(1, 0));
+
+					ImGuizmo::SetDrawlist();
+
+					glm::mat4 transform=
+							scene.m_sceneTraceables.at(selectedObjectIndex).get()->getTransformMatrix();
+
+					ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
+															 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
+															 glm::value_ptr(transform));
+
+					if(ImGuizmo::IsUsing())
+					{
+						scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
+						isSceneDirty= true;
+					}
+
 					ImGui::TableSetColumnIndex(1);
 
 					ImGui::Text("Materials");
@@ -129,32 +150,14 @@ int main()
 					bool isSelected= false;
 					for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 					{
-						if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected)) 
+						if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected))
 						{
-							selectedObjectIndex = objIndex;
+							selectedObjectIndex= objIndex;
 						}
 					}
 
 					ImGui::EndTable();
 				}
-			}
-
-			ImGuizmo::BeginFrame();
-			ImGuizmo::SetOrthographic(false);
-			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,
-												rendererSize.y);
-			glm::mat4 transform=
-					scene.m_sceneTraceables.at(selectedObjectIndex).get()->getTransformMatrix();
-
-			ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-													 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
-													 glm::value_ptr(transform));
-
-			if(ImGuizmo::IsUsing())
-			{
-				scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
-				isSceneDirty= true;
 			}
 
 			ImGui::End();
