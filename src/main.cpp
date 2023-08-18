@@ -27,17 +27,20 @@ int main()
 		AstralRaytracer::Camera   cam(60.0f, 0.001f, 100.0f);
 
 		AstralRaytracer::Scene scene;
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.925f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.925f});
-		scene.m_materials.push_back(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.925f});
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.925f}, "Mat1");
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.925f}, "Mat2");
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.925f}, "Mat3");
 
-		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
-		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::SphereTraceable>());
-		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::StaticMesh>(
-				AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
-		scene.m_sceneTraceables.push_back(std::make_unique<AstralRaytracer::TriangleTraceable>(
-				glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
-				glm::vec3(100.0f, -1.0f, -100.0f)));
+		scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere1");
+		scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere2");
+		scene.addTraceable(
+				std::make_unique<AstralRaytracer::StaticMesh>(
+						AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")),
+				"Cube");
+		scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
+													 glm::vec3(-100.0f, -1.0f, -100.0f), glm::vec3(0.0f, -1.0f, 100.0f),
+													 glm::vec3(100.0f, -1.0f, -100.0f)),
+											 "Floor");
 
 		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
@@ -48,6 +51,8 @@ int main()
 		float64      prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		glm::u32vec2 rendererSize{500, 500};
 		bool         isSceneDirty= false;
+
+		uint32 selectedObjectIndex= 0;
 		while(!window.shouldWindowClose())
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
@@ -120,6 +125,16 @@ int main()
 						ImGui::PopID();
 					}
 
+					ImGui::Text("Objects");
+					bool isSelected= false;
+					for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
+					{
+						if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected)) 
+						{
+							selectedObjectIndex = objIndex;
+						}
+					}
+
 					ImGui::EndTable();
 				}
 			}
@@ -127,8 +142,10 @@ int main()
 			ImGuizmo::BeginFrame();
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,	rendererSize.y);
-			glm::mat4 transform= scene.m_sceneTraceables.at(0).get()->getTransformMatrix();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,
+												rendererSize.y);
+			glm::mat4 transform=
+					scene.m_sceneTraceables.at(selectedObjectIndex).get()->getTransformMatrix();
 
 			ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
 													 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
@@ -136,8 +153,8 @@ int main()
 
 			if(ImGuizmo::IsUsing())
 			{
-				scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(transform[3]));
-				isSceneDirty = true;
+				scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
+				isSceneDirty= true;
 			}
 
 			ImGui::End();
