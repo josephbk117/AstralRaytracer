@@ -11,10 +11,12 @@ namespace AstralRaytracer
 		Renderer();
 
 		void      render(const Scene& scene, const Camera& cam);
-		glm::vec3 perPixel(const uint32 bounceCount, uint32& seedVal, const Scene& scene,
-											 glm::vec3& rayOrigin, glm::vec3& rayDir);
+		glm::vec3 perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
+											 glm::vec3& rayDir);
 
 		uintptr getTextureId() const { return m_textureId; }
+		void    setBounceCount(uint32 count) { m_BounceCount= count; }
+		uint32  getBounceCount() const { return m_BounceCount; }
 		bool    onResize(uint32 width, uint32 height);
 		void    resetFrameIndex();
 
@@ -24,6 +26,7 @@ namespace AstralRaytracer
 		std::vector<glm::vec3> m_cachedRayDirections;
 		std::vector<uint32>    m_rayIterator;
 		uint32                 m_textureId;
-		uint32                 m_frameIndex= 1;
+		uint32                 m_frameIndex = 1;
+		uint32                 m_BounceCount= 4;
 	};
 } // namespace AstralRaytracer

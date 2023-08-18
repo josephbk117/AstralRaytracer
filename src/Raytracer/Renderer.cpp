@@ -36,7 +36,7 @@ namespace AstralRaytracer
 		if(m_frameIndex == 1)
 		{
 			std::for_each(
-					std::execution::par,  m_rayIterator.begin(), m_rayIterator.end(),
+					std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
 					[this, xAxisPixelCount, imageHeight, &inverseView, &inverseProjection](uint32 index)
 					{
 						const uint32 pixelIndex= index * 3;
@@ -51,19 +51,18 @@ namespace AstralRaytracer
 					});
 		}
 
-		constexpr uint32  bounceCount       = 4;
-		constexpr float32 oneOverBounceCount= 1.0f / bounceCount;
-		const float32     oneOverFrameIndex = 1.0f / m_frameIndex;
+		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
+		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
 		std::for_each(
-				std::execution::par,  m_rayIterator.begin(), m_rayIterator.end(),
-				[this, oneOverBounceCount, bounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
+				std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
+				[this, oneOverBounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
 				{
 					uint32    seedVal  = index * m_frameIndex;
 					glm::vec3 rayOrigin= cam.getPosition();
 					glm::vec3 rayDir   = m_cachedRayDirections[index];
 
-					const glm::vec3& outColor= perPixel(bounceCount, seedVal, scene, rayOrigin, rayDir);
+					const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
 
 					const uint32 pixelAcessIndex= index * 3;
 
@@ -76,10 +75,10 @@ namespace AstralRaytracer
 					blueChannel+= (outColor.b * oneOverBounceCount);
 
 					const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
-					const glm::u8vec3& finalColorData= ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
+					const glm::u8vec3& finalColorData=
+							ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
 					m_texData.setTexelColorAtPixelIndex(pixelAcessIndex, finalColorData);
 				});
-		
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
@@ -115,13 +114,13 @@ namespace AstralRaytracer
 								m_texData.getWidth() * m_texData.getHeight() * 3 * sizeof(float32));
 	}
 
-	glm::vec3 Renderer::perPixel(const uint32 bounceCount, uint32& seedVal, const Scene& scene,
+	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene,
 															 glm::vec3& rayOrigin, glm::vec3& rayDir)
 	{
 		const glm::vec3& lightDir= glm::normalize(glm::vec3(-0.5f, 1, 1));
 		glm::vec3        outColor(0.0f);
 
-		for(uint32 bounceIndex= 0; bounceIndex < bounceCount; ++bounceIndex)
+		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
 			seedVal+= bounceIndex;
 			HitInfo closestHitInfo;
