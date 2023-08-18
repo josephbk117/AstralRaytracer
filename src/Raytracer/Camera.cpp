@@ -37,67 +37,69 @@ namespace AstralRaytracer
 			return false;
 		}
 
-		Input::setCursorMode(CursorMode::CAPTURED);
-
 		bool moved= false;
 
-		constexpr glm::vec3 upDir(0.0f, 1.0f, 0.0f);
-		glm::vec3           rightDir= glm::cross(m_direction, upDir);
-
-		if(Input::isKeyDown(InputKey::W))
+		if(!forceRecalculate)
 		{
-			m_position+= m_direction * deltaTime;
-			moved= true;
+			Input::setCursorMode(CursorMode::CAPTURED);
+
+			constexpr glm::vec3 upDir(0.0f, 1.0f, 0.0f);
+			glm::vec3           rightDir= glm::cross(m_direction, upDir);
+
+			if(Input::isKeyDown(InputKey::W))
+			{
+				m_position+= m_direction * deltaTime;
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::S))
+			{
+				m_position-= m_direction * deltaTime;
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::A))
+			{
+				m_position-= rightDir * deltaTime;
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::D))
+			{
+				m_position+= rightDir * deltaTime;
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::Q))
+			{
+				m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::E))
+			{
+				m_position-= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
+				moved= true;
+			}
+
+			// Rotation
+
+			if(delta.x != 0.0f || delta.y != 0.0f)
+			{
+				const float32 rotSpeed= 0.5f;
+
+				const float32 pitchDelta= delta.y * deltaTime * rotSpeed;
+				const float32 yawDelta  = delta.x * deltaTime * rotSpeed;
+
+				glm::quat q=
+						glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDir),
+																			glm::angleAxis(-yawDelta, glm::vec3(0.0f, 1.0f, 0.0f))));
+
+				m_direction= glm::rotate(q, m_direction);
+
+				moved= true;
+			}
 		}
-
-		if(Input::isKeyDown(InputKey::S))
-		{
-			m_position-= m_direction * deltaTime;
-			moved= true;
-		}
-
-		if(Input::isKeyDown(InputKey::A))
-		{
-			m_position-= rightDir * deltaTime;
-			moved= true;
-		}
-
-		if(Input::isKeyDown(InputKey::D))
-		{
-			m_position+= rightDir * deltaTime;
-			moved= true;
-		}
-
-		if(Input::isKeyDown(InputKey::Q))
-		{
-			m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
-			moved= true;
-		}
-
-		if(Input::isKeyDown(InputKey::E))
-		{
-			m_position-= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
-			moved= true;
-		}
-
-		// Rotation
-
-		if(delta.x != 0.0f || delta.y != 0.0f)
-		{
-			const float32 rotSpeed= 0.5f;
-
-			const float32 pitchDelta= delta.y * deltaTime * rotSpeed;
-			const float32 yawDelta  = delta.x * deltaTime * rotSpeed;
-
-			glm::quat q=
-					glm::normalize(glm::cross(glm::angleAxis(-pitchDelta, rightDir),
-																		glm::angleAxis(-yawDelta, glm::vec3(0.0f, 1.0f, 0.0f))));
-
-			m_direction= glm::rotate(q, m_direction);
-
-			moved= true;
-		}
-
 		if(moved || forceRecalculate)
 		{
 			recalculateView();
