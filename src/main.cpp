@@ -51,7 +51,8 @@ int main()
 
 		float64      prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		glm::u32vec2 rendererSize{500, 500};
-		bool         isSceneDirty= false;
+		float32      resolutionScale= 50.0f;
+		bool         isSceneDirty   = false;
 
 		uint32 selectedObjectIndex= 0;
 		while(!window.shouldWindowClose())
@@ -59,7 +60,8 @@ int main()
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
 			const float32 deltaTime      = AstralRaytracer::Input::getTimeSinceStart() - prevTime;
-			const bool    rendererResized= renderer.onResize(rendererSize.x / 2, rendererSize.y / 2);
+			const bool    rendererResized= renderer.onResize(rendererSize.x * resolutionScale * 0.01f,
+																											 rendererSize.y * resolutionScale * 0.01f);
 			const bool    cameraUpdated  = cam.update(deltaTime, rendererSize, rendererResized);
 
 			if(isSceneDirty || cameraUpdated || rendererResized)
@@ -96,6 +98,25 @@ int main()
 					}
 					ImGui::EndMenuBar();
 				}
+				constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+
+				ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), 32), true, flags2);
+				int32 bounceCount= renderer.getBounceCount();
+
+				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.35f);
+				if(ImGui::SliderInt("Bounce Count", &bounceCount, 1, 12))
+				{
+					renderer.setBounceCount(bounceCount);
+					isSceneDirty= true;
+				}
+
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.35f);
+				if(ImGui::SliderFloat("Resolution Scale", &resolutionScale, 10.0f, 120.0f))
+				{
+					isSceneDirty= true;
+				}
+				ImGui::EndChild();
 
 				constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable;
 
@@ -142,14 +163,17 @@ int main()
 							isSceneDirty= true;
 						}
 						ImGui::Separator();
-						ImGui::Separator();
 						ImGui::PopID();
 					}
 
+					ImGui::Separator();
+					ImGui::Separator();
+
 					ImGui::Text("Objects");
-					bool isSelected= false;
+
 					for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 					{
+						bool isSelected= objIndex == selectedObjectIndex;
 						if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected))
 						{
 							selectedObjectIndex= objIndex;
