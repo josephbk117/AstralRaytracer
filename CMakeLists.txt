@@ -78,3 +78,39 @@ add_custom_target(copy_resources ALL
 
 # Add a dependency on copying resources
 add_dependencies(${PROJECT_NAME} copy_resources)
+
+# Enable SIMD optimizations only in Release build type
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+        # Enable SIMD optimizations for your target architecture.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+        # Add other optimization flags as needed.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+         # Disable RTTI.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+        # Disable exceptions.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        # Enable SIMD optimizations for your target architecture.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+        # Add other optimization flags as needed.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+         # Disable RTTI.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+        # Disable exceptions.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
+    endif()
+
+    if(MSVC)
+        # Enable SIMD optimizations for your target architecture.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
+        # Add other optimization flags as needed.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
+         # Disable RTTI.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+        # Disable exceptions.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHs-c-")
+    endif()
+endif()
