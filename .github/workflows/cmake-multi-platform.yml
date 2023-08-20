@@ -56,6 +56,7 @@ jobs:
         git submodule update --remote --recursive
 
     - name: Install xorg
+      if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get install xorg-dev libglu1-mesa-dev
 
     - name: Set reusable strings
