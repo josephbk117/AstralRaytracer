@@ -108,42 +108,50 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		glm::vec3 light(0.0f);
-		glm::vec3 contribution(1.0f);
+		glm::vec3   light(0.0f);
+		glm::vec3   contribution(1.0f);
+		constexpr float kEpsilon= 0.0001f;
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
 			seedVal+= bounceIndex;
 			HitInfo closestHitInfo;
-			for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
+
+			// Initialize closest hit distance to a large value
+			closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
+
+			for(const auto& traceable: scene.m_sceneTraceables)
 			{
 				HitInfo hitInfo;
-				if(scene.m_sceneTraceables[objectIndex]->trace({rayOrigin, rayDir}, hitInfo) &&
+				if(traceable->trace({rayOrigin, rayDir}, hitInfo) &&
 					 hitInfo.hitDistance < closestHitInfo.hitDistance)
 				{
 					closestHitInfo= hitInfo;
 				}
 			}
+
 			if(closestHitInfo.hitDistance > 0.0f &&
 				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
 			{
-				const Material&    mat    = scene.m_materials.at(closestHitInfo.materialIndex);
-				const TextureData& texData= scene.m_textures.at(mat.texture);
+				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
+				const TextureData& texData  = scene.m_textures.at(mat.texture);
+				const ColourData&  colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
+																														closestHitInfo.worldSpacePosition.z);
 
-				const ColourData& colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
-																													 closestHitInfo.worldSpacePosition.z);
 				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
 				light+= mat.getEmission() * colorData.getColour_32_bit();
 
-				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.0001f;
+				// Avoid self-intersection by moving the ray origin slightly
+				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * kEpsilon;
 
-				rayDir= glm::reflect(
-						rayDir,
-						closestHitInfo.worldSpaceNormal +
-								mat.roughness * Random::unitHemiSphere(seedVal, closestHitInfo.worldSpaceNormal));
+				// Compute the new ray direction (reflection)
+				const glm::vec3 roughnessOffset=
+						mat.roughness * Random::unitHemiSphere(seedVal, closestHitInfo.worldSpaceNormal);
+				rayDir= glm::reflect(rayDir, closestHitInfo.worldSpaceNormal + roughnessOffset);
 			}
 			else
 			{
+				// No intersection; add background color
 				light+= glm::vec3(0.55f, 0.75f, 1.0f) * contribution;
 			}
 		}
