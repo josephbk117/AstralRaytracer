@@ -3,6 +3,7 @@
 #include "Raytracer/TextureData.h"
 
 #include <iostream>
+#include <stb_image.h>
 
 TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path)
 {
@@ -18,9 +19,7 @@ TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path&
 	std::memcpy(vecData.data(), data, width * height * numChannels);
 
 	texData.setTextureData(vecData);
-
 	stbi_image_free(data);
-
 	return texData;
 }
 
@@ -30,12 +29,11 @@ uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool
 	gl::glGenTextures(1, &textureID);
 	const uint8* const data= textureData.getTextureData().data();
 	assert(data);
-	loadTextureFromRawData(reinterpret_cast<const stbi_uc*>(data), textureData.getWidth(),
-												 textureData.getHeight(), textureID);
+	loadTextureFromRawData(data, textureData.getWidth(), textureData.getHeight(), textureID);
 	return textureID;
 }
 
-void TextureManager::loadTextureFromRawData(const stbi_uc* const data, uint32 width, uint32 height,
+void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 width, uint32 height,
 																						uint32 textureID)
 {
 	if(data)

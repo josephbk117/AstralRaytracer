@@ -4,7 +4,6 @@
 
 #include <filesystem>
 #include <glbinding/gl/gl.h>
-#include <stb_image.h>
 
 class TextureManager
 {
@@ -19,6 +18,6 @@ class TextureManager
 	static gl::GLenum  getTextureFormatFromData(uint8 componentCount);
 
 	private:
-	static void loadTextureFromRawData(const stbi_uc* const data, uint32 width, uint32 height,
+	static void loadTextureFromRawData(const uint8* const data, uint32 width, uint32 height,
 																		 uint32 textureID);
 };
