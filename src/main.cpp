@@ -27,12 +27,18 @@ int main()
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 
 		AstralRaytracer::Scene scene;
-		scene.addTexture(TextureManager::loadTextureDataFromFile("resources/textures/floor_texture.jpg"),
-										 "Floor");
+		scene.addTexture(
+				TextureManager::loadTextureDataFromFile("resources/textures/floor_texture.jpg"), "Floor");
 
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue, 0.925f}, "Mat1");
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow, 0.925f}, "Mat2");
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White, 0.925f}, "Mat3");
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
+																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
+											"Mat1");
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
+																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
+											"Mat2");
+		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White,
+																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
+											"Mat3");
 		scene.m_materials.at(3).texture= 1;
 
 		scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere1");
@@ -161,7 +167,14 @@ int main()
 						{
 							isSceneDirty= true;
 						}
-
+						if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
+						{
+							isSceneDirty= true;
+						}
+						if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f))
+						{
+							isSceneDirty= true;
+						}
 						if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f))
 						{
 							isSceneDirty= true;

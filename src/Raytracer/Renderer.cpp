@@ -116,8 +116,8 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		const glm::vec3& lightDir= glm::normalize(glm::vec3(-0.5f, 1, 1));
-		glm::vec3        outColor(0.0f);
+		glm::vec3        light(0.0f);
+		glm::vec3        contribution(1.0f);
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -135,14 +135,13 @@ namespace AstralRaytracer
 			if(closestHitInfo.hitDistance > 0.0f &&
 				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
 			{
-				const float32      d  = (glm::dot(closestHitInfo.worldSpaceNormal, lightDir) + 1.0f) * 0.5f;
 				const Material&    mat= scene.m_materials.at(closestHitInfo.materialIndex);
 				const TextureData& texData= scene.m_textures.at(mat.texture);
 
-				const ColourData& colorData=
-						texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
-																	closestHitInfo.worldSpacePosition.z);
-				outColor+= d * mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
+				const ColourData& colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
+																													 closestHitInfo.worldSpacePosition.z);
+				contribution *= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
+				light+= mat.getEmission() * colorData.getColour_32_bit();
 
 				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.0001f;
 
@@ -153,11 +152,11 @@ namespace AstralRaytracer
 			}
 			else
 			{
-				outColor+= glm::vec3(0.25f, 0.5f, 1.0f);
+				light+= glm::vec3(0.55f, 0.75f, 1.0f) * contribution;
 			}
 		}
 
-		return outColor;
+		return light;
 	}
 
 } // namespace AstralRaytracer
