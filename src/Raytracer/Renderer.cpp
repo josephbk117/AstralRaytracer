@@ -32,38 +32,31 @@ namespace AstralRaytracer
 		const glm::mat4& inverseView      = cam.getInverseView();
 		const glm::mat4& inverseProjection= cam.getInverseProjection();
 
-		// Cache Ray directions
-		if(m_frameIndex == 1)
-		{
-			std::for_each(
-					std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
-					[this, xAxisPixelCount, imageHeight, &inverseView, &inverseProjection](uint32 index)
-					{
-						const uint32 pixelIndex= index * 3;
-						glm::vec2    coord{(pixelIndex % xAxisPixelCount) / (float32)xAxisPixelCount,
-                            (pixelIndex / xAxisPixelCount) / imageHeight};
-						coord                  = (coord * 2.0f) - 1.0f;
-						const glm::vec4& target= inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-						const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
-
-						m_cachedRayDirections[index]=
-								glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
-					});
-		}
-
 		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
 		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
 		std::for_each(std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
-									[this, oneOverBounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
+									[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex,
+									 &inverseView, &inverseProjection, &scene, &cam](uint32 index)
 									{
-										uint32    seedVal  = index * m_frameIndex;
+										uint32       seedVal        = index * m_frameIndex;
+										const uint32 pixelAcessIndex= index * 3;
+
+										const float32 xIndex= (pixelAcessIndex % xAxisPixelCount) +
+																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
+										const float32 yIndex= (pixelAcessIndex / xAxisPixelCount) +
+																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
+
+										glm::vec2 coord{xIndex / xAxisPixelCount, yIndex / imageHeight};
+										coord= (coord * 2.0f) - 1.0f;
+										const glm::vec4& target=
+												inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+										const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+
 										glm::vec3 rayOrigin= cam.getPosition();
-										glm::vec3 rayDir   = m_cachedRayDirections[index];
+										glm::vec3 rayDir   = glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 
 										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
-
-										const uint32 pixelAcessIndex= index * 3;
 
 										float32& redChannel  = m_accumlatedColorData[pixelAcessIndex];
 										float32& greenChannel= m_accumlatedColorData[pixelAcessIndex + 1u];
@@ -93,7 +86,6 @@ namespace AstralRaytracer
 
 		m_accumlatedColorData.resize(width * height * 3);
 		resetFrameIndex();
-		m_cachedRayDirections.resize(width * height);
 		m_rayIterator.resize(width * height);
 
 		for(uint32 index= 0; index < width * height; ++index)
@@ -116,8 +108,8 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		glm::vec3        light(0.0f);
-		glm::vec3        contribution(1.0f);
+		glm::vec3 light(0.0f);
+		glm::vec3 contribution(1.0f);
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -135,12 +127,12 @@ namespace AstralRaytracer
 			if(closestHitInfo.hitDistance > 0.0f &&
 				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
 			{
-				const Material&    mat= scene.m_materials.at(closestHitInfo.materialIndex);
+				const Material&    mat    = scene.m_materials.at(closestHitInfo.materialIndex);
 				const TextureData& texData= scene.m_textures.at(mat.texture);
 
 				const ColourData& colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
 																													 closestHitInfo.worldSpacePosition.z);
-				contribution *= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
+				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
 				light+= mat.getEmission() * colorData.getColour_32_bit();
 
 				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.0001f;

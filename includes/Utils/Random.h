@@ -14,8 +14,10 @@ namespace AstralRaytracer
 
 		static float32 randomFloat(uint32& seed)
 		{
+			constexpr float32 oneOverFloatLimit= 1.0f / std::numeric_limits<uint32>::max();
+
 			seed= pcgHash(seed);
-			return (float32)seed / (float32)std::numeric_limits<uint32>::max();
+			return (float32)seed * oneOverFloatLimit;
 		}
 
 		static glm::vec3 unitSphere(uint32& seed)

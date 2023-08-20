@@ -23,7 +23,6 @@ namespace AstralRaytracer
 		private:
 		TextureData            m_texData;
 		std::vector<float32>   m_accumlatedColorData;
-		std::vector<glm::vec3> m_cachedRayDirections;
 		std::vector<uint32>    m_rayIterator;
 		uint32                 m_textureId;
 		uint32                 m_frameIndex = 1;
