@@ -24,5 +24,14 @@ namespace AstralRaytracer
 																			randomFloat(seed) * 2.0f - 1.0f,
 																			randomFloat(seed) * 2.0f - 1.0f));
 		}
+
+		static glm::vec3 unitHemiSphere(uint32& seed, const glm::vec3& normal)
+		{
+			glm::vec3 on_unit_sphere= unitSphere(seed);
+			if(glm::dot(on_unit_sphere, normal) > 0.0f) // In the same hemisphere as the normal
+				return on_unit_sphere;
+			else
+				return -on_unit_sphere;
+		}
 	} // namespace Random
 } // namespace AstralRaytracer
