@@ -4,17 +4,46 @@
 
 #include <iostream>
 
-uint32 TextureManager::loadTextureFromData(TextureData& textureData, bool gamma)
+TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path)
+{
+	int32 width, height, numChannels;
+
+	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 3);
+	assert(data);
+
+	TextureData        texData(width, height, numChannels);
+	std::vector<uint8> vecData;
+	vecData.resize(width * height * numChannels);
+
+	std::memcpy(vecData.data(), data, width * height * numChannels);
+
+	texData.setTextureData(vecData);
+
+	stbi_image_free(data);
+
+	return texData;
+}
+
+uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool gamma)
 {
 	uint32 textureID;
 	gl::glGenTextures(1, &textureID);
 	const uint8* const data= textureData.getTextureData().data();
+	assert(data);
+	loadTextureFromRawData(reinterpret_cast<const stbi_uc*>(data), textureData.getWidth(),
+												 textureData.getHeight(), textureID);
+	return textureID;
+}
+
+void TextureManager::loadTextureFromRawData(const stbi_uc* const data, uint32 width, uint32 height,
+																						uint32 textureID)
+{
 	if(data)
 	{
 		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
-		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, textureData.getWidth(),
-										 textureData.getHeight(), 0, gl::GL_RGB, gl::GL_UNSIGNED_BYTE, data);
+		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, width, height, 0, gl::GL_RGB,
+										 gl::GL_UNSIGNED_BYTE, data);
 
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
@@ -25,7 +54,6 @@ uint32 TextureManager::loadTextureFromData(TextureData& textureData, bool gamma)
 	{
 		std::cout << "\nTexture failed to load with texture data " << std::endl;
 	}
-	return textureID;
 }
 
 void TextureManager::updateTexture(const TextureData& textureData, uint32 textureId)

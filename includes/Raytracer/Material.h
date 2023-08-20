@@ -6,7 +6,8 @@ namespace AstralRaytracer
 {
 	struct Material
 	{
-		ColourData  albedo   = Colors::Pink;
-		float32     roughness= 0.5;
+		ColourData albedo   = Colors::Pink;
+		float32    roughness= 0.5;
+		uint32     texture  = 0;
 	};
 } // namespace AstralRaytracer

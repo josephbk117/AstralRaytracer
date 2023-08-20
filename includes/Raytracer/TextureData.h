@@ -24,5 +24,6 @@ class TextureData
 	void                      setTexelColorAtPixelIndex(uint32 index, const glm::u8vec3& rgb);
 	void                      setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y);
 	void                      setTexelColor(ColourData& colourData, uint32 x, uint32 y);
-	ColourData                getTexelColor(uint32 x, uint32 y);
+	ColourData                getTexelColor(uint32 x, uint32 y) const;
+	ColourData                getTexelColor(float32 u, float32 v) const;
 };
