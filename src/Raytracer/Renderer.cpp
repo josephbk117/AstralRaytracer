@@ -27,6 +27,8 @@ namespace AstralRaytracer
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
+		onResize(cam.getResolution().x, cam.getResolution().y);
+
 		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
 		const float32    imageHeight      = m_texData.getHeight();
 		const glm::mat4& inverseView      = cam.getInverseView();

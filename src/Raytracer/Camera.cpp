@@ -17,10 +17,11 @@ namespace AstralRaytracer
 		m_lastMousePosition= glm::vec2(0.0f);
 
 		recalculateView();
-		recalculateProjection({500, 500});
+		m_resolution= {1, 1};
+		recalculateProjection(m_resolution);
 	}
 
-	bool Camera::update(float32 deltaTime, const glm::u32vec2& resolution, bool forceRecalculate)
+	bool Camera::update(float32 deltaTime, const glm::u32vec2& resolution)
 	{
 		if(m_lastMousePosition == glm::vec2(0.0f))
 		{
@@ -30,6 +31,8 @@ namespace AstralRaytracer
 		const glm::vec2& mousePos= Input::getMousePosition();
 		const glm::vec2  delta   = (mousePos - m_lastMousePosition);
 		m_lastMousePosition      = mousePos;
+
+		bool forceRecalculate= m_resolution != resolution;
 
 		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		{
@@ -102,6 +105,7 @@ namespace AstralRaytracer
 		}
 		if(moved || forceRecalculate)
 		{
+			m_resolution = resolution;
 			recalculateView();
 			recalculateProjection(resolution);
 		}

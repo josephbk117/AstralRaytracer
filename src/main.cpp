@@ -69,12 +69,14 @@ int main()
 		{
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			const float32 deltaTime      = AstralRaytracer::Input::getTimeSinceStart() - prevTime;
-			const bool    rendererResized= renderer.onResize(rendererSize.x * resolutionScale * 0.01f,
-																											 rendererSize.y * resolutionScale * 0.01f);
-			const bool    cameraUpdated  = cam.update(deltaTime, rendererSize, rendererResized);
+			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
 
-			if(isSceneDirty || cameraUpdated || rendererResized)
+			const uint32 resolutionX= rendererSize.x * resolutionScale * 0.01f;
+			const uint32 resolutionY= rendererSize.y * resolutionScale * 0.01f;
+
+			const bool cameraUpdated= cam.update(deltaTime, {resolutionX, resolutionY});
+
+			if(isSceneDirty || cameraUpdated)
 			{
 				renderer.resetFrameIndex();
 				isSceneDirty= false;
