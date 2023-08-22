@@ -161,11 +161,18 @@ int main()
 					ImGui::TableSetColumnIndex(1);
 
 					ImGui::Text("Materials");
-					for(uint32 matIndex= 0; matIndex < scene.m_materials.size(); ++matIndex)
+					const uint32 materialCount= scene.m_materials.size();
+					const uint32 textureCount = scene.m_textures.size();
+					for(uint32 matIndex= 0; matIndex < materialCount; ++matIndex)
 					{
 						ImGui::PushID(matIndex);
 						AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
 						if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
+						{
+							isSceneDirty= true;
+						}
+						if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0,
+																textureCount - 1))
 						{
 							isSceneDirty= true;
 						}
