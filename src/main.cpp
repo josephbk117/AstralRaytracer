@@ -130,93 +130,114 @@ int main()
 				}
 				ImGui::EndChild();
 
-				constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable;
-
-				if(ImGui::BeginTable("viewSplit", 2, tableFlags))
+				constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
+																		ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
+				constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
+				if(ImGui::BeginTable("viewportContentSplit", 1, tableFlags, ImGui::GetContentRegionAvail()))
 				{
-					ImGui::TableNextRow();
+					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
-
-					uint32 reqWidth = 1920;
-					uint32 reqHeight= 1080;
-
-					float32 ratio= reqHeight / (float32)reqWidth;
-
-					ImVec2 availableRegion= ImGui::GetContentRegionAvail();
-					ImVec2 newRegion      = {availableRegion.x, availableRegion.x * ratio};
-					ImVec2 topGapRegion   = {availableRegion.x, (availableRegion.y - newRegion.y) * 0.25f};
-					ImGui::Dummy(topGapRegion);
-
-					availableRegion= newRegion;
-					rendererSize   = {newRegion.x, newRegion.y};
-
-					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), availableRegion,
-											 ImVec2(0, 1), ImVec2(1, 0));
-
-					ImGui::Dummy(topGapRegion);
-
-					ImGuizmo::SetDrawlist();
-
-					glm::mat4 transform=
-							scene.m_sceneTraceables.at(selectedObjectIndex).get()->getTransformMatrix();
-
-					ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-															 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
-															 glm::value_ptr(transform));
-
-					if(ImGuizmo::IsUsing())
+					if(ImGui::BeginTable(
+								 "viewportSceneInfoSplit", 2, tableFlags,
+								 {ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y * 0.75f}))
 					{
-						scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
-						isSceneDirty= true;
-					}
+						ImGui::TableNextRow(rowFlags, 100.0f);
+						ImGui::TableSetColumnIndex(0);
 
-					ImGui::TableSetColumnIndex(1);
+						uint32 reqWidth = 5;
+						uint32 reqHeight= 4;
 
-					ImGui::Text("Materials");
-					const uint32 materialCount= scene.m_materials.size();
-					const uint32 textureCount = scene.m_textures.size();
-					for(uint32 matIndex= 0; matIndex < materialCount; ++matIndex)
-					{
-						ImGui::PushID(matIndex);
-						AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
-						if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
+						float32 reqRatio= reqHeight / (float32)reqWidth;
+
+						// width > height
+
+						ImVec2 availableRegion= ImGui::GetContentRegionAvail();
+
+						ImVec2 newRegion= {availableRegion.x, availableRegion.x * reqRatio};
+						ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.25f,
+															 (availableRegion.y - newRegion.y) * 0.25f};
+
+						ImGui::Dummy({availableRegion.x, gapRegion.y});
+						ImGui::Dummy({gapRegion.x, availableRegion.y});
+
+						ImVec2 finalRegion= {newRegion.x, newRegion.y};
+						rendererSize      = {finalRegion.x, finalRegion.y};
+
+						ImGui::SameLine();
+						ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), finalRegion,
+												 ImVec2(0, 1), ImVec2(1, 0));
+
+						ImGui::Dummy({availableRegion.x, gapRegion.y});
+
+						ImGuizmo::SetDrawlist();
+
+						glm::mat4 transform=
+								scene.m_sceneTraceables.at(selectedObjectIndex).get()->getTransformMatrix();
+
+						ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
+																 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
+																 glm::value_ptr(transform));
+
+						if(ImGuizmo::IsUsing())
 						{
+							scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
 							isSceneDirty= true;
 						}
-						if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0,
-																textureCount - 1))
+
+						ImGui::TableSetColumnIndex(1);
+
+						ImGui::Text("Materials");
+						const uint32 materialCount= scene.m_materials.size();
+						const uint32 textureCount = scene.m_textures.size();
+						for(uint32 matIndex= 0; matIndex < materialCount; ++matIndex)
 						{
-							isSceneDirty= true;
+							ImGui::PushID(matIndex);
+							AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
+							if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
+							{
+								isSceneDirty= true;
+							}
+							if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0,
+																	textureCount - 1))
+							{
+								isSceneDirty= true;
+							}
+							if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
+							{
+								isSceneDirty= true;
+							}
+							if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f))
+							{
+								isSceneDirty= true;
+							}
+							if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f))
+							{
+								isSceneDirty= true;
+							}
+							ImGui::Separator();
+							ImGui::PopID();
 						}
-						if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
-						{
-							isSceneDirty= true;
-						}
-						if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f))
-						{
-							isSceneDirty= true;
-						}
-						if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f))
-						{
-							isSceneDirty= true;
-						}
+
 						ImGui::Separator();
-						ImGui::PopID();
-					}
+						ImGui::Separator();
 
-					ImGui::Separator();
-					ImGui::Separator();
+						ImGui::Text("Objects");
 
-					ImGui::Text("Objects");
-
-					for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
-					{
-						bool isSelected= objIndex == selectedObjectIndex;
-						if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected))
+						for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 						{
-							selectedObjectIndex= objIndex;
+							bool isSelected= objIndex == selectedObjectIndex;
+							if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected))
+							{
+								selectedObjectIndex= objIndex;
+							}
 						}
+
+						ImGui::EndTable();
 					}
+
+					ImGui::TableNextRow(rowFlags, 100.0f);
+					ImGui::TableSetColumnIndex(0);
+					ImGui::Text("Hey Three!");
 
 					ImGui::EndTable();
 				}
