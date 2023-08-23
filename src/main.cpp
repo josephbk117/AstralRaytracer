@@ -137,11 +137,23 @@ int main()
 					ImGui::TableNextRow();
 					ImGui::TableSetColumnIndex(0);
 
+					uint32 reqWidth = 1920;
+					uint32 reqHeight= 1080;
+
+					float32 ratio= reqHeight / (float32)reqWidth;
+
 					ImVec2 availableRegion= ImGui::GetContentRegionAvail();
-					rendererSize          = {availableRegion.x, availableRegion.y};
+					ImVec2 newRegion      = {availableRegion.x, availableRegion.x * ratio};
+					ImVec2 topGapRegion   = {availableRegion.x, (availableRegion.y - newRegion.y) * 0.25f};
+					ImGui::Dummy(topGapRegion);
+
+					availableRegion= newRegion;
+					rendererSize   = {newRegion.x, newRegion.y};
 
 					ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), availableRegion,
 											 ImVec2(0, 1), ImVec2(1, 0));
+
+					ImGui::Dummy(topGapRegion);
 
 					ImGuizmo::SetDrawlist();
 
