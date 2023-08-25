@@ -89,8 +89,6 @@ int main()
 			window.startUI();
 			ImGuizmo::BeginFrame();
 			ImGuizmo::SetOrthographic(false);
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, rendererSize.x,
-												rendererSize.y);
 
 			constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																				ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
@@ -113,7 +111,9 @@ int main()
 				}
 				constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
 
-				ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), 32), true, flags2);
+				const uint32 toolBarHeight= 32;
+
+				ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags2);
 				int32 bounceCount= renderer.getBounceCount();
 
 				const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 4.0f;
@@ -158,7 +158,6 @@ int main()
 						ImGui::TableNextRow(rowFlags, 100.0f);
 						ImGui::TableSetColumnIndex(0);
 
-						// width > height
 						ImVec2 availableRegion= ImGui::GetContentRegionAvail();
 						availableRegion.y     = viewportSceneInfoSplitHeight;
 						const float32 scale   = glm::min(availableRegion.x / (float32)rendererResolution.x,
@@ -171,15 +170,18 @@ int main()
 						ImGui::Dummy({availableRegion.x, gapRegion.y});
 						ImGui::Dummy({gapRegion.x, newRegion.y});
 
-						const ImVec2 finalRegion= {newRegion.x, newRegion.y};
-						rendererSize            = {finalRegion.x, finalRegion.y};
+						rendererSize= {newRegion.x, newRegion.y};
 
 						ImGui::SameLine();
-						ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), finalRegion,
-												 ImVec2(0, 1), ImVec2(1, 0));
+						ImGui::BeginChild(2, newRegion, false,
+															ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																	ImGuiWindowFlags_NoResize);
 
-						ImGui::Dummy({availableRegion.x, gapRegion.y});
+						ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()),
+												 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 
+						ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, newRegion.x,
+															newRegion.y);
 						ImGuizmo::SetDrawlist();
 
 						glm::mat4 transform=
@@ -194,6 +196,10 @@ int main()
 							scene.m_sceneTraceables.at(selectedObjectIndex)->setPosition(glm::vec3(transform[3]));
 							isSceneDirty= true;
 						}
+
+						ImGui::EndChild();
+
+						ImGui::Dummy({availableRegion.x, gapRegion.y});
 
 						ImGui::TableSetColumnIndex(1);
 
