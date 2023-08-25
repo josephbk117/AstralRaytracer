@@ -88,8 +88,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
          # Disable RTTI.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-        # Disable exceptions.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
     endif()
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -99,8 +97,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
          # Disable RTTI.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-        # Disable exceptions.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-exceptions")
     endif()
 
     if(MSVC)
@@ -110,7 +106,5 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
          # Disable RTTI.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
-        # Disable exceptions.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHs-c-")
     endif()
 endif()
