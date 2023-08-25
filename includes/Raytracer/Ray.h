@@ -1,7 +1,7 @@
 #pragma once
 #include "ColourData.h"
+#include "Utils/Common.h"
 
-#include <glm.hpp>
 #include <limits>
 
 struct Ray

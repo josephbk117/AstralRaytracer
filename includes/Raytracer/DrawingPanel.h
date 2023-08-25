@@ -2,7 +2,6 @@
 #include "Transform.h"
 #include "Utils/Common.h"
 
-#include <glm.hpp>
 class DrawingPanel
 {
 	public:

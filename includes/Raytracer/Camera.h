@@ -1,6 +1,5 @@
 #pragma once
 #include "Utils/Common.h"
-#include "glm.hpp"
 
 namespace AstralRaytracer
 {

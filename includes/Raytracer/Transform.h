@@ -1,7 +1,5 @@
 #pragma once
 #include "Utils/Common.h"
-
-#include <glm.hpp>
 class Transform
 {
 	public:

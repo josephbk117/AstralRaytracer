@@ -2,7 +2,6 @@
 #include "Utils/Common.h"
 
 #include <glbinding/gl/gl.h>
-#include <glm.hpp>
 #include <string>
 
 class ShaderProgram
