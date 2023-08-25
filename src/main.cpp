@@ -61,6 +61,7 @@ int main()
 
 		float64      prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		glm::u32vec2 rendererSize{500, 500};
+		glm::u32vec2 rendererResolution{500, 500};
 		float32      resolutionScale= 50.0f;
 		bool         isSceneDirty   = false;
 
@@ -115,16 +116,29 @@ int main()
 				ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), 32), true, flags2);
 				int32 bounceCount= renderer.getBounceCount();
 
-				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.35f);
-				if(ImGui::SliderInt("Bounce Count", &bounceCount, 1, 12))
+				const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 4.0f;
+
+				ImGui::SetNextItemWidth(sliderWidth);
+				if(ImGui::SliderInt("Bounce Count", &bounceCount, 1, 12, "%d",
+														ImGuiSliderFlags_AlwaysClamp))
 				{
 					renderer.setBounceCount(bounceCount);
 					isSceneDirty= true;
 				}
 
 				ImGui::SameLine();
-				ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.35f);
-				if(ImGui::SliderFloat("Resolution Scale", &resolutionScale, 10.0f, 120.0f))
+				ImGui::SetNextItemWidth(sliderWidth);
+
+				if(ImGui::SliderFloat("Resolution Scale", &resolutionScale, 10.0f, 120.0f, "%.2f",
+															ImGuiSliderFlags_AlwaysClamp))
+				{
+					isSceneDirty= true;
+				}
+
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(sliderWidth);
+				if(ImGui::SliderInt2("Resolution", reinterpret_cast<int32*>(&rendererResolution), 16, 1920,
+														 "%d", ImGuiSliderFlags_AlwaysClamp))
 				{
 					isSceneDirty= true;
 				}
@@ -137,31 +151,28 @@ int main()
 				{
 					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
-					if(ImGui::BeginTable(
-								 "viewportSceneInfoSplit", 2, tableFlags,
-								 {ImGui::GetContentRegionAvail().x, ImGui::GetContentRegionAvail().y * 0.75f}))
+					const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.75f;
+					if(ImGui::BeginTable("viewportSceneInfoSplit", 2, tableFlags,
+															 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 					{
 						ImGui::TableNextRow(rowFlags, 100.0f);
 						ImGui::TableSetColumnIndex(0);
 
-						uint32 reqWidth = 5;
-						uint32 reqHeight= 4;
-
-						float32 reqRatio= reqHeight / (float32)reqWidth;
-
 						// width > height
-
 						ImVec2 availableRegion= ImGui::GetContentRegionAvail();
+						availableRegion.y     = viewportSceneInfoSplitHeight;
+						const float32 scale   = glm::min(availableRegion.x / (float32)rendererResolution.x,
+																						 availableRegion.y / (float32)rendererResolution.y);
 
-						ImVec2 newRegion= {availableRegion.x, availableRegion.x * reqRatio};
-						ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.25f,
-															 (availableRegion.y - newRegion.y) * 0.25f};
+						ImVec2 newRegion= {rendererResolution.x * scale, rendererResolution.y * scale};
+						ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
+															 (availableRegion.y - newRegion.y) * 0.5f};
 
 						ImGui::Dummy({availableRegion.x, gapRegion.y});
-						ImGui::Dummy({gapRegion.x, availableRegion.y});
+						ImGui::Dummy({gapRegion.x, newRegion.y});
 
-						ImVec2 finalRegion= {newRegion.x, newRegion.y};
-						rendererSize      = {finalRegion.x, finalRegion.y};
+						const ImVec2 finalRegion= {newRegion.x, newRegion.y};
+						rendererSize            = {finalRegion.x, finalRegion.y};
 
 						ImGui::SameLine();
 						ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), finalRegion,
@@ -198,7 +209,7 @@ int main()
 								isSceneDirty= true;
 							}
 							if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0,
-																	textureCount - 1))
+																	textureCount - 1, "%d", ImGuiSliderFlags_AlwaysClamp))
 							{
 								isSceneDirty= true;
 							}
@@ -206,11 +217,13 @@ int main()
 							{
 								isSceneDirty= true;
 							}
-							if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f))
+							if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f,
+																		"%.2f", ImGuiSliderFlags_AlwaysClamp))
 							{
 								isSceneDirty= true;
 							}
-							if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f))
+							if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f, "%.2f",
+																		ImGuiSliderFlags_AlwaysClamp))
 							{
 								isSceneDirty= true;
 							}
