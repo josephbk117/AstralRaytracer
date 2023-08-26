@@ -1,5 +1,7 @@
 #include "Window.h"
 
+#include "Raytracer/TextureManager.h"
+
 namespace AstralRaytracer
 {
 	Window*            Window::m_instance= nullptr;
@@ -8,7 +10,7 @@ namespace AstralRaytracer
 	void Window::initialize()
 	{
 		assert(m_instance == nullptr);
-		m_instance = this;
+		m_instance= this;
 
 		m_resolution= {500, 500};
 
@@ -32,6 +34,16 @@ namespace AstralRaytracer
 
 		glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(glfwWindow);
+
+		TextureData iconTexData=
+				TextureManager::loadTextureDataFromFile("resources/icons/astralraytracer.png", 4);
+
+		GLFWimage image[1];
+		image[0].width = iconTexData.getWidth();
+		image[0].height= iconTexData.getHeight();
+		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
+		glfwSetWindowIcon(glfwWindow, 1, image);
+
 		glbinding::initialize(glfwGetProcAddress);
 
 		IMGUI_CHECKVERSION();

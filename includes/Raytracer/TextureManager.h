@@ -10,7 +10,7 @@ class TextureManager
 	public:
 	TextureManager()                     = delete;
 	TextureManager(const TextureManager&)= delete;
-	static TextureData loadTextureDataFromFile(const std::filesystem::path& path);
+	static TextureData loadTextureDataFromFile(const std::filesystem::path& path, uint8 reqChannelCount = 3);
 	static uint32      loadTextureFromTextureData(TextureData& textureData, bool gamma);
 	static void        updateTexture(const TextureData& textureData, uint32 textureId);
 	static void        resizeTexture(const TextureData& textureData, uint32 textureId);

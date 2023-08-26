@@ -5,11 +5,12 @@
 #include <iostream>
 #include <stb_image.h>
 
-TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path)
+TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path,
+																										uint8 reqChannelCount /*= 3*/)
 {
 	int32 width, height, numChannels;
 
-	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 3);
+	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, reqChannelCount);
 	assert(data);
 
 	TextureData        texData(width, height, numChannels);
