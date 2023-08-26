@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstring>
+#define GLM_FORCE_INTRINSICS
 #include <glm.hpp>
 #include <limits>
 #include <string>

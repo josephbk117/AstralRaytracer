@@ -46,7 +46,7 @@ namespace AstralRaytracer
 		{
 			Input::setCursorMode(CursorMode::CAPTURED);
 
-			constexpr glm::vec3 upDir(0.0f, 1.0f, 0.0f);
+			const glm::vec3 upDir(0.0f, 1.0f, 0.0f);
 			glm::vec3       rightDir= glm::cross(m_direction, upDir);
 
 			if(Input::isKeyDown(InputKey::W))
