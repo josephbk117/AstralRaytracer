@@ -51,25 +51,24 @@ namespace AstralRaytracer
 
 	bool StaticMesh::intersectsBoundingBox(const Ray& rayIn) const
 	{
-		const float32 dirFracX= 1.0f / rayIn.direction.x;
-		const float32 dirFracY= 1.0f / rayIn.direction.y;
-		const float32 dirFracZ= 1.0f / rayIn.direction.z;
-		// lb is the corner of AABB with minimal coordinates - left bottom, rt is maximal corner
-		// r.org is origin of ray
+		const glm::vec3& direction         = rayIn.direction;
+		const glm::vec3& worldSpacePosition= rayIn.worldSpacePosition;
+		const glm::vec3& lb                = m_transform.getPosition() + m_boundingBox.min;
+		const glm::vec3& rt                = m_transform.getPosition() + m_boundingBox.max;
 
-		const glm::vec3& lb= m_transform.getPosition() + m_boundingBox.min;
-		const glm::vec3& rt= m_transform.getPosition() + m_boundingBox.max;
+		const float32 dirFracX= 1.0f / direction.x;
+		const float32 dirFracY= 1.0f / direction.y;
+		const float32 dirFracZ= 1.0f / direction.z;
 
-		const float32 t1= (lb.x - rayIn.worldSpacePosition.x) * dirFracX;
-		const float32 t2= (rt.x - rayIn.worldSpacePosition.x) * dirFracX;
-		const float32 t3= (lb.y - rayIn.worldSpacePosition.y) * dirFracY;
-		const float32 t4= (rt.y - rayIn.worldSpacePosition.y) * dirFracY;
-		const float32 t5= (lb.z - rayIn.worldSpacePosition.z) * dirFracZ;
-		const float32 t6= (rt.z - rayIn.worldSpacePosition.z) * dirFracZ;
+		const float32 t1= (lb.x - worldSpacePosition.x) * dirFracX;
+		const float32 t2= (rt.x - worldSpacePosition.x) * dirFracX;
+		const float32 t3= (lb.y - worldSpacePosition.y) * dirFracY;
+		const float32 t4= (rt.y - worldSpacePosition.y) * dirFracY;
+		const float32 t5= (lb.z - worldSpacePosition.z) * dirFracZ;
+		const float32 t6= (rt.z - worldSpacePosition.z) * dirFracZ;
 
 		const float32 tmax= glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-		// if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
 		if(tmax < 0.0f)
 		{
 			return false;
@@ -77,7 +76,6 @@ namespace AstralRaytracer
 
 		const float32 tmin= glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
 
-		// if tmin > tmax, ray doesn't intersect AABB
 		if(tmin > tmax)
 		{
 			return false;
