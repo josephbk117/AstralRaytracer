@@ -24,6 +24,12 @@ namespace AstralRaytracer
 		return newState == GLFW_PRESS;
 	}
 
+	bool Input::isMouseButtonUp(MouseButtonIndex mouseButtonIndex)
+	{
+		int32 newState= glfwGetMouseButton(glfwWindow, (int32)mouseButtonIndex);
+		return newState == GLFW_RELEASE;
+	}
+
 	bool Input::isKeyDown(InputKey inputKey)
 	{
 		int32 state= glfwGetKey(glfwWindow, (int32)inputKey);

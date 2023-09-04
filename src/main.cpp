@@ -15,6 +15,8 @@
 #include <gtc/type_ptr.hpp>
 #include <memory>
 
+void initScene(AstralRaytracer::Scene& scene);
+
 int main()
 {
 	AstralRaytracer::Window window("Astral Raytracer");
@@ -25,49 +27,45 @@ int main()
 	{
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
-
-		AstralRaytracer::Scene scene;
-		scene.addTexture(
-				TextureManager::loadTextureDataFromFile("resources/textures/floor_texture.jpg"), "Floor");
-
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
-																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
-											"Mat1");
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
-																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
-											"Mat2");
-		scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White,
-																								AstralRaytracer::Colors::White, 0.0f, 0.925f},
-											"Mat3");
-		scene.m_materials.at(3).texture= 1;
-
-		scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere1");
-		scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere2");
-		scene.addTraceable(
-				std::make_unique<AstralRaytracer::StaticMesh>(
-						AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")),
-				"Cube");
-		scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
-													 glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
-													 glm::vec3(100.0f, 0.0f, -100.0f)),
-											 "Floor");
-
-		scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
-		scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
-		scene.m_sceneTraceables.at(3)->setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-		scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
-		scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
-		scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
+		AstralRaytracer::Scene    scene;
+		initScene(scene);
 
 		float64      prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		glm::u32vec2 rendererSize{500, 500};
 		glm::u32vec2 rendererResolution{500, 500};
+		glm::vec2    imageMinRect{0, 0};
+		glm::vec2    imageMaxRect{1, 1};
 		float32      resolutionScale= 50.0f;
 		bool         isSceneDirty   = false;
 
 		uint32 selectedObjectIndex= 0;
 		while(!window.shouldWindowClose())
 		{
+			// Process Input
+
+			const glm::vec2& mousePos= AstralRaytracer::Input::getMousePosition();
+			if(!isSceneDirty &&
+				 AstralRaytracer::Input::isMouseButtonDown(
+						 AstralRaytracer::MouseButtonIndex::MOUSE_BUTTON_1) &&
+				 mousePos.x > imageMinRect.x && mousePos.x < imageMaxRect.x &&
+				 mousePos.y > imageMinRect.y && mousePos.y < imageMaxRect.y)
+			{
+
+				HitInfo   closestHitInfo;
+				glm::vec2 coord((mousePos.x - imageMinRect.x) / rendererSize.x,
+												(mousePos.y - imageMinRect.y) / rendererSize.y);
+				coord.y = 1.0f - coord.y;
+
+				const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
+						coord, cam.getInverseProjection(), cam.getInverseView());
+				renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
+
+				if(closestHitInfo.isValid())
+				{
+					selectedObjectIndex= closestHitInfo.objectIndex;
+				}
+			}
+
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
 			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
@@ -180,6 +178,9 @@ int main()
 						ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()),
 												 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
 
+						imageMinRect= {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
+						imageMaxRect= {ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y};
+
 						ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, newRegion.x,
 															newRegion.y);
 						ImGuizmo::SetDrawlist();
@@ -273,4 +274,39 @@ int main()
 
 	window.shutdown();
 	return 0;
+}
+
+void initScene(AstralRaytracer::Scene& scene)
+{
+	scene.addTexture(TextureManager::loadTextureDataFromFile("resources/textures/floor_texture.jpg"),
+									 "Floor");
+
+	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
+										"Mat1");
+	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
+										"Mat2");
+	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White,
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
+										"Mat3");
+	scene.m_materials.at(3).texture= 1;
+
+	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere1");
+	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere2");
+	scene.addTraceable(
+			std::make_unique<AstralRaytracer::StaticMesh>(
+					AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")),
+			"Cube");
+	scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
+												 glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
+												 glm::vec3(100.0f, 0.0f, -100.0f)),
+										 "Floor");
+
+	scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
+	scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
+	scene.m_sceneTraceables.at(3)->setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
+	scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
+	scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
+	scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
 }

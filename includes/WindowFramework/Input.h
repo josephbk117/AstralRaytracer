@@ -163,6 +163,7 @@ namespace AstralRaytracer
 		static glm::vec2 getMousePosition();
 		static void      setCursorMode(CursorMode cursorMode);
 		static bool      isMouseButtonDown(MouseButtonIndex mouseButtonIndex);
+		static bool      isMouseButtonUp(MouseButtonIndex mouseButtonIndex);
 		static bool      isKeyDown(InputKey inputKey);
 		static float64   getTimeSinceStart();
 

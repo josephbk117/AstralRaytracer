@@ -49,14 +49,10 @@ namespace AstralRaytracer
 										const float32 yIndex= (pixelAcessIndex / xAxisPixelCount) +
 																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
 
-										glm::vec2 coord{xIndex / xAxisPixelCount, yIndex / imageHeight};
-										coord= (coord * 2.0f) - 1.0f;
-										const glm::vec4& target=
-												inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-										const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+										const glm::vec2 coord{xIndex / xAxisPixelCount, yIndex / imageHeight};
 
+										glm::vec3 rayDir = getRayDirectionFromNormalizedCoord(coord, inverseProjection, inverseView);
 										glm::vec3 rayOrigin= cam.getPosition();
-										glm::vec3 rayDir   = glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 
 										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
 
@@ -76,6 +72,17 @@ namespace AstralRaytracer
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
+	}
+
+	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
+																												 const glm::mat4& inverseProjection,
+																												 const glm::mat4& inverseView)
+	{
+		coord                            = (coord * 2.0f) - 1.0f;
+		const glm::vec4& target          = inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+		const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+
+		return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 	}
 
 	bool Renderer::onResize(uint32 width, uint32 height)
@@ -110,8 +117,8 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		glm::vec3   light(0.0f);
-		glm::vec3   contribution(1.0f);
+		glm::vec3       light(0.0f);
+		glm::vec3       contribution(1.0f);
 		constexpr float kEpsilon= 0.0001f;
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
@@ -119,21 +126,9 @@ namespace AstralRaytracer
 			seedVal+= bounceIndex;
 			HitInfo closestHitInfo;
 
-			// Initialize closest hit distance to a large value
-			closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
+			findClosestHit(closestHitInfo, scene, rayOrigin, rayDir);
 
-			for(const auto& traceable: scene.m_sceneTraceables)
-			{
-				HitInfo hitInfo;
-				if(traceable->trace({rayOrigin, rayDir}, hitInfo) &&
-					 hitInfo.hitDistance < closestHitInfo.hitDistance)
-				{
-					closestHitInfo= hitInfo;
-				}
-			}
-
-			if(closestHitInfo.hitDistance > 0.0f &&
-				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
+			if(closestHitInfo.isValid())
 			{
 				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
 				const TextureData& texData  = scene.m_textures.at(mat.texture);
@@ -159,6 +154,24 @@ namespace AstralRaytracer
 		}
 
 		return light;
+	}
+
+	void Renderer::findClosestHit(HitInfo& closestHitInfo, const Scene& scene,
+																const glm::vec3& rayOrigin, const glm::vec3& rayDir)
+	{
+		// Initialize closest hit distance to a large value
+		closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
+
+		for(uint32 traceableIndex = 0; traceableIndex < scene.m_sceneTraceables.size(); ++traceableIndex)
+		{
+			HitInfo hitInfo;
+			if(scene.m_sceneTraceables[traceableIndex]->trace({rayOrigin, rayDir}, hitInfo) &&
+				 hitInfo.hitDistance < closestHitInfo.hitDistance)
+			{
+				hitInfo.objectIndex = traceableIndex;
+				closestHitInfo= hitInfo;
+			}
+		}
 	}
 
 } // namespace AstralRaytracer
