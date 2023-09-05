@@ -16,135 +16,164 @@ namespace AstralRaytracer
 
 	Renderer::Renderer()
 	{
-		m_texData= TextureData(500, 500, 3);
-		m_accumlatedColorData.resize(500 * 500 * 3);
-		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
-		m_cachedRayDirections.resize(500 * 500);
-		m_rayIterator.resize(500 * 500);
+		constexpr uint32 initialWidth = 16;
+		constexpr uint32 initialHeight= 16;
 
-		for(uint32 index= 0; index < 500 * 500; ++index)
-		{
-			m_rayIterator.push_back(index);
-		}
+		// Made initial resolution small so that OnResize can run
+		m_texData  = TextureData(initialWidth, initialHeight, 3);
+		m_textureId= TextureManager::loadTextureFromTextureData(m_texData, false);
 
-		m_textureId= TextureManager::loadTextureFromData(m_texData, false);
-
-		ComputeShaderProgram computeProgram;
-		computeProgram.compileAndLinkShader("resources/raytrace.comps");
+		onResize(32, 32);
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
-		const uint32 xAxisPixelCount   = m_texData.getWidth() * m_texData.getComponentCount();
-		const uint32 totalPixelCount   = xAxisPixelCount * m_texData.getHeight();
-		const uint32 pixelComponentSize= m_texData.getComponentCount();
-		// Cache Ray directions
-		if(m_frameIndex == 1)
-		{
-			for(uint32 index= 0; index < totalPixelCount; index+= pixelComponentSize)
-			{
-				glm::vec2 coord{(index % xAxisPixelCount) / (float32)xAxisPixelCount,
-												(index / xAxisPixelCount) / (float32)m_texData.getHeight()};
-				coord= (coord * 2.0f) - 1.0f;
+		onResize(cam.getResolution().x, cam.getResolution().y);
 
-				const glm::vec4& target=
-						cam.getInverseProjection() * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-				const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
-				m_cachedRayDirections[index / 3]=
-						glm::vec3(cam.getInverseView() * glm::vec4(targetNormalized, 0.0f));
-			}
-		}
+		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
+		const float32    imageHeight      = m_texData.getHeight();
+		const glm::mat4& inverseView      = cam.getInverseView();
+		const glm::mat4& inverseProjection= cam.getInverseProjection();
 
-		constexpr uint32  bounceCount       = 4;
-		constexpr float32 oneOverBounceCount= 1.0f / bounceCount;
-		const float32     oneOverFrameIndex = 1.0f / m_frameIndex;
+		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
+		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
-		std::for_each(
-				std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
-				[this, oneOverBounceCount, bounceCount, oneOverFrameIndex, &scene, &cam](uint32 index)
-				{
-					uint32    seedVal  = index * m_frameIndex;
-					glm::vec3 rayOrigin= cam.getPosition();
-					glm::vec3 rayDir   = m_cachedRayDirections[index];
+		std::for_each(std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
+									[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex,
+									 &inverseView, &inverseProjection, &scene, &cam](uint32 index)
+									{
+										uint32       seedVal         = index * m_frameIndex;
+										const uint32 pixelAccessIndex= index * 3;
 
-					const glm::vec3& outColor= perPixel(bounceCount, seedVal, scene, rayOrigin, rayDir);
+										const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) +
+																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
+										const float32 yIndex= static_cast<float32>(pixelAccessIndex / xAxisPixelCount) +
+																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
 
-					const uint32 pixelAcessIndex= index * 3;
+										const glm::vec2 coOrd{xIndex / xAxisPixelCount, yIndex / imageHeight};
 
-					float32& redChannel  = m_accumlatedColorData[pixelAcessIndex];
-					float32& greenChannel= m_accumlatedColorData[pixelAcessIndex + 1u];
-					float32& blueChannel = m_accumlatedColorData[pixelAcessIndex + 2u];
+										glm::vec3 rayDir=
+												getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
+										glm::vec3 rayOrigin= cam.getPosition();
 
-					redChannel+= (outColor.r * oneOverBounceCount);
-					greenChannel+= (outColor.g * oneOverBounceCount);
-					blueChannel+= (outColor.b * oneOverBounceCount);
+										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
 
-					const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
-					const glm::u8vec3& finalColorData=
-							ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
-					m_texData.setTexelColorAtPixelIndex(pixelAcessIndex, finalColorData);
-				});
+										float32& redChannel  = m_accumlatedColorData[pixelAccessIndex];
+										float32& greenChannel= m_accumlatedColorData[pixelAccessIndex + 1u];
+										float32& blueChannel = m_accumlatedColorData[pixelAccessIndex + 2u];
+
+										redChannel+= (outColor.r * oneOverBounceCount);
+										greenChannel+= (outColor.g * oneOverBounceCount);
+										blueChannel+= (outColor.b * oneOverBounceCount);
+
+										const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
+										const glm::u8vec3& finalColorData=
+												ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
+										m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
+									});
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
 	}
 
-	void Renderer::onResize(uint32 width, uint32 height)
+	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
+																												 const glm::mat4& inverseProjection,
+																												 const glm::mat4& inverseView)
+	{
+		coord                            = (coord * 2.0f) - 1.0f;
+		const glm::vec4& target          = inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
+		const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+
+		return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
+	}
+
+	bool Renderer::onResize(uint32 width, uint32 height)
 	{
 		if(m_texData.getWidth() == width && m_texData.getHeight() == height)
 		{
-			return;
+			return false;
 		}
+		m_texData.resize(width, height);
 
 		m_accumlatedColorData.resize(width * height * 3);
-		m_cachedRayDirections.resize(width * height);
-		m_texData.resize(width, height);
-		TextureManager::updateTexture(m_texData, m_textureId);
+		resetFrameIndex();
+		m_rayIterator.resize(width * height);
+
+		for(uint32 index= 0; index < width * height; ++index)
+		{
+			m_rayIterator[index]= index;
+		}
+
+		TextureManager::resizeTexture(m_texData, m_textureId);
+
+		return true;
 	}
 
 	void Renderer::resetFrameIndex()
 	{
 		m_frameIndex= 1;
-		std::memset(m_accumlatedColorData.data(), 0, 500 * 500 * 3 * sizeof(float32));
+		std::memset(m_accumlatedColorData.data(), 0,
+								m_texData.getWidth() * m_texData.getHeight() * 3 * sizeof(float32));
 	}
 
-	glm::vec3 Renderer::perPixel(const uint32 bounceCount, uint32& seedVal, const Scene& scene,
-															 glm::vec3& rayOrigin, glm::vec3& rayDir)
+	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
+															 glm::vec3& rayDir)
 	{
-		const glm::vec3& lightDir= glm::normalize(glm::vec3(-0.5f, 1, 1));
-		glm::vec3        outColor(0.0f);
+		glm::vec3       light(0.0f);
+		glm::vec3       contribution(1.0f);
+		constexpr float kEpsilon= 0.0001f;
 
-		for(uint32 bounceIndex= 0; bounceIndex < bounceCount; ++bounceIndex)
+		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
 			seedVal+= bounceIndex;
 			HitInfo closestHitInfo;
-			for(uint32 objectIndex= 0; objectIndex < scene.m_sceneTraceables.size(); ++objectIndex)
-			{
-				HitInfo hitInfo;
-				if(scene.m_sceneTraceables[objectIndex]->trace({rayOrigin, rayDir}, hitInfo) &&
-					 hitInfo.hitDistance < closestHitInfo.hitDistance)
-				{
-					closestHitInfo= hitInfo;
-				}
-			}
-			if(closestHitInfo.hitDistance > 0.0f &&
-				 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
-			{
-				const float32   d  = (glm::dot(closestHitInfo.worldSpaceNormal, lightDir) + 1.0f) * 0.5f;
-				const Material& mat= scene.m_materials.at(closestHitInfo.materialIndex);
-				outColor+= d * mat.albedo.getColour_32_bit();
 
-				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * 0.0001f;
-				rayDir   = glm::reflect(rayDir, closestHitInfo.worldSpaceNormal +
-																						mat.roughness * Random::unitSphere(seedVal));
+			findClosestHit(closestHitInfo, scene, rayOrigin, rayDir);
+
+			if(closestHitInfo.isValid())
+			{
+				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
+				const TextureData& texData  = scene.m_textures.at(mat.texture);
+				const ColourData&  colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
+																														closestHitInfo.worldSpacePosition.z);
+
+				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
+				light+= mat.getEmission() * colorData.getColour_32_bit();
+
+				// Avoid self-intersection by moving the ray origin slightly
+				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * kEpsilon;
+
+				// Compute the new ray direction (reflection)
+				const glm::vec3 roughnessOffset=
+						mat.roughness * Random::unitHemiSphere(seedVal, closestHitInfo.worldSpaceNormal);
+				rayDir= glm::reflect(rayDir, closestHitInfo.worldSpaceNormal + roughnessOffset);
 			}
 			else
 			{
-				outColor+= glm::vec3(0.25f, 0.5f, 1.0f);
+				// No intersection; add background color
+				light+= glm::vec3(0.55f, 0.75f, 1.0f) * contribution;
 			}
 		}
 
-		return outColor;
+		return light;
+	}
+
+	void Renderer::findClosestHit(HitInfo& closestHitInfo, const Scene& scene,
+																const glm::vec3& rayOrigin, const glm::vec3& rayDir)
+	{
+		// Initialize closest hit distance to a large value
+		closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
+
+		for(uint32 traceableIndex= 0; traceableIndex < scene.m_sceneTraceables.size(); ++traceableIndex)
+		{
+			HitInfo hitInfo;
+			if(scene.m_sceneTraceables[traceableIndex]->trace({rayOrigin, rayDir}, hitInfo) &&
+				 hitInfo.hitDistance < closestHitInfo.hitDistance)
+			{
+				hitInfo.objectIndex= traceableIndex;
+				closestHitInfo     = hitInfo;
+			}
+		}
 	}
 
 } // namespace AstralRaytracer

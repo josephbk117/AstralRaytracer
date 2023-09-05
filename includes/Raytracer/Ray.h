@@ -1,7 +1,7 @@
 #pragma once
 #include "ColourData.h"
+#include "Utils/Common.h"
 
-#include <glm.hpp>
 #include <limits>
 
 struct Ray
@@ -13,7 +13,13 @@ struct Ray
 struct HitInfo
 {
 	float32   hitDistance  = std::numeric_limits<float32>::max();
+	uint32    objectIndex  = 0;
 	uint32    materialIndex= 0;
 	glm::vec3 worldSpaceNormal;
 	glm::vec3 worldSpacePosition;
+
+	bool isValid() const
+	{
+		return hitDistance > 0.0f && hitDistance < std::numeric_limits<float32>::max();
+	}
 };

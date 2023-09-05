@@ -1,7 +1,5 @@
 #pragma once
 #include "Utils/Common.h"
-
-#include <glm.hpp>
 struct ColourData
 {
 	private:
@@ -30,9 +28,11 @@ struct ColourData
 	glm::vec3   getColour_32_bit() const { return m_colour; }
 	glm::u8vec3 getColour_8_BitClamped() const
 	{
-		uint8 rV= (uint8)(m_colour.r * 255.0f);
-		uint8 gV= (uint8)(m_colour.g * 255.0f);
-		uint8 bV= (uint8)(m_colour.b * 255.0f);
+		const glm::vec3& clamped= glm::clamp(m_colour, glm::vec3(0.0f), glm::vec3(1.0f));
+
+		uint8 rV= (uint8)(clamped.r * 255.0f);
+		uint8 gV= (uint8)(clamped.g * 255.0f);
+		uint8 bV= (uint8)(clamped.b * 255.0f);
 		return glm::u8vec3(rV, gV, bV);
 	}
 };

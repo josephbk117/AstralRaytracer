@@ -5,6 +5,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define TINYGLTF_NOEXCEPTION
 
+#include <glm.hpp>
 #include <iostream>
 #include <tiny_gltf.h>
 
@@ -61,7 +62,11 @@ namespace AstralRaytracer
 																						vertexPositions[meshIndices[i + 2]]));
 		}
 
-		return StaticMesh(triangles);
+		AABB boundingBox;
+		boundingBox.min= glm::vec3(accessor.minValues[0], accessor.minValues[1], accessor.minValues[2]);
+		boundingBox.max= glm::vec3(accessor.maxValues[0], accessor.maxValues[1], accessor.maxValues[2]);
+
+		return StaticMesh(triangles, boundingBox);
 	}
 
 } // namespace AstralRaytracer

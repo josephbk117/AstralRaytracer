@@ -1,9 +1,11 @@
 #pragma once
 #include <cassert>
 #include <cstdint>
-#include <limits>
 #include <cstring>
+#define GLM_FORCE_INTRINSICS
 #include <glm.hpp>
+#include <limits>
+#include <string>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 
@@ -18,3 +20,5 @@ typedef uint64_t uint64;
 
 typedef float  float32;
 typedef double float64;
+
+typedef std::uintptr_t uintptr;

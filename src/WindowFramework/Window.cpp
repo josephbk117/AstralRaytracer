@@ -1,12 +1,18 @@
 #include "Window.h"
 
+#include "Raytracer/TextureManager.h"
+
 namespace AstralRaytracer
 {
+	Window*            Window::m_instance= nullptr;
 	const std::string& Window::getName() const { return m_name; }
 
 	void Window::initialize()
 	{
-		int width= 300, height= 300;
+		assert(m_instance == nullptr);
+		m_instance= this;
+
+		m_resolution= {500, 500};
 
 		if(!glfwInit())
 		{
@@ -17,7 +23,8 @@ namespace AstralRaytracer
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		glfwWindow= glfwCreateWindow(width, height, m_name.c_str(), nullptr, nullptr);
+		glfwWindow=
+				glfwCreateWindow(m_resolution.first, m_resolution.second, m_name.c_str(), nullptr, nullptr);
 
 		if(!glfwWindow)
 		{
@@ -27,6 +34,16 @@ namespace AstralRaytracer
 
 		glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(glfwWindow);
+
+		TextureData iconTexData=
+				TextureManager::loadTextureDataFromFile("resources/icons/astralraytracer.png", 4);
+
+		GLFWimage image[1];
+		image[0].width = iconTexData.getWidth();
+		image[0].height= iconTexData.getHeight();
+		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
+		glfwSetWindowIcon(glfwWindow, 1, image);
+
 		glbinding::initialize(glfwGetProcAddress);
 
 		IMGUI_CHECKVERSION();
@@ -35,11 +52,15 @@ namespace AstralRaytracer
 		ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 420 core");
 
-		gl::glViewport(0, 0, width, height);
+		ImGui::GetIO().Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
+
+		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 	}
 
 	void Window::windowSizeCallback(GLFWwindow* window, int32 width, int32 height)
 	{
+		m_instance->m_resolution.first = width;
+		m_instance->m_resolution.second= height;
 		gl::glViewport(0, 0, width, height);
 	}
 

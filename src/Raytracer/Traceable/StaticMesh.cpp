@@ -5,6 +5,11 @@ namespace AstralRaytracer
 
 	bool StaticMesh::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
+		if(!intersectsBoundingBox(rayIn))
+		{
+			return false;
+		}
+
 		HitInfo closestHitInfo;
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
 		{
@@ -26,20 +31,57 @@ namespace AstralRaytracer
 		return false;
 	}
 
-void StaticMesh::setPosition(const glm::vec3& position)
+	void StaticMesh::setPosition(const glm::vec3& position)
 	{
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
 		{
 			m_triangles[triIndex].setPosition(position);
 		}
+
+		Traceable::setPosition(position);
 	}
 
-void StaticMesh::setMaterialIndex(uint32 materialIndex)
+	void StaticMesh::setMaterialIndex(uint32 materialIndex)
 	{
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
 		{
 			m_triangles[triIndex].setMaterialIndex(materialIndex);
 		}
+	}
+
+	bool StaticMesh::intersectsBoundingBox(const Ray& rayIn) const
+	{
+		const glm::vec3& direction         = rayIn.direction;
+		const glm::vec3& worldSpacePosition= rayIn.worldSpacePosition;
+		const glm::vec3& lb                = m_transform.getPosition() + m_boundingBox.min;
+		const glm::vec3& rt                = m_transform.getPosition() + m_boundingBox.max;
+
+		const float32 dirFracX= 1.0f / direction.x;
+		const float32 dirFracY= 1.0f / direction.y;
+		const float32 dirFracZ= 1.0f / direction.z;
+
+		const float32 t1= (lb.x - worldSpacePosition.x) * dirFracX;
+		const float32 t2= (rt.x - worldSpacePosition.x) * dirFracX;
+		const float32 t3= (lb.y - worldSpacePosition.y) * dirFracY;
+		const float32 t4= (rt.y - worldSpacePosition.y) * dirFracY;
+		const float32 t5= (lb.z - worldSpacePosition.z) * dirFracZ;
+		const float32 t6= (rt.z - worldSpacePosition.z) * dirFracZ;
+
+		const float32 tmax= glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+
+		if(tmax < 0.0f)
+		{
+			return false;
+		}
+
+		const float32 tmin= glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+
+		if(tmin > tmax)
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 } // namespace AstralRaytracer

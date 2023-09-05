@@ -2,68 +2,80 @@
 
 #include <gtc/matrix_transform.hpp>
 
-Transform::Transform(const glm::vec2& position, float32 rotation, const glm::vec2& scale) noexcept
+Transform::Transform(const glm::vec3& position, float32 rotation, const glm::vec3& scale) noexcept
 {
-	this->position= position;
-	this->rotation= rotation;
-	this->scale   = scale;
-	setModelMatrix();
+	m_position= position;
+	m_rotation= rotation;
+	m_scale   = scale;
+	updateModelMatrix();
 }
 
-Transform::Transform() noexcept { setModelMatrix(); }
+Transform::Transform() noexcept { updateModelMatrix(); }
 
 Transform::Transform(const Transform& copy) noexcept
 {
-	this->position= copy.position;
-	this->rotation= copy.rotation;
-	this->scale   = copy.scale;
+	m_position= copy.m_position;
+	m_rotation= copy.m_rotation;
+	m_scale   = copy.m_scale;
+
+	updateModelMatrix();
 }
 
 const glm::mat4& Transform::getMatrix() const { return modelMatrix; }
 
-void Transform::setPosition(const glm::vec2& position)
+void Transform::setPosition(const glm::vec3& position)
 {
-	needsUpdate   = true;
-	this->position= position;
+	m_position= position;
+	updateModelMatrix();
 }
-void Transform::setPosition(float32 xCoord, float32 yCoord) { position= glm::vec2(xCoord, yCoord); }
-
-void Transform::translate(float32 x, float32 y)
+void Transform::setPosition(float32 xCoord, float32 yCoord, float32 zCoord)
 {
-	this->position= glm::vec2(position.x + x, position.y + y);
+	m_position= glm::vec3(xCoord, yCoord, zCoord);
+	updateModelMatrix();
 }
 
-void Transform::setX(float32 xValue) { setPosition(glm::vec2(xValue, position.y)); }
-void Transform::setY(float32 yValue) { setPosition(glm::vec2(position.x, yValue)); }
+void Transform::translate(float32 x, float32 y, float32 z)
+{
+	m_position= glm::vec3(m_position.x + x, m_position.y + y, m_position.z + z);
+	updateModelMatrix();
+}
+
+void Transform::setX(float32 xValue) { setPosition(xValue, m_position.y, m_position.z); }
+void Transform::setY(float32 yValue) { setPosition(m_position.x, yValue, m_position.z); }
+void Transform::setZ(float32 zValue) { setPosition(m_position.x, m_position.y, zValue); }
 void Transform::setRotation(float32 rotation)
 {
-	needsUpdate   = true;
-	this->rotation= rotation;
+	m_rotation= rotation;
+	updateModelMatrix();
 }
-void Transform::rotate(float32 rotation) { this->rotation+= rotation; }
-void Transform::setScale(const glm::vec2& scale)
+void Transform::rotate(float32 rotation)
 {
-	needsUpdate= true;
-	this->scale= scale;
+	m_rotation+= rotation;
+	updateModelMatrix();
+}
+void Transform::setScale(const glm::vec3& scale)
+{
+	m_scale= scale;
+	updateModelMatrix();
 }
 
-const glm::vec2& Transform::getPosition() const noexcept { return position; }
-float32          Transform::getRotation() const noexcept { return rotation; }
-const glm::vec2& Transform::getScale() const noexcept { return scale; }
+const glm::vec3& Transform::getPosition() const noexcept { return m_position; }
+float32          Transform::getRotation() const noexcept { return m_rotation; }
+const glm::vec3& Transform::getScale() const noexcept { return m_scale; }
 
 bool Transform::operator==(const Transform& transform) const noexcept
 {
-	return (position == transform.position && rotation == transform.rotation &&
-					scale == transform.scale);
+	return (m_position == transform.m_position && m_rotation == transform.m_rotation &&
+					m_scale == transform.m_scale);
 }
 bool Transform::operator!=(const Transform& transform) const noexcept
 {
-	return (position != transform.position || rotation != transform.rotation ||
-					scale != transform.scale);
+	return (m_position != transform.m_position || m_rotation != transform.m_rotation ||
+					m_scale != transform.m_scale);
 }
-void Transform::setModelMatrix()
+void Transform::updateModelMatrix()
 {
-	modelMatrix= glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0));
-	modelMatrix= glm::rotate(modelMatrix, rotation, glm::vec3(0.8f, 0.8f, 0.7f));
-	modelMatrix= glm::scale(modelMatrix, glm::vec3(scale.x, scale.y, 0));
+	modelMatrix= glm::translate(glm::mat4(1.0f), glm::vec3(m_position.x, m_position.y, m_position.z));
+	modelMatrix= glm::rotate(modelMatrix, m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+	modelMatrix= glm::scale(modelMatrix, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
 }

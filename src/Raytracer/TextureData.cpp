@@ -45,7 +45,6 @@ void TextureData::setTexelColorAtPixelIndex(uint32 index, const glm::u8vec3& rgb
 	m_data[index + 2]= rgb.b;
 }
 
-
 void TextureData::setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y)
 {
 	const int32 i= ((float32)m_width * (float32)y + (float32)x) * 4.0f;
@@ -63,10 +62,18 @@ void TextureData::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
 	m_data[i + 2]= colourData.getColour_8_BitClamped().b;
 }
 
-ColourData TextureData::getTexelColor(uint32 x, uint32 y)
+ColourData TextureData::getTexelColor(uint32 x, uint32 y) const
 {
 	int32      i= ((float32)m_width * (float32)y + (float32)x) * 3.0f;
 	ColourData colData;
 	colData.setColour_8_Bit(m_data[i], m_data[i + 1], m_data[i + 2]);
 	return colData;
+}
+
+ColourData TextureData::getTexelColor(float32 u, float32 v) const
+{
+	uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
+	uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
+
+	return getTexelColor(xIndex, yIndex);
 }

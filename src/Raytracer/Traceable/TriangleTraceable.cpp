@@ -21,7 +21,7 @@ namespace AstralRaytracer
 
 	bool TriangleTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_position);
+		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_transform.getPosition());
 
 		const glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
 		const float32   det = glm::dot(m_vAvB, pvec);

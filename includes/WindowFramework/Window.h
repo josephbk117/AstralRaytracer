@@ -6,11 +6,10 @@
 #include <GLFW/glfw3.h>
 #include <glbinding/gl/gl.h>
 #include <glbinding/glbinding.h>
-#include <glm.hpp>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <string>
+#include <ImGuizmo.h>
 
 namespace AstralRaytracer
 {
@@ -34,9 +33,14 @@ namespace AstralRaytracer
 		void startUI();
 		void endUI();
 
+		const std::pair<uint32, uint32>& getResolution() const { return m_resolution; };
+
 		private:
-		GLFWwindow* glfwWindow= nullptr;
-		std::string m_name;
+		static Window* m_instance;
+
+		GLFWwindow*               glfwWindow= nullptr;
+		std::string               m_name;
+		std::pair<uint32, uint32> m_resolution{0, 0};
 
 		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
 	};

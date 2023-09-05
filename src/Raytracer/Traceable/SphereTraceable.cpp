@@ -4,7 +4,7 @@ namespace AstralRaytracer
 {
 	bool SphereTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
-		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_position);
+		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_transform.getPosition());
 
 		const float32 a= glm::dot(rayIn.direction, rayIn.direction);
 		const float32 b= 2.0f * glm::dot(adjustedOrigin, rayIn.direction);
@@ -24,7 +24,7 @@ namespace AstralRaytracer
 
 			hitInfo.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
 			hitInfo.worldSpaceNormal  = glm::normalize(hitInfo.worldSpacePosition);
-			hitInfo.worldSpacePosition+= m_position;
+			hitInfo.worldSpacePosition+= m_transform.getPosition();
 
 			hitInfo.materialIndex= m_materialIndex;
 			hitInfo.hitDistance  = closestHit;
