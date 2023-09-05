@@ -67,7 +67,6 @@ int main()
 			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
 
 			// Process Input
-
 			processInput(appStateInfo, renderer, cam, scene);
 
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
@@ -85,11 +84,12 @@ int main()
 
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
+			// Render scene
 			renderer.render(scene, cam);
 
+			//Display UI
 			window.startUI();
 			displayUI(renderer, appStateInfo, scene, cam);
-
 			window.endUI();
 
 			window.swapBuffers();
