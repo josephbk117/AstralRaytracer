@@ -165,8 +165,11 @@ namespace AstralRaytracer
 	{
 		m_programId           = gl::glCreateProgram();
 		uint32 computeShaderId= gl::glCreateShader(gl::GL_COMPUTE_SHADER);
-		if(computeShaderId == 0)
+		if(computeShaderId == 0) 
+		{
 			std::cout << "ERROR : Compute shader creation";
+			return;
+		}
 		compile(computeShaderPath, computeShaderId);
 		link(computeShaderId);
 	}
@@ -221,10 +224,10 @@ namespace AstralRaytracer
 		if(isLinked == static_cast<gl::GLint>(gl::GL_FALSE))
 		{
 			gl::GLint maxLength= 0;
-			gl::glGetProgramiv(m_programId, gl::GL_INFO_LOG_LENGTH, (int32*)&isLinked);
+			gl::glGetProgramiv(m_programId, gl::GL_INFO_LOG_LENGTH, &maxLength);
 			std::vector<char> infoLog(maxLength);
-			std::cout << &(infoLog[0]);
 			gl::glGetProgramInfoLog(m_programId, maxLength, &maxLength, &infoLog[0]);
+			std::cout << &(infoLog[0]);
 			gl::glDeleteProgram(m_programId);
 			gl::glDeleteShader(shaderId);
 		}
