@@ -58,10 +58,9 @@ int main()
 		AstralRaytracer::Scene    scene;
 		initScene(scene);
 
-		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
-
 		AppStateInfo appStateInfo;
 
+		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
 		{
 			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
