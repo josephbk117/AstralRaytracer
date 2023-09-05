@@ -30,7 +30,7 @@ namespace AstralRaytracer
 		m_materialNameMap.insert({m_textures.size() - 1, name});
 	}
 
-	const std::string& Scene::getTraceableName(uint32 traceableIndex)
+	const std::string& Scene::getTraceableName(uint32 traceableIndex) const
 	{
 		auto it= m_traceableNameMap.find(traceableIndex);
 		if(it != m_traceableNameMap.end())
@@ -41,7 +41,7 @@ namespace AstralRaytracer
 		return defaultEmptyName;
 	}
 
-	const std::string& Scene::getMaterialName(uint32 materialIndex)
+	const std::string& Scene::getMaterialName(uint32 materialIndex) const
 	{
 		auto it= m_materialNameMap.find(materialIndex);
 		if(it != m_materialNameMap.end())
