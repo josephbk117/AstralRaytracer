@@ -61,6 +61,7 @@ namespace AstralRaytracer
 		void compileAndLinkShader(const std::string& computeShaderPath);
 		void use() override;
 		void unuse() override;
+		void dispatch(uint32 x, uint32 y, uint32 z);
 
 		private:
 		void link(uint32 shaderId) override;

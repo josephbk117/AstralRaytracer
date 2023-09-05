@@ -240,9 +240,14 @@ namespace AstralRaytracer
 	void ComputeShaderProgram::use() 
 	{
 		gl::glUseProgram(m_programId);
-		gl::glDispatchCompute(500,500, 1);
-		gl::glMemoryBarrier(gl::MemoryBarrierMask::GL_ALL_BARRIER_BITS);
 	}
 
 	void ComputeShaderProgram::unuse() {}
+
+	void ComputeShaderProgram::dispatch(uint32 x, uint32 y, uint32 z) 
+	{
+		gl::glDispatchCompute(x, y, z);
+		gl::glMemoryBarrier(gl::MemoryBarrierMask::GL_ALL_BARRIER_BITS);
+	}
+
 } // namespace AstralRaytracer
