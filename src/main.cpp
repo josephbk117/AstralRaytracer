@@ -35,8 +35,9 @@ int main()
 		glm::u32vec2 rendererResolution{500, 500};
 		glm::vec2    imageMinRect{0, 0};
 		glm::vec2    imageMaxRect{1, 1};
-		float32      resolutionScale= 50.0f;
-		bool         isSceneDirty   = false;
+		float32      resolutionScale = 50.0f;
+		bool         isSceneDirty    = false;
+		bool         canSelectObjects= false;
 
 		uint32 selectedObjectIndex= 0;
 		while(!window.shouldWindowClose())
@@ -44,7 +45,7 @@ int main()
 			// Process Input
 
 			const glm::vec2& mousePos= AstralRaytracer::Input::getMousePosition();
-			if(!isSceneDirty &&
+			if(canSelectObjects && !isSceneDirty &&
 				 AstralRaytracer::Input::isMouseButtonDown(
 						 AstralRaytracer::MouseButtonIndex::MOUSE_BUTTON_1) &&
 				 mousePos.x > imageMinRect.x && mousePos.x < imageMaxRect.x &&
@@ -54,7 +55,7 @@ int main()
 				HitInfo   closestHitInfo;
 				glm::vec2 coOrd((mousePos.x - imageMinRect.x) / rendererSize.x,
 												(mousePos.y - imageMinRect.y) / rendererSize.y);
-				coOrd.y = 1.0f - coOrd.y;
+				coOrd.y= 1.0f - coOrd.y;
 
 				const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
 						coOrd, cam.getInverseProjection(), cam.getInverseView());
@@ -191,6 +192,8 @@ int main()
 						ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
 																 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
 																 glm::value_ptr(transform));
+
+						canSelectObjects= !ImGuizmo::IsOver();
 
 						if(ImGuizmo::IsUsing())
 						{
