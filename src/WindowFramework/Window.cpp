@@ -101,6 +101,11 @@ namespace AstralRaytracer
 																				 gl::GLenum severity, gl::GLsizei length,
 																				 const gl::GLchar* message, const void* userParam)
 	{
+		if(type == gl::GL_DEBUG_TYPE_OTHER) 
+		{
+			return;
+		}
+
 		std::cout << "\n---------------------opengl-callback-start------------" << std::endl;
 		std::cout << "message: " << message << std::endl;
 		std::cout << "type: ";
@@ -111,7 +116,7 @@ namespace AstralRaytracer
 			case gl::GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: std::cout << "UNDEFINED_BEHAVIOR"; break;
 			case gl::GL_DEBUG_TYPE_PORTABILITY: std::cout << "PORTABILITY"; break;
 			case gl::GL_DEBUG_TYPE_PERFORMANCE: std::cout << "PERFORMANCE"; break;
-			case gl::GL_DEBUG_TYPE_OTHER: std::cout << "OTHER"; break;
+			//case gl::GL_DEBUG_TYPE_OTHER: std::cout << "OTHER"; break;
 			default: break;
 		}
 		std::cout << std::endl;
