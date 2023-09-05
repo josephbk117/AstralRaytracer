@@ -24,7 +24,7 @@ TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path&
 	return texData;
 }
 
-uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool gamma)
+uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData)
 {
 	uint32 textureID;
 	gl::glGenTextures(1, &textureID);
@@ -34,25 +34,27 @@ uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool
 	return textureID;
 }
 
+uint32 TextureManager::createEmptyTexture(const glm::u32vec2& textureRes)
+{
+	uint32 textureID;
+	gl::glGenTextures(1, &textureID);
+	loadTextureFromRawData(nullptr, textureRes.x, textureRes.y, textureID);
+	return textureID;
+}
+
 void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 width, uint32 height,
 																						uint32 textureID)
 {
-	if(data)
-	{
-		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
-		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
-		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, width, height, 0, gl::GL_RGB,
-										 gl::GL_UNSIGNED_BYTE, data);
 
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
-	}
-	else
-	{
-		std::cout << "\nTexture failed to load with texture data " << std::endl;
-	}
+	gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
+	gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
+	gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, width, height, 0, gl::GL_RGB,
+									 gl::GL_UNSIGNED_BYTE, data);
+
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
 }
 
 void TextureManager::updateTexture(const TextureData& textureData, uint32 textureId)

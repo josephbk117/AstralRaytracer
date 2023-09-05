@@ -11,7 +11,8 @@ class TextureManager
 	TextureManager()                     = delete;
 	TextureManager(const TextureManager&)= delete;
 	static TextureData loadTextureDataFromFile(const std::filesystem::path& path, uint8 reqChannelCount = 3);
-	static uint32      loadTextureFromTextureData(TextureData& textureData, bool gamma);
+	static uint32      loadTextureFromTextureData(TextureData& textureData);
+	static uint32      createEmptyTexture(const glm::u32vec2& textureRes);
 	static void        updateTexture(const TextureData& textureData, uint32 textureId);
 	static void        resizeTexture(const TextureData& textureData, uint32 textureId);
 	static gl::GLenum  getTextureFormatFromData(TextureData& textureData);
