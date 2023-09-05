@@ -41,24 +41,25 @@ namespace AstralRaytracer
 									[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex,
 									 &inverseView, &inverseProjection, &scene, &cam](uint32 index)
 									{
-										uint32       seedVal        = index * m_frameIndex;
-										const uint32 pixelAcessIndex= index * 3;
+										uint32       seedVal         = index * m_frameIndex;
+										const uint32 pixelAccessIndex= index * 3;
 
-										const float32 xIndex= (pixelAcessIndex % xAxisPixelCount) +
+										const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) +
 																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
-										const float32 yIndex= (pixelAcessIndex / xAxisPixelCount) +
+										const float32 yIndex= static_cast<float32>(pixelAccessIndex / xAxisPixelCount) +
 																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
 
-										const glm::vec2 coord{xIndex / xAxisPixelCount, yIndex / imageHeight};
+										const glm::vec2 coOrd{xIndex / xAxisPixelCount, yIndex / imageHeight};
 
-										glm::vec3 rayDir = getRayDirectionFromNormalizedCoord(coord, inverseProjection, inverseView);
+										glm::vec3 rayDir=
+												getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
 										glm::vec3 rayOrigin= cam.getPosition();
 
 										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
 
-										float32& redChannel  = m_accumlatedColorData[pixelAcessIndex];
-										float32& greenChannel= m_accumlatedColorData[pixelAcessIndex + 1u];
-										float32& blueChannel = m_accumlatedColorData[pixelAcessIndex + 2u];
+										float32& redChannel  = m_accumlatedColorData[pixelAccessIndex];
+										float32& greenChannel= m_accumlatedColorData[pixelAccessIndex + 1u];
+										float32& blueChannel = m_accumlatedColorData[pixelAccessIndex + 2u];
 
 										redChannel+= (outColor.r * oneOverBounceCount);
 										greenChannel+= (outColor.g * oneOverBounceCount);
@@ -67,7 +68,7 @@ namespace AstralRaytracer
 										const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
 										const glm::u8vec3& finalColorData=
 												ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
-										m_texData.setTexelColorAtPixelIndex(pixelAcessIndex, finalColorData);
+										m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
 									});
 
 		TextureManager::updateTexture(m_texData, m_textureId);
@@ -162,14 +163,14 @@ namespace AstralRaytracer
 		// Initialize closest hit distance to a large value
 		closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
 
-		for(uint32 traceableIndex = 0; traceableIndex < scene.m_sceneTraceables.size(); ++traceableIndex)
+		for(uint32 traceableIndex= 0; traceableIndex < scene.m_sceneTraceables.size(); ++traceableIndex)
 		{
 			HitInfo hitInfo;
 			if(scene.m_sceneTraceables[traceableIndex]->trace({rayOrigin, rayDir}, hitInfo) &&
 				 hitInfo.hitDistance < closestHitInfo.hitDistance)
 			{
-				hitInfo.objectIndex = traceableIndex;
-				closestHitInfo= hitInfo;
+				hitInfo.objectIndex= traceableIndex;
+				closestHitInfo     = hitInfo;
 			}
 		}
 	}

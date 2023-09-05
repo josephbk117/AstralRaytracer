@@ -52,12 +52,12 @@ int main()
 			{
 
 				HitInfo   closestHitInfo;
-				glm::vec2 coord((mousePos.x - imageMinRect.x) / rendererSize.x,
+				glm::vec2 coOrd((mousePos.x - imageMinRect.x) / rendererSize.x,
 												(mousePos.y - imageMinRect.y) / rendererSize.y);
-				coord.y = 1.0f - coord.y;
+				coOrd.y = 1.0f - coOrd.y;
 
 				const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
-						coord, cam.getInverseProjection(), cam.getInverseView());
+						coOrd, cam.getInverseProjection(), cam.getInverseView());
 				renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
 
 				if(closestHitInfo.isValid())
