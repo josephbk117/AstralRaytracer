@@ -112,6 +112,7 @@ namespace AstralRaytracer
 			case gl::GL_DEBUG_TYPE_PORTABILITY: std::cout << "PORTABILITY"; break;
 			case gl::GL_DEBUG_TYPE_PERFORMANCE: std::cout << "PERFORMANCE"; break;
 			case gl::GL_DEBUG_TYPE_OTHER: std::cout << "OTHER"; break;
+			default: break;
 		}
 		std::cout << std::endl;
 
@@ -122,6 +123,7 @@ namespace AstralRaytracer
 			case gl::GL_DEBUG_SEVERITY_LOW: std::cout << "LOW"; break;
 			case gl::GL_DEBUG_SEVERITY_MEDIUM: std::cout << "MEDIUM"; break;
 			case gl::GL_DEBUG_SEVERITY_HIGH: std::cout << "HIGH"; break;
+			default: break;
 		}
 		std::cout << std::endl;
 		std::cout << "---------------------opengl-callback-end--------------" << std::endl;
