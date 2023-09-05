@@ -291,9 +291,9 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 						glm::min(availableRegion.x / (float32)appStateInfo.rendererResolution.x,
 										 availableRegion.y / (float32)appStateInfo.rendererResolution.y);
 
-				ImVec2 newRegion= {appStateInfo.rendererResolution.x * scale,
+				const ImVec2 newRegion= {appStateInfo.rendererResolution.x * scale,
 													 appStateInfo.rendererResolution.y * scale};
-				ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
+				const ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
 													 (availableRegion.y - newRegion.y) * 0.5f};
 
 				ImGui::Dummy({availableRegion.x, gapRegion.y});
