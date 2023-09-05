@@ -2,6 +2,8 @@
 
 #include "Raytracer/TextureManager.h"
 
+#include <iostream>
+
 namespace AstralRaytracer
 {
 	Window*            Window::m_instance= nullptr;
@@ -46,6 +48,10 @@ namespace AstralRaytracer
 
 		glbinding::initialize(glfwGetProcAddress);
 
+		gl::glEnable(gl::GL_DEBUG_OUTPUT);
+		gl::glEnable(gl::GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		gl::glDebugMessageCallback(debugCallback, nullptr);
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
@@ -89,5 +95,35 @@ namespace AstralRaytracer
 	{
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void GL_APIENTRY Window::debugCallback(gl::GLenum source, gl::GLenum type, gl::GLuint id,
+																				 gl::GLenum severity, gl::GLsizei length,
+																				 const gl::GLchar* message, const void* userParam)
+	{
+		std::cout << "\n---------------------opengl-callback-start------------" << std::endl;
+		std::cout << "message: " << message << std::endl;
+		std::cout << "type: ";
+		switch(type)
+		{
+			case gl::GL_DEBUG_TYPE_ERROR: std::cout << "ERROR"; break;
+			case gl::GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: std::cout << "DEPRECATED_BEHAVIOR"; break;
+			case gl::GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: std::cout << "UNDEFINED_BEHAVIOR"; break;
+			case gl::GL_DEBUG_TYPE_PORTABILITY: std::cout << "PORTABILITY"; break;
+			case gl::GL_DEBUG_TYPE_PERFORMANCE: std::cout << "PERFORMANCE"; break;
+			case gl::GL_DEBUG_TYPE_OTHER: std::cout << "OTHER"; break;
+		}
+		std::cout << std::endl;
+
+		std::cout << "id: " << id << std::endl;
+		std::cout << "severity: ";
+		switch(severity)
+		{
+			case gl::GL_DEBUG_SEVERITY_LOW: std::cout << "LOW"; break;
+			case gl::GL_DEBUG_SEVERITY_MEDIUM: std::cout << "MEDIUM"; break;
+			case gl::GL_DEBUG_SEVERITY_HIGH: std::cout << "HIGH"; break;
+		}
+		std::cout << std::endl;
+		std::cout << "---------------------opengl-callback-end--------------" << std::endl;
 	}
 } // namespace AstralRaytracer

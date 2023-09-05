@@ -43,5 +43,9 @@ namespace AstralRaytracer
 		std::pair<uint32, uint32> m_resolution{0, 0};
 
 		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
+		// Define the callback function
+		static void GL_APIENTRY debugCallback(gl::GLenum source, gl::GLenum type, gl::GLuint id,
+																				 gl::GLenum severity,
+																gl::GLsizei length, const gl::GLchar* message, const void* userParam);
 	};
 } // namespace AstralRaytracer
