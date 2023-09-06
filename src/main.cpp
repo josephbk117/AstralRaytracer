@@ -14,7 +14,7 @@
 
 #include <gtc/type_ptr.hpp>
 #include <memory>
-
+#include <yaml-cpp/yaml.h>
 struct UiBounds
 {
 	glm::vec2 min{0, 0};
@@ -58,6 +58,8 @@ int main()
 		AstralRaytracer::Scene    scene;
 		initScene(scene);
 
+		scene.serialize("/resources/scenes/scene1.yaml");
+
 		AppStateInfo appStateInfo;
 
 		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
@@ -86,7 +88,7 @@ int main()
 			// Render scene
 			renderer.render(scene, cam);
 
-			//Display UI
+			// Display UI
 			window.startUI();
 			displayUI(renderer, appStateInfo, scene, cam);
 			window.endUI();
@@ -291,9 +293,9 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 										 availableRegion.y / (float32)appStateInfo.rendererResolution.y);
 
 				const ImVec2 newRegion= {appStateInfo.rendererResolution.x * scale,
-													 appStateInfo.rendererResolution.y * scale};
+																 appStateInfo.rendererResolution.y * scale};
 				const ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
-													 (availableRegion.y - newRegion.y) * 0.5f};
+																 (availableRegion.y - newRegion.y) * 0.5f};
 
 				ImGui::Dummy({availableRegion.x, gapRegion.y});
 				ImGui::Dummy({gapRegion.x, newRegion.y});
@@ -339,7 +341,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				ImGui::TableSetColumnIndex(1);
 
 				displayMaterialUI(scene, appStateInfo);
-				
+
 				ImGui::Separator();
 				ImGui::Separator();
 

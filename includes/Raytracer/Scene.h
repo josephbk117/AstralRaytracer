@@ -3,9 +3,11 @@
 #include "TextureData.h"
 #include "Traceable/Traceable.h"
 
+#include <filesystem>
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <yaml-cpp/yaml.h>
 
 namespace AstralRaytracer
 {
@@ -17,6 +19,7 @@ namespace AstralRaytracer
 		void addTraceable(std::unique_ptr<Traceable>&& traceable, const std::string& name);
 		void addMaterial(const Material& material, const std::string& name);
 		void addTexture(TextureData&& texture, const std::string& name);
+		void serialize(const std::filesystem::path& path);
 		const std::string& getTraceableName(uint32 traceableIndex) const;
 		const std::string& getMaterialName(uint32 materialIndex) const;
 

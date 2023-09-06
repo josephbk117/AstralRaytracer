@@ -1,5 +1,7 @@
 #include "Raytracer/Scene.h"
 
+#include <fstream>
+
 namespace AstralRaytracer
 {
 	std::string Scene::defaultEmptyName= "";
@@ -27,7 +29,51 @@ namespace AstralRaytracer
 	void Scene::addTexture(TextureData&& texture, const std::string& name)
 	{
 		m_textures.push_back(std::move(texture));
-		m_materialNameMap.insert({m_textures.size() - 1, name});
+		m_textureNameMap.insert({m_textures.size() - 1, name});
+	}
+
+	void Scene::serialize(const std::filesystem::path& path)
+	{
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "Scene" << YAML::Value << "New";
+
+		// Textures
+		out << YAML::Key << "Textures" << YAML::Value << YAML::BeginSeq;
+
+		out << YAML::BeginMap;
+		for(uint32 textureIndex= 0; textureIndex < m_textures.size(); ++textureIndex)
+		{
+			out << YAML::Key << textureIndex << YAML::Value << m_textureNameMap[textureIndex];
+		}
+		out << YAML::EndMap << YAML::EndSeq;
+
+		// Materials
+		out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
+
+		out << YAML::BeginMap;
+		for(uint32 matIndex= 0; matIndex < m_materials.size(); ++matIndex)
+		{
+			out << YAML::Key << matIndex << YAML::Value << m_materialNameMap[matIndex];
+		}
+		out << YAML::EndMap << YAML::EndSeq;
+
+		
+		// Trace-ables
+		out << YAML::Key << "Traceables" << YAML::Value << YAML::BeginSeq;
+
+		out << YAML::BeginMap;
+		for(uint32 traceableIndex= 0; traceableIndex < m_sceneTraceables.size(); ++traceableIndex)
+		{
+			out << YAML::Key << traceableIndex << YAML::Value << m_traceableNameMap[traceableIndex];
+		}
+		out << YAML::EndMap << YAML::EndSeq;
+
+		const std::string& outputPath= std::filesystem::current_path().concat(path.c_str()).string();
+
+		std::ofstream ofs(outputPath);
+		ofs << out.c_str();
+		ofs.close();
 	}
 
 	const std::string& Scene::getTraceableName(uint32 traceableIndex) const

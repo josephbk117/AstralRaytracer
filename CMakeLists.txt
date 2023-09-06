@@ -32,6 +32,7 @@ include_directories(
     "./external/imguizmo"
     "./external/stbimage"
     "./external/glm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
 )
 
 # Set TinyGLTF configuration options
@@ -44,6 +45,7 @@ add_subdirectory(external/tinygltf)
 # Add GLFW and glBinding as subdirectories, excluding them from the "ALL" target
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(external/glBinding EXCLUDE_FROM_ALL)
+add_subdirectory(external/yamlcpp EXCLUDE_FROM_ALL)
 
 # Add resources as a subdirectory
 add_subdirectory(resources)
@@ -54,19 +56,23 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC external/glfw/include
     PUBLIC external/glBinding/source/glbinding/include
     PUBLIC external/tinygltf
+    PUBLIC external/yamlcpp/include
 )
 
 # Link directories for the main project target
 target_link_directories(${PROJECT_NAME}
     PRIVATE external/glfw/src
     PRIVATE external/glBinding/source/glbinding/source
+    PRIVATE external/yamlcpp/src
 )
 
 # Link libraries for the main project target
 target_link_libraries(${PROJECT_NAME}
     glfw
     glbinding
+    yaml-cpp
 )
+
 
 # Custom target for copying resources
 add_custom_target(copy_resources ALL
