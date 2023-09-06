@@ -58,7 +58,6 @@ namespace AstralRaytracer
 		}
 		out << YAML::EndMap << YAML::EndSeq;
 
-		
 		// Trace-ables
 		out << YAML::Key << "Traceables" << YAML::Value << YAML::BeginSeq;
 
@@ -69,7 +68,9 @@ namespace AstralRaytracer
 		}
 		out << YAML::EndMap << YAML::EndSeq;
 
-		const std::string& outputPath= std::filesystem::current_path().concat(path.c_str()).string();
+		const std::filesystem::path outputPath= std::filesystem::current_path().string() + path.string();
+
+		std::filesystem::create_directory(outputPath.parent_path());
 
 		std::ofstream ofs(outputPath);
 		ofs << out.c_str();
