@@ -16,5 +16,12 @@ namespace AstralRaytracer
 			out << colourData.getColour_32_bit();
 			return out;
 		}
+
+		YAML::Emitter& operator<<(YAML::Emitter& out, const Transform& transform)
+		{
+			out << transform.getPosition() << transform.getRotation() << transform.getScale();
+			return out;
+		}
+
 	} // namespace Serialization
 } // namespace AstralRaytracer
