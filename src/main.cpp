@@ -14,7 +14,6 @@
 
 #include <gtc/type_ptr.hpp>
 #include <memory>
-#include <yaml-cpp/yaml.h>
 struct UiBounds
 {
 	glm::vec2 min{0, 0};

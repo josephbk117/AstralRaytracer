@@ -51,12 +51,17 @@ namespace AstralRaytracer
 		// Materials
 		out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
 
-		out << YAML::BeginMap;
 		for(uint32 matIndex= 0; matIndex < m_materials.size(); ++matIndex)
 		{
-			out << YAML::Key << matIndex << YAML::Value << m_materialNameMap[matIndex];
+			out << YAML::BeginMap;
+			out << YAML::Key << m_materialNameMap[matIndex] << YAML::Value;
+			out << YAML::BeginMap;
+			m_materials[matIndex].serialize(out);
+			out << YAML::EndMap;
+			out << YAML::EndMap;
 		}
-		out << YAML::EndMap << YAML::EndSeq;
+
+		out << YAML::EndSeq;
 
 		// Trace-ables
 		out << YAML::Key << "Traceables" << YAML::Value << YAML::BeginSeq;
@@ -68,7 +73,8 @@ namespace AstralRaytracer
 		}
 		out << YAML::EndMap << YAML::EndSeq;
 
-		const std::filesystem::path outputPath= std::filesystem::current_path().string() + path.string();
+		const std::filesystem::path outputPath=
+				std::filesystem::current_path().string() + path.string();
 
 		std::filesystem::create_directory(outputPath.parent_path());
 
