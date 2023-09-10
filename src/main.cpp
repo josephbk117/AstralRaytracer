@@ -10,11 +10,14 @@
 #include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Utils/AssetManager.h"
 #include "WindowFramework/Input.h"
+#include "WindowFramework/UI/CommonUI.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
 #include <gtc/type_ptr.hpp>
+#include <gtx/matrix_decompose.hpp>
 #include <memory>
+
 struct UiBounds
 {
 	glm::vec2 min{0, 0};
@@ -207,12 +210,21 @@ void displayMaterialUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo
 	}
 }
 
+void displayTransformUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo)
+{
+	ImGui::Text("Transform");
+	if(AstralRaytracer::UI::displayTransform(
+				 *scene.m_sceneTraceables[appStateInfo.selectedObjectIndex]))
+	{
+		appStateInfo.isSceneDirty= true;
+	}
+}
+
 void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
 													 const AstralRaytracer::AssetManager& assetManager,
 													 AppStateInfo&                        appStateInfo)
 {
 	ImGui::Text("Objects");
-
 	for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 	{
 		bool isSelected= objIndex == appStateInfo.selectedObjectIndex;
@@ -334,15 +346,22 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 																 ->getTransformMatrix();
 
 				ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-														 IMGUIZMO_NAMESPACE::TRANSLATE, IMGUIZMO_NAMESPACE::LOCAL,
-														 glm::value_ptr(transform));
+														 IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
+														 IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform));
 
 				appStateInfo.canSelectObjects= !ImGuizmo::IsOver();
 
 				if(ImGuizmo::IsUsing())
 				{
-					scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)
-							->setPosition(glm::vec3(transform[3]));
+					glm::vec3 newScale;
+					glm::vec3 newTranslation;
+					glm::quat newRot;
+					glm::vec3 skew;
+					glm::vec4 perspective;
+					glm::decompose(transform, newScale, newRot, newTranslation, skew, perspective);
+
+					scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)->setPosition(newTranslation);
+					scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)->setScale(newScale);
 					appStateInfo.isSceneDirty= true;
 				}
 
@@ -358,6 +377,11 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				ImGui::Separator();
 
 				displaySceneObjectsUI(scene, assetManager, appStateInfo);
+
+				ImGui::Separator();
+				ImGui::Separator();
+
+				displayTransformUI(scene, appStateInfo);
 
 				ImGui::EndTable();
 			}

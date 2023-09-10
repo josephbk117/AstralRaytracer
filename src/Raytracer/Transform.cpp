@@ -22,6 +22,7 @@ Transform::Transform(const Transform& copy) noexcept
 }
 
 const glm::mat4& Transform::getMatrix() const { return modelMatrix; }
+glm::mat4&       Transform::getMatrix() { return modelMatrix; }
 
 void Transform::setPosition(const glm::vec3& position)
 {

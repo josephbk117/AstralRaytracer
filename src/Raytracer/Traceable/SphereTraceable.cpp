@@ -2,6 +2,14 @@
 
 namespace AstralRaytracer
 {
+
+	void SphereTraceable::setScale(const glm::vec3& scale)
+	{
+		glm::vec3 newScale= scale;
+		m_radius= ((scale.x == scale.y) ? scale.z : ((scale.y == scale.z) ? scale.x : scale.y));
+		Traceable::setScale(glm::vec3(m_radius));
+	}
+
 	bool SphereTraceable::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
 		const glm::vec3& adjustedOrigin(rayIn.worldSpacePosition - m_transform.getPosition());

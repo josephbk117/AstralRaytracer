@@ -7,6 +7,7 @@ class Transform
 	Transform() noexcept;
 	Transform(const Transform& copy) noexcept;
 	const glm::mat4& getMatrix() const;
+	glm::mat4&       getMatrix();
 	void             setPosition(const glm::vec3& position);
 	void             setPosition(float32 xCoord, float32 yCoord, float32 zCoord);
 	void             translate(float32 x, float32 y, float32 z);
