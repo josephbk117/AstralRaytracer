@@ -1,5 +1,5 @@
 Traceable: Cube
 Transform: [2, 0, -1, 0, 1, 1, 1]
-Material: 2
+Material: 1
 Type: 3
 Source Path: resources/testCube.gltf
