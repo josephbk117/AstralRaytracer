@@ -38,7 +38,7 @@ namespace AstralRaytracer
 		private:
 		static Window* m_instance;
 
-		GLFWwindow*               glfwWindow= nullptr;
+		GLFWwindow*               m_glfwWindow= nullptr;
 		std::string               m_name;
 		std::pair<uint32, uint32> m_resolution{0, 0};
 

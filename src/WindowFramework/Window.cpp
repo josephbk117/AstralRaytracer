@@ -23,17 +23,17 @@ namespace AstralRaytracer
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		glfwWindow=
+		m_glfwWindow=
 				glfwCreateWindow(m_resolution.first, m_resolution.second, m_name.c_str(), nullptr, nullptr);
 
-		if(!glfwWindow)
+		if(!m_glfwWindow)
 		{
 			glfwTerminate();
 			exit(EXIT_FAILURE);
 		}
 
-		glfwSetWindowSizeCallback(glfwWindow, windowSizeCallback);
-		glfwMakeContextCurrent(glfwWindow);
+		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
+		glfwMakeContextCurrent(m_glfwWindow);
 
 		TextureData iconTexData=
 				TextureManager::loadTextureDataFromFile("resources/icons/astralraytracer.png", 4);
@@ -42,14 +42,14 @@ namespace AstralRaytracer
 		image[0].width = iconTexData.getWidth();
 		image[0].height= iconTexData.getHeight();
 		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
-		glfwSetWindowIcon(glfwWindow, 1, image);
+		glfwSetWindowIcon(m_glfwWindow, 1, image);
 
 		glbinding::initialize(glfwGetProcAddress);
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
-		ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
+		ImGui_ImplGlfw_InitForOpenGL(m_glfwWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 420 core");
 
 		ImGui::GetIO().Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
@@ -64,7 +64,7 @@ namespace AstralRaytracer
 		gl::glViewport(0, 0, width, height);
 	}
 
-	bool Window::shouldWindowClose() const { return glfwWindowShouldClose(glfwWindow); }
+	bool Window::shouldWindowClose() const { return glfwWindowShouldClose(m_glfwWindow); }
 
 	void Window::shutdown()
 	{
@@ -74,7 +74,7 @@ namespace AstralRaytracer
 		glfwTerminate();
 	}
 
-	void Window::swapBuffers() { glfwSwapBuffers(glfwWindow); }
+	void Window::swapBuffers() { glfwSwapBuffers(m_glfwWindow); }
 
 	void Window::pollEvents() { glfwPollEvents(); }
 

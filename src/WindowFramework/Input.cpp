@@ -4,7 +4,7 @@ GLFWwindow* AstralRaytracer::Input::glfwWindow= nullptr;
 
 namespace AstralRaytracer
 {
-	void Input::initialize(const Window& window) { glfwWindow= window.glfwWindow; }
+	void Input::initialize(const Window& window) { glfwWindow= window.m_glfwWindow; }
 
 	glm::vec2 Input::getMousePosition()
 	{
