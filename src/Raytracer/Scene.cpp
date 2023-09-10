@@ -9,23 +9,18 @@ namespace AstralRaytracer
 
 	Scene::Scene()
 	{
-		addMaterial(Material(), "Default Material");
+		addMaterial(Material());
 		TextureData defaultTexData(1, 1, 3);
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
 		addTexture(std::move(defaultTexData));
 	}
 
-	void Scene::addTraceable(std::unique_ptr<Traceable>&& traceable, const std::string& name)
+	void Scene::addTraceable(std::unique_ptr<Traceable>&& traceable)
 	{
 		m_sceneTraceables.push_back(std::move(traceable));
-		m_traceableNameMap.insert({m_sceneTraceables.size() - 1, name});
 	}
 
-	void Scene::addMaterial(const Material& material, const std::string& name)
-	{
-		m_materials.push_back(material);
-		m_materialNameMap.insert({m_materials.size() - 1, name});
-	}
+	void Scene::addMaterial(const Material& material) { m_materials.push_back(material); }
 
 	void Scene::addTexture(TextureData&& texture) { m_textures.push_back(std::move(texture)); }
 
@@ -124,8 +119,7 @@ namespace AstralRaytracer
 			{
 				addTexture(assetManager.LoadTextureAsset(magic.second.as<std::string>(),
 																								 magic.first.as<std::string>()));
-				std::cout << "\n Texture at index : " << texIndex << " : "
-									<< magic.first.as<std::string>();
+				std::cout << "\n Texture at index : " << texIndex << " : " << magic.first.as<std::string>();
 			}
 		}
 
@@ -140,9 +134,10 @@ namespace AstralRaytracer
 				Material materialNew;
 				assetManager.LoadMaterialAsset(magic.second.as<std::string>(),
 																			 magic.first.as<std::string>(), materialNew);
-				addMaterial(materialNew, magic.first.as<std::string>());
+				addMaterial(materialNew);
 
-				std::cout << "\n Material at index : " << matIndex << " : " << magic.first.as<std::string>();
+				std::cout << "\n Material at index : " << matIndex << " : "
+									<< magic.first.as<std::string>();
 			}
 		}
 
@@ -154,33 +149,9 @@ namespace AstralRaytracer
 			const auto& traceable= traceables[traceIndex];
 			for(auto magic: traceable)
 			{
-				addTraceable(assetManager.LoadTraceableAsset(magic.second.as<std::string>(),
-																										 magic.first.as<std::string>()),
-										 magic.first.as<std::string>());
+				addTraceable(assetManager.LoadTraceableAsset(magic.second.as<std::string>()));
 			}
 		}
-	}
-
-	const std::string& Scene::getTraceableName(uint32 traceableIndex) const
-	{
-		auto it= m_traceableNameMap.find(traceableIndex);
-		if(it != m_traceableNameMap.end())
-		{
-			return it->second;
-		}
-
-		return defaultEmptyName;
-	}
-
-	const std::string& Scene::getMaterialName(uint32 materialIndex) const
-	{
-		auto it= m_materialNameMap.find(materialIndex);
-		if(it != m_materialNameMap.end())
-		{
-			return it->second;
-		}
-
-		return defaultEmptyName;
 	}
 
 } // namespace AstralRaytracer

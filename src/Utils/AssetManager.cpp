@@ -40,12 +40,9 @@ namespace AstralRaytracer
 	}
 
 	std::unique_ptr<AstralRaytracer::Traceable>
-	AssetManager::LoadTraceableAsset(const std::filesystem::path& path, const std::string& name)
+	AssetManager::LoadTraceableAsset(const std::filesystem::path& path)
 	{
 		static uint32 traceableCount= 0;
-		NameAndPath   nameAndPath   = {name, path.string()};
-		m_traceableNameAndPathMap.emplace(traceableCount, nameAndPath);
-		traceableCount++;
 
 		std::ifstream stream(path);
 		YAML::Node    data= YAML::Load(stream);
@@ -54,6 +51,11 @@ namespace AstralRaytracer
 		{
 			return nullptr;
 		}
+
+		NameAndPath nameAndPath= {data["Traceable"].as<std::string>(), path.string()};
+		m_traceableNameAndPathMap.emplace(traceableCount, nameAndPath);
+
+		traceableCount++;
 
 		Serialization::TraceableType type=
 				static_cast<Serialization::TraceableType>(data["Type"].as<uint32>());

@@ -22,8 +22,7 @@ namespace AstralRaytracer
 																							 const std::string&           name);
 		[[nodiscard]] bool LoadMaterialAsset(const std::filesystem::path& path, const std::string& name,
 																				 Material& outMaterial);
-		[[nodiscard]] std::unique_ptr<Traceable> LoadTraceableAsset(const std::filesystem::path& path,
-																																const std::string&           name);
+		[[nodiscard]] std::unique_ptr<Traceable> LoadTraceableAsset(const std::filesystem::path& path);
 		void SaveMaterialAsset(const std::string& name, const Material& material);
 		void SaveTraceableAsset(const std::string& name, const std::unique_ptr<Traceable>& traceable);
 

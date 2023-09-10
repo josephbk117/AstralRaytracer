@@ -108,8 +108,7 @@ void initScene(AstralRaytracer::Scene& scene)
 	scene.addTexture(assetManager.LoadTextureAsset("resources/textures/tough_grass.jpg", "Floor2"));
 
 	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
-										"Mat1");
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
 
 	assetManager.SaveMaterialAsset("mat1", scene.m_materials[1]);
 
@@ -117,31 +116,26 @@ void initScene(AstralRaytracer::Scene& scene)
 	assetManager.LoadMaterialAsset("resources/materials/mat1.mat", "mat1", newMat);
 
 	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
-										"Mat2");
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
 	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
-										"Mat3");
+																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
 	scene.m_materials.at(3).texture= 1;
 
-	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere1");
-	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>(), "Sphere2");
-	scene.addTraceable(
-			std::make_unique<AstralRaytracer::StaticMesh>(
-					AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")),
-			"Cube");
+	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>());
+	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>());
+	scene.addTraceable(std::make_unique<AstralRaytracer::StaticMesh>(
+			AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
 	scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
-												 glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
-												 glm::vec3(100.0f, 0.0f, -100.0f)),
-										 "Floor");
+			glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
+			glm::vec3(100.0f, 0.0f, -100.0f)));
 
 	assetManager.SaveTraceableAsset("Sphere1", scene.m_sceneTraceables[0]);
 	assetManager.SaveTraceableAsset("Floor", scene.m_sceneTraceables[3]);
 	assetManager.SaveTraceableAsset("Cube", scene.m_sceneTraceables[2]);
 
-	auto sphere1= assetManager.LoadTraceableAsset("resources/traceables/Sphere1.tble", "Sphere1");
-	auto floor  = assetManager.LoadTraceableAsset("resources/traceables/Floor.tble", "Floor");
-	auto cube   = assetManager.LoadTraceableAsset("resources/traceables/Cube.tble", "Cube");
+	auto sphere1= assetManager.LoadTraceableAsset("resources/traceables/Sphere1.tble");
+	auto floor  = assetManager.LoadTraceableAsset("resources/traceables/Floor.tble");
+	auto cube   = assetManager.LoadTraceableAsset("resources/traceables/Cube.tble");
 
 	scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 	scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
@@ -213,14 +207,17 @@ void displayMaterialUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo
 	}
 }
 
-void displaySceneObjectsUI(const AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo)
+void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
+													 const AstralRaytracer::AssetManager& assetManager,
+													 AppStateInfo&                        appStateInfo)
 {
 	ImGui::Text("Objects");
 
 	for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 	{
 		bool isSelected= objIndex == appStateInfo.selectedObjectIndex;
-		if(ImGui::Selectable(scene.getTraceableName(objIndex).c_str(), &isSelected))
+		if(ImGui::Selectable(assetManager.getNameAndPathOfTraceable(objIndex).value().assetName.c_str(),
+												 &isSelected))
 		{
 			appStateInfo.selectedObjectIndex= objIndex;
 		}
@@ -359,7 +356,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				ImGui::Separator();
 				ImGui::Separator();
 
-				displaySceneObjectsUI(scene, appStateInfo);
+				displaySceneObjectsUI(scene, assetManager, appStateInfo);
 
 				ImGui::EndTable();
 			}
