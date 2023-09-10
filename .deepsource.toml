@@ -2,3 +2,8 @@ version = 1
 
 [[analyzers]]
 name = "cxx"
+
+exclude_patterns = [
+  "external/**",
+  "resources/**"
+]
