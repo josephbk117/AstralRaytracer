@@ -49,39 +49,45 @@ namespace AstralRaytracer
 			const glm::vec3 upDir(0.0f, 1.0f, 0.0f);
 			glm::vec3       rightDir= glm::cross(m_direction, upDir);
 
+			float32 moveSpeed = deltaTime;
+			if(Input::isKeyDown(InputKey::LEFT_SHIFT)) 
+			{
+				moveSpeed *= 5.0f;
+			}
+
 			if(Input::isKeyDown(InputKey::W))
 			{
-				m_position+= m_direction * deltaTime;
+				m_position+= m_direction * moveSpeed;
 				moved= true;
 			}
 
 			if(Input::isKeyDown(InputKey::S))
 			{
-				m_position-= m_direction * deltaTime;
+				m_position-= m_direction * moveSpeed;
 				moved= true;
 			}
 
 			if(Input::isKeyDown(InputKey::A))
 			{
-				m_position-= rightDir * deltaTime;
+				m_position-= rightDir * moveSpeed;
 				moved= true;
 			}
 
 			if(Input::isKeyDown(InputKey::D))
 			{
-				m_position+= rightDir * deltaTime;
+				m_position+= rightDir * moveSpeed;
 				moved= true;
 			}
 
 			if(Input::isKeyDown(InputKey::Q))
 			{
-				m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
+				m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * moveSpeed;
 				moved= true;
 			}
 
 			if(Input::isKeyDown(InputKey::E))
 			{
-				m_position-= glm::vec3(0.0f, 1.0f, 0.0f) * deltaTime;
+				m_position-= glm::vec3(0.0f, 1.0f, 0.0f) * moveSpeed;
 				moved= true;
 			}
 
