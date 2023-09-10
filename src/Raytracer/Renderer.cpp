@@ -120,7 +120,7 @@ namespace AstralRaytracer
 	{
 		glm::vec3       light(0.0f);
 		glm::vec3       contribution(1.0f);
-		constexpr float kEpsilon= 0.0001f;
+		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
