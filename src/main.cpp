@@ -259,7 +259,8 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 4.0f;
 
 		ImGui::SetNextItemWidth(sliderWidth);
-		if(ImGui::SliderInt("Bounce Count", &bounceCount, 1, 12, "%d", ImGuiSliderFlags_AlwaysClamp))
+		if(ImGui::SliderInt("##Bounce Count", &bounceCount, 1, 12, "Bounce Count:%d",
+												ImGuiSliderFlags_AlwaysClamp))
 		{
 			renderer.setBounceCount(bounceCount);
 			appStateInfo.isSceneDirty= true;
@@ -268,8 +269,8 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(sliderWidth);
 
-		if(ImGui::SliderFloat("Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 120.0f, "%.2f",
-													ImGuiSliderFlags_AlwaysClamp))
+		if(ImGui::SliderFloat("##Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 100.0f,
+													"Resolution Scale:%.1f%%", ImGuiSliderFlags_AlwaysClamp))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
@@ -277,7 +278,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		ImGui::SameLine();
 		ImGui::SetNextItemWidth(sliderWidth);
 		if(ImGui::SliderInt2("Resolution", reinterpret_cast<int32*>(&appStateInfo.rendererResolution),
-												 16, 1920, "%d", ImGuiSliderFlags_AlwaysClamp))
+												 64, 1920, "%dpx", ImGuiSliderFlags_AlwaysClamp))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
