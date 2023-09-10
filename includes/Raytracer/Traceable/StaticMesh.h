@@ -2,6 +2,7 @@
 #include "TriangleTraceable.h"
 #include "Utils/Common.h"
 
+#include <filesystem>
 #include <vector>
 
 namespace AstralRaytracer
@@ -16,18 +17,31 @@ namespace AstralRaytracer
 	{
 		public:
 		StaticMesh()= default;
+		StaticMesh(const std::filesystem::path& meshFilePath);
 		StaticMesh(const std::vector<TriangleTraceable>& triangles, const AABB& boundingBox)
 				: m_triangles(triangles), m_boundingBox(boundingBox)
 		{
 		}
+		StaticMesh(const std::vector<TriangleTraceable>& triangles, const AABB& boundingBox,
+							 const std::string& srcFilePath)
+				: m_triangles(triangles), m_boundingBox(boundingBox), m_sourceMeshFilePath(srcFilePath)
+		{
+		}
+
+		const std::string& getSourceMeshFilePath() const;
+
 		bool trace(const Ray& rayIn, HitInfo& hitInfo) const override;
 		void setPosition(const glm::vec3& position) override;
 		void setMaterialIndex(uint32 materialIndex) override;
 
+		void serialize(YAML::Emitter& out) const override;
+		void deserialize(YAML::Node& node) override;
+
 		private:
 		bool intersectsBoundingBox(const Ray& rayIn) const;
 
-		AABB m_boundingBox;
+		std::string                    m_sourceMeshFilePath;
+		AABB                           m_boundingBox;
 		std::vector<TriangleTraceable> m_triangles;
 	};
 } // namespace AstralRaytracer

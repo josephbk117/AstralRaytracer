@@ -19,7 +19,13 @@ namespace AstralRaytracer
 
 		YAML::Emitter& operator<<(YAML::Emitter& out, const Transform& transform)
 		{
-			out << transform.getPosition() << transform.getRotation() << transform.getScale();
+			const glm::vec3& pos  = transform.getPosition();
+			const float32    rot  = transform.getRotation();
+			const glm::vec3& scale= transform.getScale();
+
+			out << YAML::Flow;
+			out << YAML::BeginSeq << pos.x << pos.y << pos.z << rot << scale.x << scale.y << scale.z
+					<< YAML::EndSeq;
 			return out;
 		}
 

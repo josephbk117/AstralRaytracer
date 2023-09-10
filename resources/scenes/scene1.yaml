@@ -1,0 +1,12 @@
+Scene: New
+Textures:
+  - Floor1: resources/textures/floor_texture.jpg
+  - Floor2: resources/textures/tough_grass.jpg
+Materials:
+  - mat1: resources/materials/mat1.mat
+  - mat2: resources/materials/mat2.mat
+Traceables:
+  - Floor: resources/traceables/Floor.tble
+  - Cube: resources/traceables/Cube.tble
+  - Sphere1: resources/traceables/Sphere1.tble
+  - Sphere2: resources/traceables/Sphere2.tble

@@ -62,11 +62,35 @@ namespace AstralRaytracer
 			return false;
 		}
 
-		hitInfo.materialIndex            = m_materialIndex;
-		hitInfo.hitDistance              = t;
-		hitInfo.worldSpaceNormal         = -m_normal;
+		hitInfo.materialIndex     = m_materialIndex;
+		hitInfo.hitDistance       = t;
+		hitInfo.worldSpaceNormal  = -m_normal;
 		hitInfo.worldSpacePosition= rayIn.worldSpacePosition + (rayIn.direction * t);
 
 		return true;
 	}
+
+	void TriangleTraceable::serialize(YAML::Emitter& out) const
+	{
+		using namespace Serialization;
+		Traceable::serialize(out);
+
+		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::TRIANGLE);
+
+		out << YAML::Key << "vertex A" << YAML::Value << m_vertexA;
+		out << YAML::Key << "vertex B" << YAML::Value << m_vertexB;
+		out << YAML::Key << "vertex C" << YAML::Value << m_vertexC;
+	}
+
+	void TriangleTraceable::deserialize(YAML::Node& node)
+	{
+		m_vertexA= node["vertex A"].as<glm::vec3>();
+		m_vertexB= node["vertex B"].as<glm::vec3>();
+		m_vertexC= node["vertex C"].as<glm::vec3>();
+
+		*this= TriangleTraceable(m_vertexA, m_vertexB, m_vertexC);
+		// Creates new TriangleTraceable so need to deserialize parent after
+		Traceable::deserialize(node);
+	}
+
 } // namespace AstralRaytracer

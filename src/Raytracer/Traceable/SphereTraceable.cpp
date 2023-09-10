@@ -33,4 +33,19 @@ namespace AstralRaytracer
 
 		return false;
 	}
+
+	void SphereTraceable::serialize(YAML::Emitter& out) const
+	{
+		using namespace Serialization;
+		Traceable::serialize(out);
+		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::SPEHRE);
+		out << YAML::Key << "Radius" << YAML::Value << m_radius;
+	}
+
+	void SphereTraceable::deserialize(YAML::Node& node)
+	{
+		Traceable::deserialize(node);
+		m_radius= node["Radius"].as<float32>();
+	}
+
 } // namespace AstralRaytracer

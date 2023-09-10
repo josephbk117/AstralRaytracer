@@ -1,0 +1,7 @@
+Traceable: Floor
+Transform: [0, 0, 0, 0, 1, 1, 1]
+Material: 2
+Type: 2
+vertex A: [-100, 0, -100]
+vertex B: [0, 0, 100]
+vertex C: [100, 0, -100]

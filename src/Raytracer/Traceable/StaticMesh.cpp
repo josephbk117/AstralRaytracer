@@ -1,7 +1,18 @@
 #include "Raytracer/Traceable/StaticMesh.h"
 
+#include "Raytracer/ModelManager.h"
+
 namespace AstralRaytracer
 {
+
+	StaticMesh::StaticMesh(const std::filesystem::path& meshFilePath)
+	{
+		m_sourceMeshFilePath= meshFilePath.string();
+
+		*this= ModelManager::getStaticMeshFromGLTF(meshFilePath);
+	}
+
+	const std::string& StaticMesh::getSourceMeshFilePath() const { return m_sourceMeshFilePath; }
 
 	bool StaticMesh::trace(const Ray& rayIn, HitInfo& hitInfo) const
 	{
@@ -47,6 +58,23 @@ namespace AstralRaytracer
 		{
 			m_triangles[triIndex].setMaterialIndex(materialIndex);
 		}
+	}
+
+	void StaticMesh::serialize(YAML::Emitter& out) const
+	{
+		using namespace Serialization;
+		Traceable::serialize(out);
+		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::STATIC_MESH);
+		out << YAML::Key << "Source Path" << YAML::Value << m_sourceMeshFilePath;
+	}
+
+	void StaticMesh::deserialize(YAML::Node& node)
+	{
+		*this= StaticMesh(node["Source Path"].as<std::string>());
+		//Creates new StaticMesh so need to deserialize parent after
+		Traceable::deserialize(node);
+		setMaterialIndex(m_materialIndex);
+		setPosition(m_transform.getPosition());
 	}
 
 	bool StaticMesh::intersectsBoundingBox(const Ray& rayIn) const

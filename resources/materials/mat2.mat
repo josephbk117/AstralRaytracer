@@ -1,0 +1,6 @@
+Material: mat2
+Albedo: [1, 0, 1]
+Emission: [1, 1, 1]
+EmissionStrength: 0
+Roughness: 0.925000012
+Texture: 1

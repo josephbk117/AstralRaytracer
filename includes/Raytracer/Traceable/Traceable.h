@@ -2,10 +2,11 @@
 #include "Raytracer/Ray.h"
 #include "Raytracer/Transform.h"
 #include "Utils/Common.h"
+#include "Utils/Serialization.h"
 
 namespace AstralRaytracer
 {
-	class Traceable
+	class Traceable : public Serialization::Serializable
 	{
 		public:
 		Traceable()= default;
@@ -16,6 +17,9 @@ namespace AstralRaytracer
 		virtual void   setMaterialIndex(uint32 materialIndex) { m_materialIndex= materialIndex; };
 		virtual uint32 getMaterialIndex() const { return m_materialIndex; }
 		virtual bool   trace(const Ray& rayIn, HitInfo& hitInfo) const= 0;
+
+		virtual void serialize(YAML::Emitter& out) const override;
+		virtual void deserialize(YAML::Node& node) override;
 
 		protected:
 		Transform m_transform;

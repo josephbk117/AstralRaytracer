@@ -33,7 +33,7 @@ namespace AstralRaytracer
 		uint32     texture         = 0;
 
 		glm::vec3 getEmission() const;
-		void      serialize(YAML::Emitter& out) override;
-		void      deserialize(YAML::Emitter& out) override;
+		void      serialize(YAML::Emitter& out) const override;
+		void      deserialize(YAML::Node& node) override;
 	};
 } // namespace AstralRaytracer

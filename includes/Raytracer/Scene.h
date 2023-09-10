@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "TextureData.h"
 #include "Traceable/Traceable.h"
+#include "Utils/AssetManager.h"
 
 #include <filesystem>
 #include <memory>
@@ -18,8 +19,9 @@ namespace AstralRaytracer
 
 		void addTraceable(std::unique_ptr<Traceable>&& traceable, const std::string& name);
 		void addMaterial(const Material& material, const std::string& name);
-		void addTexture(TextureData&& texture, const std::string& name);
-		void serialize(const std::filesystem::path& path);
+		void addTexture(TextureData&& texture);
+		void serialize(const AssetManager& assetManager, const std::filesystem::path& path);
+		void deserialize(AssetManager& assetManager, const std::filesystem::path& path);
 		const std::string& getTraceableName(uint32 traceableIndex) const;
 		const std::string& getMaterialName(uint32 materialIndex) const;
 
@@ -30,7 +32,6 @@ namespace AstralRaytracer
 		private:
 		std::unordered_map<uint32, std::string> m_traceableNameMap;
 		std::unordered_map<uint32, std::string> m_materialNameMap;
-		std::unordered_map<uint32, std::string> m_textureNameMap;
 
 		static std::string defaultEmptyName;
 	};

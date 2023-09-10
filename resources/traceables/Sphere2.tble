@@ -1,0 +1,5 @@
+Traceable: Sphere2
+Transform: [-10, 10, 0, 0, 1, 1, 1]
+Material: 1
+Type: 1
+Radius: 10

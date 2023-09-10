@@ -8,6 +8,7 @@
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
+#include "Utils/AssetManager.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
@@ -36,6 +37,8 @@ struct AppStateInfo
 	uint32       selectedObjectIndex= 0;
 };
 
+AstralRaytracer::AssetManager assetManager;
+
 void initScene(AstralRaytracer::Scene& scene);
 
 void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& renderer,
@@ -55,9 +58,7 @@ int main()
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 		AstralRaytracer::Scene    scene;
-		initScene(scene);
-
-		scene.serialize("/resources/scenes/scene1.yaml");
+		scene.deserialize(assetManager, "resources/scenes/scene1.yaml");
 
 		AppStateInfo appStateInfo;
 
@@ -103,12 +104,18 @@ int main()
 
 void initScene(AstralRaytracer::Scene& scene)
 {
-	scene.addTexture(TextureManager::loadTextureDataFromFile("resources/textures/floor_texture.jpg"),
-									 "Floor");
+	scene.addTexture(assetManager.LoadTextureAsset("resources/textures/floor_texture.jpg", "Floor1"));
+	scene.addTexture(assetManager.LoadTextureAsset("resources/textures/tough_grass.jpg", "Floor2"));
 
 	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
 																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
 										"Mat1");
+
+	assetManager.SaveMaterialAsset("mat1", scene.m_materials[1]);
+
+	AstralRaytracer::Material newMat;
+	assetManager.LoadMaterialAsset("resources/materials/mat1.mat", "mat1", newMat);
+
 	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
 																							AstralRaytracer::Colors::White, 0.0f, 0.925f},
 										"Mat2");
@@ -127,6 +134,14 @@ void initScene(AstralRaytracer::Scene& scene)
 												 glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
 												 glm::vec3(100.0f, 0.0f, -100.0f)),
 										 "Floor");
+
+	assetManager.SaveTraceableAsset("Sphere1", scene.m_sceneTraceables[0]);
+	assetManager.SaveTraceableAsset("Floor", scene.m_sceneTraceables[3]);
+	assetManager.SaveTraceableAsset("Cube", scene.m_sceneTraceables[2]);
+
+	auto sphere1= assetManager.LoadTraceableAsset("resources/traceables/Sphere1.tble", "Sphere1");
+	auto floor  = assetManager.LoadTraceableAsset("resources/traceables/Floor.tble", "Floor");
+	auto cube   = assetManager.LoadTraceableAsset("resources/traceables/Cube.tble", "Cube");
 
 	scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
 	scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));

@@ -1,6 +1,7 @@
 #include "Raytracer/Scene.h"
 
 #include <fstream>
+#include <iostream>
 
 namespace AstralRaytracer
 {
@@ -11,7 +12,7 @@ namespace AstralRaytracer
 		addMaterial(Material(), "Default Material");
 		TextureData defaultTexData(1, 1, 3);
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
-		addTexture(std::move(defaultTexData), "Default Texture");
+		addTexture(std::move(defaultTexData));
 	}
 
 	void Scene::addTraceable(std::unique_ptr<Traceable>&& traceable, const std::string& name)
@@ -26,13 +27,9 @@ namespace AstralRaytracer
 		m_materialNameMap.insert({m_materials.size() - 1, name});
 	}
 
-	void Scene::addTexture(TextureData&& texture, const std::string& name)
-	{
-		m_textures.push_back(std::move(texture));
-		m_textureNameMap.insert({m_textures.size() - 1, name});
-	}
+	void Scene::addTexture(TextureData&& texture) { m_textures.push_back(std::move(texture)); }
 
-	void Scene::serialize(const std::filesystem::path& path)
+	void Scene::serialize(const AssetManager& assetManager, const std::filesystem::path& path)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -41,24 +38,36 @@ namespace AstralRaytracer
 		// Textures
 		out << YAML::Key << "Textures" << YAML::Value << YAML::BeginSeq;
 
-		out << YAML::BeginMap;
 		for(uint32 textureIndex= 0; textureIndex < m_textures.size(); ++textureIndex)
 		{
-			out << YAML::Key << textureIndex << YAML::Value << m_textureNameMap[textureIndex];
+			std::optional<AssetManager::NameAndPath> nameAndPath=
+					assetManager.getNameAndPathOfTexture(textureIndex);
+			if(nameAndPath.has_value())
+			{
+				out << YAML::BeginMap;
+
+				out << YAML::Key << nameAndPath.value().assetName << YAML::Value
+						<< nameAndPath.value().relativePath;
+				out << YAML::EndMap;
+			}
 		}
-		out << YAML::EndMap << YAML::EndSeq;
+		out << YAML::EndSeq;
 
 		// Materials
 		out << YAML::Key << "Materials" << YAML::Value << YAML::BeginSeq;
 
 		for(uint32 matIndex= 0; matIndex < m_materials.size(); ++matIndex)
 		{
-			out << YAML::BeginMap;
-			out << YAML::Key << m_materialNameMap[matIndex] << YAML::Value;
-			out << YAML::BeginMap;
-			m_materials[matIndex].serialize(out);
-			out << YAML::EndMap;
-			out << YAML::EndMap;
+			std::optional<AssetManager::NameAndPath> nameAndPath=
+					assetManager.getNameAndPathOfMaterial(matIndex);
+			if(nameAndPath.has_value())
+			{
+				out << YAML::BeginMap;
+
+				out << YAML::Key << nameAndPath.value().assetName << YAML::Value
+						<< nameAndPath.value().relativePath;
+				out << YAML::EndMap;
+			}
 		}
 
 		out << YAML::EndSeq;
@@ -66,12 +75,21 @@ namespace AstralRaytracer
 		// Trace-ables
 		out << YAML::Key << "Traceables" << YAML::Value << YAML::BeginSeq;
 
-		out << YAML::BeginMap;
 		for(uint32 traceableIndex= 0; traceableIndex < m_sceneTraceables.size(); ++traceableIndex)
 		{
-			out << YAML::Key << traceableIndex << YAML::Value << m_traceableNameMap[traceableIndex];
+			std::optional<AssetManager::NameAndPath> nameAndPath=
+					assetManager.getNameAndPathOfTraceable(traceableIndex);
+			if(nameAndPath.has_value())
+			{
+				out << YAML::BeginMap;
+
+				out << YAML::Key << nameAndPath.value().assetName << YAML::Value
+						<< nameAndPath.value().relativePath;
+
+				out << YAML::EndMap;
+			}
 		}
-		out << YAML::EndMap << YAML::EndSeq;
+		out << YAML::EndSeq;
 
 		const std::filesystem::path outputPath=
 				std::filesystem::current_path().string() + path.string();
@@ -81,6 +99,66 @@ namespace AstralRaytracer
 		std::ofstream ofs(outputPath);
 		ofs << out.c_str();
 		ofs.close();
+	}
+
+	void Scene::deserialize(AssetManager& assetManager, const std::filesystem::path& path)
+	{
+		std::ifstream stream(path);
+		YAML::Node    data= YAML::Load(stream);
+
+		if(!data["Scene"])
+		{
+			return;
+		}
+
+		std::cout << "Scene " << data["Scene"].as<std::string>();
+
+		const auto& textures= data["Textures"];
+
+		std::cout << "\nNumber of textures " << textures.size();
+
+		for(uint32 texIndex= 0; texIndex < textures.size(); ++texIndex)
+		{
+			const auto& tex= textures[texIndex];
+			for(auto magic: tex)
+			{
+				addTexture(assetManager.LoadTextureAsset(magic.second.as<std::string>(),
+																								 magic.first.as<std::string>()));
+				std::cout << "\n Texture at index : " << texIndex << " : "
+									<< magic.first.as<std::string>();
+			}
+		}
+
+		const auto& materials= data["Materials"];
+		std::cout << "\nNumber of materials " << materials.size();
+
+		for(uint32 matIndex= 0; matIndex < materials.size(); ++matIndex)
+		{
+			const auto& mat= materials[matIndex];
+			for(auto magic: mat)
+			{
+				Material materialNew;
+				assetManager.LoadMaterialAsset(magic.second.as<std::string>(),
+																			 magic.first.as<std::string>(), materialNew);
+				addMaterial(materialNew, magic.first.as<std::string>());
+
+				std::cout << "\n Material at index : " << matIndex << " : " << magic.first.as<std::string>();
+			}
+		}
+
+		const auto& traceables= data["Traceables"];
+		std::cout << "\nNumber of traceables " << traceables.size();
+
+		for(uint32 traceIndex= 0; traceIndex < traceables.size(); ++traceIndex)
+		{
+			const auto& traceable= traceables[traceIndex];
+			for(auto magic: traceable)
+			{
+				addTraceable(assetManager.LoadTraceableAsset(magic.second.as<std::string>(),
+																										 magic.first.as<std::string>()),
+										 magic.first.as<std::string>());
+			}
+		}
 	}
 
 	const std::string& Scene::getTraceableName(uint32 traceableIndex) const

@@ -133,8 +133,8 @@ namespace AstralRaytracer
 			{
 				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
 				const TextureData& texData  = scene.m_textures.at(mat.texture);
-				const ColourData&  colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x,
-																														closestHitInfo.worldSpacePosition.z);
+				const ColourData&  colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x * 0.1f,
+																														closestHitInfo.worldSpacePosition.z * 0.1f);
 
 				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
 				light+= mat.getEmission() * colorData.getColour_32_bit();
