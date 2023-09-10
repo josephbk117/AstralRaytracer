@@ -13,7 +13,7 @@ namespace AstralRaytracer
 			: m_fov(fov), m_nearClip(nearClip), m_farClip(farClip)
 	{
 		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_position         = glm::vec3(0.0f, 0.0f, 3.0f);
+		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
 		m_lastMousePosition= glm::vec2(0.0f);
 
 		recalculateView();
