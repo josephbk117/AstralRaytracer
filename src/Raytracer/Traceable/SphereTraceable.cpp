@@ -54,6 +54,7 @@ namespace AstralRaytracer
 	{
 		Traceable::deserialize(node);
 		m_radius= node["Radius"].as<float32>();
+		Traceable::setScale(glm::vec3(m_radius));
 	}
 
 } // namespace AstralRaytracer

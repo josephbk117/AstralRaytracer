@@ -21,17 +21,20 @@ namespace AstralRaytracer
 		StaticMesh(const std::vector<TriangleTraceable>& triangles, const AABB& boundingBox)
 				: m_triangles(triangles), m_boundingBox(boundingBox)
 		{
+			m_initialBoundingBox= boundingBox;
 		}
 		StaticMesh(const std::vector<TriangleTraceable>& triangles, const AABB& boundingBox,
 							 const std::string& srcFilePath)
 				: m_triangles(triangles), m_boundingBox(boundingBox), m_sourceMeshFilePath(srcFilePath)
 		{
+			m_initialBoundingBox= boundingBox;
 		}
 
 		const std::string& getSourceMeshFilePath() const;
+		bool               trace(const Ray& rayIn, HitInfo& hitInfo) const override;
+		virtual void       setPosition(const glm::vec3& position) override;
+		virtual void       setScale(const glm::vec3& scale) override;
 
-		bool trace(const Ray& rayIn, HitInfo& hitInfo) const override;
-		void setPosition(const glm::vec3& position) override;
 		void setMaterialIndex(uint32 materialIndex) override;
 
 		void serialize(YAML::Emitter& out) const override;
@@ -42,6 +45,7 @@ namespace AstralRaytracer
 
 		std::string                    m_sourceMeshFilePath;
 		AABB                           m_boundingBox;
+		AABB                           m_initialBoundingBox;
 		std::vector<TriangleTraceable> m_triangles;
 	};
 } // namespace AstralRaytracer

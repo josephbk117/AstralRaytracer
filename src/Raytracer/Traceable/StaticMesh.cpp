@@ -52,6 +52,19 @@ namespace AstralRaytracer
 		Traceable::setPosition(position);
 	}
 
+	void StaticMesh::setScale(const glm::vec3& scale)
+	{
+		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
+		{
+			m_triangles[triIndex].setScale(scale);
+		}
+
+		m_boundingBox.max= m_initialBoundingBox.max * scale;
+		m_boundingBox.min= m_initialBoundingBox.min * scale;
+
+		Traceable::setScale(scale);
+	}
+
 	void StaticMesh::setMaterialIndex(uint32 materialIndex)
 	{
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
@@ -71,7 +84,7 @@ namespace AstralRaytracer
 	void StaticMesh::deserialize(YAML::Node& node)
 	{
 		*this= StaticMesh(node["Source Path"].as<std::string>());
-		//Creates new StaticMesh so need to deserialize parent after
+		// Creates new StaticMesh so need to deserialize parent after
 		Traceable::deserialize(node);
 		setMaterialIndex(m_materialIndex);
 		setPosition(m_transform.getPosition());
