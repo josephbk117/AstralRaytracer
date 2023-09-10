@@ -12,9 +12,25 @@ namespace AstralRaytracer
 																			 const glm::vec3& vertexC)
 			: m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC)
 	{
+		m_InitialVertexA= m_vertexA;
+		m_InitialVertexB= m_vertexB;
+		m_InitialVertexC= m_vertexC;
+
 		m_normal= glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
 		m_vAvB  = m_vertexB - m_vertexA;
 		m_vAvC  = m_vertexC - m_vertexA;
+	}
+
+	void TriangleTraceable::setScale(const glm::vec3& scale)
+	{
+		m_vertexA= m_InitialVertexA * scale;
+		m_vertexB= m_InitialVertexB * scale;
+		m_vertexC= m_InitialVertexC * scale;
+
+		m_normal= glm::normalize(glm::cross(m_vertexC - m_vertexA, m_vertexB - m_vertexA));
+		m_vAvB  = m_vertexB - m_vertexA;
+		m_vAvC  = m_vertexC - m_vertexA;
+		Traceable::setScale(scale);
 	}
 
 	float32 TriangleTraceable::getTriangleDistance() const { return glm::dot(m_normal, m_vertexA); }
@@ -26,7 +42,7 @@ namespace AstralRaytracer
 		const glm::vec3 pvec= glm::cross(rayIn.direction, m_vAvC);
 		const float32   det = glm::dot(m_vAvB, pvec);
 
-		const float32 kEpsilon= 0.0001f;
+		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 		// if the determinant is negative, the triangle is 'back facing'
 		// if the determinant is close to 0, the ray misses the triangle
 		if(det < kEpsilon)
