@@ -86,6 +86,7 @@ namespace AstralRaytracer
 		*this= StaticMesh(node["Source Path"].as<std::string>());
 		// Creates new StaticMesh so need to deserialize parent after
 		Traceable::deserialize(node);
+		m_id= uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		setMaterialIndex(m_materialIndex);
 		setPosition(m_transform.getPosition());
 	}

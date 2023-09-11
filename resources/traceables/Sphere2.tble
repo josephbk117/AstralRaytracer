@@ -1,5 +1,6 @@
+UUID: 80bf41de-3f0f-4d0e-91cc-cf804beb4879
 Traceable: Sphere2
-Transform: [-10, 10, 0, 0, 1, 1, 1]
+Transform: [-10, 10, 0, 0, 10, 10, 10]
 Material: 0
 Type: 1
 Radius: 10

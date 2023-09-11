@@ -105,6 +105,7 @@ namespace AstralRaytracer
 		m_vertexC= node["vertex C"].as<glm::vec3>();
 
 		*this= TriangleTraceable(m_vertexA, m_vertexB, m_vertexC);
+		m_id = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		// Creates new TriangleTraceable so need to deserialize parent after
 		Traceable::deserialize(node);
 	}

@@ -18,6 +18,8 @@ namespace AstralRaytracer
 			std::string relativePath;
 		};
 
+		AssetManager();
+
 		[[nodiscard]] TextureData LoadTextureAsset(const std::filesystem::path& path,
 																							 const std::string&           name);
 		[[nodiscard]] bool LoadMaterialAsset(const std::filesystem::path& path, const std::string& name,
@@ -34,5 +36,11 @@ namespace AstralRaytracer
 		std::unordered_map<uint32, NameAndPath> m_traceableNameAndPathMap;
 		std::unordered_map<uint32, NameAndPath> m_materialNameAndPathMap;
 		std::unordered_map<uint32, NameAndPath> m_textureNameAndPathMap;
+
+		private:
+		uuids::uuid generateUUID();
+		std::string generateUUIDasString();
+
+		std::mt19937                 m_randomNumGenerator;
 	};
 } // namespace AstralRaytracer

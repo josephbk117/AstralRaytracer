@@ -128,9 +128,15 @@ namespace AstralRaytracer
 		class Serializable
 		{
 			public:
-			Serializable()                                  = default;
+			Serializable() = default;
 			virtual void serialize(YAML::Emitter& out) const= 0;
 			virtual void deserialize(YAML::Node& node)      = 0;
+
+			void        setUUID(uuids::uuid id) { m_id= id; };
+			uuids::uuid getUUID() const { return m_id; }
+
+			protected:
+			uuids::uuid m_id;
 		};
 	} // namespace Serialization
 } // namespace AstralRaytracer

@@ -6,6 +6,7 @@
 #include <glm.hpp>
 #include <limits>
 #include <string>
+#include <uuid.h>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
 

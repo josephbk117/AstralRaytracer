@@ -9,6 +9,15 @@
 namespace AstralRaytracer
 {
 
+	AssetManager::AssetManager()
+	{
+		std::random_device rd;
+		auto               seed_data= std::array<int, std::mt19937::state_size>{};
+		std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+		std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+		m_randomNumGenerator= std::mt19937(seq);
+	}
+
 	TextureData AssetManager::LoadTextureAsset(const std::filesystem::path& path,
 																						 const std::string&           name)
 	{
@@ -91,14 +100,16 @@ namespace AstralRaytracer
 		std::filesystem::path path= "/resources/materials/" + name + ".mat";
 		YAML::Emitter         out;
 		out << YAML::BeginMap;
+		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Material" << YAML::Value << name;
 		material.serialize(out);
 		out << YAML::EndMap;
 
-		const std::filesystem::path outputPath=
-				std::filesystem::current_path().string() + path.string();
+		using namespace std::filesystem;
 
-		std::filesystem::create_directory(outputPath.parent_path());
+		const std::filesystem::path outputPath= current_path().string() + path.string();
+
+		create_directory(outputPath.parent_path());
 
 		std::ofstream ofs(outputPath);
 		ofs << out.c_str();
@@ -111,14 +122,16 @@ namespace AstralRaytracer
 		std::filesystem::path path= "/resources/traceables/" + name + ".tble";
 		YAML::Emitter         out;
 		out << YAML::BeginMap;
+		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Traceable" << YAML::Value << name;
 		traceable->serialize(out);
 		out << YAML::EndMap;
 
-		const std::filesystem::path outputPath=
-				std::filesystem::current_path().string() + path.string();
+		using namespace std::filesystem;
 
-		std::filesystem::create_directory(outputPath.parent_path());
+		const std::filesystem::path outputPath= current_path().string() + path.string();
+
+		create_directory(outputPath.parent_path());
 
 		std::ofstream ofs(outputPath);
 		ofs << out.c_str();
@@ -158,5 +171,12 @@ namespace AstralRaytracer
 
 		return std::nullopt;
 	}
+
+	uuids::uuid AssetManager::generateUUID()
+	{
+		return uuids::uuid_random_generator(m_randomNumGenerator)();
+	}
+
+	std::string AssetManager::generateUUIDasString() { return uuids::to_string(generateUUID()); }
 
 } // namespace AstralRaytracer

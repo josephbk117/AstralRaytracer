@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19.4)
 project(AstralRaytracer)
 
 # Set C++ standard to C++17 and disable extensions
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -33,6 +33,7 @@ include_directories(
     "./external/stbimage"
     "./external/glm"
     "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/stduuid/include"
 )
 
 # Set TinyGLTF configuration options
@@ -46,6 +47,7 @@ add_subdirectory(external/tinygltf)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
 add_subdirectory(external/glBinding EXCLUDE_FROM_ALL)
 add_subdirectory(external/yamlcpp EXCLUDE_FROM_ALL)
+add_subdirectory(external/stduuid EXCLUDE_FROM_ALL)
 
 # Add resources as a subdirectory
 add_subdirectory(resources)
@@ -57,6 +59,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC external/glBinding/source/glbinding/include
     PUBLIC external/tinygltf
     PUBLIC external/yamlcpp/include
+    PUBLIC external/stduuid/include
 )
 
 # Link directories for the main project target

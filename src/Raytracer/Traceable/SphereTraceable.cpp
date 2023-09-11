@@ -53,6 +53,7 @@ namespace AstralRaytracer
 	void SphereTraceable::deserialize(YAML::Node& node)
 	{
 		Traceable::deserialize(node);
+		m_id    = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		m_radius= node["Radius"].as<float32>();
 		Traceable::setScale(glm::vec3(m_radius));
 	}

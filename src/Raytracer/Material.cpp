@@ -16,8 +16,9 @@ namespace AstralRaytracer
 		out << YAML::Key << "Texture" << YAML::Value << texture;
 	}
 
-	void Material::deserialize(YAML::Node& node) 
+	void Material::deserialize(YAML::Node& node)
 	{
+		m_id            = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		albedo          = node["Albedo"].as<ColourData>();
 		emission        = node["Emission"].as<ColourData>();
 		emissionStrength= node["EmissionStrength"].as<float32>();
