@@ -283,7 +283,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 4.0f;
 
 		ImGui::SetNextItemWidth(sliderWidth);
-		if(ImGui::SliderInt("##Bounce Count", &bounceCount, 1, 12, "Bounce Count:%d",
+		if(ImGui::SliderInt("##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d",
 												ImGuiSliderFlags_AlwaysClamp))
 		{
 			renderer.setBounceCount(bounceCount);
