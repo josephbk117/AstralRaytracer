@@ -23,8 +23,11 @@ namespace AstralRaytracer
 		Window(const Window&)           = delete;
 		Window& operator=(const Window&)= delete;
 		~Window(){};
-		const std::string& getName() const;
-		bool               shouldWindowClose() const;
+		const std::string&  getName() const;
+		ImFont* const getPrimaryFont() const { return m_primaryFont; }
+		ImFont* const getSecondaryFont() const { return m_secondaryFont; }
+		ImFont* const getTertiaryFont() const { return m_tertiaryFont; }
+		bool                shouldWindowClose() const;
 
 		void initialize();
 		void shutdown();
@@ -38,7 +41,10 @@ namespace AstralRaytracer
 		private:
 		static Window* m_instance;
 
-		GLFWwindow*               m_glfwWindow= nullptr;
+		GLFWwindow*               m_glfwWindow   = nullptr;
+		ImFont*                   m_primaryFont  = nullptr;
+		ImFont*                   m_secondaryFont= nullptr;
+		ImFont*                   m_tertiaryFont= nullptr;
 		std::string               m_name;
 		std::pair<uint32, uint32> m_resolution{0, 0};
 

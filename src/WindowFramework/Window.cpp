@@ -52,7 +52,11 @@ namespace AstralRaytracer
 		ImGui_ImplGlfw_InitForOpenGL(m_glfwWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 420 core");
 
-		ImGui::GetIO().Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
+		ImGuiIO& io= ImGui::GetIO();
+
+		m_primaryFont  = io.Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
+		m_secondaryFont= io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 22.0f);
+		m_tertiaryFont= io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 18.0f);
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 	}

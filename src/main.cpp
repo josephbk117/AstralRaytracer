@@ -48,7 +48,8 @@ void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& rendere
 									AstralRaytracer::Camera& cam, const AstralRaytracer::Scene& scene);
 
 void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
-							 AstralRaytracer::Scene& scene, AstralRaytracer::Camera& cam);
+							 const AstralRaytracer::Window& window, AstralRaytracer::Scene& scene,
+							 AstralRaytracer::Camera& cam);
 
 int main()
 {
@@ -93,7 +94,7 @@ int main()
 
 			// Display UI
 			window.startUI();
-			displayUI(renderer, appStateInfo, scene, cam);
+			displayUI(renderer, appStateInfo, window, scene, cam);
 			window.endUI();
 
 			window.swapBuffers();
@@ -173,9 +174,12 @@ void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& rendere
 	}
 }
 
-void displayMaterialUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo)
+void displayMaterialUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Window& window,
+											 AppStateInfo& appStateInfo)
 {
+	ImGui::PushFont(window.getTertiaryFont());
 	ImGui::Text("Materials");
+	ImGui::PopFont();
 	const uint32 materialCount= scene.m_materials.size();
 	const uint32 textureCount = scene.m_textures.size();
 	for(uint32 matIndex= 0; matIndex < materialCount; ++matIndex)
@@ -210,9 +214,12 @@ void displayMaterialUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo
 	}
 }
 
-void displayTransformUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInfo)
+void displayTransformUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Window& window,
+												AppStateInfo& appStateInfo)
 {
+	ImGui::PushFont(window.getTertiaryFont());
 	ImGui::Text("Transform");
+	ImGui::PopFont();
 	if(AstralRaytracer::UI::displayTransform(
 				 *scene.m_sceneTraceables[appStateInfo.selectedObjectIndex]))
 	{
@@ -221,10 +228,14 @@ void displayTransformUI(AstralRaytracer::Scene& scene, AppStateInfo& appStateInf
 }
 
 void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
+													 const AstralRaytracer::Window&       window,
 													 const AstralRaytracer::AssetManager& assetManager,
 													 AppStateInfo&                        appStateInfo)
 {
-	ImGui::Text("Objects");
+	ImGui::PushFont(window.getSecondaryFont());
+	ImGui::Text("SCENE");
+	ImGui::PopFont();
+
 	for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
 	{
 		bool isSelected= objIndex == appStateInfo.selectedObjectIndex;
@@ -237,7 +248,8 @@ void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
 }
 
 void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
-							 AstralRaytracer::Scene& scene, AstralRaytracer::Camera& cam)
+							 const AstralRaytracer::Window& window, AstralRaytracer::Scene& scene,
+							 AstralRaytracer::Camera& cam)
 {
 	ImGuizmo::BeginFrame();
 	ImGuizmo::SetOrthographic(false);
@@ -304,11 +316,15 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 			ImGui::TableNextRow(rowFlags, 100.0f);
 			ImGui::TableSetColumnIndex(0);
 			const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.75f;
-			if(ImGui::BeginTable("viewportSceneInfoSplit", 2, tableFlags,
+			if(ImGui::BeginTable("viewportSceneInfoSplit", 3, tableFlags,
 													 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 			{
 				ImGui::TableNextRow(rowFlags, 100.0f);
 				ImGui::TableSetColumnIndex(0);
+
+				displaySceneObjectsUI(scene, window, assetManager, appStateInfo);
+
+				ImGui::TableSetColumnIndex(1);
 
 				ImVec2 availableRegion= ImGui::GetContentRegionAvail();
 				availableRegion.y     = viewportSceneInfoSplitHeight;
@@ -366,29 +382,26 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				}
 
 				ImGui::EndChild();
-
 				ImGui::Dummy({availableRegion.x, gapRegion.y});
 
-				ImGui::TableSetColumnIndex(1);
+				ImGui::TableSetColumnIndex(2);
 
-				displayMaterialUI(scene, appStateInfo);
-
-				ImGui::Separator();
-				ImGui::Separator();
-
-				displaySceneObjectsUI(scene, assetManager, appStateInfo);
+				ImGui::PushFont(window.getSecondaryFont());
+				ImGui::Text("INSPECTOR");
+				ImGui::PopFont();
+				displayTransformUI(scene, window, appStateInfo);
 
 				ImGui::Separator();
 				ImGui::Separator();
 
-				displayTransformUI(scene, appStateInfo);
+				displayMaterialUI(scene, window, appStateInfo);
 
 				ImGui::EndTable();
 			}
 
 			ImGui::TableNextRow(rowFlags, 100.0f);
 			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("Hey Three!");
+			ImGui::Text("WIP!");
 
 			ImGui::EndTable();
 		}
