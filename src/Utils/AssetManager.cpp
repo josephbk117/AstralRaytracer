@@ -16,6 +16,9 @@ namespace AstralRaytracer
 		std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
 		std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
 		m_randomNumGenerator= std::mt19937(seq);
+
+		// Add Default Material
+		m_materialNameAndPathMap.insert({0, {"Default Material", "NIL"}});
 	}
 
 	TextureData AssetManager::LoadTextureAsset(const std::filesystem::path& path,
@@ -31,7 +34,7 @@ namespace AstralRaytracer
 	bool AssetManager::LoadMaterialAsset(const std::filesystem::path& path, const std::string& name,
 																			 Material& outMaterial)
 	{
-		static uint32 matCount   = 0;
+		static uint32 matCount   = 1;
 		NameAndPath   nameAndPath= {name, path.string()};
 		m_materialNameAndPathMap.emplace(matCount, nameAndPath);
 		matCount++;

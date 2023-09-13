@@ -178,40 +178,39 @@ void displayMaterialUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Win
 											 AppStateInfo& appStateInfo)
 {
 	ImGui::PushFont(window.getTertiaryFont());
-	ImGui::Text("Materials");
+	ImGui::Text("Material");
 	ImGui::PopFont();
-	const uint32 materialCount= scene.m_materials.size();
-	const uint32 textureCount = scene.m_textures.size();
-	for(uint32 matIndex= 0; matIndex < materialCount; ++matIndex)
+	const uint32 textureCount= scene.m_textures.size();
+
+	const uint32 matIndex=
+			scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex).get()->getMaterialIndex();
+	AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
+	ImGui::Text(assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
+
+	if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
 	{
-		ImGui::PushID(matIndex);
-		AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
-		if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
-		{
-			appStateInfo.isSceneDirty= true;
-		}
-		if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0, textureCount - 1, "%d",
-												ImGuiSliderFlags_AlwaysClamp))
-		{
-			appStateInfo.isSceneDirty= true;
-		}
-		if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
-		{
-			appStateInfo.isSceneDirty= true;
-		}
-		if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f, "%.2f",
-													ImGuiSliderFlags_AlwaysClamp))
-		{
-			appStateInfo.isSceneDirty= true;
-		}
-		if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f, "%.2f",
-													ImGuiSliderFlags_AlwaysClamp))
-		{
-			appStateInfo.isSceneDirty= true;
-		}
-		ImGui::Separator();
-		ImGui::PopID();
+		appStateInfo.isSceneDirty= true;
 	}
+	if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0, textureCount - 1, "%d",
+											ImGuiSliderFlags_AlwaysClamp))
+	{
+		appStateInfo.isSceneDirty= true;
+	}
+	if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
+	{
+		appStateInfo.isSceneDirty= true;
+	}
+	if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f, "%.2f",
+												ImGuiSliderFlags_AlwaysClamp))
+	{
+		appStateInfo.isSceneDirty= true;
+	}
+	if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f, "%.2f",
+												ImGuiSliderFlags_AlwaysClamp))
+	{
+		appStateInfo.isSceneDirty= true;
+	}
+	ImGui::Separator();
 }
 
 void displayTransformUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Window& window,
