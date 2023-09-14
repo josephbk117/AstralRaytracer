@@ -92,7 +92,7 @@ int main()
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
 			// Render scene
-			// renderer.render(scene, cam);
+			renderer.render(scene, cam);
 
 			// Display UI
 			window.startUI();
@@ -316,7 +316,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		{
 			ImGui::TableNextRow(rowFlags, 100.0f);
 			ImGui::TableSetColumnIndex(0);
-			const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.35f;
+			const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.6f;
 			if(ImGui::BeginTable("viewportSceneInfoSplit", 3, tableFlags,
 													 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 			{
