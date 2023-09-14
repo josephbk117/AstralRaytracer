@@ -17,7 +17,14 @@ namespace AstralRaytracer
 			std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
 			rootNode->pathStr                 = resourcesPath;
 
-			PathNode* currentNode= rootNode.get();
+			traverseDirectoryFromRoot(rootNode);
+
+			drawPathNode(rootNode);
+		}
+
+		void ContentBrowser::traverseDirectoryFromRoot(std::unique_ptr<PathNode>& root)
+		{
+			PathNode* currentNode= root.get();
 
 			while(currentNode != nullptr)
 			{
@@ -59,13 +66,23 @@ namespace AstralRaytracer
 					currentNode= currentNode->parent;
 				}
 			}
-
-			drawPathNode(rootNode);
 		}
 
 		void ContentBrowser::drawPathNode(std::unique_ptr<PathNode>& node)
 		{
-			bool nodeOpen= ImGui::TreeNode(node->pathStr.string().c_str());
+			const bool isFile= node->pathStr.has_extension();
+
+			bool selected= m_selectedFile == node->pathStr;
+			if(isFile)
+			{
+				if(ImGui::Selectable(node->pathStr.stem().string().c_str(), selected))
+				{
+					m_selectedFile= node->pathStr;
+				}
+				return;
+			}
+
+			bool nodeOpen= ImGui::TreeNode(node->pathStr.stem().string().c_str());
 			if(nodeOpen)
 			{
 				for(std::unique_ptr<PathNode>& child: node->nodes)

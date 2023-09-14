@@ -21,11 +21,13 @@ namespace AstralRaytracer
 				PathNode*                              parent= nullptr;
 				std::filesystem::path                  pathStr;
 				std::vector<std::unique_ptr<PathNode>> nodes;
-				bool                                   visited= false;
+				bool                                   visited   = false;
 			};
 
+			std::filesystem::path m_selectedFile{""};
 			std::filesystem::path m_rootContentPath{"/resources"};
 
+			void traverseDirectoryFromRoot(std::unique_ptr<PathNode>& root);
 			void drawPathNode(std::unique_ptr<PathNode>& node);
 		};
 	} // namespace UI
