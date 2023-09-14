@@ -11,6 +11,7 @@
 #include "Utils/AssetManager.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/UI/CommonUI.h"
+#include "WindowFramework/UI/ContentBrowser.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
@@ -41,6 +42,7 @@ struct AppStateInfo
 };
 
 AstralRaytracer::AssetManager assetManager;
+AstralRaytracer::UI::ContentBrowser contentBrowser;
 
 void initScene(AstralRaytracer::Scene& scene);
 
@@ -90,7 +92,7 @@ int main()
 			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
 			// Render scene
-			renderer.render(scene, cam);
+			// renderer.render(scene, cam);
 
 			// Display UI
 			window.startUI();
@@ -314,7 +316,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 		{
 			ImGui::TableNextRow(rowFlags, 100.0f);
 			ImGui::TableSetColumnIndex(0);
-			const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.75f;
+			const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.35f;
 			if(ImGui::BeginTable("viewportSceneInfoSplit", 3, tableFlags,
 													 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 			{
@@ -400,7 +402,8 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 
 			ImGui::TableNextRow(rowFlags, 100.0f);
 			ImGui::TableSetColumnIndex(0);
-			ImGui::Text("WIP!");
+
+			contentBrowser.display();
 
 			ImGui::EndTable();
 		}
