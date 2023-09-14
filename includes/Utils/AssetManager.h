@@ -9,6 +9,8 @@
 #include <unordered_map>
 namespace AstralRaytracer
 {
+	namespace fs= std::filesystem;
+
 	class AssetManager
 	{
 		public:
@@ -20,12 +22,13 @@ namespace AstralRaytracer
 
 		AssetManager();
 
-		[[nodiscard]] TextureData LoadTextureAsset(const std::filesystem::path& path,
-																							 const std::string&           name);
-		[[nodiscard]] bool LoadMaterialAsset(const std::filesystem::path& path, const std::string& name,
-																				 Material& outMaterial);
-		[[nodiscard]] std::unique_ptr<Traceable> LoadTraceableAsset(const std::filesystem::path& path);
+		[[nodiscard]] TextureData LoadTextureAsset(const fs::path& path, const std::string& name);
+		[[nodiscard]] bool        LoadMaterialAsset(const fs::path& path, const std::string& name,
+																								Material& outMaterial);
+		[[nodiscard]] std::unique_ptr<Traceable> LoadTraceableAsset(const fs::path& path);
+		void SaveMaterialAsset(const fs::path& folderPath, const std::string& name, const Material& material);
 		void SaveMaterialAsset(const std::string& name, const Material& material);
+
 		void SaveTraceableAsset(const std::string& name, const std::unique_ptr<Traceable>& traceable);
 
 		[[nodiscard]] std::optional<NameAndPath> getNameAndPathOfTexture(uint32 id) const;
@@ -41,6 +44,6 @@ namespace AstralRaytracer
 		uuids::uuid generateUUID();
 		std::string generateUUIDasString();
 
-		std::mt19937                 m_randomNumGenerator;
+		std::mt19937 m_randomNumGenerator;
 	};
 } // namespace AstralRaytracer

@@ -41,8 +41,8 @@ struct AppStateInfo
 	uint32       selectedObjectIndex= 0;
 };
 
-AstralRaytracer::AssetManager assetManager;
-AstralRaytracer::UI::ContentBrowser contentBrowser;
+AstralRaytracer::AssetManager       assetManager;
+AstralRaytracer::UI::ContentBrowser contentBrowser(assetManager);
 
 void initScene(AstralRaytracer::Scene& scene);
 

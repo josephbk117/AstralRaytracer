@@ -98,43 +98,49 @@ namespace AstralRaytracer
 		return nullptr;
 	}
 
-	void AssetManager::SaveMaterialAsset(const std::string& name, const Material& material)
+	void AssetManager::SaveMaterialAsset(const fs::path& folderPath, const std::string& name,
+																			 const Material& material)
 	{
-		std::filesystem::path path= "/resources/materials/" + name + ".mat";
-		YAML::Emitter         out;
+		fs::path path= folderPath.string() + name + ".mat";
+
+		YAML::Emitter out;
 		out << YAML::BeginMap;
 		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Material" << YAML::Value << name;
 		material.serialize(out);
 		out << YAML::EndMap;
 
-		using namespace std::filesystem;
+		if(!fs::exists(folderPath) && fs::is_directory(folderPath))
+		{
+			fs::create_directory(folderPath);
+		}
 
-		const std::filesystem::path outputPath= current_path().string() + path.string();
-
-		create_directory(outputPath.parent_path());
-
-		std::ofstream ofs(outputPath);
+		std::ofstream ofs(path);
 		ofs << out.c_str();
 		ofs.close();
+	}
+
+	void AssetManager::SaveMaterialAsset(const std::string& name, const Material& material)
+	{
+		fs::path path= "/resources/materials/";
+		SaveMaterialAsset(path, name, material);
 	}
 
 	void AssetManager::SaveTraceableAsset(const std::string&                name,
 																				const std::unique_ptr<Traceable>& traceable)
 	{
-		std::filesystem::path path= "/resources/traceables/" + name + ".tble";
-		YAML::Emitter         out;
+		fs::path path= "/resources/traceables/" + name + ".tble";
+
+		YAML::Emitter out;
 		out << YAML::BeginMap;
 		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Traceable" << YAML::Value << name;
 		traceable->serialize(out);
 		out << YAML::EndMap;
 
-		using namespace std::filesystem;
+		const fs::path outputPath= fs::current_path().string() + path.string();
 
-		const std::filesystem::path outputPath= current_path().string() + path.string();
-
-		create_directory(outputPath.parent_path());
+		fs::create_directory(outputPath.parent_path());
 
 		std::ofstream ofs(outputPath);
 		ofs << out.c_str();

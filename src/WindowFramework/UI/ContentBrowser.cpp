@@ -1,5 +1,7 @@
 #include "WindowFramework/UI/ContentBrowser.h"
 
+#include "Raytracer/Material.h"
+
 #include <imgui.h>
 
 namespace AstralRaytracer
@@ -7,6 +9,8 @@ namespace AstralRaytracer
 	namespace UI
 	{
 		namespace fs= std::filesystem;
+
+		ContentBrowser::ContentBrowser(AssetManager& assetManager): m_assetManager(assetManager) {}
 
 		void ContentBrowser::display()
 		{
@@ -20,6 +24,45 @@ namespace AstralRaytracer
 			traverseDirectoryFromRoot(rootNode);
 
 			drawPathNode(rootNode);
+
+			if(m_showCreateNewFilePopUp)
+			{
+				ImGui::OpenPopup("Create New File");
+			}
+
+			if(ImGui::BeginPopupModal("Create New File", nullptr,
+																ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+																		ImGuiWindowFlags_NoSavedSettings))
+			{
+				ImGui::Text("File Name");
+				char inputBuffer[128];
+				std::memset(inputBuffer, 0, sizeof(inputBuffer));
+				if(ImGui::InputText("File Name Input", inputBuffer, sizeof(inputBuffer),
+														ImGuiInputTextFlags_EnterReturnsTrue))
+				{
+					const fs::path newFilePath= m_directoryForNewFile.string() + "/";
+					createNewMaterial(newFilePath, inputBuffer);
+				}
+				if(ImGui::Button("Accept"))
+				{
+					m_showCreateNewFilePopUp= false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("Close"))
+				{
+					m_showCreateNewFilePopUp= false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void ContentBrowser::createNewMaterial(const std::filesystem::path& path,
+																					 const std::string&           name)
+		{
+			Material newMat;
+			m_assetManager.SaveMaterialAsset(path, name, newMat);
 		}
 
 		void ContentBrowser::traverseDirectoryFromRoot(std::unique_ptr<PathNode>& root)
@@ -83,6 +126,20 @@ namespace AstralRaytracer
 			}
 
 			bool nodeOpen= ImGui::TreeNode(node->pathStr.stem().string().c_str());
+
+			ImGui::PushID(node->pathStr.string().c_str());
+			if(ImGui::BeginPopupContextItem())
+			{
+				bool clicked= false;
+				if(ImGui::Button("Create New File"))
+				{
+					m_directoryForNewFile   = node->pathStr;
+					m_showCreateNewFilePopUp= true;
+				}
+				ImGui::EndPopup();
+			}
+			ImGui::PopID();
+
 			if(nodeOpen)
 			{
 				for(std::unique_ptr<PathNode>& child: node->nodes)
