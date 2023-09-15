@@ -13,9 +13,11 @@ namespace AstralRaytracer
 			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
 			if(ImGui::BeginTable("contentBrowserSplit", 2, tableFlags, ImGui::GetContentRegionAvail()))
 			{
-				 ImGui::TableNextRow(rowFlags, 100.0f);
+				ImGui::TableNextRow(rowFlags, 100.0f);
 				ImGui::TableSetColumnIndex(0);
-				ImGui::Text("CONTENT BROWSER");
+				ImGui::SeparatorText("CONTENT BROWSER");
+
+				ImGui::BeginChild("Content Browser", ImGui::GetContentRegionAvail());
 
 				const fs::path resourcesPath= fs::current_path().string() + "/../../../resources";
 
@@ -58,6 +60,8 @@ namespace AstralRaytracer
 					ImGui::EndPopup();
 				}
 			}
+
+			ImGui::EndChild();
 
 			ImGui::TableSetColumnIndex(1);
 

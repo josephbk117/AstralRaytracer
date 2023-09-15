@@ -178,7 +178,7 @@ void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
 													 AppStateInfo&                        appStateInfo)
 {
 	ImGui::PushFont(window.getSecondaryFont());
-	ImGui::Text("SCENE");
+	ImGui::SeparatorText("SCENE");
 	ImGui::PopFont();
 
 	for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
@@ -332,7 +332,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				ImGui::TableSetColumnIndex(2);
 
 				ImGui::PushFont(window.getSecondaryFont());
-				ImGui::Text("INSPECTOR");
+				ImGui::SeparatorText("INSPECTOR");
 				ImGui::PopFont();
 				displayTransformUI(scene, window, appStateInfo);
 

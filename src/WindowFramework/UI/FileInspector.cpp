@@ -7,7 +7,7 @@ namespace AstralRaytracer
 		{
 			const FileType fileType= getFileTypeFromFilePath(m_currentFIle);
 
-			ImGui::Text("FILE INSPECTOR");
+			ImGui::SeparatorText("FILE INSPECTOR");
 			ImGui::Text(m_currentFIle.filename().string().c_str());
 			ImGui::SameLine();
 
