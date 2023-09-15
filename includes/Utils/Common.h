@@ -23,3 +23,15 @@ typedef float  float32;
 typedef double float64;
 
 typedef std::uintptr_t uintptr;
+
+namespace AstralRaytracer
+{
+	enum class AssetType
+	{
+		INVALID,
+		TEXTURE,
+		MATERIAL,
+		TRACEABLE,
+		MAX= TRACEABLE
+	};
+}
