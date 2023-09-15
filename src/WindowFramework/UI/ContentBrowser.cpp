@@ -1,15 +1,9 @@
 #include "WindowFramework/UI/ContentBrowser.h"
 
-#include "Raytracer/Material.h"
-
-#include <imgui.h>
-
 namespace AstralRaytracer
 {
 	namespace UI
 	{
-		namespace fs= std::filesystem;
-
 		ContentBrowser::ContentBrowser(AssetManager& assetManager): m_assetManager(assetManager) {}
 
 		void ContentBrowser::display()
@@ -58,8 +52,7 @@ namespace AstralRaytracer
 			}
 		}
 
-		void ContentBrowser::createNewMaterial(const std::filesystem::path& path,
-																					 const std::string&           name)
+		void ContentBrowser::createNewMaterial(const fs::path& path, const std::string& name)
 		{
 			Material newMat;
 			m_assetManager.SaveMaterialAsset(path, name, newMat);

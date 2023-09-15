@@ -21,8 +21,7 @@ namespace AstralRaytracer
 		m_materialNameAndPathMap.insert({0, {"Default Material", "NIL"}});
 	}
 
-	TextureData AssetManager::LoadTextureAsset(const std::filesystem::path& path,
-																						 const std::string&           name)
+	TextureData AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
 	{
 		static uint32 textureCount= 0;
 		NameAndPath   nameAndPath = {name, path.string()};
@@ -31,7 +30,7 @@ namespace AstralRaytracer
 		return TextureManager::loadTextureDataFromFile(path);
 	}
 
-	bool AssetManager::LoadMaterialAsset(const std::filesystem::path& path, const std::string& name,
+	bool AssetManager::LoadMaterialAsset(const fs::path& path, const std::string& name,
 																			 Material& outMaterial)
 	{
 		static uint32 matCount   = 1;
@@ -51,8 +50,7 @@ namespace AstralRaytracer
 		return true;
 	}
 
-	std::unique_ptr<AstralRaytracer::Traceable>
-	AssetManager::LoadTraceableAsset(const std::filesystem::path& path)
+	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::LoadTraceableAsset(const fs::path& path)
 	{
 		static uint32 traceableCount= 0;
 
