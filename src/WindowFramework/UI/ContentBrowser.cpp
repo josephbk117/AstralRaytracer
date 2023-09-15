@@ -8,48 +8,66 @@ namespace AstralRaytracer
 
 		void ContentBrowser::display()
 		{
-			ImGui::Text("CONTENT BROWSER");
-
-			const fs::path resourcesPath= fs::current_path().string() + "/../../../resources";
-
-			std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
-			rootNode->pathStr                 = resourcesPath;
-
-			traverseDirectoryFromRoot(rootNode);
-
-			drawPathNode(rootNode);
-
-			if(m_showCreateNewFilePopUp)
+			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
+																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
+			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
+			if(ImGui::BeginTable("contentBrowserSplit", 2, tableFlags, ImGui::GetContentRegionAvail()))
 			{
-				ImGui::OpenPopup("Create New File");
+				 ImGui::TableNextRow(rowFlags, 100.0f);
+				ImGui::TableSetColumnIndex(0);
+				ImGui::Text("CONTENT BROWSER");
+
+				const fs::path resourcesPath= fs::current_path().string() + "/../../../resources";
+
+				std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
+				rootNode->pathStr                 = resourcesPath;
+
+				traverseDirectoryFromRoot(rootNode);
+
+				drawPathNode(rootNode);
+
+				if(m_showCreateNewFilePopUp)
+				{
+					ImGui::OpenPopup("Create New File");
+				}
+
+				if(ImGui::BeginPopupModal("Create New File", nullptr,
+																	ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+																			ImGuiWindowFlags_NoSavedSettings))
+				{
+					ImGui::Text("File Name");
+					char inputBuffer[128];
+					std::memset(inputBuffer, 0, sizeof(inputBuffer));
+					if(ImGui::InputText("File Name Input", inputBuffer, sizeof(inputBuffer),
+															ImGuiInputTextFlags_EnterReturnsTrue))
+					{
+						const fs::path newFilePath= m_directoryForNewFile.string() + "/";
+						createNewMaterial(newFilePath, inputBuffer);
+					}
+					if(ImGui::Button("Accept"))
+					{
+						m_showCreateNewFilePopUp= false;
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::SameLine();
+					if(ImGui::Button("Close"))
+					{
+						m_showCreateNewFilePopUp= false;
+						ImGui::CloseCurrentPopup();
+					}
+					ImGui::EndPopup();
+				}
 			}
 
-			if(ImGui::BeginPopupModal("Create New File", nullptr,
-																ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
-																		ImGuiWindowFlags_NoSavedSettings))
+			ImGui::TableSetColumnIndex(1);
+
+			if(!m_selectedFile.empty()) 
 			{
-				ImGui::Text("File Name");
-				char inputBuffer[128];
-				std::memset(inputBuffer, 0, sizeof(inputBuffer));
-				if(ImGui::InputText("File Name Input", inputBuffer, sizeof(inputBuffer),
-														ImGuiInputTextFlags_EnterReturnsTrue))
-				{
-					const fs::path newFilePath= m_directoryForNewFile.string() + "/";
-					createNewMaterial(newFilePath, inputBuffer);
-				}
-				if(ImGui::Button("Accept"))
-				{
-					m_showCreateNewFilePopUp= false;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::SameLine();
-				if(ImGui::Button("Close"))
-				{
-					m_showCreateNewFilePopUp= false;
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::EndPopup();
+				m_fileInspector.setFile(m_selectedFile);
+				m_fileInspector.display();
 			}
+
+			ImGui::EndTable();
 		}
 
 		void ContentBrowser::createNewMaterial(const fs::path& path, const std::string& name)

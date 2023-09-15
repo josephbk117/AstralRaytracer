@@ -99,7 +99,7 @@ namespace AstralRaytracer
 	void AssetManager::SaveMaterialAsset(const fs::path& folderPath, const std::string& name,
 																			 const Material& material)
 	{
-		fs::path path= folderPath.string() + name + ".mat";
+		fs::path path= folderPath.string() + name + FileExtensionForMaterial;
 
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -127,7 +127,7 @@ namespace AstralRaytracer
 	void AssetManager::SaveTraceableAsset(const std::string&                name,
 																				const std::unique_ptr<Traceable>& traceable)
 	{
-		fs::path path= "/resources/traceables/" + name + ".tble";
+		fs::path path= "/resources/traceables/" + name + FileExtensionForTraceable;
 
 		YAML::Emitter out;
 		out << YAML::BeginMap;

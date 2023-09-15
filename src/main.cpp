@@ -19,17 +19,6 @@
 #include <gtx/matrix_decompose.hpp>
 #include <memory>
 
-struct UiBounds
-{
-	glm::vec2 min{0, 0};
-	glm::vec2 max{1, 1};
-
-	bool isPointInBounds(const glm::vec2 point) const
-	{
-		return point.x > min.x && point.x < max.x && point.y > min.y && point.y < max.y;
-	}
-};
-
 struct AppStateInfo
 {
 	glm::u32vec2 rendererSize{500, 500};
@@ -43,8 +32,6 @@ struct AppStateInfo
 
 AstralRaytracer::AssetManager       assetManager;
 AstralRaytracer::UI::ContentBrowser contentBrowser(assetManager);
-
-void initScene(AstralRaytracer::Scene& scene);
 
 void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& renderer,
 									AstralRaytracer::Camera& cam, const AstralRaytracer::Scene& scene);
@@ -64,7 +51,7 @@ int main()
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 		AstralRaytracer::Scene    scene;
-		scene.deserialize(assetManager, "resources/scenes/scene1.yaml");
+		scene.deserialize(assetManager, "resources/scenes/scene1.ascene");
 
 		AppStateInfo appStateInfo;
 
@@ -106,49 +93,6 @@ int main()
 
 	window.shutdown();
 	return 0;
-}
-
-void initScene(AstralRaytracer::Scene& scene)
-{
-	scene.addTexture(assetManager.LoadTextureAsset("resources/textures/floor_texture.jpg", "Floor1"));
-	scene.addTexture(assetManager.LoadTextureAsset("resources/textures/tough_grass.jpg", "Floor2"));
-
-	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Blue,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
-
-	assetManager.SaveMaterialAsset("mat1", scene.m_materials[1]);
-
-	AstralRaytracer::Material newMat;
-	assetManager.LoadMaterialAsset("resources/materials/mat1.mat", "mat1", newMat);
-
-	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::Yellow,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
-	scene.addMaterial(AstralRaytracer::Material{AstralRaytracer::Colors::White,
-																							AstralRaytracer::Colors::White, 0.0f, 0.925f});
-	scene.m_materials.at(3).texture= 1;
-
-	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>());
-	scene.addTraceable(std::make_unique<AstralRaytracer::SphereTraceable>());
-	scene.addTraceable(std::make_unique<AstralRaytracer::StaticMesh>(
-			AstralRaytracer::ModelManager::getStaticMeshFromGLTF("resources/testCube.gltf")));
-	scene.addTraceable(std::make_unique<AstralRaytracer::TriangleTraceable>(
-			glm::vec3(-100.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f),
-			glm::vec3(100.0f, 0.0f, -100.0f)));
-
-	assetManager.SaveTraceableAsset("Sphere1", scene.m_sceneTraceables[0]);
-	assetManager.SaveTraceableAsset("Floor", scene.m_sceneTraceables[3]);
-	assetManager.SaveTraceableAsset("Cube", scene.m_sceneTraceables[2]);
-
-	auto sphere1= assetManager.LoadTraceableAsset("resources/traceables/Sphere1.tble");
-	auto floor  = assetManager.LoadTraceableAsset("resources/traceables/Floor.tble");
-	auto cube   = assetManager.LoadTraceableAsset("resources/traceables/Cube.tble");
-
-	scene.m_sceneTraceables.at(0)->setPosition(glm::vec3(4.0f, 0.0f, -2.0f));
-	scene.m_sceneTraceables.at(2)->setPosition(glm::vec3(1.0f, 0.0f, -2.0f));
-	scene.m_sceneTraceables.at(3)->setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	scene.m_sceneTraceables.at(1)->setMaterialIndex(1);
-	scene.m_sceneTraceables.at(2)->setMaterialIndex(2);
-	scene.m_sceneTraceables.at(3)->setMaterialIndex(3);
 }
 
 void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& renderer,

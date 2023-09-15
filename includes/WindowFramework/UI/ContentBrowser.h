@@ -1,5 +1,6 @@
 #pragma once
 #include "CommonUI.h"
+#include "FileInspector.h"
 #include "Utils/AssetManager.h"
 
 #include <filesystem>
@@ -33,6 +34,7 @@ namespace AstralRaytracer
 			fs::path      m_directoryForNewFile{""};
 			fs::path      m_rootContentPath{"/resources"};
 			AssetManager& m_assetManager;
+			FileInspector m_fileInspector;
 
 			bool m_showCreateNewFilePopUp= false;
 
