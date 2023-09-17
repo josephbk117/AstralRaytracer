@@ -47,8 +47,15 @@ set(TINYGLTF_INSTALL OFF CACHE INTERNAL "" FORCE)
 add_subdirectory(external/tinygltf)
 
 # Add GLFW and glBinding as subdirectories, excluding them from the "ALL" target
+set(GLFW_BUILD_DOCS OFF)
+set(GLFW_INSTALL OFF)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
+set(OPTION_BUILD_TOOLS OFF)
+set(OPTION_BUILD_EXAMPLES OFF)
+set(OPTION_BUILD_WITH_LTO ON)
 add_subdirectory(external/glBinding EXCLUDE_FROM_ALL)
+set(YAML_CPP_BUILD_TOOLS OFF)
+set(YAML_CPP_BUILD_CONTRIB OFF)
 add_subdirectory(external/yamlcpp EXCLUDE_FROM_ALL)
 add_subdirectory(external/stduuid EXCLUDE_FROM_ALL)
 
