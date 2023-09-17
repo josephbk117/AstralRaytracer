@@ -9,10 +9,10 @@
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Utils/AssetManager.h"
-#include "Utils/ImgInspect.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/UI/CommonUI.h"
 #include "WindowFramework/UI/ContentBrowser.h"
+#include "WindowFramework/UI/ImageInspect.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
@@ -308,7 +308,7 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 				if(io.KeyShift && io.MouseDown[0] && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
 					 mouseUVCoord.x < 1.0f && mouseUVCoord.y < 1.0f)
 				{
-					ImageInspect::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
+					AstralRaytracer::UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
 				}
 
 				appStateInfo.uiBounds.min= {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
