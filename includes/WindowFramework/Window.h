@@ -1,18 +1,7 @@
 #pragma once
-#include "Utils/Common.h"
-
-#define GLFW_INCLUDE_NONE
-
-
-#include <GLFW/glfw3.h>
-#include <glbinding/gl/gl.h>
-#include <glbinding/glbinding.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
-#include <ImGuizmo.h>
 #include "UI/CommonUI.h"
 #include "UI/ContentBrowser.h"
+#include "Utils/Common.h"
 
 namespace AstralRaytracer
 {
@@ -64,7 +53,7 @@ namespace AstralRaytracer
 		std::string               m_name;
 		std::pair<uint32, uint32> m_resolution{0, 0};
 
-		UI::ContentBrowser		m_contentBrowser;
+		UI::ContentBrowser m_contentBrowser;
 
 		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
 		void        displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
