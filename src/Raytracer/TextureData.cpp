@@ -64,9 +64,9 @@ void TextureData::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
 
 ColourData TextureData::getTexelColor(uint32 x, uint32 y) const
 {
-	const int32      i= (m_width * y + x) * 3;
-	ColourData colData;
-	colData.setColour_8_Bit(m_data[i], m_data[i + 1], m_data[i + 2]);
+	const uint32 index= (m_width * y + x) * 3;
+	ColourData   colData;
+	colData.setColour_8_Bit(m_data[index], m_data[index + 1], m_data[index + 2]);
 	return colData;
 }
 
