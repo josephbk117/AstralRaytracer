@@ -1,4 +1,4 @@
-#include "Input.h"
+#include "WindowFramework/Input.h"
 
 GLFWwindow* AstralRaytracer::Input::glfwWindow= nullptr;
 

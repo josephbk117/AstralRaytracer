@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19.4)
 project(AstralRaytracer)
 
-# Set C++ standard to C++17 and disable extensions
+# Set C++ standard to C++20 and disable extensions
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -11,42 +11,36 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB IMGUI_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/*")
 file(GLOB IMGUIZMO_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo/*")
-file(GLOB IMGINSPECT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgInspect/*")
 file(GLOB STB_IMAGE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage/*")
 file(GLOB GLM_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/glm/*")
 
 # Create the executable and add source/header files
-add_executable(${PROJECT_NAME}
-    ./src/main.cpp
+add_executable (${PROJECT_NAME}
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
     ${HEADER_FILES}
     ${SOURCE_FILES}
     ${IMGUI_FILES}
     ${IMGUIZMO_FILES}
-    ${IMGINSPECT_FILES}
     ${STB_IMAGE_FILES}
     ${GLM_FILES}
 )
 
 # Include directories
-include_directories(
-    "${CMAKE_CURRENT_SOURCE_DIR}/includes/WindowFramework"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgInspect"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/glm"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
-    "${CMAKE_CURRENT_SOURCE_DIR}/external/stduuid/include"
-)
+#target_include_directories (${PROJECT_NAME}
+#    PUBLIC
+    #"${CMAKE_CURRENT_SOURCE_DIR}/includes/WindowFramework"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/glm"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
+#    "${CMAKE_CURRENT_SOURCE_DIR}/external/stduuid/include"
+#)
 
 # Set TinyGLTF configuration options
 set(TINYGLTF_HEADER_ONLY ON CACHE INTERNAL "" FORCE)
 set(TINYGLTF_INSTALL OFF CACHE INTERNAL "" FORCE)
-
-# Add TinyGLTF as a subdirectory
 add_subdirectory(external/tinygltf)
-
-# Add GLFW and glBinding as subdirectories, excluding them from the "ALL" target
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
@@ -67,6 +61,9 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC includes/
     PUBLIC external/glfw/include
     PUBLIC external/glBinding/source/glbinding/include
+    PUBLIC external/imgui
+    PUBLIC external/imguizmo
+    PUBLIC external/glm
     PUBLIC external/tinygltf
     PUBLIC external/yamlcpp/include
     PUBLIC external/stduuid/include

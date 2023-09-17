@@ -1,4 +1,4 @@
-#include "Window.h"
+#include "WindowFramework/Window.h"
 
 #include "Raytracer/TextureManager.h"
 
@@ -56,7 +56,7 @@ namespace AstralRaytracer
 
 		m_primaryFont  = io.Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
 		m_secondaryFont= io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 22.0f);
-		m_tertiaryFont= io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 18.0f);
+		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 18.0f);
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 	}
