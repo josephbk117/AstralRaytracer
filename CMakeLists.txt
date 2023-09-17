@@ -11,6 +11,7 @@ file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB IMGUI_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/*")
 file(GLOB IMGUIZMO_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo/*")
+file(GLOB IMGINSPECT_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgInspect/*")
 file(GLOB STB_IMAGE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage/*")
 file(GLOB GLM_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/glm/*")
 
@@ -21,17 +22,19 @@ add_executable(${PROJECT_NAME}
     ${SOURCE_FILES}
     ${IMGUI_FILES}
     ${IMGUIZMO_FILES}
+    ${IMGINSPECT_FILES}
     ${STB_IMAGE_FILES}
     ${GLM_FILES}
 )
 
 # Include directories
 include_directories(
-    "./includes/WindowFramework"
-    "./external/imgui"
-    "./external/imguizmo"
-    "./external/stbimage"
-    "./external/glm"
+    "${CMAKE_CURRENT_SOURCE_DIR}/includes/WindowFramework"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgInspect"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage"
+    "${CMAKE_CURRENT_SOURCE_DIR}/external/glm"
     "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
     "${CMAKE_CURRENT_SOURCE_DIR}/external/stduuid/include"
 )

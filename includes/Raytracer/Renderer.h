@@ -12,6 +12,8 @@ namespace AstralRaytracer
 
 		void render(const Scene& scene, const Camera& cam);
 
+		const TextureData& getTextureData() const { return m_texData; }
+
 		glm::vec3 getRayDirectionFromNormalizedCoord(glm::vec2        coord,
 																								 const glm::mat4& inverseProjection,
 																								 const glm::mat4& inverseView);

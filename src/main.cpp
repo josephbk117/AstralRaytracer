@@ -9,6 +9,7 @@
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Utils/AssetManager.h"
+#include "Utils/ImgInspect.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/UI/CommonUI.h"
 #include "WindowFramework/UI/ContentBrowser.h"
@@ -292,8 +293,23 @@ void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
 													ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 															ImGuiWindowFlags_NoResize);
 
-				ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()),
-										 ImGui::GetContentRegionAvail(), ImVec2(0, 1), ImVec2(1, 0));
+				ImVec2 imageDisplaySize= ImGui::GetContentRegionAvail();
+				ImGui::Image(reinterpret_cast<ImTextureID>(renderer.getTextureId()), imageDisplaySize,
+										 ImVec2(0, 1), ImVec2(1, 0));
+
+				auto&  io= ImGui::GetIO();
+				ImRect rc= ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
+				ImVec2 mouseUVCoord;
+				mouseUVCoord.x= (io.MousePos.x - rc.Min.x) / rc.GetSize().x;
+				mouseUVCoord.y= (io.MousePos.y - rc.Min.y) / rc.GetSize().y;
+
+				mouseUVCoord.y= 1.f - mouseUVCoord.y;
+
+				if(io.KeyShift && io.MouseDown[0] && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
+					 mouseUVCoord.x < 1.0f && mouseUVCoord.y < 1.0f)
+				{
+					ImageInspect::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
+				}
 
 				appStateInfo.uiBounds.min= {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
 				appStateInfo.uiBounds.max= {ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y};
