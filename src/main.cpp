@@ -20,24 +20,14 @@
 #include <gtx/matrix_decompose.hpp>
 #include <memory>
 
-struct AppStateInfo
-{
-	glm::u32vec2 rendererSize{500, 500};
-	glm::u32vec2 rendererResolution{500, 500};
-	UiBounds     uiBounds;
-	float32      resolutionScale    = 50.0f;
-	bool         isSceneDirty       = false;
-	bool         canSelectObjects   = false;
-	uint32       selectedObjectIndex= 0;
-};
-
 AstralRaytracer::AssetManager       assetManager;
 AstralRaytracer::UI::ContentBrowser contentBrowser(assetManager);
 
-void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& renderer,
-									AstralRaytracer::Camera& cam, const AstralRaytracer::Scene& scene);
+void processInput(AstralRaytracer::UI::AppStateInfo& appStateInfo,
+									AstralRaytracer::Renderer& renderer, AstralRaytracer::Camera& cam,
+									const AstralRaytracer::Scene& scene);
 
-void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
+void displayUI(AstralRaytracer::Renderer& renderer, AstralRaytracer::UI::AppStateInfo& appStateInfo,
 							 const AstralRaytracer::Window& window, AstralRaytracer::Scene& scene,
 							 AstralRaytracer::Camera& cam);
 
@@ -54,7 +44,7 @@ int main()
 		AstralRaytracer::Scene    scene;
 		scene.deserialize(assetManager, "resources/scenes/scene1.ascene");
 
-		AppStateInfo appStateInfo;
+		AstralRaytracer::UI::AppStateInfo appStateInfo;
 
 		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
@@ -96,8 +86,9 @@ int main()
 	return 0;
 }
 
-void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& renderer,
-									AstralRaytracer::Camera& cam, const AstralRaytracer::Scene& scene)
+void processInput(AstralRaytracer::UI::AppStateInfo& appStateInfo,
+									AstralRaytracer::Renderer& renderer, AstralRaytracer::Camera& cam,
+									const AstralRaytracer::Scene& scene)
 {
 	const glm::vec2& mousePos= AstralRaytracer::Input::getMousePosition();
 	if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
@@ -122,7 +113,7 @@ void processInput(AppStateInfo& appStateInfo, AstralRaytracer::Renderer& rendere
 }
 
 void displayMaterialUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Window& window,
-											 AppStateInfo& appStateInfo)
+											 AstralRaytracer::UI::AppStateInfo& appStateInfo)
 {
 	ImGui::PushFont(window.getTertiaryFont());
 	ImGui::Text("Material");
@@ -161,7 +152,7 @@ void displayMaterialUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Win
 }
 
 void displayTransformUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Window& window,
-												AppStateInfo& appStateInfo)
+												AstralRaytracer::UI::AppStateInfo& appStateInfo)
 {
 	ImGui::PushFont(window.getTertiaryFont());
 	ImGui::Text("Transform");
@@ -176,7 +167,7 @@ void displayTransformUI(AstralRaytracer::Scene& scene, const AstralRaytracer::Wi
 void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
 													 const AstralRaytracer::Window&       window,
 													 const AstralRaytracer::AssetManager& assetManager,
-													 AppStateInfo&                        appStateInfo)
+													 AstralRaytracer::UI::AppStateInfo&   appStateInfo)
 {
 	ImGui::PushFont(window.getSecondaryFont());
 	ImGui::SeparatorText("SCENE");
@@ -193,7 +184,7 @@ void displaySceneObjectsUI(const AstralRaytracer::Scene&        scene,
 	}
 }
 
-void displayUI(AstralRaytracer::Renderer& renderer, AppStateInfo& appStateInfo,
+void displayUI(AstralRaytracer::Renderer& renderer, AstralRaytracer::UI::AppStateInfo& appStateInfo,
 							 const AstralRaytracer::Window& window, AstralRaytracer::Scene& scene,
 							 AstralRaytracer::Camera& cam)
 {
