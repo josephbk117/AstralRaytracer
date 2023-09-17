@@ -25,19 +25,6 @@ add_executable (${PROJECT_NAME}
     ${GLM_FILES}
 )
 
-# Include directories
-#target_include_directories (${PROJECT_NAME}
-#    PUBLIC
-    #"${CMAKE_CURRENT_SOURCE_DIR}/includes/WindowFramework"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/glm"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/yamlcpp/include"
-#    "${CMAKE_CURRENT_SOURCE_DIR}/external/stduuid/include"
-#)
-
-# Set TinyGLTF configuration options
 set(TINYGLTF_HEADER_ONLY ON CACHE INTERNAL "" FORCE)
 set(TINYGLTF_INSTALL OFF CACHE INTERNAL "" FORCE)
 add_subdirectory(external/tinygltf)
@@ -82,7 +69,6 @@ target_link_libraries(${PROJECT_NAME}
     glbinding
     yaml-cpp
 )
-
 
 # Custom target for copying resources
 add_custom_target(copy_resources ALL
