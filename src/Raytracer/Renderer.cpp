@@ -57,9 +57,9 @@ namespace AstralRaytracer
 
 										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
 
-										float32& redChannel  = m_accumlatedColorData[pixelAccessIndex];
-										float32& greenChannel= m_accumlatedColorData[pixelAccessIndex + 1u];
-										float32& blueChannel = m_accumlatedColorData[pixelAccessIndex + 2u];
+										float32& redChannel  = m_accumulatedColorData[pixelAccessIndex];
+										float32& greenChannel= m_accumulatedColorData[pixelAccessIndex + 1u];
+										float32& blueChannel = m_accumulatedColorData[pixelAccessIndex + 2u];
 
 										redChannel+= (outColor.r * oneOverBounceCount);
 										greenChannel+= (outColor.g * oneOverBounceCount);
@@ -94,7 +94,7 @@ namespace AstralRaytracer
 		}
 		m_texData.resize(width, height);
 
-		m_accumlatedColorData.resize(width * height * 3);
+		m_accumulatedColorData.resize(width * height * 3);
 		resetFrameIndex();
 		m_rayIterator.resize(width * height);
 
@@ -111,7 +111,7 @@ namespace AstralRaytracer
 	void Renderer::resetFrameIndex()
 	{
 		m_frameIndex= 1;
-		std::memset(m_accumlatedColorData.data(), 0,
+		std::memset(m_accumulatedColorData.data(), 0,
 								m_texData.getWidth() * m_texData.getHeight() * 3 * sizeof(float32));
 	}
 
