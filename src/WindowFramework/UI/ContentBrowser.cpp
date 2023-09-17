@@ -1,12 +1,12 @@
 #include "WindowFramework/UI/ContentBrowser.h"
 
+#include <imgui.h>
+
 namespace AstralRaytracer
 {
 	namespace UI
 	{
-		ContentBrowser::ContentBrowser(AssetManager& assetManager): m_assetManager(assetManager) {}
-
-		void ContentBrowser::display()
+		void ContentBrowser::display(AssetManager& assetManager)
 		{
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
@@ -44,7 +44,7 @@ namespace AstralRaytracer
 															ImGuiInputTextFlags_EnterReturnsTrue))
 					{
 						const fs::path newFilePath= m_directoryForNewFile.string() + "/";
-						createNewMaterial(newFilePath, inputBuffer);
+						createNewMaterial(newFilePath, inputBuffer, assetManager);
 					}
 					if(ImGui::Button("Accept"))
 					{
@@ -65,7 +65,7 @@ namespace AstralRaytracer
 
 			ImGui::TableSetColumnIndex(1);
 
-			if(!m_selectedFile.empty()) 
+			if(!m_selectedFile.empty())
 			{
 				m_fileInspector.setFile(m_selectedFile);
 				m_fileInspector.display();
@@ -74,10 +74,11 @@ namespace AstralRaytracer
 			ImGui::EndTable();
 		}
 
-		void ContentBrowser::createNewMaterial(const fs::path& path, const std::string& name)
+		void ContentBrowser::createNewMaterial(const fs::path& path, const std::string& name,
+																					 AssetManager& assetManager)
 		{
 			Material newMat;
-			m_assetManager.SaveMaterialAsset(path, name, newMat);
+			assetManager.SaveMaterialAsset(path, name, newMat);
 		}
 
 		void ContentBrowser::traverseDirectoryFromRoot(std::unique_ptr<PathNode>& root)

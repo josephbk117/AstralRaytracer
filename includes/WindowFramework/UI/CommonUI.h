@@ -2,7 +2,6 @@
 #include "Raytracer/Material.h"
 #include "Raytracer/Traceable/Traceable.h"
 #include "Raytracer/Transform.h"
-#include "WindowFramework/Window.h"
 
 #include <filesystem>
 

@@ -1,4 +1,5 @@
 #include "WindowFramework/UI/CommonUI.h"
+#include <imgui.h>
 
 namespace AstralRaytracer
 {

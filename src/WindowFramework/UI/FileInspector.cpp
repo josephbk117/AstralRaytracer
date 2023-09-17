@@ -1,4 +1,5 @@
 #include "WindowFramework/UI/FileInspector.h"
+#include <imgui.h>
 namespace AstralRaytracer
 {
 	namespace UI

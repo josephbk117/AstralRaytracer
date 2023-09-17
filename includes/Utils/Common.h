@@ -5,7 +5,10 @@
 #define GLM_FORCE_INTRINSICS
 #include <filesystem>
 #include <glm.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtx/matrix_decompose.hpp>
 #include <limits>
+#include <memory>
 #include <string>
 #include <uuid.h>
 
