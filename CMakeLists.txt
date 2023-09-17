@@ -100,7 +100,9 @@ add_dependencies(${PROJECT_NAME} copy_resources)
 
 # Enable SIMD optimizations only in Release build type
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+
+        message("Setting compiler options for GNU/Clang")
         # Enable SIMD optimizations for your target architecture.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
         # Add other optimization flags as needed.
@@ -109,16 +111,9 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
     endif()
 
-    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        # Enable SIMD optimizations for your target architecture.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-        # Add other optimization flags as needed.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-         # Disable RTTI.
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-    endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
-    if(MSVC)
+        message("Setting compiler options for MSVC")
         # Enable SIMD optimizations for your target architecture.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
         # Add other optimization flags as needed.
