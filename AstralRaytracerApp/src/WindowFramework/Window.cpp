@@ -217,29 +217,33 @@ namespace AstralRaytracer
 														newRegion.y);
 					ImGuizmo::SetDrawlist();
 
-					glm::mat4 transform= scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)
-																	 .get()
-																	 ->getTransformMatrix();
-
-					ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-															 IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
-															 IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform));
-
-					appStateInfo.canSelectObjects= !ImGuizmo::IsOver();
-
-					if(ImGuizmo::IsUsing())
+					if(scene.hasSceneLoaded())
 					{
-						glm::vec3 newScale;
-						glm::vec3 newTranslation;
-						glm::quat newRot;
-						glm::vec3 skew;
-						glm::vec4 perspective;
-						glm::decompose(transform, newScale, newRot, newTranslation, skew, perspective);
 
-						scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)
-								->setPosition(newTranslation);
-						scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)->setScale(newScale);
-						appStateInfo.isSceneDirty= true;
+						glm::mat4 transform= scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)
+																		 .get()
+																		 ->getTransformMatrix();
+
+						ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
+																 IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
+																 IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform));
+
+						appStateInfo.canSelectObjects= !ImGuizmo::IsOver();
+
+						if(ImGuizmo::IsUsing())
+						{
+							glm::vec3 newScale;
+							glm::vec3 newTranslation;
+							glm::quat newRot;
+							glm::vec3 skew;
+							glm::vec4 perspective;
+							glm::decompose(transform, newScale, newRot, newTranslation, skew, perspective);
+
+							scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)
+									->setPosition(newTranslation);
+							scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex)->setScale(newScale);
+							appStateInfo.isSceneDirty= true;
+						}
 					}
 
 					ImGui::EndChild();
@@ -297,6 +301,11 @@ namespace AstralRaytracer
 		ImGui::PushFont(getTertiaryFont());
 		ImGui::Text("Material");
 		ImGui::PopFont();
+
+		if(!scene.hasSceneLoaded())
+		{
+			return;
+		}
 		const uint32 textureCount= scene.m_textures.size();
 
 		const uint32 matIndex=
@@ -336,6 +345,10 @@ namespace AstralRaytracer
 		ImGui::PushFont(getTertiaryFont());
 		ImGui::Text("Transform");
 		ImGui::PopFont();
+		if(!scene.hasSceneLoaded())
+		{
+			return;
+		}
 		if(AstralRaytracer::UI::displayTransform(
 					 *scene.m_sceneTraceables[appStateInfo.selectedObjectIndex]))
 		{
