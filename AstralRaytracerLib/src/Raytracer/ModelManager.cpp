@@ -5,9 +5,9 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #define TINYGLTF_NOEXCEPTION
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <iostream>
-#include <tiny_gltf.h>
+#include <tinygltf/tiny_gltf.h>
 
 namespace AstralRaytracer
 {

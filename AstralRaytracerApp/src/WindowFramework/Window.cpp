@@ -41,7 +41,7 @@ namespace AstralRaytracer
 		glfwMakeContextCurrent(m_glfwWindow);
 
 		TextureData iconTexData=
-				TextureManager::loadTextureDataFromFile("resources/icons/astralraytracer.png", 4);
+				TextureManager::loadTextureDataFromFile("app_assets/icons/astralraytracer.png", 4);
 
 		GLFWimage image[1];
 		image[0].width = iconTexData.getWidth();
@@ -59,9 +59,9 @@ namespace AstralRaytracer
 
 		ImGuiIO& io= ImGui::GetIO();
 
-		m_primaryFont  = io.Fonts->AddFontFromFileTTF("resources/fonts/ABeeZee-Regular.ttf", 16.0f);
-		m_secondaryFont= io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 22.0f);
-		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("resources/fonts/Roboto-Regular.ttf", 18.0f);
+		m_primaryFont  = io.Fonts->AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", 16.0f);
+		m_secondaryFont= io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 22.0f);
+		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 

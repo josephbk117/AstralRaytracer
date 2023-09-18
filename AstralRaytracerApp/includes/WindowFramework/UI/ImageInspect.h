@@ -2,7 +2,7 @@
 #include "Utils/Common.h"
 #include "Raytracer/TextureData.h"
 
-#include <glm.hpp>
+#include <glm/glm.hpp>
 #include <imgui.h>
 #include <imgui_internal.h>
 

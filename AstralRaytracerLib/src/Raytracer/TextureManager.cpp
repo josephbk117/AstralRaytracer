@@ -3,7 +3,7 @@
 #include "Raytracer/TextureData.h"
 
 #include <iostream>
-#include <stb_image.h>
+#include <stbimage/stb_image.h>
 
 TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path,
 																										uint8 reqChannelCount /*= 3*/)

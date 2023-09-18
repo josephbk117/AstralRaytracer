@@ -4,9 +4,9 @@
 #include <cstring>
 #define GLM_FORCE_INTRINSICS
 #include <filesystem>
-#include <glm.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtx/matrix_decompose.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <limits>
 #include <memory>
 #include <string>

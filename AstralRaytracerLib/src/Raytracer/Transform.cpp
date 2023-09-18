@@ -1,6 +1,6 @@
 #include "Raytracer/Transform.h"
 
-#include <gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 Transform::Transform(const glm::vec3& position, float32 rotation, const glm::vec3& scale) noexcept
 {
