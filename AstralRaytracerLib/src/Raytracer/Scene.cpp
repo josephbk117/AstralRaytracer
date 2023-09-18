@@ -15,6 +15,8 @@ namespace AstralRaytracer
 		addTexture(std::move(defaultTexData));
 	}
 
+	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
+
 	void Scene::addTraceable(std::unique_ptr<Traceable>&& traceable)
 	{
 		m_sceneTraceables.push_back(std::move(traceable));
