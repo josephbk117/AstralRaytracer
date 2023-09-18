@@ -17,6 +17,7 @@ namespace AstralRaytracer
 		public:
 		Scene();
 
+		[[nodiscard]] bool hasSceneLoaded() const;
 		void addTraceable(std::unique_ptr<Traceable>&& traceable);
 		void addMaterial(const Material& material);
 		void addTexture(TextureData&& texture);
