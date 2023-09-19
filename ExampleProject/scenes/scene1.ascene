@@ -1,12 +1,12 @@
 Scene: New
 Textures:
-  - Floor1: resources/textures/floor_texture.jpg
-  - Floor2: resources/textures/tough_grass.jpg
+  - Floor1: ExampleProject/textures/floor_texture.jpg
+  - Floor2: ExampleProject/textures/tough_grass.jpg
 Materials:
-  - mat1: resources/materials/mat1.asmat
-  - mat2: resources/materials/mat2.asmat
+  - mat1: ExampleProject/materials/mat1.asmat
+  - mat2: ExampleProject/materials/mat2.asmat
 Traceables:
-  - Floor: resources/traceables/Floor.astra
-  - Cube: resources/traceables/Cube.astra
-  - Sphere1: resources/traceables/Sphere1.astra
-  - Sphere2: resources/traceables/Sphere2.astra
+  - Floor: ExampleProject/traceables/Floor.astra
+  - Cube: ExampleProject/traceables/Cube.astra
+  - Sphere1: ExampleProject/traceables/Sphere1.astra
+  - Sphere2: ExampleProject/traceables/Sphere2.astra
