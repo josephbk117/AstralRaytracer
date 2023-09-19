@@ -16,7 +16,7 @@
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
-AstralRaytracer::AssetManager       assetManager;
+AstralRaytracer::AssetManager assetManager;
 
 int main()
 {
@@ -28,7 +28,7 @@ int main()
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 		AstralRaytracer::Scene    scene;
-		scene.deserialize(assetManager, "resources/scenes/scene1.ascene");
+		scene.deserialize(assetManager, R"(../../../../ExampleProject/scenes/scene1.ascene)");
 
 		AstralRaytracer::UI::AppStateInfo appStateInfo;
 
@@ -38,7 +38,7 @@ int main()
 			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
 
 			// Process Input
-			window.processInput(appStateInfo, renderer, cam, scene);
+			window.processInput(appStateInfo, deltaTime, renderer, cam, scene);
 
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 

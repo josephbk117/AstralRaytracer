@@ -30,8 +30,8 @@ namespace AstralRaytracer
 		bool               shouldWindowClose() const;
 
 		void initialize();
-		void processInput(UI::AppStateInfo& appStateInfo, Renderer& renderer, Camera& cam,
-											const Scene& scene);
+		void processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
+											Camera& cam, const Scene& scene);
 
 		void displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene, Camera& cam,
 									 AssetManager& assetManager);

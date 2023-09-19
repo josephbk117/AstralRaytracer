@@ -119,7 +119,7 @@ namespace AstralRaytracer
 			const auto& tex= textures[texIndex];
 			for(auto magic: tex)
 			{
-				addTexture(assetManager.LoadTextureAsset(magic.second.as<std::string>(),
+				addTexture(assetManager.LoadTextureAsset("../../../../" + magic.second.as<std::string>(),
 																								 magic.first.as<std::string>()));
 				std::cout << "\n Texture at index : " << texIndex << " : " << magic.first.as<std::string>();
 			}
@@ -134,7 +134,7 @@ namespace AstralRaytracer
 			for(auto magic: mat)
 			{
 				Material materialNew;
-				assetManager.LoadMaterialAsset(magic.second.as<std::string>(),
+				assetManager.LoadMaterialAsset("../../../../" + magic.second.as<std::string>(),
 																			 magic.first.as<std::string>(), materialNew);
 				addMaterial(materialNew);
 
@@ -151,7 +151,8 @@ namespace AstralRaytracer
 			const auto& traceable= traceables[traceIndex];
 			for(auto magic: traceable)
 			{
-				addTraceable(assetManager.LoadTraceableAsset(magic.second.as<std::string>()));
+				addTraceable(
+						assetManager.LoadTraceableAsset("../../../../" + magic.second.as<std::string>()));
 			}
 		}
 	}

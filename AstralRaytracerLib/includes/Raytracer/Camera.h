@@ -9,6 +9,11 @@ namespace AstralRaytracer
 		Camera(float32 fov, float32 nearClip, float32 farClip);
 		bool update(float32 deltaTime, const glm::u32vec2& resolution);
 
+		void moveForward(float32 units);
+		void moveRight(float32 units);
+		void moveUp(float32 units);
+		void rotate(glm::vec2 rot);
+
 		const glm::u32vec2& getResolution() const { return m_resolution; }
 		const glm::vec3&    getPosition() const { return m_position; }
 		const glm::vec3&    getDirection() const { return m_direction; }

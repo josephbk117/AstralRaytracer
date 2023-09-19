@@ -1,6 +1,8 @@
 #include "Raytracer/Camera.h"
 
-//#include "WindowFramework/Input.h"
+// #include "WindowFramework/Input.h"
+
+#include "glm/ext/quaternion_trigonometric.hpp"
 
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -23,26 +25,26 @@ namespace AstralRaytracer
 
 	bool Camera::update(float32 deltaTime, const glm::u32vec2& resolution)
 	{
-		//if(m_lastMousePosition == glm::vec2(0.0f))
+		// if(m_lastMousePosition == glm::vec2(0.0f))
 		//{
 		//	m_lastMousePosition= Input::getMousePosition();
 		//	return false;
-		//}
-		//const glm::vec2& mousePos= Input::getMousePosition();
-		//const glm::vec2  delta   = (mousePos - m_lastMousePosition);
-		//m_lastMousePosition      = mousePos;
+		// }
+		// const glm::vec2& mousePos= Input::getMousePosition();
+		// const glm::vec2  delta   = (mousePos - m_lastMousePosition);
+		// m_lastMousePosition      = mousePos;
 
-		//bool forceRecalculate= m_resolution != resolution;
+		// bool forceRecalculate= m_resolution != resolution;
 
-		//if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
+		// if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		//{
 		//	Input::setCursorMode(CursorMode::NORMAL);
 		//	return false;
-		//}
+		// }
 
-		//bool moved= false;
+		// bool moved= false;
 
-		//if(!forceRecalculate)
+		// if(!forceRecalculate)
 		//{
 		//	Input::setCursorMode(CursorMode::CAPTURED);
 
@@ -50,7 +52,7 @@ namespace AstralRaytracer
 		//	glm::vec3       rightDir= glm::cross(m_direction, upDir);
 
 		//	float32 moveSpeed = deltaTime;
-		//	if(Input::isKeyDown(InputKey::LEFT_SHIFT)) 
+		//	if(Input::isKeyDown(InputKey::LEFT_SHIFT))
 		//	{
 		//		moveSpeed *= 5.0f;
 		//	}
@@ -109,16 +111,43 @@ namespace AstralRaytracer
 		//		moved= true;
 		//	}
 		//}
-		//if(moved || forceRecalculate)
+		// if(moved || forceRecalculate)
 		//{
-		//	m_resolution= resolution;
-		//	recalculateView();
-		//	recalculateProjection(resolution);
+		m_resolution= resolution;
+		recalculateView();
+		recalculateProjection(resolution);
 		//}
 
-		//return moved || forceRecalculate;
+		// return moved || forceRecalculate;
 
 		return true;
+	}
+
+	void Camera::moveForward(float32 units) { m_position+= m_direction * units; }
+
+	void Camera::moveRight(float32 units)
+	{
+		const glm::vec3  upDir(0.0f, 1.0f, 0.0f);
+		const glm::vec3& rightDir= glm::cross(m_direction, upDir);
+		m_position+= rightDir * units;
+	}
+
+	void Camera::moveUp(float32 units) { m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * units; }
+
+	void Camera::rotate(glm::vec2 rot)
+	{
+		const float32 rotSpeed= 0.5f;
+
+		const float32 pitchDelta= rot.y * rotSpeed;
+		const float32 yawDelta  = rot.x * rotSpeed;
+
+		const glm::vec3  upDir(0.0f, 1.0f, 0.0f);
+		const glm::vec3& rightDir= glm::cross(m_direction, upDir);
+
+		glm::quat q= glm::normalize(
+				glm::cross(glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, upDir)));
+
+		m_direction= glm::rotate(q, m_direction);
 	}
 
 	void Camera::recalculateView()

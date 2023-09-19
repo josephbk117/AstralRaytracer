@@ -68,8 +68,8 @@ namespace AstralRaytracer
 		AstralRaytracer::Input::initialize(*this);
 	}
 
-	void Window::processInput(UI::AppStateInfo& appStateInfo, Renderer& renderer, Camera& cam,
-														const Scene& scene)
+	void Window::processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
+														Camera& cam, const Scene& scene)
 	{
 		const glm::vec2& mousePos= Input::getMousePosition();
 		if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
@@ -91,6 +91,91 @@ namespace AstralRaytracer
 				appStateInfo.selectedObjectIndex= closestHitInfo.objectIndex;
 			}
 		}
+
+		//------- Camera update--------//
+		static glm::vec2 m_lastMousePosition(0.0f);
+
+		if(m_lastMousePosition == glm::vec2(0.0f))
+		{
+			m_lastMousePosition= Input::getMousePosition();
+			return;
+		}
+
+		const glm::vec2 delta= (mousePos - m_lastMousePosition);
+		m_lastMousePosition  = mousePos;
+
+		//bool forceRecalculate= m_resolution != resolution;
+
+		//if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
+		//{
+			//Input::setCursorMode(CursorMode::NORMAL);
+			//return false;
+		//}
+
+		bool moved= false;
+
+		//if(!forceRecalculate)
+		{
+			Input::setCursorMode(CursorMode::CAPTURED);
+
+			float32 moveSpeed= deltaTime;
+			if(Input::isKeyDown(InputKey::LEFT_SHIFT))
+			{
+				moveSpeed*= 5.0f;
+			}
+
+			if(Input::isKeyDown(InputKey::W))
+			{
+				cam.moveForward(moveSpeed);
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::S))
+			{
+				cam.moveForward(-moveSpeed);
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::A))
+			{
+				cam.moveRight(-moveSpeed);
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::D))
+			{
+				cam.moveRight(moveSpeed);
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::Q))
+			{
+				cam.moveUp(moveSpeed);
+				moved= true;
+			}
+
+			if(Input::isKeyDown(InputKey::E))
+			{
+				cam.moveUp(-moveSpeed);
+				moved= true;
+			}
+
+			// Rotation
+
+			if(delta.x != 0.0f || delta.y != 0.0f)
+			{
+				cam.rotate(delta);
+				moved= true;
+			}
+		}
+		//if(moved || forceRecalculate)
+		//{
+		//	m_resolution= resolution;
+		//	recalculateView();
+		//	recalculateProjection(resolution);
+		//}
+
+		//return moved || forceRecalculate;
 	}
 
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,

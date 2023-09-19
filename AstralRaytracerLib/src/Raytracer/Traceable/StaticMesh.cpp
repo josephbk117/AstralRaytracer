@@ -9,7 +9,7 @@ namespace AstralRaytracer
 	{
 		m_sourceMeshFilePath= meshFilePath.string();
 
-		*this= ModelManager::getStaticMeshFromGLTF(meshFilePath);
+		*this= ModelManager::getStaticMeshFromGLTF("../../../../" + meshFilePath.string());
 	}
 
 	const std::string& StaticMesh::getSourceMeshFilePath() const { return m_sourceMeshFilePath; }
