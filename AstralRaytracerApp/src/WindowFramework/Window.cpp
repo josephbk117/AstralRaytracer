@@ -31,7 +31,7 @@ namespace AstralRaytracer
 		m_glfwWindow=
 				glfwCreateWindow(m_resolution.first, m_resolution.second, m_name.c_str(), nullptr, nullptr);
 
-		if(!m_glfwWindow)
+		if(m_glfwWindow == nullptr)
 		{
 			glfwTerminate();
 			exit(EXIT_FAILURE);

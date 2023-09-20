@@ -37,7 +37,7 @@ uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool
 void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 width, uint32 height,
 																						uint32 textureID)
 {
-	if(data)
+	if(data != nullptr)
 	{
 		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
