@@ -1,8 +1,6 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
 
-//ImGuizmo needs to always be included after main ImGui headers
-
 #include "Raytracer/Material.h"
 #include "Raytracer/Traceable/Traceable.h"
 #include "Raytracer/Transform.h"
@@ -14,7 +12,11 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <ImGuizmo.h>
+
+#ifdef IMGUI_API
+	// ImGuizmo needs to always be included after main ImGui headers
+	#include <ImGuizmo.h>
+#endif // IMGUI_API
 
 namespace AstralRaytracer
 {
@@ -27,10 +29,11 @@ namespace AstralRaytracer
 			glm::u32vec2 rendererSize{500, 500};
 			glm::u32vec2 rendererResolution{500, 500};
 			UiBounds     uiBounds;
-			float32      resolutionScale    = 50.0f;
-			bool         isSceneDirty       = false;
-			bool         canSelectObjects   = false;
-			uint32       selectedObjectIndex= 0;
+			float32      resolutionScale       = 50.0f;
+			bool         isSceneDirty          = false;
+			bool         canSelectObjects      = false;
+			uint32       selectedObjectIndex   = 0;
+			bool         cameraUpdatedThisFrame= false;
 		};
 
 		bool displayXYZFloat(glm::vec3& vec3, const std::string& label);

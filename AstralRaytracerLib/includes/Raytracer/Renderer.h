@@ -16,13 +16,13 @@ namespace AstralRaytracer
 
 		glm::vec3 getRayDirectionFromNormalizedCoord(glm::vec2        coord,
 																								 const glm::mat4& inverseProjection,
-																								 const glm::mat4& inverseView);
+																								 const glm::mat4& inverseView) const;
 
 		glm::vec3 perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 											 glm::vec3& rayDir);
 
 		void findClosestHit(HitInfo& closestHitInfo, const Scene& scene, const glm::vec3& rayOrigin,
-												const glm::vec3& rayDir);
+												const glm::vec3& rayDir) const;
 
 		uintptr getTextureId() const { return m_textureId; }
 		void    setBounceCount(uint32 count) { m_BounceCount= count; }

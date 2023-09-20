@@ -68,31 +68,48 @@ namespace AstralRaytracer
 		AstralRaytracer::Input::initialize(*this);
 	}
 
+	void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
+																										AstralRaytracer::UI::AppStateInfo& appStateInfo,
+																										const AstralRaytracer::Renderer&   renderer,
+																										const AstralRaytracer::Camera&     cam,
+																										const AstralRaytracer::Scene&      scene)
+	{
+		HitInfo   closestHitInfo;
+		glm::vec2 coOrd((mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
+										(mousePos.y - appStateInfo.uiBounds.min.y) / appStateInfo.rendererSize.y);
+		coOrd.y= 1.0f - coOrd.y;
+
+		const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
+				coOrd, cam.getInverseProjection(), cam.getInverseView());
+		renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
+
+		if(closestHitInfo.isValid())
+		{
+			appStateInfo.selectedObjectIndex= closestHitInfo.objectIndex;
+		}
+	}
+
 	void Window::processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
 														Camera& cam, const Scene& scene)
 	{
 		const glm::vec2& mousePos= Input::getMousePosition();
 		if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
-			 Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_1) &&
+			 Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_LEFT) &&
 			 appStateInfo.uiBounds.isPointInBounds(mousePos))
 		{
-
-			HitInfo   closestHitInfo;
-			glm::vec2 coOrd((mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
-											(mousePos.y - appStateInfo.uiBounds.min.y) / appStateInfo.rendererSize.y);
-			coOrd.y= 1.0f - coOrd.y;
-
-			const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
-					coOrd, cam.getInverseProjection(), cam.getInverseView());
-			renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
-
-			if(closestHitInfo.isValid())
-			{
-				appStateInfo.selectedObjectIndex= closestHitInfo.objectIndex;
-			}
+			setSelectedObjectIndexFromMouseCoord(mousePos, appStateInfo, renderer, cam, scene);
 		}
 
 		//------- Camera update--------//
+
+		appStateInfo.cameraUpdatedThisFrame = false;
+
+		const float32 resScale      = appStateInfo.resolutionScale * 0.01f;
+		const uint32  camResolutionX= appStateInfo.rendererSize.x * resScale;
+		const uint32  camResolutionY= appStateInfo.rendererSize.y * resScale;
+
+		const glm::u32vec2 newCamRes(camResolutionX, camResolutionY);
+
 		static glm::vec2 m_lastMousePosition(0.0f);
 
 		if(m_lastMousePosition == glm::vec2(0.0f))
@@ -101,20 +118,20 @@ namespace AstralRaytracer
 			return;
 		}
 
-		const glm::vec2 delta= (mousePos - m_lastMousePosition);
-		m_lastMousePosition  = mousePos;
+		const glm::vec2& mouseDelta= (mousePos - m_lastMousePosition);
+		m_lastMousePosition        = mousePos;
 
-		//bool forceRecalculate= m_resolution != resolution;
+		bool forceRecalculate= cam.getResolution() != newCamRes;
 
-		//if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
-		//{
-			//Input::setCursorMode(CursorMode::NORMAL);
-			//return false;
-		//}
+		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
+		{
+			Input::setCursorMode(CursorMode::NORMAL);
+			return;
+		}
 
 		bool moved= false;
 
-		//if(!forceRecalculate)
+		if(!forceRecalculate)
 		{
 			Input::setCursorMode(CursorMode::CAPTURED);
 
@@ -162,20 +179,19 @@ namespace AstralRaytracer
 
 			// Rotation
 
-			if(delta.x != 0.0f || delta.y != 0.0f)
+			if(mouseDelta.x != 0.0f || mouseDelta.y != 0.0f)
 			{
-				cam.rotate(delta);
+				cam.rotate(mouseDelta * 0.1f);
 				moved= true;
 			}
 		}
-		//if(moved || forceRecalculate)
-		//{
-		//	m_resolution= resolution;
-		//	recalculateView();
-		//	recalculateProjection(resolution);
-		//}
 
-		//return moved || forceRecalculate;
+		if(moved || forceRecalculate)
+		{
+			cam.update(newCamRes);
+		}
+
+		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;;
 	}
 
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,

@@ -56,8 +56,14 @@ namespace AstralRaytracer
 		UI::ContentBrowser m_contentBrowser;
 
 		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
-		void        displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
-																			const AssetManager& assetManager);
+		void        setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
+																										 AstralRaytracer::UI::AppStateInfo& appStateInfo,
+																										 const AstralRaytracer::Renderer&   renderer,
+																										 const AstralRaytracer::Camera&     cam,
+																										 const AstralRaytracer::Scene&      scene);
+
+		void displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
+															 const AssetManager& assetManager);
 
 		void displayMaterialUI(UI::AppStateInfo& appStateInfo, Scene& scene,
 													 const AssetManager& assetManager);

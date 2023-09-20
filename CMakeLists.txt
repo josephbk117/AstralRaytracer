@@ -61,69 +61,28 @@ set(YAML_CPP_BUILD_CONTRIB OFF)
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(external/yamlcpp EXCLUDE_FROM_ALL)
 add_subdirectory(external/stduuid EXCLUDE_FROM_ALL)
-#
-## Add resources as a subdirectory
-#add_subdirectory(resources)
-#
-## Include directories for the main project target
-#target_include_directories(${PROJECT_NAME}
-#    PUBLIC includes/
-#    PUBLIC external/glfw/include
-#    PUBLIC external/glBinding/source/glbinding/include
-#    PUBLIC external/imgui
-#    PUBLIC external/imguizmo
-#    PUBLIC external/glm
-#    PUBLIC external/tinygltf
-#    PUBLIC external/yamlcpp/include
-#    PUBLIC external/stduuid/include
-#)
-#
-## Link directories for the main project target
-#target_link_directories(${PROJECT_NAME}
-#    PRIVATE external/glfw/src
-#    PRIVATE external/glBinding/source/glbinding/source
-#    PRIVATE external/yamlcpp/src
-#)
-#
-# Link libraries for the main project target
-#target_link_libraries(${PROJECT_NAME}
-#    glfw
-#    glbinding
-#    yaml-cpp
-#)
-#
-## Custom target for copying resources
-#add_custom_target(copy_resources ALL
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        ${PROJECT_SOURCE_DIR}/resources
-#        ${PROJECT_BINARY_DIR}/resources
-#    COMMENT "Copying resources into the binary directory"
-#)
-#
-## Add a dependency on copying resources
-#add_dependencies(${PROJECT_NAME} copy_resources)
-#
-## Enable SIMD optimizations only in Release build type
-#if(CMAKE_BUILD_TYPE STREQUAL "Release")
-#    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#
-#        message("Setting compiler options for GNU/Clang")
-#        # Enable SIMD optimizations for your target architecture.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-#        # Add other optimization flags as needed.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-#         # Disable RTTI.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
-#    endif()
-#
-#    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-#
-#        message("Setting compiler options for MSVC")
-#        # Enable SIMD optimizations for your target architecture.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
-#        # Add other optimization flags as needed.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
-#         # Disable RTTI.
-#        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
-#    endif()
-#endif()
+
+# Enable SIMD optimizations only in Release build type
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+
+        message("Setting compiler options for GNU/Clang")
+        # Enable SIMD optimizations for your target architecture.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
+        # Add other optimization flags as needed.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+         # Disable RTTI.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+    endif()
+
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+
+        message("Setting compiler options for MSVC")
+        # Enable SIMD optimizations for your target architecture.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
+        # Add other optimization flags as needed.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
+         # Disable RTTI.
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+    endif()
+endif()

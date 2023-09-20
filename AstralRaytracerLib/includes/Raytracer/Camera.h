@@ -7,7 +7,7 @@ namespace AstralRaytracer
 	{
 		public:
 		Camera(float32 fov, float32 nearClip, float32 farClip);
-		bool update(float32 deltaTime, const glm::u32vec2& resolution);
+		void update(const glm::u32vec2& resolution);
 
 		void moveForward(float32 units);
 		void moveRight(float32 units);

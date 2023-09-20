@@ -35,25 +35,21 @@ int main()
 		float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 		while(!window.shouldWindowClose())
 		{
-			const float32 deltaTime= AstralRaytracer::Input::getTimeSinceStart() - prevTime;
+			const float32 currentTimeSinceStart= AstralRaytracer::Input::getTimeSinceStart();
+
+			const float32 deltaTime= currentTimeSinceStart - prevTime;
+			prevTime               = currentTimeSinceStart;
 
 			// Process Input
 			window.processInput(appStateInfo, deltaTime, renderer, cam, scene);
 
 			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-			const uint32 resolutionX= appStateInfo.rendererSize.x * appStateInfo.resolutionScale * 0.01f;
-			const uint32 resolutionY= appStateInfo.rendererSize.y * appStateInfo.resolutionScale * 0.01f;
-
-			const bool cameraUpdated= cam.update(deltaTime, {resolutionX, resolutionY});
-
-			if(appStateInfo.isSceneDirty || cameraUpdated)
+			if(appStateInfo.isSceneDirty || appStateInfo.cameraUpdatedThisFrame)
 			{
 				renderer.resetFrameIndex();
 				appStateInfo.isSceneDirty= false;
 			}
-
-			prevTime= AstralRaytracer::Input::getTimeSinceStart();
 
 			// Render scene
 			renderer.render(scene, cam);

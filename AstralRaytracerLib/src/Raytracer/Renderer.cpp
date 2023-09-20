@@ -77,7 +77,7 @@ namespace AstralRaytracer
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
 																												 const glm::mat4& inverseProjection,
-																												 const glm::mat4& inverseView)
+																												 const glm::mat4& inverseView) const
 	{
 		coord                            = (coord * 2.0f) - 1.0f;
 		const glm::vec4& target          = inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
@@ -118,8 +118,8 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		glm::vec3       light(0.0f);
-		glm::vec3       contribution(1.0f);
+		glm::vec3         light(0.0f);
+		glm::vec3         contribution(1.0f);
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
@@ -133,8 +133,8 @@ namespace AstralRaytracer
 			{
 				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
 				const TextureData& texData  = scene.m_textures.at(mat.texture);
-				const ColourData&  colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x * 0.1f,
-																														closestHitInfo.worldSpacePosition.z * 0.1f);
+				const ColourData&  colorData= texData.getTexelColor(
+            closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f);
 
 				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
 				light+= mat.getEmission() * colorData.getColour_32_bit();
@@ -158,7 +158,7 @@ namespace AstralRaytracer
 	}
 
 	void Renderer::findClosestHit(HitInfo& closestHitInfo, const Scene& scene,
-																const glm::vec3& rayOrigin, const glm::vec3& rayDir)
+																const glm::vec3& rayOrigin, const glm::vec3& rayDir) const
 	{
 		// Initialize closest hit distance to a large value
 		closestHitInfo.hitDistance= std::numeric_limits<float32>::max();
