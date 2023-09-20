@@ -20,6 +20,7 @@ std::string AstralRaytracer::toString(ResourceType resourceType)
 		case AstralRaytracer::ResourceType::IMAGE: return "Image";
 		case AstralRaytracer::ResourceType::MODEL: return "Model";
 		case AstralRaytracer::ResourceType::TEXT_FILE: return "Text";
+		case AstralRaytracer::ResourceType::FONT: return "Font";
 		case AstralRaytracer::ResourceType::INVALID:
 		default: return "";
 	}
@@ -45,6 +46,7 @@ const std::vector<std::string>& AstralRaytracer::getFileExtensionForResourceType
 		case AstralRaytracer::ResourceType::IMAGE: return fileExtensionForImages;
 		case AstralRaytracer::ResourceType::MODEL: return fileExtensionForModels;
 		case AstralRaytracer::ResourceType::TEXT_FILE: return fileExtensionForText;
+		case AstralRaytracer::ResourceType::FONT: return fileExtensionForFont;
 		case AstralRaytracer::ResourceType::INVALID:
 		default: return invalidVectorOfString;
 	}
@@ -101,6 +103,12 @@ AstralRaytracer::getResourceTypeFromFilePath(const std::filesystem::path& filepa
 	if(it != fileExtensionForText.end())
 	{
 		return ResourceType::TEXT_FILE;
+	}
+
+	it= std::find(fileExtensionForFont.begin(), fileExtensionForFont.end(), extension);
+	if(it != fileExtensionForFont.end())
+	{
+		return ResourceType::FONT;
 	}
 
 	return ResourceType::INVALID;
