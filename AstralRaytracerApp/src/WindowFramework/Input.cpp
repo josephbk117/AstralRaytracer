@@ -8,9 +8,10 @@ namespace AstralRaytracer
 
 	glm::vec2 Input::getMousePosition()
 	{
-		double xpos, ypos;
-		glfwGetCursorPos(glfwWindow, &xpos, &ypos);
-		return {xpos, ypos};
+		double xPos;
+		double yPos;
+		glfwGetCursorPos(glfwWindow, &xPos, &yPos);
+		return {xPos, yPos};
 	}
 
 	void Input::setCursorMode(CursorMode cursorMode)

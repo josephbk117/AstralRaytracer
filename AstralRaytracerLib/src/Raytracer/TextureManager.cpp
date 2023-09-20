@@ -8,7 +8,9 @@
 TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path,
 																										uint8 reqChannelCount /*= 3*/)
 {
-	int32 width, height, numChannels;
+	int32 width;
+	int32 height;
+	int32 numChannels;
 
 	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, reqChannelCount);
 	assert(data);

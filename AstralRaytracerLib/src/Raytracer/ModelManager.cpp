@@ -15,7 +15,9 @@ namespace AstralRaytracer
 	AstralRaytracer::StaticMesh ModelManager::getStaticMeshFromGLTF(const std::filesystem::path& path)
 	{
 		tinygltf::Model model;
-		std::string     error, warning;
+
+		std::string error;
+		std::string warning;
 
 		tinygltf::TinyGLTF loader;
 
