@@ -49,12 +49,6 @@ jobs:
       with:
         submodules: recursive
 
-    # Update references
-    - name: Git Sumbodule Update
-      run: |
-        git pull --recurse-submodules
-        git submodule update --remote --recursive
-
     - name: Install xorg
       if: matrix.os == 'ubuntu-latest'
       run: sudo apt-get install xorg-dev libglu1-mesa-dev
