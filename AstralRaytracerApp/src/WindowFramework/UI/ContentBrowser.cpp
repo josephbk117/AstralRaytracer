@@ -38,13 +38,12 @@ namespace AstralRaytracer
 																			ImGuiWindowFlags_NoSavedSettings))
 				{
 					ImGui::Text("File Name");
-					char inputBuffer[128];
-					std::memset(inputBuffer, 0, sizeof(inputBuffer));
-					if(ImGui::InputText("File Name Input", inputBuffer, sizeof(inputBuffer),
+					std::array<char, 128> inputBuffer;
+					if(ImGui::InputText("File Name Input", inputBuffer.data(), inputBuffer.size(),
 															ImGuiInputTextFlags_EnterReturnsTrue))
 					{
 						const fs::path newFilePath= m_directoryForNewFile.string() + "/";
-						createNewMaterial(newFilePath, inputBuffer, assetManager);
+						createNewMaterial(newFilePath, inputBuffer.data(), assetManager);
 					}
 					if(ImGui::Button("Accept"))
 					{

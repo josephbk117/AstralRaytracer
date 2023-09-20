@@ -17,9 +17,9 @@ class DrawingPanel
 	void             draw() noexcept;
 
 	private:
-	Transform transform;
-	float32   width, height;
-	uint32    vaoID;
-	uint32    vboID;
-	uint32    textureID;
+	Transform m_transform;
+	float32   m_width, m_height;
+	uint32    m_vaoID;
+	uint32    m_vboID;
+	uint32    m_textureID;
 };
