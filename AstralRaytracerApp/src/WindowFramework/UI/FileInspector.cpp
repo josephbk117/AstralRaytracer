@@ -1,4 +1,5 @@
 #include "WindowFramework/UI/FileInspector.h"
+
 #include <imgui.h>
 namespace AstralRaytracer
 {
@@ -12,17 +13,21 @@ namespace AstralRaytracer
 
 			if(!m_currentFIle.empty())
 			{
-				ImGui::Text(m_currentFIle.filename().string().c_str());
+				ImGui::TextUnformatted(m_currentFIle.filename().string().c_str());
 				ImGui::SameLine();
+
+				std::string typeNameStr= "";
 
 				if(fileType == FileType::ASSET)
 				{
-					ImGui::Text(toString(getAssetTypeFromFilePath(m_currentFIle)).c_str());
+					typeNameStr= toString(getAssetTypeFromFilePath(m_currentFIle));
 				}
 				else if(fileType == FileType::RESOURCE)
 				{
-					ImGui::Text(toString(getResourceTypeFromFilePath(m_currentFIle)).c_str());
+					typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle)).c_str();
 				}
+
+				ImGui::TextUnformatted(typeNameStr.c_str());
 			}
 		}
 
