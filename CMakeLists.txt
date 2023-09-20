@@ -13,25 +13,6 @@ add_subdirectory(AstralRaytracerLib)
 add_subdirectory(AstralRaytracerApp)
 add_subdirectory(AstralRaytracerTests)
 
-# Glob source and header files
-#file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
-#file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-#file(GLOB IMGUI_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/*")
-#file(GLOB IMGUIZMO_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/imguizmo/*")
-#file(GLOB STB_IMAGE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/stbimage/*")
-#file(GLOB GLM_FILES "${CMAKE_CURRENT_SOURCE_DIR}/external/glm/*")
-#
-## Create the executable and add source/header files
-#add_executable (${PROJECT_NAME}
-#    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
-#    ${HEADER_FILES}
-#    ${SOURCE_FILES}
-#    ${IMGUI_FILES}
-#    ${IMGUIZMO_FILES}
-#    ${STB_IMAGE_FILES}
-#    ${GLM_FILES}
-#)
-#
 #Download all submodules
 find_package(Git QUIET)
 if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
