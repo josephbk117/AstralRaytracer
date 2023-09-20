@@ -19,7 +19,7 @@ namespace AstralRaytracer
 
 				ImGui::BeginChild("Content Browser", ImGui::GetContentRegionAvail());
 
-				const fs::path resourcesPath= fs::current_path().string() + "/../../../resources";
+				const fs::path resourcesPath= "../../../../ExampleProject";
 
 				std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
 				rootNode->pathStr                 = resourcesPath;
@@ -65,11 +65,8 @@ namespace AstralRaytracer
 
 			ImGui::TableSetColumnIndex(1);
 
-			if(!m_selectedFile.empty())
-			{
-				m_fileInspector.setFile(m_selectedFile);
-				m_fileInspector.display();
-			}
+			m_fileInspector.setFile(m_selectedFile);
+			m_fileInspector.display();
 
 			ImGui::EndTable();
 		}
