@@ -217,6 +217,18 @@ namespace AstralRaytracer
 					if(ImGui::MenuItem("Open", "Ctrl+O")) {}
 					ImGui::EndMenu();
 				}
+				if(ImGui::BeginMenu("Preference"))
+				{
+					if(ImGui::MenuItem("Themes")) {}
+					if(ImGui::MenuItem("Layout")) {}
+					ImGui::EndMenu();
+				}
+				if(ImGui::BeginMenu("View"))
+				{
+					if(ImGui::MenuItem("Toggle Preview View", "Alt+P")) {}
+					if(ImGui::MenuItem("Toggle Debug View", "Alt+D")) {}
+					ImGui::EndMenu();
+				}
 				ImGui::EndMenuBar();
 			}
 			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
