@@ -19,7 +19,7 @@ namespace AstralRaytracer
 		friend class Input;
 
 		Window(): m_name{"default"} {}
-		Window(const std::string name): m_name{name} {}
+		Window(const std::string& name): m_name{name} {}
 		Window(const Window&)           = delete;
 		Window& operator=(const Window&)= delete;
 		~Window(){};
