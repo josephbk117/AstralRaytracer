@@ -35,7 +35,10 @@ set(GLFW_INSTALL OFF)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
 set(OPTION_BUILD_TOOLS OFF)
 set(OPTION_BUILD_EXAMPLES OFF)
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+
+#enabling LTO has issues on clang
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
     message("Link Time Optimisation enabled for glBinding")
     set(OPTION_BUILD_WITH_LTO ON)
 else()
