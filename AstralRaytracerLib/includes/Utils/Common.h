@@ -68,7 +68,8 @@ namespace AstralRaytracer
 		IMAGE= MIN,
 		MODEL,
 		TEXT_FILE,
-		MAX= TEXT_FILE
+		FONT,
+		MAX= FONT
 	};
 
 	static const std::string              invalidString{};
@@ -76,6 +77,7 @@ namespace AstralRaytracer
 	static const std::vector<std::string> fileExtensionForImages{".png", ".jpg", ".jpeg", ".bmp"};
 	static const std::vector<std::string> fileExtensionForModels{".gltf", ".glb"};
 	static const std::vector<std::string> fileExtensionForText{".txt", ".md", ".csv"};
+	static const std::vector<std::string> fileExtensionForFont{".ttf"};
 
 	static const std::string FileExtensionForScene{".ascene"};
 	static const std::string FileExtensionForTexture{".astex"};
