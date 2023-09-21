@@ -1,6 +1,6 @@
 #pragma once
-#include "Utils/Common.h"
 #include "Raytracer/TextureData.h"
+#include "Utils/Common.h"
 
 #include <glm/glm.hpp>
 #include <imgui.h>
@@ -12,10 +12,10 @@ namespace AstralRaytracer
 	{
 		inline void histogram(const TextureData& texData)
 		{
-			int32 width = texData.getWidth();
-			int32 height= texData.getHeight();
+			const int32 width = texData.getWidth();
+			const int32 height= texData.getHeight();
 
-			uint32 count[3][256]= {0};
+			std::array<std::array<uint32, 256>, 3> count= {{{0}}};
 
 			const uint8* ptrCols= texData.getTextureData().data();
 
@@ -52,7 +52,8 @@ namespace AstralRaytracer
 			for(int32 j= 0; j < 256; j++)
 			{
 				// pixel count << 2 + color index(on 2 bits)
-				uint32_t cols[3]= {(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2};
+				std::array<uint32_t, 3> cols= {(count[0][j] << 2), (count[1][j] << 2) + 1,
+																			 (count[2][j] << 2) + 2};
 				if(cols[0] > cols[1])
 					ImSwap(cols[0], cols[1]);
 				if(cols[1] > cols[2])
@@ -108,8 +109,8 @@ namespace AstralRaytracer
 
 			union PixelUnion
 			{
-				uint8  data[4];
-				uint32 texel;
+				std::array<uint8, 4> data;
+				uint32               texel;
 			};
 
 			for(int32 y= -zoomSize; y <= zoomSize; y++)
