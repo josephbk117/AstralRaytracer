@@ -24,7 +24,7 @@ namespace AstralRaytracer
 				}
 				else if(fileType == FileType::RESOURCE)
 				{
-					typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle)).c_str();
+					typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle));
 				}
 
 				ImGui::TextUnformatted(typeNameStr.c_str());
