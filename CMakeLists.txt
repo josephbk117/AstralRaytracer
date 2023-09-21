@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}, Version: ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Target architecture: ${CMAKE_SYSTEM_PROCESSOR}, Platform: ${CMAKE_SYSTEM_NAME}")
+
 enable_testing()
 
 # Add the subdirectories for the library and the application
@@ -28,13 +32,13 @@ endif()
 
 set(TINYGLTF_HEADER_ONLY ON CACHE INTERNAL "" FORCE)
 set(TINYGLTF_INSTALL OFF CACHE INTERNAL "" FORCE)
+set(TINYGLTF_BUILD_LOADER_EXAMPLE OFF)
+set(TINYGLTF_INSTALL OFF)
 add_subdirectory(external/tinygltf)
 set(BUILD_SHARED_LIBS OFF)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
-set(OPTION_BUILD_TOOLS OFF)
-set(OPTION_BUILD_EXAMPLES OFF)
 
 #enabling LTO has issues on clang
 
@@ -45,17 +49,19 @@ else()
     message("Link Time Optimisation disabled for glBinding")
     set(OPTION_BUILD_WITH_LTO OFF)
 endif()
+set(OPTION_BUILD_TOOLS OFF)
+set(OPTION_BUILD_EXAMPLES OFF)
 add_subdirectory(external/glBinding EXCLUDE_FROM_ALL)
 set(YAML_CPP_BUILD_TOOLS OFF)
 set(YAML_CPP_BUILD_CONTRIB OFF)
-set(BUILD_SHARED_LIBS OFF)
+set(YAML_CPP_FORMAT_SOURCE OFF)
+set(YAML_BUILD_SHARED_LIBS OFF)
 add_subdirectory(external/yamlcpp EXCLUDE_FROM_ALL)
 add_subdirectory(external/stduuid EXCLUDE_FROM_ALL)
 
 # Enable SIMD optimizations only in Release build type
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
         message("Setting compiler options for GNU/Clang")
         # Enable SIMD optimizations for your target architecture.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
@@ -66,7 +72,6 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     endif()
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-
         message("Setting compiler options for MSVC")
         # Enable SIMD optimizations for your target architecture.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /arch:AVX2")
