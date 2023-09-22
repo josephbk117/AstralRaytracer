@@ -5,8 +5,6 @@
 
 namespace AstralRaytracer
 {
-	std::string Scene::defaultEmptyName= "";
-
 	Scene::Scene()
 	{
 		addMaterial(Material());

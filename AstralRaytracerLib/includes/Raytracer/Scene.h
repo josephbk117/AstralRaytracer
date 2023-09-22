@@ -28,7 +28,5 @@ namespace AstralRaytracer
 		std::vector<Material>                   m_materials;
 		std::vector<TextureData>                m_textures;
 
-		private:
-		static std::string defaultEmptyName;
-	};
+		};
 } // namespace AstralRaytracer
