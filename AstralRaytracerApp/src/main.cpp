@@ -16,10 +16,9 @@
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
-AstralRaytracer::AssetManager assetManager;
-
 int main()
 {
+	AstralRaytracer::AssetManager assetManager;
 	AstralRaytracer::Window window("Astral Raytracer");
 	window.initialize();
 
