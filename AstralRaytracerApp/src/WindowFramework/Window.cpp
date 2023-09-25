@@ -318,7 +318,7 @@ namespace AstralRaytracer
 
 					mouseUVCoord.y= 1.f - mouseUVCoord.y;
 
-					if(io.KeyCtrl && io.MouseDown[0] && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
+					if(io.KeyCtrl && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
 						 mouseUVCoord.x < 1.0f && mouseUVCoord.y < 1.0f)
 					{
 						UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
