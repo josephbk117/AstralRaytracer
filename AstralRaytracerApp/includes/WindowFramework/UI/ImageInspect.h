@@ -123,10 +123,10 @@ namespace AstralRaytracer
 			{
 				for(int32 x= -zoomSize; x <= zoomSize; x++)
 				{
-					const ColourData& colData= texData.getTexelColor(static_cast<uint32>(coOrdX + x),
-																													 static_cast<uint32>(coOrdY - y));
-					const glm::u8vec3&  pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
-					PixelUnion        pixel;
+					const ColourData&  colData= texData.getTexelColor(static_cast<uint32>(coOrdX + x),
+																														static_cast<uint32>(coOrdY - y));
+					const glm::u8vec3& pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
+					PixelUnion         pixel;
 					pixel.data[0]= pixData.r;
 					pixel.data[1]= pixData.g;
 					pixel.data[2]= pixData.b;
@@ -153,14 +153,13 @@ namespace AstralRaytracer
 			ImGui::SameLine();
 			ImGui::BeginGroup();
 
-			ColourData colData=
+			glm::vec3 colData=
 					texData.getTexelColor(static_cast<uint32>(coOrdX), static_cast<uint32>(coOrdY));
-			glm::vec3 pixData= colData.getColour_32_bit(); // Adjusted for HDR values
 
 			PixelUnion pixel;
-			pixel.data[0]= static_cast<uint8>(pixData.r * 255.0f); // Convert HDR to 0-255 range
-			pixel.data[1]= static_cast<uint8>(pixData.g * 255.0f); // Convert HDR to 0-255 range
-			pixel.data[2]= static_cast<uint8>(pixData.b * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[0]= static_cast<uint8>(colData.r * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[1]= static_cast<uint8>(colData.g * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[2]= static_cast<uint8>(colData.b * 255.0f); // Convert HDR to 0-255 range
 			pixel.data[3]= 255;
 
 			const ImVec4 color= ImColor(pixel.texel);
@@ -186,7 +185,6 @@ namespace AstralRaytracer
 			ImGui::EndGroup();
 			histogram(texData);
 			ImGui::EndTooltip();
-
 		}
 	} // namespace UI
 } // namespace AstralRaytracer
