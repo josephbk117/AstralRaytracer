@@ -102,7 +102,7 @@ namespace AstralRaytracer
 
 		//------- Camera update--------//
 
-		appStateInfo.cameraUpdatedThisFrame = false;
+		appStateInfo.cameraUpdatedThisFrame= false;
 
 		const float32 resScale      = appStateInfo.resolutionScale * 0.01f;
 		const uint32  camResolutionX= appStateInfo.rendererSize.x * resScale;
@@ -191,7 +191,8 @@ namespace AstralRaytracer
 			cam.update(newCamRes);
 		}
 
-		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;;
+		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;
+		;
 	}
 
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,
@@ -317,7 +318,7 @@ namespace AstralRaytracer
 
 					mouseUVCoord.y= 1.f - mouseUVCoord.y;
 
-					if(io.KeyShift && io.MouseDown[0] && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
+					if(io.KeyCtrl && io.MouseDown[0] && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f &&
 						 mouseUVCoord.x < 1.0f && mouseUVCoord.y < 1.0f)
 					{
 						UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
