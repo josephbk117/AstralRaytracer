@@ -22,9 +22,13 @@ namespace AstralRaytracer
 			ImGui::InvisibleButton("histogram", ImVec2(512, 256));
 			for(int32 l= 0; l < height * width; l++)
 			{
-				count[0][*ptrCols++]++;
-				count[1][*ptrCols++]++;
-				count[2][*ptrCols++]++;
+				int32 val0= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
+				int32 val1= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
+				int32 val2= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
+
+				count[0][val0]++;
+				count[1][val1]++;
+				count[2][val2]++;
 			}
 
 			uint32  maxv  = count[0][0];
@@ -38,12 +42,12 @@ namespace AstralRaytracer
 			const ImVec2  rmin    = ImGui::GetItemRectMin();
 			const ImVec2  rmax    = ImGui::GetItemRectMax();
 			const ImVec2  size    = ImGui::GetItemRectSize();
-			const float32 hFactor = size.y / float32(maxv);
+			const float32 hFactor = size.y / static_cast<float32>(maxv);
 
 			for(int32 i= 0; i <= 10; i++)
 			{
-				float32 ax= rmin.x + (size.x / 10.f) * float32(i);
-				float32 ay= rmin.y + (size.y / 10.f) * float32(i);
+				float32 ax= rmin.x + (size.x / 10.f) * static_cast<float32>(i);
+				float32 ay= rmin.y + (size.y / 10.f) * static_cast<float32>(i);
 				drawList->AddLine(ImVec2(rmin.x, ay), ImVec2(rmax.x, ay), 0x80808080);
 				drawList->AddLine(ImVec2(ax, rmin.y), ImVec2(ax, rmax.y), 0x80808080);
 			}
@@ -52,14 +56,14 @@ namespace AstralRaytracer
 			for(int32 j= 0; j < 256; j++)
 			{
 				// pixel count << 2 + color index(on 2 bits)
-				std::array<uint32_t, 3> cols= {(count[0][j] << 2), (count[1][j] << 2) + 1,
-																			 (count[2][j] << 2) + 2};
+				std::array<uint32_t, 3> cols= {
+						{(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2}};
 				if(cols[0] > cols[1])
-					ImSwap(cols[0], cols[1]);
+					std::swap(cols[0], cols[1]);
 				if(cols[1] > cols[2])
-					ImSwap(cols[1], cols[2]);
+					std::swap(cols[1], cols[2]);
 				if(cols[0] > cols[1])
-					ImSwap(cols[0], cols[1]);
+					std::swap(cols[0], cols[1]);
 				float32 heights[3];
 				uint32  colors[3];
 				uint32  currentColor= 0xFFFFFFFF;
@@ -71,7 +75,7 @@ namespace AstralRaytracer
 				}
 
 				float32       currentHeight= rmax.y;
-				const float32 left         = rmin.x + barWidth * float32(j);
+				const float32 left         = rmin.x + barWidth * static_cast<float32>(j);
 				const float32 right        = left + barWidth;
 				for(int32 i= 0; i < 3; i++)
 				{
@@ -104,8 +108,10 @@ namespace AstralRaytracer
 			const int32   zoomSize = 4;
 			const float32 quadWidth= zoomRectangleWidth / float32(zoomSize * 2 + 1);
 			const ImVec2  quadSize(quadWidth, quadWidth);
-			const uint32  coOrdX= ImClamp(int32(mouseUVCoord.x * width), zoomSize, width - zoomSize);
-			const uint32  coOrdY= ImClamp(int32(mouseUVCoord.y * height), zoomSize, height - zoomSize);
+			const float32 coOrdX= ImClamp(mouseUVCoord.x * width, static_cast<float32>(zoomSize),
+																		static_cast<float32>(width - zoomSize));
+			const float32 coOrdY= ImClamp(mouseUVCoord.y * height, static_cast<float32>(zoomSize),
+																		static_cast<float32>(height - zoomSize));
 
 			union PixelUnion
 			{
@@ -117,17 +123,18 @@ namespace AstralRaytracer
 			{
 				for(int32 x= -zoomSize; x <= zoomSize; x++)
 				{
-					const ColourData&  colData= texData.getTexelColor(coOrdX + x, coOrdY - y);
-					const glm::u8vec3& pixData= colData.getColour_8_BitClamped();
-					PixelUnion         pixel;
-					pixel.data[0]= pixData.x;
-					pixel.data[1]= pixData.y;
-					pixel.data[2]= pixData.z;
+					const ColourData& colData= texData.getTexelColor(static_cast<uint32>(coOrdX + x),
+																													 static_cast<uint32>(coOrdY - y));
+					const glm::u8vec3&  pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
+					PixelUnion        pixel;
+					pixel.data[0]= pixData.r;
+					pixel.data[1]= pixData.g;
+					pixel.data[2]= pixData.b;
 					pixel.data[3]= 255;
 
 					ImVec2 param;
-					param.x= float32(x + zoomSize) * quadSize.x;
-					param.y= float32(y + zoomSize) * quadSize.y;
+					param.x= (x + zoomSize) * quadSize.x;
+					param.y= (y + zoomSize) * quadSize.y;
 
 					ImVec2 pos;
 					pos.x= pickRc.Min.x + param.x;
@@ -146,36 +153,40 @@ namespace AstralRaytracer
 			ImGui::SameLine();
 			ImGui::BeginGroup();
 
-			ColourData  colData= texData.getTexelColor(coOrdX, coOrdY);
-			glm::u8vec3 pixData= colData.getColour_8_BitClamped();
+			ColourData colData=
+					texData.getTexelColor(static_cast<uint32>(coOrdX), static_cast<uint32>(coOrdY));
+			glm::vec3 pixData= colData.getColour_32_bit(); // Adjusted for HDR values
 
 			PixelUnion pixel;
-			pixel.data[0]= pixData.x;
-			pixel.data[1]= pixData.y;
-			pixel.data[2]= pixData.z;
+			pixel.data[0]= static_cast<uint8>(pixData.r * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[1]= static_cast<uint8>(pixData.g * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[2]= static_cast<uint8>(pixData.b * 255.0f); // Convert HDR to 0-255 range
 			pixel.data[3]= 255;
 
 			const ImVec4 color= ImColor(pixel.texel);
 			ImVec4       colHSV;
 			ImGui::ColorConvertRGBtoHSV(color.x, color.y, color.z, colHSV.x, colHSV.y, colHSV.z);
 			ImGui::Text("U %1.2f V %1.2f", mouseUVCoord.x, mouseUVCoord.y);
-			ImGui::Text("Coord %d %d", int32(mouseUVCoord.x * width), int32(mouseUVCoord.y * height));
+			ImGui::Text("Coord %d %d", static_cast<int32>(mouseUVCoord.x * width),
+									static_cast<int32>(mouseUVCoord.y * height));
 			ImGui::Separator();
-			ImGui::Text("R 0x%02x  G 0x%02x  B 0x%02x", int32(color.x * 255.0f), int32(color.y * 255.0f),
-									int32(color.z * 255.0f));
+			ImGui::Text("R 0x%02x  G 0x%02x  B 0x%02x", static_cast<int32>(color.x * 255.0f),
+									static_cast<int32>(color.y * 255.0f), static_cast<int32>(color.z * 255.0f));
 			ImGui::Text("R %1.2f G %1.2f B %1.2f", color.x, color.y, color.z);
 			ImGui::Separator();
-			ImGui::Text("H 0x%02x  S 0x%02x  V 0x%02x", int32(colHSV.x * 255.0f),
-									int32(colHSV.y * 255.0f), int32(colHSV.z * 255.0f));
+			ImGui::Text("H 0x%02x  S 0x%02x  V 0x%02x", static_cast<int32>(colHSV.x * 255.0f),
+									static_cast<int32>(colHSV.y * 255.0f), static_cast<int32>(colHSV.z * 255.0f));
 			ImGui::Text("H %1.2f S %1.2f V %1.2f", colHSV.x, colHSV.y, colHSV.z);
 			ImGui::Separator();
-			ImGui::Text("Alpha 0x%02x", int32(color.w * 255.0f));
+			ImGui::Text("Alpha 0x%02x", static_cast<int32>(color.w * 255.0f));
 			ImGui::Text("Alpha %1.2f", color.w);
 			ImGui::Separator();
-			ImGui::Text("Size %d, %d", int32(displayedTextureSize.x), int32(displayedTextureSize.y));
+			ImGui::Text("Size %d, %d", static_cast<int32>(displayedTextureSize.x),
+									static_cast<int32>(displayedTextureSize.y));
 			ImGui::EndGroup();
 			histogram(texData);
 			ImGui::EndTooltip();
+
 		}
 	} // namespace UI
 } // namespace AstralRaytracer

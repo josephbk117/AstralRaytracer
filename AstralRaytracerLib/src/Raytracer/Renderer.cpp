@@ -118,9 +118,12 @@ namespace AstralRaytracer
 	glm::vec3 Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin,
 															 glm::vec3& rayDir)
 	{
-		glm::vec3         light(0.0f);
-		glm::vec3         contribution(1.0f);
+		glm::vec3 light(0.0f);
+		glm::vec3 contribution(1.0f);
+
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
+
+		constexpr float32 uint8ToNormalizedFloatMul= 1.0f / 255.0f;
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -131,13 +134,17 @@ namespace AstralRaytracer
 
 			if(closestHitInfo.isValid())
 			{
-				const Material&       mat      = scene.m_materials.at(closestHitInfo.materialIndex);
-				const TextureDataRGB& texData  = scene.m_textures.at(mat.texture);
-				const ColourData&     colorData= texData.getTexelColor(
-            closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f);
+				const Material& mat= scene.m_materials.at(closestHitInfo.materialIndex);
 
-				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();
-				light+= mat.getEmission() * colorData.getColour_32_bit();
+				const TextureDataRGB& texData= scene.m_textures.at(mat.texture);
+
+				glm::vec3 colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x * 0.1f,
+																									 closestHitInfo.worldSpacePosition.z * 0.1f);
+
+				colorData*= uint8ToNormalizedFloatMul;
+
+				contribution*= mat.albedo.getColour_32_bit() * colorData;
+				light+= mat.getEmission() * colorData;
 
 				// Avoid self-intersection by moving the ray origin slightly
 				rayOrigin= closestHitInfo.worldSpacePosition + closestHitInfo.worldSpaceNormal * kEpsilon;

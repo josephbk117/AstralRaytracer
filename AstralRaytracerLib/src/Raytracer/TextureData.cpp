@@ -55,7 +55,7 @@ uint32 TextureData<T, ComponentCount>::getHeight() const noexcept
 }
 
 template <typename T, uint8 ComponentCount>
-uint8 TextureData<T, ComponentCount>::getComponentCount() const noexcept
+constexpr uint8 TextureData<T, ComponentCount>::getComponentCount() const noexcept
 {
 	return ComponentCount;
 }
@@ -93,19 +93,26 @@ void TextureData<T, ComponentCount>::setTexelColor(ColourData& colourData, uint3
 }
 
 template <typename T, uint8 ComponentCount>
-ColourData TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
+glm::vec<ComponentCount, T, glm::defaultp>
+TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 {
-	const uint32 index= (m_width * y + x) * 3;
-	ColourData   colData;
-	colData.setColour_8_Bit(m_data[index], m_data[index + 1], m_data[index + 2]);
-	return colData;
+	const uint32                               index= (m_width * y + x) * ComponentCount;
+	glm::vec<ComponentCount, T, glm::defaultp> out;
+
+	for(uint32 compIndex= 0; compIndex < ComponentCount; ++compIndex)
+	{
+		out[compIndex]= m_data[index + compIndex];
+	}
+
+	return out;
 }
 
 template <typename T, uint8 ComponentCount>
-ColourData TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v) const
+glm::vec<ComponentCount, T, glm::defaultp>
+TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v) const
 {
-	uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
-	uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
+	const uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
+	const uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
 
 	return getTexelColor(xIndex, yIndex);
 }

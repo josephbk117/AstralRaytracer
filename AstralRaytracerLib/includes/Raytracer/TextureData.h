@@ -22,16 +22,16 @@ class TextureData
 	const std::vector<T>& getTextureData() const;
 	uint32                getWidth() const noexcept;
 	uint32                getHeight() const noexcept;
-	uint8                 getComponentCount() const noexcept;
+	constexpr uint8       getComponentCount() const noexcept;
 	void                  setTexelColorAtPixelIndex(uint32                                            index,
 																									const glm::vec<ComponentCount, T, glm::defaultp>& rgb);
-	void       setTexelColor(const std::array<T, ComponentCount>& texel, uint32 x, uint32 y);
-	void       setTexelColor(ColourData& colourData, uint32 x, uint32 y);
-	ColourData getTexelColor(uint32 x, uint32 y) const;
-	ColourData getTexelColor(float32 u, float32 v) const;
+	void setTexelColor(const std::array<T, ComponentCount>& texel, uint32 x, uint32 y);
+	void setTexelColor(ColourData& colourData, uint32 x, uint32 y);
+	glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(uint32 x, uint32 y) const;
+	glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(float32 u, float32 v) const;
 };
 
-using TextureDataRGB = TextureData<uint8, 3>;
-using TextureDataRGBA= TextureData<uint8, 4>;
+using TextureDataRGB  = TextureData<uint8, 3>;
+using TextureDataRGBA = TextureData<uint8, 4>;
 using TextureDataRGBF = TextureData<float32, 3>;
-using TextureDataRGBAF = TextureData<float32, 4>;
+using TextureDataRGBAF= TextureData<float32, 4>;
