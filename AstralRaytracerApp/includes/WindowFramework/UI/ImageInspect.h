@@ -22,9 +22,12 @@ namespace AstralRaytracer
 			ImGui::InvisibleButton("histogram", ImVec2(512, 256));
 			for(int32 l= 0; l < height * width; l++)
 			{
-				int32 val0= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
-				int32 val1= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
-				int32 val2= static_cast<int32>(*ptrCols++ * 255.0f); // Convert HDR to 0-255 range
+				int32 val0=
+						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
+				int32 val1=
+						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
+				int32 val2=
+						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
 
 				count[0][val0]++;
 				count[1][val1]++;
