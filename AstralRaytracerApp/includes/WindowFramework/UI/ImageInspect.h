@@ -10,14 +10,14 @@ namespace AstralRaytracer
 {
 	namespace UI
 	{
-		inline void histogram(const TextureData& texData)
+		inline void histogram(const TextureDataRGBF& texData)
 		{
 			const int32 width = texData.getWidth();
 			const int32 height= texData.getHeight();
 
 			std::array<std::array<uint32, 256>, 3> count= {{{0}}};
 
-			const uint8* ptrCols= texData.getTextureData().data();
+			const float32* ptrCols= texData.getTextureData().data();
 
 			ImGui::InvisibleButton("histogram", ImVec2(512, 256));
 			for(int32 l= 0; l < height * width; l++)
@@ -86,7 +86,7 @@ namespace AstralRaytracer
 			}
 		}
 
-		inline void inspect(const TextureData& texData, ImVec2 mouseUVCoord,
+		inline void inspect(const TextureDataRGBF& texData, ImVec2 mouseUVCoord,
 												ImVec2 displayedTextureSize)
 		{
 			const int32 width = texData.getWidth();

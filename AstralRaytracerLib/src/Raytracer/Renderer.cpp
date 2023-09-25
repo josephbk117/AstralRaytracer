@@ -19,7 +19,7 @@ namespace AstralRaytracer
 		constexpr uint32 initialHeight= 16;
 
 		// Made initial resolution small so that OnResize can run
-		m_texData  = TextureData(initialWidth, initialHeight, 3);
+		m_texData  = TextureDataRGBF(initialWidth, initialHeight);
 		m_textureId= TextureManager::loadTextureFromTextureData(m_texData, false);
 
 		onResize(32, 32);
@@ -55,19 +55,19 @@ namespace AstralRaytracer
 												getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
 										glm::vec3 rayOrigin= cam.getPosition();
 
-										const glm::vec3& outColor= perPixel(seedVal, scene, rayOrigin, rayDir);
+										const glm::vec3& outColor=
+												perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
 										float32& redChannel  = m_accumulatedColorData[pixelAccessIndex];
 										float32& greenChannel= m_accumulatedColorData[pixelAccessIndex + 1u];
 										float32& blueChannel = m_accumulatedColorData[pixelAccessIndex + 2u];
 
-										redChannel+= (outColor.r * oneOverBounceCount);
-										greenChannel+= (outColor.g * oneOverBounceCount);
-										blueChannel+= (outColor.b * oneOverBounceCount);
+										redChannel+= outColor.r;
+										greenChannel+= outColor.g;
+										blueChannel+= outColor.b;
 
-										const glm::vec3    finalColorVec(redChannel, greenChannel, blueChannel);
-										const glm::u8vec3& finalColorData=
-												ColourData(finalColorVec * oneOverFrameIndex).getColour_8_BitClamped();
+										const glm::vec3  finalColorVec(redChannel, greenChannel, blueChannel);
+										const glm::vec3& finalColorData= finalColorVec * oneOverFrameIndex;
 										m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
 									});
 
@@ -131,9 +131,9 @@ namespace AstralRaytracer
 
 			if(closestHitInfo.isValid())
 			{
-				const Material&    mat      = scene.m_materials.at(closestHitInfo.materialIndex);
-				const TextureData& texData  = scene.m_textures.at(mat.texture);
-				const ColourData&  colorData= texData.getTexelColor(
+				const Material&       mat      = scene.m_materials.at(closestHitInfo.materialIndex);
+				const TextureDataRGB& texData  = scene.m_textures.at(mat.texture);
+				const ColourData&     colorData= texData.getTexelColor(
             closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f);
 
 				contribution*= mat.albedo.getColour_32_bit() * colorData.getColour_32_bit();

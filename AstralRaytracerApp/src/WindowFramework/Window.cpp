@@ -40,8 +40,8 @@ namespace AstralRaytracer
 		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(m_glfwWindow);
 
-		TextureData iconTexData=
-				TextureManager::loadTextureDataFromFile("app_assets/icons/astralraytracer.png", 4);
+		TextureDataRGBA iconTexData=
+				TextureManager::loadTextureDataFromFileRGBA("app_assets/icons/astralraytracer.png");
 
 		GLFWimage image[1];
 		image[0].width = iconTexData.getWidth();
@@ -102,7 +102,7 @@ namespace AstralRaytracer
 
 		//------- Camera update--------//
 
-		appStateInfo.cameraUpdatedThisFrame = false;
+		appStateInfo.cameraUpdatedThisFrame= false;
 
 		const float32 resScale      = appStateInfo.resolutionScale * 0.01f;
 		const uint32  camResolutionX= appStateInfo.rendererSize.x * resScale;
@@ -191,7 +191,8 @@ namespace AstralRaytracer
 			cam.update(newCamRes);
 		}
 
-		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;;
+		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;
+		;
 	}
 
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,
