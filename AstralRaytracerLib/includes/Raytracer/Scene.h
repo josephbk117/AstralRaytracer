@@ -20,13 +20,13 @@ namespace AstralRaytracer
 		[[nodiscard]] bool hasSceneLoaded() const;
 		void addTraceable(std::unique_ptr<Traceable>&& traceable);
 		void addMaterial(const Material& material);
-		void addTexture(TextureData&& texture);
+		void addTexture(TextureDataRGB&& texture);
 		void serialize(const AssetManager& assetManager, const std::filesystem::path& path);
 		void deserialize(AssetManager& assetManager, const std::filesystem::path& path);
 
 		std::vector<std::unique_ptr<Traceable>> m_sceneTraceables;
 		std::vector<Material>                   m_materials;
-		std::vector<TextureData>                m_textures;
+		std::vector<TextureDataRGB>                m_textures;
 
 		};
 } // namespace AstralRaytracer

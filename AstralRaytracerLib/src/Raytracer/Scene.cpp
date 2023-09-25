@@ -8,7 +8,7 @@ namespace AstralRaytracer
 	Scene::Scene()
 	{
 		addMaterial(Material());
-		TextureData defaultTexData(1, 1, 3);
+		TextureDataRGB defaultTexData(1, 1);
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
 		addTexture(std::move(defaultTexData));
 	}
@@ -22,7 +22,7 @@ namespace AstralRaytracer
 
 	void Scene::addMaterial(const Material& material) { m_materials.push_back(material); }
 
-	void Scene::addTexture(TextureData&& texture) { m_textures.push_back(std::move(texture)); }
+	void Scene::addTexture(TextureDataRGB&& texture) { m_textures.push_back(std::move(texture)); }
 
 	void Scene::serialize(const AssetManager& assetManager, const std::filesystem::path& path)
 	{

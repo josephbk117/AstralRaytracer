@@ -5,17 +5,16 @@
 #include <iostream>
 #include <stbimage/stb_image.h>
 
-TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path& path,
-																										uint8 reqChannelCount /*= 3*/)
+TextureDataRGB TextureManager::loadTextureDataFromFileRGB(const std::filesystem::path& path)
 {
 	int32 width;
 	int32 height;
 	int32 numChannels;
 
-	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, reqChannelCount);
+	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 3);
 	assert(data);
 
-	TextureData        texData(width, height, numChannels);
+	TextureDataRGB      texData(width, height);
 	std::vector<uint8> vecData;
 	vecData.resize(width * height * numChannels);
 
@@ -26,17 +25,57 @@ TextureData TextureManager::loadTextureDataFromFile(const std::filesystem::path&
 	return texData;
 }
 
-uint32 TextureManager::loadTextureFromTextureData(TextureData& textureData, bool gamma)
+TextureDataRGBA TextureManager::loadTextureDataFromFileRGBA(const std::filesystem::path& path)
+{
+	int32 width;
+	int32 height;
+	int32 numChannels;
+
+	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 4);
+	assert(data);
+
+	TextureDataRGBA     texData(width, height);
+	std::vector<uint8> vecData;
+	vecData.resize(width * height * numChannels);
+
+	std::memcpy(vecData.data(), data, width * height * numChannels);
+
+	texData.setTextureData(vecData);
+	stbi_image_free(data);
+	return texData;
+}
+
+TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesystem::path& path)
+{
+	int32 width;
+	int32 height;
+	int32 numChannels;
+
+	float32* data= stbi_loadf(path.string().c_str(), &width, &height, &numChannels, 3);
+	assert(data);
+
+	TextureDataRGBF      texData(width, height);
+	std::vector<float32> vecData;
+	vecData.resize(width * height * numChannels);
+
+	std::memcpy(vecData.data(), data, width * height * numChannels);
+
+	texData.setTextureData(vecData);
+	stbi_image_free(data);
+	return texData;
+}
+
+uint32 TextureManager::loadTextureFromTextureData(TextureDataRGBF& textureData, bool gamma)
 {
 	uint32 textureID;
 	gl::glGenTextures(1, &textureID);
-	const uint8* const data= textureData.getTextureData().data();
+	const float32* const data= textureData.getTextureData().data();
 	assert(data);
 	loadTextureFromRawData(data, textureData.getWidth(), textureData.getHeight(), textureID);
 	return textureID;
 }
 
-void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 width, uint32 height,
+void TextureManager::loadTextureFromRawData(const float32* const data, uint32 width, uint32 height,
 																						uint32 textureID)
 {
 	if(data != nullptr)
@@ -44,7 +83,7 @@ void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 widt
 		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
 		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, width, height, 0, gl::GL_RGB,
-										 gl::GL_UNSIGNED_BYTE, data);
+										 gl::GL_FLOAT, data);
 
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
@@ -57,25 +96,25 @@ void TextureManager::loadTextureFromRawData(const uint8* const data, uint32 widt
 	}
 }
 
-void TextureManager::updateTexture(const TextureData& textureData, uint32 textureId)
+void TextureManager::updateTexture(const TextureDataRGBF& textureData, uint32 textureId)
 {
 	gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
 	gl::glTexSubImage2D(gl::GL_TEXTURE_2D, 0, 0, 0, textureData.getWidth(), textureData.getHeight(),
 											TextureManager::getTextureFormatFromData(textureData.getComponentCount()),
-											gl::GL_UNSIGNED_BYTE, textureData.getTextureData().data());
+											gl::GL_FLOAT, textureData.getTextureData().data());
 	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 }
 
-void TextureManager::resizeTexture(const TextureData& textureData, uint32 textureId)
+void TextureManager::resizeTexture(const TextureDataRGBF& textureData, uint32 textureId)
 {
 	gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
 	gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, textureData.getWidth(),
-									 textureData.getHeight(), 0, gl::GL_RGB, gl::GL_UNSIGNED_BYTE,
+									 textureData.getHeight(), 0, gl::GL_RGB, gl::GL_FLOAT,
 									 textureData.getTextureData().data());
 	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 }
 
-gl::GLenum TextureManager::getTextureFormatFromData(TextureData& textureData)
+gl::GLenum TextureManager::getTextureFormatFromData(TextureDataRGBF& textureData)
 {
 	using namespace gl;
 	GLenum format= GL_RED;

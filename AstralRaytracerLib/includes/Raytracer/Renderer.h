@@ -12,7 +12,7 @@ namespace AstralRaytracer
 
 		void render(const Scene& scene, const Camera& cam);
 
-		const TextureData& getTextureData() const { return m_texData; }
+		const TextureDataRGBF& getTextureData() const { return m_texData; }
 
 		glm::vec3 getRayDirectionFromNormalizedCoord(glm::vec2        coord,
 																								 const glm::mat4& inverseProjection,
@@ -31,8 +31,9 @@ namespace AstralRaytracer
 		void    resetFrameIndex();
 
 		private:
-		TextureData          m_texData;
+		TextureDataRGBF          m_texData;
 		std::vector<float32> m_accumulatedColorData;
+		float32              m_maxLuminance= 0;
 		std::vector<uint32>  m_rayIterator;
 		uint32               m_textureId;
 		uint32               m_frameIndex = 1;

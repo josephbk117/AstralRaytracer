@@ -1,19 +1,23 @@
 #include "Raytracer/TextureData.h"
 
-TextureData::TextureData(): m_width(0), m_height(0), m_componentCount(0) {}
-
-TextureData::TextureData(uint32 width, uint32 height, uint8 componentCount)
+template <typename T, uint8 ComponentCount>
+TextureData<T, ComponentCount>::TextureData(): m_width(0), m_height(0)
 {
-	m_width         = width;
-	m_height        = height;
-	m_componentCount= componentCount;
-
-	assertm(m_componentCount <= 4, "Invalid Component count");
-
-	m_data.resize(width * height * componentCount);
 }
 
-void TextureData::resize(uint32 width, uint32 height)
+template <typename T, uint8 ComponentCount>
+TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
+{
+	m_width = width;
+	m_height= height;
+
+	assertm(ComponentCount <= 4, "Invalid Component count");
+
+	m_data.resize(width * height * ComponentCount);
+}
+
+template <typename T, uint8 ComponentCount>
+void TextureData<T, ComponentCount>::resize(uint32 width, uint32 height)
 {
 	if(m_width == width && m_height == height)
 	{
@@ -23,38 +27,64 @@ void TextureData::resize(uint32 width, uint32 height)
 	m_width = width;
 	m_height= height;
 
-	m_data.resize(width * height * m_componentCount);
+	m_data.resize(width * height * ComponentCount);
 }
 
-void TextureData::setTextureData(const std::vector<uint8>& data) { m_data= data; }
-
-const std::vector<uint8>& TextureData::getTextureData() const { return m_data; }
-
-uint32 TextureData::getWidth() const noexcept { return m_width; }
-
-uint32 TextureData::getHeight() const noexcept { return m_height; }
-
-uint8 TextureData::getComponentCount() const noexcept { return m_componentCount; }
-
-void TextureData::setTexelColorAtPixelIndex(uint32 index, const glm::u8vec3& rgb)
+template <typename T, uint8 ComponentCount>
+void TextureData<T, ComponentCount>::setTextureData(const std::vector<T>& data)
 {
-	assertm(index <= (m_data.size() - m_componentCount),
+	m_data= data;
+}
+
+template <typename T, uint8 ComponentCount>
+const std::vector<T>& TextureData<T, ComponentCount>::getTextureData() const
+{
+	return m_data;
+}
+
+template <typename T, uint8 ComponentCount>
+uint32 TextureData<T, ComponentCount>::getWidth() const noexcept
+{
+	return m_width;
+}
+
+template <typename T, uint8 ComponentCount>
+uint32 TextureData<T, ComponentCount>::getHeight() const noexcept
+{
+	return m_height;
+}
+
+template <typename T, uint8 ComponentCount>
+constexpr uint8 TextureData<T, ComponentCount>::getComponentCount() const noexcept
+{
+	return ComponentCount;
+}
+
+template <typename T, uint8 ComponentCount>
+void TextureData<T, ComponentCount>::setTexelColorAtPixelIndex(
+		uint32 index, const glm::vec<ComponentCount, T, glm::defaultp>& rgb)
+{
+	assertm(index <= (m_data.size() - ComponentCount),
 					"Can't set color at pixel index, invalid range");
+
 	m_data[index]    = rgb.r;
 	m_data[index + 1]= rgb.g;
 	m_data[index + 2]= rgb.b;
 }
 
-void TextureData::setTexelColor(int32 r, int32 g, int32 b, uint32 x, uint32 y)
+template <typename T, uint8 ComponentCount>
+void TextureData<T, ComponentCount>::setTexelColor(const std::array<T, ComponentCount>& texel,
+																									 uint32 x, uint32 y)
 {
 	const int32 i= ((float32)m_width * (float32)y + (float32)x) * 4.0f;
 
-	m_data[i]    = r;
-	m_data[i + 1]= g;
-	m_data[i + 2]= b;
+	m_data[i]    = texel[0];
+	m_data[i + 1]= texel[1];
+	m_data[i + 2]= texel[2];
 }
 
-void TextureData::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
+template <typename T, uint8 ComponentCount>
+void TextureData<T, ComponentCount>::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
 {
 	int32 i      = ((float32)m_width * (float32)y + (float32)x) * 4.0f;
 	m_data[i]    = colourData.getColour_8_BitClamped().r;
@@ -62,18 +92,32 @@ void TextureData::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
 	m_data[i + 2]= colourData.getColour_8_BitClamped().b;
 }
 
-ColourData TextureData::getTexelColor(uint32 x, uint32 y) const
+template <typename T, uint8 ComponentCount>
+glm::vec<ComponentCount, T, glm::defaultp>
+TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 {
-	const uint32 index= (m_width * y + x) * 3;
-	ColourData   colData;
-	colData.setColour_8_Bit(m_data[index], m_data[index + 1], m_data[index + 2]);
-	return colData;
+	const uint32                               index= (m_width * y + x) * ComponentCount;
+	glm::vec<ComponentCount, T, glm::defaultp> out;
+
+	for(uint32 compIndex= 0; compIndex < ComponentCount; ++compIndex)
+	{
+		out[compIndex]= m_data[index + compIndex];
+	}
+
+	return out;
 }
 
-ColourData TextureData::getTexelColor(float32 u, float32 v) const
+template <typename T, uint8 ComponentCount>
+glm::vec<ComponentCount, T, glm::defaultp>
+TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v) const
 {
-	uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
-	uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
+	const uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
+	const uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
 
 	return getTexelColor(xIndex, yIndex);
 }
+
+template class TextureData<uint8, 3>;
+template class TextureData<uint8, 4>;
+template class TextureData<float32, 3>;
+template class TextureData<float32, 4>;
