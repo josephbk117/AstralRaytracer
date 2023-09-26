@@ -215,6 +215,13 @@ namespace AstralRaytracer
 		ImGui::SetNextWindowPos(viewport->WorkPos);
 		ImGui::SetNextWindowSize(viewport->WorkSize);
 
+		ImGui::GetStyle().ColumnsMinSpacing= 400.0f;
+		ImGui::GetStyle().FrameBorderSize  = 0.0f;
+		ImGui::GetStyle().ChildBorderSize  = 0.0f;
+		ImGui::GetStyle().WindowBorderSize = 0.0f;
+		ImGui::GetStyle().IndentSpacing    = 24.0f;
+		ImGui::GetStyle().SeparatorTextAlign= ImVec2(0.5f, 0.0f);
+
 		bool isOpen= true;
 		if(ImGui::Begin("Main Window", &isOpen, flags))
 		{
@@ -241,8 +248,9 @@ namespace AstralRaytracer
 			}
 			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
 
-			const uint32 toolBarHeight= 32;
+			const uint32 toolBarHeight= 28;
 
+			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 4));
 			ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags2);
 			int32 bounceCount= renderer.getBounceCount();
 
@@ -317,6 +325,7 @@ namespace AstralRaytracer
 			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 
 			ImGui::EndChild();
+			ImGui::PopStyleVar();
 
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
