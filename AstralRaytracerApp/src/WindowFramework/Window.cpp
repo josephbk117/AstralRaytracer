@@ -215,11 +215,11 @@ namespace AstralRaytracer
 		ImGui::SetNextWindowPos(viewport->WorkPos);
 		ImGui::SetNextWindowSize(viewport->WorkSize);
 
-		ImGui::GetStyle().ColumnsMinSpacing= 400.0f;
-		ImGui::GetStyle().FrameBorderSize  = 0.0f;
-		ImGui::GetStyle().ChildBorderSize  = 0.0f;
-		ImGui::GetStyle().WindowBorderSize = 0.0f;
-		ImGui::GetStyle().IndentSpacing    = 24.0f;
+		ImGui::GetStyle().ColumnsMinSpacing = 400.0f;
+		ImGui::GetStyle().FrameBorderSize   = 0.0f;
+		ImGui::GetStyle().ChildBorderSize   = 0.0f;
+		ImGui::GetStyle().WindowBorderSize  = 0.0f;
+		ImGui::GetStyle().IndentSpacing     = 24.0f;
 		ImGui::GetStyle().SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 
 		bool isOpen= true;
