@@ -3,6 +3,8 @@
 #include "UI/ContentBrowser.h"
 #include "Utils/Common.h"
 
+#include <queue>
+
 namespace AstralRaytracer
 {
 	class Scene;
@@ -46,12 +48,15 @@ namespace AstralRaytracer
 		private:
 		static Window* m_instance;
 
+		const static uint32 FrameSampleCount = 100;
+
 		GLFWwindow*               m_glfwWindow   = nullptr;
 		ImFont*                   m_primaryFont  = nullptr;
 		ImFont*                   m_secondaryFont= nullptr;
 		ImFont*                   m_tertiaryFont = nullptr;
 		std::string               m_name;
 		std::pair<uint32, uint32> m_resolution{0, 0};
+		std::queue<float32>       m_frameTimes;
 
 		UI::ContentBrowser m_contentBrowser;
 

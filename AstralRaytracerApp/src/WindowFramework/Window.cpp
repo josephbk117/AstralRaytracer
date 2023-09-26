@@ -92,6 +92,14 @@ namespace AstralRaytracer
 	void Window::processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
 														Camera& cam, const Scene& scene)
 	{
+		m_frameTimes.push(deltaTime);
+		if(m_frameTimes.size() > FrameSampleCount)
+		{
+			m_frameTimes.pop();
+		}
+
+		//------- Object selection--------//
+
 		const glm::vec2& mousePos= Input::getMousePosition();
 		if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
 			 Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_LEFT) &&
@@ -239,7 +247,7 @@ namespace AstralRaytracer
 			ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags2);
 			int32 bounceCount= renderer.getBounceCount();
 
-			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 4.0f;
+			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 6.0f;
 
 			ImGui::SetNextItemWidth(sliderWidth);
 			if(ImGui::SliderInt("##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d",
@@ -265,6 +273,71 @@ namespace AstralRaytracer
 			{
 				appStateInfo.isSceneDirty= true;
 			}
+
+			// Plots can display overlay texts
+			// (in this example, we will display an average value)
+			{
+				std::array<float32, FrameSampleCount> frameTimeCopy= {};
+
+				std::queue<float32> copiedQueue= m_frameTimes;
+
+				uint32  index   = 0;
+				float32 maxValue= 0.0f;
+
+				while(!copiedQueue.empty())
+				{
+					frameTimeCopy[index]= copiedQueue.front();
+					if(frameTimeCopy[index] > maxValue)
+					{
+						maxValue= frameTimeCopy[index];
+					}
+					copiedQueue.pop();
+					index++;
+				}
+
+				float32 average= 0.0f;
+				for(int32 n= 0; n < frameTimeCopy.size(); n++)
+					average+= frameTimeCopy[n];
+				average/= (float32)frameTimeCopy.size();
+
+				const float32 ms = average * 1000.0f;
+				const float32 fps= 1.0f / average;
+
+				std::array<char, 32> overlay= {};
+				sprintf(overlay.data(), "%.1f ms (%.1f fps)", ms, fps);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(sliderWidth);
+				ImGui::PlotLines("##Framerate", frameTimeCopy.data(), frameTimeCopy.size(), 0,
+												 overlay.data(), 0.0f, maxValue);
+			}
+
+			static float progress= 0.0f, progress_dir= 1.0f;
+
+			progress+= progress_dir * 0.4f * ImGui::GetIO().DeltaTime;
+			if(progress >= +1.1f)
+			{
+				progress= +1.1f;
+				progress_dir*= -1.0f;
+			}
+			if(progress <= -0.1f)
+			{
+				progress= -0.1f;
+				progress_dir*= -1.0f;
+			}
+
+			// Typically we would use ImVec2(-1.0f,0.0f) or ImVec2(-FLT_MIN,0.0f) to use all available
+			// width, or ImVec2(width,0.0f) for a specified width. ImVec2(0.0f,0.0f) uses ItemWidth.
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(sliderWidth);
+			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+			ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
+			ImGui::Text("Progress Bar");
+
+			float progress_saturated= glm::clamp(progress, 0.0f, 1.0f);
+			char  buf[32];
+			sprintf(buf, "%d/%d", (int)(progress_saturated * 1753), 1753);
+			ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
+
 			ImGui::EndChild();
 
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
