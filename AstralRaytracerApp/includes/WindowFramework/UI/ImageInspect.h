@@ -34,8 +34,8 @@ namespace AstralRaytracer
 				count[2][val2]++;
 			}
 
-			uint32  maxv  = count[0][0];
-			uint32* pCount= &count[0][0];
+			uint32        maxv  = count[0][0];
+			const uint32* pCount= &count[0][0];
 			for(int32 i= 0; i < 3 * 256; i++, pCount++)
 			{
 				maxv= (maxv > *pCount) ? maxv : *pCount;
@@ -49,8 +49,8 @@ namespace AstralRaytracer
 
 			for(int32 i= 0; i <= 10; i++)
 			{
-				float32 ax= rmin.x + (size.x / 10.f) * static_cast<float32>(i);
-				float32 ay= rmin.y + (size.y / 10.f) * static_cast<float32>(i);
+				const float32 ax= rmin.x + (size.x / 10.f) * static_cast<float32>(i);
+				const float32 ay= rmin.y + (size.y / 10.f) * static_cast<float32>(i);
 				drawList->AddLine(ImVec2(rmin.x, ay), ImVec2(rmax.x, ay), 0x80808080);
 				drawList->AddLine(ImVec2(ax, rmin.y), ImVec2(ax, rmax.y), 0x80808080);
 			}
@@ -101,7 +101,7 @@ namespace AstralRaytracer
 
 			ImGui::BeginTooltip();
 			ImGui::BeginGroup();
-			ImDrawList*          drawList          = ImGui::GetWindowDrawList();
+			ImDrawList* const    drawList          = ImGui::GetWindowDrawList();
 			static const float32 zoomRectangleWidth= 160.0f;
 
 			// bitmap zoom
