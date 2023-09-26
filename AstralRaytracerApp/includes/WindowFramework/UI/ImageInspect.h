@@ -22,11 +22,11 @@ namespace AstralRaytracer
 			ImGui::InvisibleButton("histogram", ImVec2(512, 256));
 			for(int32 l= 0; l < height * width; l++)
 			{
-				int32 val0=
+				const int32 val0=
 						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
-				int32 val1=
+				const int32 val1=
 						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
-				int32 val2=
+				const int32 val2=
 						glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
 
 				count[0][val0]++;
@@ -41,11 +41,11 @@ namespace AstralRaytracer
 				maxv= (maxv > *pCount) ? maxv : *pCount;
 			}
 
-			ImDrawList*   drawList= ImGui::GetWindowDrawList();
-			const ImVec2  rmin    = ImGui::GetItemRectMin();
-			const ImVec2  rmax    = ImGui::GetItemRectMax();
-			const ImVec2  size    = ImGui::GetItemRectSize();
-			const float32 hFactor = size.y / static_cast<float32>(maxv);
+			ImDrawList* const drawList= ImGui::GetWindowDrawList();
+			const ImVec2      rmin    = ImGui::GetItemRectMin();
+			const ImVec2      rmax    = ImGui::GetItemRectMax();
+			const ImVec2      size    = ImGui::GetItemRectSize();
+			const float32     hFactor = size.y / static_cast<float32>(maxv);
 
 			for(int32 i= 0; i <= 10; i++)
 			{
