@@ -27,11 +27,12 @@ namespace AstralRaytracer
 		uintptr getTextureId() const { return m_textureId; }
 		void    setBounceCount(uint32 count) { m_BounceCount= count; }
 		uint32  getBounceCount() const { return m_BounceCount; }
+		uint32  getFrameIndex() const { return m_frameIndex; }
 		bool    onResize(uint32 width, uint32 height);
 		void    resetFrameIndex();
 
 		private:
-		TextureDataRGBF          m_texData;
+		TextureDataRGBF      m_texData;
 		std::vector<float32> m_accumulatedColorData;
 		float32              m_maxLuminance= 0;
 		std::vector<uint32>  m_rayIterator;

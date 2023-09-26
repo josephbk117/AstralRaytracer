@@ -200,7 +200,6 @@ namespace AstralRaytracer
 		}
 
 		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;
-		;
 	}
 
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,
@@ -274,8 +273,6 @@ namespace AstralRaytracer
 				appStateInfo.isSceneDirty= true;
 			}
 
-			// Plots can display overlay texts
-			// (in this example, we will display an average value)
 			{
 				std::array<float32, FrameSampleCount> frameTimeCopy= {};
 
@@ -311,32 +308,13 @@ namespace AstralRaytracer
 												 overlay.data(), 0.0f, maxValue);
 			}
 
-			static float progress= 0.0f, progress_dir= 1.0f;
+			const float32 progress= glm::clamp(renderer.getFrameIndex() / 1000.0f, 0.0f, 1.0f);
 
-			progress+= progress_dir * 0.4f * ImGui::GetIO().DeltaTime;
-			if(progress >= +1.1f)
-			{
-				progress= +1.1f;
-				progress_dir*= -1.0f;
-			}
-			if(progress <= -0.1f)
-			{
-				progress= -0.1f;
-				progress_dir*= -1.0f;
-			}
-
-			// Typically we would use ImVec2(-1.0f,0.0f) or ImVec2(-FLT_MIN,0.0f) to use all available
-			// width, or ImVec2(width,0.0f) for a specified width. ImVec2(0.0f,0.0f) uses ItemWidth.
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(sliderWidth);
-			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
-			ImGui::SameLine(0.0f, ImGui::GetStyle().ItemInnerSpacing.x);
-			ImGui::Text("Progress Bar");
-
-			float progress_saturated= glm::clamp(progress, 0.0f, 1.0f);
-			char  buf[32];
-			sprintf(buf, "%d/%d", (int)(progress_saturated * 1753), 1753);
-			ImGui::ProgressBar(progress, ImVec2(0.f, 0.f), buf);
+			std::array<char, 32> overlay= {};
+			sprintf(overlay.data(), "Samples: %d/%d", renderer.getFrameIndex(), 1000);
+			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 
 			ImGui::EndChild();
 
