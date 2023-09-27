@@ -61,15 +61,18 @@ namespace AstralRaytracer
 				// pixel count << 2 + color index(on 2 bits)
 				std::array<uint32_t, 3> cols= {
 						{(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2}};
+
 				if(cols[0] > cols[1])
 					std::swap(cols[0], cols[1]);
 				if(cols[1] > cols[2])
 					std::swap(cols[1], cols[2]);
 				if(cols[0] > cols[1])
 					std::swap(cols[0], cols[1]);
-				float32 heights[3];
-				uint32  colors[3];
-				uint32  currentColor= 0xFFFFFFFF;
+
+				std::array<float32, 3> heights= {};
+				std::array<uint32, 3>  colors = {};
+
+				uint32 currentColor= 0xFFFFFFFF;
 				for(int32 i= 0; i < 3; i++)
 				{
 					heights[i]= rmax.y - (cols[i] >> 2) * hFactor;
@@ -108,6 +111,7 @@ namespace AstralRaytracer
 			ImGui::InvisibleButton("AnotherInvisibleMan", ImVec2(zoomRectangleWidth, zoomRectangleWidth));
 			const ImRect pickRc(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 			drawList->AddRectFilled(pickRc.Min, pickRc.Max, 0xFF000000);
+
 			const int32   zoomSize = 4;
 			const float32 quadWidth= zoomRectangleWidth / float32(zoomSize * 2 + 1);
 			const ImVec2  quadSize(quadWidth, quadWidth);
