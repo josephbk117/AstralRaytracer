@@ -96,9 +96,8 @@ uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
 bool DrawingPanel::isPointInPanel(float32 xpos, float32 ypos) noexcept
 {
 	glm::vec4 dimensions= getPanelWorldDimension();
-	if(xpos >= dimensions.x && xpos <= dimensions.y && ypos >= dimensions.w && ypos <= dimensions.z)
-		return true;
-	return false;
+	return (xpos >= dimensions.x && xpos <= dimensions.y && ypos >= dimensions.w &&
+					ypos <= dimensions.z);
 }
 
 glm::vec4 DrawingPanel::getPanelWorldDimension() noexcept

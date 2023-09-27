@@ -109,21 +109,16 @@ namespace AstralRaytracer
 		const float32 t5= (lb.z - worldSpacePosition.z) * dirFracZ;
 		const float32 t6= (rt.z - worldSpacePosition.z) * dirFracZ;
 
-		const float32 tmax= glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+		const float32 tMax= glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-		if(tmax < 0.0f)
+		if(tMax < 0.0f)
 		{
 			return false;
 		}
 
-		const float32 tmin= glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+		const float32 tMin= glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
 
-		if(tmin > tmax)
-		{
-			return false;
-		}
-
-		return true;
+		return tMin <= tMax;
 	}
 
 } // namespace AstralRaytracer
