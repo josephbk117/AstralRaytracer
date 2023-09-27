@@ -23,8 +23,8 @@ void DrawingPanel::init(float32 width, float32 height)
 {
 	width*= 2;
 	height*= 2;
-	this->m_width = width;
-	this->m_height= height;
+	m_width = width;
+	m_height= height;
 	if(m_vaoID == 0)
 		gl::glGenVertexArrays(1, &m_vaoID);
 	if(m_vboID == 0)
@@ -86,12 +86,12 @@ Transform& DrawingPanel::getTransform() noexcept { return m_transform; }
 
 void DrawingPanel::setTextureID(uint32 textureID)
 {
-	if(this->m_textureID != textureID)
-		gl::glDeleteTextures(1, &this->m_textureID);
-	this->m_textureID= textureID;
+	if(m_textureID != textureID)
+		gl::glDeleteTextures(1, &m_textureID);
+	m_textureID= textureID;
 }
 
-uint32 DrawingPanel::getTextureID() const noexcept { return this->m_textureID; }
+uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
 
 bool DrawingPanel::isPointInPanel(float32 xpos, float32 ypos) noexcept
 {
