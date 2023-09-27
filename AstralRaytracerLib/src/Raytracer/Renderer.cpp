@@ -23,6 +23,19 @@ namespace AstralRaytracer
 		m_textureId= TextureManager::loadTextureFromTextureData(m_texData, false);
 
 		onResize(32, 32);
+
+		m_renderTexture.init({32, 32});
+		m_dwPanel.init(1.0f, 1.0f);
+
+		m_shaderProgram.compileShadersFromSrcCode(ShaderLiterals::VertexShader,
+																							ShaderLiterals::FragmentShader);
+		m_shaderProgram.linkShaders();
+
+		m_shaderProgram.use();
+		const gl::GLint shaderModelLoc= m_shaderProgram.getUniformLocation("model");
+		m_shaderProgram.applyShaderUniformMatrix(shaderModelLoc, glm::mat4(1.0f));
+		m_dwPanel.setTextureID(m_textureId);
+		m_shaderProgram.unuse();
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
@@ -73,6 +86,15 @@ namespace AstralRaytracer
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
+
+		m_renderTexture.bind();
+		gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+
+		m_shaderProgram.use();
+		m_dwPanel.draw();
+		m_shaderProgram.unuse();
+
+		m_renderTexture.unbind();
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
@@ -104,6 +126,7 @@ namespace AstralRaytracer
 		}
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
+		m_renderTexture.resize({width, height});
 
 		return true;
 	}

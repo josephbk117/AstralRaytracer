@@ -48,7 +48,7 @@ namespace AstralRaytracer
 		private:
 		static Window* m_instance;
 
-		const static uint32 FrameSampleCount = 100;
+		const static uint32 FrameSampleCount= 100;
 
 		GLFWwindow*               m_glfwWindow   = nullptr;
 		ImFont*                   m_primaryFont  = nullptr;

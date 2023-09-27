@@ -10,6 +10,8 @@ class ShaderProgram
 	ShaderProgram();
 	~ShaderProgram();
 	void compileShaders(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
+	void compileShadersFromSrcCode(const std::string& vertexShaderSrcCode,
+																 const std::string& fragmentShaderSrcCode);
 	void linkShaders();
 	void addAttribute(const std::string& attributeName);
 	void use();
@@ -23,6 +25,7 @@ class ShaderProgram
 
 	private:
 	uint32 programID, vertexShaderID, fragmentShaderID;
-	void   compileShader(const std::string& filePath, uint32 ID);
+	void   compileShaderFromFilePath(const std::string& filePath, uint32 ID);
+	bool   compileShaderSourceCode(const std::string& srcCode, uint32 ID);
 	int32  attributeCount;
 };
