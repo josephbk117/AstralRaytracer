@@ -82,7 +82,7 @@ void TextureManager::loadTextureFromRawData(const float32* const data, uint32 wi
 	{
 		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
-		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, width, height, 0, gl::GL_RGB,
+		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, width, height, 0, gl::GL_RGB,
 										 gl::GL_FLOAT, data);
 
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
@@ -108,7 +108,7 @@ void TextureManager::updateTexture(const TextureDataRGBF& textureData, uint32 te
 void TextureManager::resizeTexture(const TextureDataRGBF& textureData, uint32 textureId)
 {
 	gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-	gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, textureData.getWidth(),
+	gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, textureData.getWidth(),
 									 textureData.getHeight(), 0, gl::GL_RGB, gl::GL_FLOAT,
 									 textureData.getTextureData().data());
 	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
