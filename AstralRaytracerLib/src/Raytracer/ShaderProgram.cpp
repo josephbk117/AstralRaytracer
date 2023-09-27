@@ -24,8 +24,29 @@ void ShaderProgram::compileShaders(const std::string& vertexShaderPath,
 	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
 	if(vertexShaderID == 0)
 		std::cout << "ERROR : Fragment shader creation";
-	compileShader(vertexShaderPath, vertexShaderID);
-	compileShader(fragmentShaderPath, fragmentShaderID);
+	compileShaderFromFilePath(vertexShaderPath, vertexShaderID);
+	compileShaderFromFilePath(fragmentShaderPath, fragmentShaderID);
+}
+
+void ShaderProgram::compileShadersFromSrcCode(const std::string& vertexShaderSrcCode,
+																							const std::string& fragmentShaderSrcCode)
+{
+	programID     = gl::glCreateProgram();
+	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
+	if(vertexShaderID == 0)
+		std::cout << "ERROR : Vertex shader creation";
+	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
+	if(vertexShaderID == 0)
+		std::cout << "ERROR : Fragment shader creation";
+
+	if(!compileShaderSourceCode(vertexShaderSrcCode, vertexShaderID))
+	{
+		std::cout << "ERROR : Vertex shader compilation";
+	}
+	if(!compileShaderSourceCode(fragmentShaderSrcCode, fragmentShaderID))
+	{
+		std::cout << "ERROR : Fragment shader compilation";
+	}
 }
 
 void ShaderProgram::linkShaders()
@@ -111,7 +132,7 @@ void ShaderProgram::applyShaderBool(int32 uniformId, bool value)
 	gl::glUniform1i(uniformId, value);
 }
 
-void ShaderProgram::compileShader(const std::string& filePath, uint32 ID)
+void ShaderProgram::compileShaderFromFilePath(const std::string& filePath, uint32 ID)
 {
 	std::ifstream shaderFile(filePath);
 	if(shaderFile.fail())
@@ -127,6 +148,20 @@ void ShaderProgram::compileShader(const std::string& filePath, uint32 ID)
 	}
 	shaderFile.close();
 	const char* charPointer= fileContents.c_str();
+
+	if(compileShaderSourceCode(charPointer, ID))
+	{
+		std::cout << filePath << " compiled successfully";
+	}
+	else
+	{
+		std::cout << filePath << " failed to compile";
+	}
+}
+
+bool ShaderProgram::compileShaderSourceCode(const std::string& srcCode, uint32 ID)
+{
+	const char* charPointer= srcCode.c_str();
 	gl::glShaderSource(ID, 1, &charPointer, nullptr);
 	gl::glCompileShader(ID);
 
@@ -139,15 +174,13 @@ void ShaderProgram::compileShader(const std::string& filePath, uint32 ID)
 		gl::glGetShaderiv(ID, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<char> errorLog(maxLength);
 		gl::glGetShaderInfoLog(ID, maxLength, &maxLength, &errorLog[0]);
-
-		std::cout << filePath << " failed to compile";
 		std::cout << &(errorLog[0]);
 
 		gl::glDeleteShader(ID);
-		return;
+		return false;
 	}
 	else
 	{
-		std::cout << "Compiled Correctly : " << filePath << "\n";
+		return true;
 	}
 }
