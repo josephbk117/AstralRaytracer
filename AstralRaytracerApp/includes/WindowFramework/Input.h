@@ -168,6 +168,6 @@ namespace AstralRaytracer
 		static float64   getTimeSinceStart();
 
 		private:
-		static GLFWwindow* glfwWindow;
+		static const GLFWwindow* glfwWindow;
 	};
 } // namespace AstralRaytracer
