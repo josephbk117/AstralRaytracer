@@ -87,7 +87,7 @@ Transform& DrawingPanel::getTransform() noexcept { return m_transform; }
 void DrawingPanel::setTextureID(uint32 textureID)
 {
 	if(m_textureID != textureID)
-		gl::glDeleteTextures(1, &m_textureID);
+		gl::glDeleteTextures(1, &m_textureID); //TODO: Potential issue when doing multiple passes
 	m_textureID= textureID;
 }
 
