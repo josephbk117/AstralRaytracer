@@ -21,6 +21,7 @@ class ShaderProgram
 	static void applyShaderVector3(int32 uniformId, const glm::vec3& value);
 	static void applyShaderFloat(int32 uniformId, float32 value);
 	static void applyShaderInt(int32 uniformId, int32 value);
+	static void applyShaderInt2(int32 uniformId, const glm::ivec2& value);
 	static void applyShaderBool(int32 uniformId, bool value);
 
 	private:

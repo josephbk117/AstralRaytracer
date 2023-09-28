@@ -127,6 +127,11 @@ void ShaderProgram::applyShaderInt(int32 uniformId, int32 value)
 	gl::glUniform1i(uniformId, value);
 }
 
+void ShaderProgram::applyShaderInt2(int32 uniformId, const glm::ivec2& value) 
+{
+	gl::glUniform2i(uniformId, value.x, value.y);
+}
+
 void ShaderProgram::applyShaderBool(int32 uniformId, bool value)
 {
 	gl::glUniform1i(uniformId, value);
