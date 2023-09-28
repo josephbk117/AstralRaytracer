@@ -17,7 +17,7 @@ namespace AstralRaytracer
 		assert(m_instance == nullptr);
 		m_instance= this;
 
-		m_resolution= {500, 500};
+		m_resolution= {1280, 720};
 
 		if(!glfwInit())
 		{
