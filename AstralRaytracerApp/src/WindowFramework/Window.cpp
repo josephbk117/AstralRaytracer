@@ -66,6 +66,8 @@ namespace AstralRaytracer
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 
 		AstralRaytracer::Input::initialize(*this);
+
+		setDefaultTheme();
 	}
 
 	void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
@@ -202,6 +204,67 @@ namespace AstralRaytracer
 		appStateInfo.cameraUpdatedThisFrame= moved || forceRecalculate;
 	}
 
+	void Window::setDefaultTheme() const
+	{
+		ImGuiStyle* style = &ImGui::GetStyle();
+		ImVec4*     colors= style->Colors;
+		ImGui::StyleColorsDark(style); // Reset to base/dark theme
+		colors[ImGuiCol_Text]                = ImVec4(0.85f, 0.87f, 0.91f, 0.88f);
+		colors[ImGuiCol_TextDisabled]        = ImVec4(0.49f, 0.50f, 0.53f, 1.00f);
+		colors[ImGuiCol_WindowBg]            = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
+		colors[ImGuiCol_ChildBg]             = ImVec4(0.16f, 0.17f, 0.20f, 1.00f);
+		colors[ImGuiCol_PopupBg]             = ImVec4(0.23f, 0.26f, 0.32f, 1.00f);
+		colors[ImGuiCol_Border]              = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+		colors[ImGuiCol_BorderShadow]        = ImVec4(0.09f, 0.09f, 0.09f, 0.00f);
+		colors[ImGuiCol_FrameBg]             = ImVec4(0.23f, 0.26f, 0.32f, 1.00f);
+		colors[ImGuiCol_FrameBgHovered]      = ImVec4(0.56f, 0.74f, 0.73f, 1.00f);
+		colors[ImGuiCol_FrameBgActive]       = ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
+		colors[ImGuiCol_TitleBg]             = ImVec4(0.16f, 0.16f, 0.20f, 1.00f);
+		colors[ImGuiCol_TitleBgActive]       = ImVec4(0.16f, 0.16f, 0.20f, 1.00f);
+		colors[ImGuiCol_TitleBgCollapsed]    = ImVec4(0.16f, 0.16f, 0.20f, 1.00f);
+		colors[ImGuiCol_MenuBarBg]           = ImVec4(0.16f, 0.16f, 0.20f, 1.00f);
+		colors[ImGuiCol_ScrollbarBg]         = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrab]       = ImVec4(0.23f, 0.26f, 0.32f, 0.60f);
+		colors[ImGuiCol_ScrollbarGrabHovered]= ImVec4(0.23f, 0.26f, 0.32f, 1.00f);
+		colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.23f, 0.26f, 0.32f, 1.00f);
+		colors[ImGuiCol_CheckMark]           = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_SliderGrab]          = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_SliderGrabActive]    = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_Button]              = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
+		colors[ImGuiCol_ButtonHovered]       = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_ButtonActive]        = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_Header]              = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_HeaderHovered]       = ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
+		colors[ImGuiCol_HeaderActive]        = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_SeparatorHovered]    = ImVec4(0.56f, 0.74f, 0.73f, 1.00f);
+		colors[ImGuiCol_SeparatorActive]     = ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
+		colors[ImGuiCol_ResizeGrip]          = ImVec4(0.53f, 0.75f, 0.82f, 0.86f);
+		colors[ImGuiCol_ResizeGripHovered]   = ImVec4(0.61f, 0.74f, 0.87f, 1.00f);
+		colors[ImGuiCol_ResizeGripActive]    = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_Tab]                 = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
+		colors[ImGuiCol_TabHovered]          = ImVec4(0.22f, 0.24f, 0.31f, 1.00f);
+		colors[ImGuiCol_TabActive]           = ImVec4(0.23f, 0.26f, 0.32f, 1.00f);
+		colors[ImGuiCol_TabUnfocused]        = ImVec4(0.13f, 0.15f, 0.18f, 1.00f);
+		colors[ImGuiCol_TabUnfocusedActive]  = ImVec4(0.17f, 0.19f, 0.23f, 1.00f);
+		colors[ImGuiCol_PlotHistogram]       = ImVec4(0.56f, 0.74f, 0.73f, 1.00f);
+		colors[ImGuiCol_PlotHistogramHovered]= ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
+		colors[ImGuiCol_TextSelectedBg]      = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
+		colors[ImGuiCol_NavHighlight]        = ImVec4(0.53f, 0.75f, 0.82f, 0.86f);
+
+		style->GrabMinSize       = 20.00f;
+		style->GrabRounding      = 2.0f;
+		style->FrameRounding     = 2.0f;
+		style->FramePadding      = ImVec2(4.0f, 4.0f);
+		style->WindowPadding     = ImVec2(2.0f, 2.0f);
+		style->ChildRounding     = 2.0f;
+		style->ColumnsMinSpacing = 400.0f;
+		style->FrameBorderSize   = 0.0f;
+		style->ChildBorderSize   = 0.0f;
+		style->WindowBorderSize  = 0.0f;
+		style->IndentSpacing     = 24.0f;
+		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
+	}
+
 	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,
 												 Camera& cam, AssetManager& assetManager)
 	{
@@ -214,13 +277,6 @@ namespace AstralRaytracer
 		const ImGuiViewport* viewport= ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->WorkPos);
 		ImGui::SetNextWindowSize(viewport->WorkSize);
-
-		ImGui::GetStyle().ColumnsMinSpacing = 400.0f;
-		ImGui::GetStyle().FrameBorderSize   = 0.0f;
-		ImGui::GetStyle().ChildBorderSize   = 0.0f;
-		ImGui::GetStyle().WindowBorderSize  = 0.0f;
-		ImGui::GetStyle().IndentSpacing     = 24.0f;
-		ImGui::GetStyle().SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 
 		bool isOpen= true;
 		if(ImGui::Begin("Main Window", &isOpen, flags))
@@ -246,7 +302,8 @@ namespace AstralRaytracer
 				}
 				ImGui::EndMenuBar();
 			}
-			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																				 ImGuiWindowFlags_AlwaysUseWindowPadding;
 
 			const uint32 toolBarHeight= 28;
 
@@ -327,7 +384,7 @@ namespace AstralRaytracer
 			ImGui::EndChild();
 			ImGui::PopStyleVar();
 
-			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
+			constexpr int32 tableFlags= ImGuiTableFlags_BordersInner | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
 			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
 			if(ImGui::BeginTable("viewportContentSplit", 1, tableFlags, ImGui::GetContentRegionAvail()))
@@ -335,9 +392,15 @@ namespace AstralRaytracer
 				ImGui::TableNextRow(rowFlags, 100.0f);
 				ImGui::TableSetColumnIndex(0);
 				const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.6f;
-				if(ImGui::BeginTable("viewportSceneInfoSplit", 3, tableFlags,
+				if(ImGui::BeginTable("viewportSceneInfoSplit", 3,
+														 tableFlags | ImGuiTableFlags_ContextMenuInBody |
+																 ImGuiTableFlags_Hideable,
 														 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 				{
+					ImGui::TableSetupColumn("Scene", 0, 20.0f);
+					ImGui::TableSetupColumn("Viewport", 0, 60.0f);
+					ImGui::TableSetupColumn("Inspector", 0, 20.0f);
+
 					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
 
@@ -353,8 +416,9 @@ namespace AstralRaytracer
 
 					const ImVec2 newRegion= {appStateInfo.rendererResolution.x * scale,
 																	 appStateInfo.rendererResolution.y * scale};
-					const ImVec2 gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
+					ImVec2       gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
 																	 (availableRegion.y - newRegion.y) * 0.5f};
+					gapRegion.x-= 8.0f; // Adjustment to keep Image centered horizontally
 
 					ImGui::Dummy({availableRegion.x, gapRegion.y});
 					ImGui::Dummy({gapRegion.x, newRegion.y});
@@ -364,7 +428,8 @@ namespace AstralRaytracer
 					ImGui::SameLine();
 					ImGui::BeginChild(2, newRegion, false,
 														ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																ImGuiWindowFlags_NoResize);
+																ImGuiWindowFlags_NoResize |
+																ImGuiWindowFlags_AlwaysUseWindowPadding);
 
 					ImVec2 imageDisplaySize= ImGui::GetContentRegionAvail();
 

@@ -8,11 +8,16 @@ namespace AstralRaytracer
 	{
 		void ContentBrowser::display(AssetManager& assetManager)
 		{
-			constexpr int32 tableFlags= ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
+			constexpr int32 tableFlags= ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Hideable |
+																	ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
+
 			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
 			if(ImGui::BeginTable("contentBrowserSplit", 2, tableFlags, ImGui::GetContentRegionAvail()))
 			{
+				ImGui::TableSetupColumn("Content Browser", 0, 80.0f);
+				ImGui::TableSetupColumn("File Inspector", 0, 20.0f);
+
 				ImGui::TableNextRow(rowFlags, 100.0f);
 				ImGui::TableSetColumnIndex(0);
 				ImGui::SeparatorText("CONTENT BROWSER");

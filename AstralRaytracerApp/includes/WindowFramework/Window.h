@@ -35,6 +35,7 @@ namespace AstralRaytracer
 		void processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
 											Camera& cam, const Scene& scene);
 
+		void setDefaultTheme() const;
 		void displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene, Camera& cam,
 									 AssetManager& assetManager);
 		void shutdown();
