@@ -77,12 +77,34 @@ namespace AstralRaytracer
 
 										void main()
 										{
-											// Sample the texture
-											vec3 texColor = texture(textureOne, textureUV).rgb;
+											float spatialSigma = 1.0; // Controls spatial smoothing
+											float rangeSigma = 1.0;   // Controls intensity smoothing
 
-											// Apply gamma correction
+											vec4 centerPixel = texture(textureOne, textureUV);
+											vec3 result = vec3(0.0);
+											float weightSum = 0.0;
+
+											for (int i = -1; i <= 1; i++)
+											{
+												for (int j = -1; j <= 1; j++)
+												{
+													vec2 offset = vec2(i, j) / textureSize(textureOne, 0);
+													vec4 neighborPixel = texture(textureOne, textureUV + offset);
+
+													float spatialWeight = exp(-(length(offset) / spatialSigma) * (length(offset) / spatialSigma));
+													float rangeWeight = exp(-(length(centerPixel.rgb - neighborPixel.rgb) / rangeSigma) * (length(centerPixel.rgb - neighborPixel.rgb) / rangeSigma));
+
+													float weight = spatialWeight * rangeWeight;
+													result += weight * neighborPixel.rgb;
+													weightSum += weight;
+												}
+											}
+
+											result /= weightSum;
+											color = vec4(result, centerPixel.a);
+
 											float gamma = 2.2;
-											color = vec4(pow(texColor, vec3(1.0 / gamma)), 1.0);
+											color = vec4(pow(color.rgb, vec3(1.0 / gamma)), 1.0);
 										}
 										)SHADER";
 	} // namespace ShaderLiterals
