@@ -15,10 +15,10 @@ namespace AstralRaytracer
 			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
 			if(ImGui::BeginTable("contentBrowserSplit", 2, tableFlags, ImGui::GetContentRegionAvail()))
 			{
-				ImGui::TableSetupColumn("Content Browser", 0, 80.0f);
-				ImGui::TableSetupColumn("File Inspector", 0, 20.0f);
+				ImGui::TableSetupColumn("Content Browser", ImGuiTableColumnFlags_WidthStretch, 80.0f);
+				ImGui::TableSetupColumn("File Inspector", ImGuiTableColumnFlags_WidthStretch, 20.0f);
 
-				ImGui::TableNextRow(rowFlags, 100.0f);
+				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
 				ImGui::SeparatorText("CONTENT BROWSER");
 

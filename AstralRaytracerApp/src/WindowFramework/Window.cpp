@@ -397,9 +397,9 @@ namespace AstralRaytracer
 																 ImGuiTableFlags_Hideable,
 														 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
 				{
-					ImGui::TableSetupColumn("Scene", 0, 20.0f);
-					ImGui::TableSetupColumn("Viewport", 0, 60.0f);
-					ImGui::TableSetupColumn("Inspector", 0, 20.0f);
+					ImGui::TableSetupColumn("Scene", ImGuiTableColumnFlags_WidthStretch, 20.0f);
+					ImGui::TableSetupColumn("Viewport", ImGuiTableColumnFlags_WidthStretch, 60.0f);
+					ImGui::TableSetupColumn("Inspector", ImGuiTableColumnFlags_WidthStretch, 20.0f);
 
 					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
