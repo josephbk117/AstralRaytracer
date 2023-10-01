@@ -1,5 +1,8 @@
 #include "Raytracer/Scene.h"
 
+#include "Raytracer/PostProcessing/BilateralFilterPostProcess.h"
+#include "Raytracer/PostProcessing/GammaCorrectionPostProcess.h"
+
 #include <fstream>
 #include <iostream>
 
@@ -11,6 +14,17 @@ namespace AstralRaytracer
 		TextureDataRGB defaultTexData(1, 1);
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
 		addTexture(std::move(defaultTexData));
+
+		std::unique_ptr<GammaCorrectionPostProcessing> gammaCorrectionPP=
+				std::make_unique<GammaCorrectionPostProcessing>();
+		gammaCorrectionPP->init();
+
+		std::unique_ptr<BilateralFilterPostProcess> bilateralFilterPP=
+				std::make_unique<BilateralFilterPostProcess>();
+		bilateralFilterPP->init();
+
+		addPostProcessing(std::move(bilateralFilterPP));
+		addPostProcessing(std::move(gammaCorrectionPP));
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
@@ -23,6 +37,11 @@ namespace AstralRaytracer
 	void Scene::addMaterial(const Material& material) { m_materials.push_back(material); }
 
 	void Scene::addTexture(TextureDataRGB&& texture) { m_textures.push_back(std::move(texture)); }
+
+	void Scene::addPostProcessing(std::unique_ptr<PostProcessing>&& postProcessing)
+	{
+		m_postProcessingStack.push_back(std::move(postProcessing));
+	}
 
 	void Scene::serialize(const AssetManager& assetManager, const std::filesystem::path& path)
 	{

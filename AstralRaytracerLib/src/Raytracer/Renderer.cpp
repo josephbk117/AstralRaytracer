@@ -82,8 +82,15 @@ namespace AstralRaytracer
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
 
-		m_bilateralFilterPostProcess.processImage(m_dwPanel, m_renderTexture, m_textureId);
-		m_gammaPostProcess.processImage(m_dwPanel, m_renderTexture2, m_renderTexture.getTexture());
+		if(scene.m_postProcessingStack.size() > 0)
+		{
+			scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture, m_textureId);
+			for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
+			{
+				scene.m_postProcessingStack[index]->processImage(m_dwPanel, m_renderTexture2,
+																												 m_renderTexture.getTexture());
+			}
+		}
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,

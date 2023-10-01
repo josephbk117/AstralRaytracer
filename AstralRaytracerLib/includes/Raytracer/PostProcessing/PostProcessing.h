@@ -50,13 +50,12 @@ namespace AstralRaytracer
 										in vec3				worldPos;
 										out vec4			color;
 										uniform sampler2D	textureOne;
+										uniform float		gamma;
 
 										void main()
 										{
 											// Sample the texture
 											vec3 texColor = texture(textureOne, textureUV).rgb;
-
-											float gamma = 2.2;
 											color = vec4(pow(texColor, vec3(1.0 / gamma)), 1.0);
 										}
 										)SHADER";
@@ -67,12 +66,11 @@ namespace AstralRaytracer
 										in vec3				worldPos;
 										out vec4			color;
 										uniform sampler2D	textureOne;
+										uniform float		spatialSigma; // Controls spatial smoothing
+										uniform float		rangeSigma;   // Controls intensity smoothing
 
 										void main()
 										{
-											float spatialSigma = 0.7; // Controls spatial smoothing
-											float rangeSigma = 0.7;   // Controls intensity smoothing
-
 											vec4 centerPixel = texture(textureOne, textureUV);
 											vec3 result = vec3(0.0);
 											float weightSum = 0.0;

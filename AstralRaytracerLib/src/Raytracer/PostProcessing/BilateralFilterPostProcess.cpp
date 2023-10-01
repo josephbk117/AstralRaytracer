@@ -6,6 +6,11 @@ namespace AstralRaytracer
 	{
 		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 		m_shaderProgram.linkShaders();
+
+		m_shaderProgram.use();
+		m_shaderProgram.setUniformValue("spatialSigma", 10.0f);
+		m_shaderProgram.setUniformValue("rangeSigma", 0.1f);
+		m_shaderProgram.unuse();
 	}
 	void BilateralFilterPostProcess::processImage(DrawingPanel&        drawPanel,
 																								const RenderTexture& renderTexture,

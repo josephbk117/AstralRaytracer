@@ -6,6 +6,10 @@ namespace AstralRaytracer
 	{
 		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 		m_shaderProgram.linkShaders();
+
+		m_shaderProgram.use();
+		m_shaderProgram.setUniformValue("gamma", 2.2f);
+		m_shaderProgram.unuse();
 	}
 
 	void GammaCorrectionPostProcessing::processImage(DrawingPanel&        drawPanel,
