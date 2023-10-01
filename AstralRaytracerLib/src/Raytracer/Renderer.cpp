@@ -27,15 +27,9 @@ namespace AstralRaytracer
 		m_renderTexture.init({32, 32});
 		m_dwPanel.init(1.0f, 1.0f);
 
-		m_shaderProgram.compileShadersFromSrcCode(ShaderLiterals::VertexShader,
-																							ShaderLiterals::FragmentShader);
-		m_shaderProgram.linkShaders();
-
-		m_shaderProgram.use();
-		const gl::GLint shaderModelLoc= m_shaderProgram.getUniformLocation("model");
-		m_shaderProgram.applyShaderUniformMatrix(shaderModelLoc, glm::mat4(1.0f));
+		m_gammaPostProcess.init();
+		m_bilateralFilterPostProcess.init();
 		m_dwPanel.setTextureID(m_textureId);
-		m_shaderProgram.unuse();
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
@@ -87,14 +81,12 @@ namespace AstralRaytracer
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
 
-		m_renderTexture.bind();
-		gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
-
-		m_shaderProgram.use();
-		m_dwPanel.draw();
-		m_shaderProgram.unuse();
-
-		m_renderTexture.unbind();
+		m_renderTexture.setTextureIndexToBind(1);
+		m_bilateralFilterPostProcess.processImage(m_dwPanel, m_renderTexture, m_textureId);
+		m_renderTexture.setProcessedTextureIndex(0);
+		//m_renderTexture.setTextureIndexToBind(1);
+		//m_gammaPostProcess.processImage(m_dwPanel, m_renderTexture, m_renderTexture.getTexture(0));
+		//m_renderTexture.setProcessedTextureIndex(0);
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,

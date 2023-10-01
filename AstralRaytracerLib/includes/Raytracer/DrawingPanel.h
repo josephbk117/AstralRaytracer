@@ -14,7 +14,7 @@ class DrawingPanel
 	uint32           getTextureID() const noexcept;
 	bool             isPointInPanel(float32 xpos, float32 ypos) noexcept;
 	glm::vec4        getPanelWorldDimension() noexcept;
-	void             draw() noexcept;
+	void             draw() const noexcept;
 
 	private:
 	Transform m_transform;
