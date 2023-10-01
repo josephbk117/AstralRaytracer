@@ -25,6 +25,7 @@ namespace AstralRaytracer
 		onResize(32, 32);
 
 		m_renderTexture.init({32, 32});
+		m_renderTexture2.init({32, 32});
 		m_dwPanel.init(1.0f, 1.0f);
 
 		m_gammaPostProcess.init();
@@ -81,12 +82,8 @@ namespace AstralRaytracer
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
 
-		m_renderTexture.setTextureIndexToBind(1);
 		m_bilateralFilterPostProcess.processImage(m_dwPanel, m_renderTexture, m_textureId);
-		m_renderTexture.setProcessedTextureIndex(0);
-		//m_renderTexture.setTextureIndexToBind(1);
-		//m_gammaPostProcess.processImage(m_dwPanel, m_renderTexture, m_renderTexture.getTexture(0));
-		//m_renderTexture.setProcessedTextureIndex(0);
+		m_gammaPostProcess.processImage(m_dwPanel, m_renderTexture2, m_renderTexture.getTexture());
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
@@ -119,6 +116,7 @@ namespace AstralRaytracer
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
 		m_renderTexture.resize({width, height});
+		m_renderTexture2.resize({width, height});
 
 		return true;
 	}

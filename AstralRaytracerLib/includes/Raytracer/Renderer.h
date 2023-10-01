@@ -29,7 +29,7 @@ namespace AstralRaytracer
 		void findClosestHit(HitInfo& closestHitInfo, const Scene& scene, const glm::vec3& rayOrigin,
 												const glm::vec3& rayDir) const;
 
-		gl::GLuint getTextureId() const { return m_renderTexture.getProcessedTexture(); }
+		gl::GLuint getTextureId() const { return m_renderTexture2.getTexture(); }
 		void       setBounceCount(uint32 count) { m_BounceCount= count; }
 		uint32     getBounceCount() const { return m_BounceCount; }
 		uint32     getFrameIndex() const { return m_frameIndex; }
@@ -43,6 +43,7 @@ namespace AstralRaytracer
 		std::vector<uint32>           m_rayIterator;
 		uint32                        m_textureId;
 		RenderTexture                 m_renderTexture;
+		RenderTexture                 m_renderTexture2;
 		DrawingPanel                  m_dwPanel;
 		GammaCorrectionPostProcessing m_gammaPostProcess;
 		BilateralFilterPostProcess    m_bilateralFilterPostProcess;

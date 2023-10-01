@@ -7,8 +7,9 @@ namespace AstralRaytracer
 	RenderTexture::~RenderTexture()
 	{
 		gl::glDeleteFramebuffers(1, &m_framebuffer);
-		gl::glDeleteTextures(2, m_pingPongTextures.data());
+		gl::glDeleteTextures(1, &m_texture);
 	}
+
 	void RenderTexture::init(const glm::u32vec2& size)
 	{
 		m_size= size;
@@ -17,22 +18,19 @@ namespace AstralRaytracer
 		gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_framebuffer);
 
 		// Step 3: Create Texture Attachment
-		gl::glGenTextures(2, m_pingPongTextures.data());
+		gl::glGenTextures(1, &m_texture);
 
-		for(uint32 texIndex= 0; texIndex < m_pingPongTextures.size(); ++texIndex)
-		{
-			gl::glBindTexture(gl::GL_TEXTURE_2D, m_pingPongTextures[texIndex]);
-			gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
-											 gl::GL_FLOAT, nullptr);
+		gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
+		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
+										 gl::GL_FLOAT, nullptr);
 
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
+		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
+		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
 
-			gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT0 + texIndex,
-																 gl::GL_TEXTURE_2D, m_pingPongTextures[texIndex], 0);
-		}
+		gl::glFramebufferTexture2D(gl::GL_FRAMEBUFFER, gl::GL_COLOR_ATTACHMENT0, gl::GL_TEXTURE_2D,
+															 m_texture, 0);
 
 		// Step 5: Check Completeness
 		if(gl::glCheckFramebufferStatus(gl::GL_FRAMEBUFFER) != gl::GL_FRAMEBUFFER_COMPLETE)
@@ -52,24 +50,10 @@ namespace AstralRaytracer
 
 	gl::GLuint RenderTexture::getFBO() const { return m_framebuffer; }
 
-	gl::GLuint RenderTexture::getProcessedTexture() const
-	{
-		return m_pingPongTextures[static_cast<uint32>(m_processedTextureIndex)];
-	}
-
-	void RenderTexture::setProcessedTextureIndex(uint32 index) { m_processedTextureIndex= index; }
-
-	gl::GLuint RenderTexture::getTexture(uint32 index) const
-	{
-		return static_cast<gl::GLuint>(m_pingPongTextures[index]);
-	}
-
-	void RenderTexture::setTextureIndexToBind(uint32 index) { m_textureIndexToBind= index; }
+	gl::GLuint RenderTexture::getTexture() const { return m_texture; }
 
 	void RenderTexture::bind() const
 	{
-		std::array<gl::GLenum, 1> attachment= {gl::GL_COLOR_ATTACHMENT1 + m_textureIndexToBind};
-		gl::glDrawBuffers(1, attachment.data());
 		gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_framebuffer);
 		gl::glViewport(0, 0, m_size.x, m_size.y);
 	}
@@ -84,13 +68,11 @@ namespace AstralRaytracer
 		{
 			m_size= size;
 			// Resize Texture Attachment
-			for(uint32 texIndex= 0; texIndex < m_pingPongTextures.size(); ++texIndex)
-			{
-				gl::glBindTexture(gl::GL_TEXTURE_2D, m_pingPongTextures[texIndex]);
-				gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
-												 gl::GL_FLOAT, nullptr);
-				gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
-			}
+
+			gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
+			gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
+											 gl::GL_FLOAT, nullptr);
+			gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 		}
 	}
 } // namespace AstralRaytracer
