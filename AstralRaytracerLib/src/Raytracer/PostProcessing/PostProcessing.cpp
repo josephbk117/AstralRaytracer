@@ -2,6 +2,10 @@
 
 namespace AstralRaytracer
 {
+	const ShaderProgram& PostProcessing::getShader() const
+	{
+		return m_shaderProgram;
+	}
 	const char* const PostProcessing::getVertexShaderSrcCode() const
 	{
 		return ShaderLiterals::VertexShader;

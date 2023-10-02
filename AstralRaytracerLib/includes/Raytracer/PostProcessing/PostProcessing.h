@@ -17,6 +17,7 @@ namespace AstralRaytracer
 		virtual void processImage(DrawingPanel& drawPanel, const RenderTexture& renderTexture,
 															gl::GLuint imageTexture)= 0;
 
+		const ShaderProgram& getShader() const; 
 		protected:
 		virtual const char* const getVertexShaderSrcCode() const;
 		virtual const char* const getFragmentShaderSrcCode() const= 0;

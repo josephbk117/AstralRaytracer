@@ -23,6 +23,7 @@ class ShaderProgram
 	void addAttribute(const std::string& attributeName);
 	void use();
 	void unuse();
+	const std::unordered_map<std::string, UniformData>& getUniformData() const;
 	gl::GLint   getUniformLocation(const std::string& uniformName) const;
 	void        setUniformValue(const std::string& uniformName, std::any data);
 	static void applyShaderUniformMatrix(int32 uniformId, const glm::mat4& matrixValue);

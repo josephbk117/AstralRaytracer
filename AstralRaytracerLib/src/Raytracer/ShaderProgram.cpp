@@ -104,6 +104,11 @@ void ShaderProgram::unuse()
 	}
 }
 
+const std::unordered_map<std::string, UniformData>& ShaderProgram::getUniformData() const
+{
+	return m_uniformMap;
+}
+
 gl::GLint ShaderProgram::getUniformLocation(const std::string& uniformName) const
 {
 	return gl::glGetUniformLocation(programID, uniformName.c_str());
