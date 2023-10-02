@@ -514,7 +514,7 @@ namespace AstralRaytracer
 							ImGui::SeparatorText("POST-PROCESS STACK");
 							ImGui::PopFont();
 
-							m_postProcessingStack.display(scene);
+							m_postProcessingStack.display(scene, *this);
 							ImGui::EndTabItem();
 						}
 						ImGui::EndTabBar();

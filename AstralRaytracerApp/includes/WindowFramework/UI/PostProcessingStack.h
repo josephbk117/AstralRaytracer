@@ -5,6 +5,7 @@
 namespace AstralRaytracer
 {
 	class Scene;
+	class Window;
 }
 
 namespace AstralRaytracer
@@ -14,7 +15,7 @@ namespace AstralRaytracer
 		class PostProcessingStack
 		{
 			public:
-			void display(Scene& scene);
+			void display(Scene& scene, const Window& window);
 
 			private:
 		};
