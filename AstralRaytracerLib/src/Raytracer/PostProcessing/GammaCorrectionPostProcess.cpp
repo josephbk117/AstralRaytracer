@@ -33,4 +33,9 @@ namespace AstralRaytracer
 	{
 		return ShaderLiterals::GammaCorrectionFS;
 	}
+	const std::string& GammaCorrectionPostProcessing::getName() const
+	{
+		static const std::string name("Gamma Correction"); 
+		return name;
+	}
 } // namespace AstralRaytracer

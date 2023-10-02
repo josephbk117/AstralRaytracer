@@ -6,6 +6,8 @@ namespace AstralRaytracer
 	class GammaCorrectionPostProcessing: public PostProcessing
 	{
 		public:
+		const std::string& getName() const override;
+
 		void init() override;
 
 		void processImage(DrawingPanel& drawPanel, const RenderTexture& renderTexture,

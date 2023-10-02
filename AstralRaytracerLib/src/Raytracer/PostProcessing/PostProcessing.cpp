@@ -2,11 +2,20 @@
 
 namespace AstralRaytracer
 {
-	const ShaderProgram& PostProcessing::getShader() const
+	void PostProcessing::setUniform(const std::string& name, std::any data)
 	{
-		return m_shaderProgram;
+		m_shaderProgram.use();
+		m_shaderProgram.setUniformValue(name, data);
+		m_shaderProgram.unuse();
 	}
-	const char* const PostProcessing::getVertexShaderSrcCode() const
+
+	std::any PostProcessing::getUniform(const std::string& name) const
+	{
+		return m_shaderProgram.getUniformData().at(name).data;
+	}
+
+	const ShaderProgram& PostProcessing::getShader() const { return m_shaderProgram; }
+	const char* const    PostProcessing::getVertexShaderSrcCode() const
 	{
 		return ShaderLiterals::VertexShader;
 	}

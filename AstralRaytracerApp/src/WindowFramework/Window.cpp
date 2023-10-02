@@ -492,15 +492,33 @@ namespace AstralRaytracer
 
 					ImGui::TableSetColumnIndex(2);
 
-					ImGui::PushFont(getSecondaryFont());
-					ImGui::SeparatorText("INSPECTOR");
-					ImGui::PopFont();
-					displayTransformUI(appStateInfo, scene, assetManager);
+					ImGuiTabBarFlags tab_bar_flags= ImGuiTabBarFlags_None;
+					if(ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+					{
+						if(ImGui::BeginTabItem("Inspector"))
+						{
+							ImGui::PushFont(getSecondaryFont());
+							ImGui::SeparatorText("INSPECTOR");
+							ImGui::PopFont();
+							displayTransformUI(appStateInfo, scene, assetManager);
 
-					ImGui::Separator();
-					ImGui::Separator();
+							ImGui::Separator();
+							ImGui::Separator();
 
-					displayMaterialUI(appStateInfo, scene, assetManager);
+							displayMaterialUI(appStateInfo, scene, assetManager);
+							ImGui::EndTabItem();
+						}
+						if(ImGui::BeginTabItem("Post-Process Stack"))
+						{
+							ImGui::PushFont(getSecondaryFont());
+							ImGui::SeparatorText("POST-PROCESS STACK");
+							ImGui::PopFont();
+
+							m_postProcessingStack.display(scene);
+							ImGui::EndTabItem();
+						}
+						ImGui::EndTabBar();
+					}
 
 					ImGui::EndTable();
 				}

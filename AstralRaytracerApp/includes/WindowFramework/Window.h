@@ -1,6 +1,7 @@
 #pragma once
 #include "UI/CommonUI.h"
 #include "UI/ContentBrowser.h"
+#include "UI/PostProcessingStack.h"
 #include "Utils/Common.h"
 
 #include <queue>
@@ -59,14 +60,14 @@ namespace AstralRaytracer
 		std::pair<uint32, uint32> m_resolution{0, 0};
 		std::queue<float32>       m_frameTimes;
 
-		UI::ContentBrowser m_contentBrowser;
-
-		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
-		void        setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
-																										 AstralRaytracer::UI::AppStateInfo& appStateInfo,
-																										 const AstralRaytracer::Renderer&   renderer,
-																										 const AstralRaytracer::Camera&     cam,
-																										 const AstralRaytracer::Scene&      scene);
+		UI::ContentBrowser      m_contentBrowser;
+		UI::PostProcessingStack m_postProcessingStack;
+		static void             windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
+		void                    setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
+																																 AstralRaytracer::UI::AppStateInfo& appStateInfo,
+																																 const AstralRaytracer::Renderer&   renderer,
+																																 const AstralRaytracer::Camera&     cam,
+																																 const AstralRaytracer::Scene&      scene);
 
 		void displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
 															 const AssetManager& assetManager);

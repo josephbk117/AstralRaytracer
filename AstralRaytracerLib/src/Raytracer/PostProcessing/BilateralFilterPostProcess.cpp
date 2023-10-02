@@ -31,4 +31,9 @@ namespace AstralRaytracer
 	{
 		return ShaderLiterals::BilateralFilterFS;
 	}
+	const std::string& BilateralFilterPostProcess::getName() const
+	{
+		static const std::string name("Bilateral Filter");
+		return name;
+	}
 } // namespace AstralRaytracer
