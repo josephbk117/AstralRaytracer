@@ -8,8 +8,8 @@ namespace AstralRaytracer
 		m_shaderProgram.linkShaders();
 
 		m_shaderProgram.use();
-		m_shaderProgram.setUniformValue("spatialSigma", 1.0f, 0.001f, 9.0f);
-		m_shaderProgram.setUniformValue("intensitySigma", 0.5f, 0.001f, 9.0f);
+		m_shaderProgram.setUniformValue("spatialSigma", 0.001f, 0.001f, 1.0f);
+		m_shaderProgram.setUniformValue("intensitySigma", 0.001f, 0.001f, 1.0f);
 		m_shaderProgram.unuse();
 	}
 	void BilateralFilterPostProcess::processImage(DrawingPanel&        drawPanel,

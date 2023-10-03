@@ -12,8 +12,8 @@ void AstralRaytracer::LiminanceThresholdPostProcessing::init()
 	m_shaderProgram.linkShaders();
 
 	m_shaderProgram.use();
-	m_shaderProgram.setUniformValue("minThreshold", 0.0f, 0.0f, 10000.0f);
-	m_shaderProgram.setUniformValue("maxThreshold", 1.0f, 0.0f, 10000.0f);
+	m_shaderProgram.setUniformValue("minThreshold", 0.0f, 0.0f, 100.0f);
+	m_shaderProgram.setUniformValue("maxThreshold", 100.0f, 0.0f, 100.0f);
 	m_shaderProgram.unuse();
 }
 

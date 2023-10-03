@@ -14,7 +14,7 @@ namespace AstralRaytracer
 		m_shaderProgram.linkShaders();
 
 		m_shaderProgram.use();
-		m_shaderProgram.setUniformValue("desaturationFactor", 1.0f, 0.0f, 1.0f);
+		m_shaderProgram.setUniformValue("desaturationFactor", 0.0f, 0.0f, 1.0f);
 		m_shaderProgram.unuse();
 	}
 

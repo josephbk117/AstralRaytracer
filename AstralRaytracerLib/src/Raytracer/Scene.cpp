@@ -34,9 +34,10 @@ namespace AstralRaytracer
 		luminanceThresholdPP->init();
 
 		addPostProcessing(std::move(bilateralFilterPP));
+		addPostProcessing(std::move(luminanceThresholdPP));
 		addPostProcessing(std::move(gammaCorrectionPP));
 		addPostProcessing(std::move(desaturatePP));
-		addPostProcessing(std::move(luminanceThresholdPP));
+
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
