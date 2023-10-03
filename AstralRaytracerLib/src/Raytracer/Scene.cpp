@@ -1,6 +1,7 @@
 #include "Raytracer/Scene.h"
 
 #include "Raytracer/PostProcessing/BilateralFilterPostProcess.h"
+#include "Raytracer/PostProcessing/DesaturatePostProcess.h"
 #include "Raytracer/PostProcessing/GammaCorrectionPostProcess.h"
 
 #include <fstream>
@@ -23,8 +24,13 @@ namespace AstralRaytracer
 				std::make_unique<BilateralFilterPostProcess>();
 		bilateralFilterPP->init();
 
+		std::unique_ptr<DesaturatePostProcessing> desaturatePP=
+				std::make_unique<DesaturatePostProcessing>();
+		desaturatePP->init();
+
 		addPostProcessing(std::move(bilateralFilterPP));
 		addPostProcessing(std::move(gammaCorrectionPP));
+		addPostProcessing(std::move(desaturatePP));
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
