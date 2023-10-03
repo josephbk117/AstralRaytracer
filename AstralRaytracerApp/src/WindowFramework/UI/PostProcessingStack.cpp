@@ -28,6 +28,7 @@ namespace AstralRaytracer
 					for(auto it= uniformData.begin(); it != uniformData.end(); ++it)
 					{
 						const std::string& uniformName= it->first;
+						const UniformData& uniformData= it->second;
 						PostProcessing&    postProcess= *postProcessStack[index].get();
 
 						std::any uniformValue= postProcess.getUniform(uniformName);
@@ -39,7 +40,7 @@ namespace AstralRaytracer
 						if(typeHash == Float32Hash)
 						{
 							float32 value= std::any_cast<float32>(uniformValue);
-							if(ImGui::SliderFloat(uniformName.c_str(), &value, 0.0f, 10.0f))
+							if(ImGui::SliderFloat(uniformName.c_str(), &value, uniformData.min, uniformData.max))
 							{
 								postProcess.setUniform(uniformName, value);
 							}

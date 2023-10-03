@@ -114,22 +114,31 @@ gl::GLint ShaderProgram::getUniformLocation(const std::string& uniformName) cons
 	return gl::glGetUniformLocation(programID, uniformName.c_str());
 }
 
-void ShaderProgram::setUniformValue(const std::string& uniformName, std::any data)
+void ShaderProgram::setUniformValue(const std::string& uniformName, std::any data, float32 min,
+																		float32 max)
 {
 	uint32 uniformId= 0;
-	auto it= m_uniformMap.find(uniformName);
+	auto   it       = m_uniformMap.find(uniformName);
 	if(it != m_uniformMap.end())
 	{
 		uniformId= it->second.uniformId;
 	}
 	else
 	{
-		uniformId= getUniformLocation(uniformName);
-		m_uniformMap[uniformName]= {uniformId, data};
+		uniformId                = getUniformLocation(uniformName);
+		m_uniformMap[uniformName]= {uniformId, min, max, data};
 	}
 
-	
-	m_uniformMap[uniformName]= {uniformId, data};
+	m_uniformMap[uniformName]= {uniformId, min, max, data};
+
+	updateUniformData(uniformName, data);
+}
+
+void ShaderProgram::updateUniformData(const std::string& uniformName, std::any data)
+{
+	const int32 uniformId= m_uniformMap[uniformName].uniformId;
+
+	m_uniformMap[uniformName].data= data;
 
 	const size_t typeHash= data.type().hash_code();
 
@@ -141,13 +150,13 @@ void ShaderProgram::setUniformValue(const std::string& uniformName, std::any dat
 		return;
 	}
 
-	if(typeHash == UInt32Hash) 
+	if(typeHash == UInt32Hash)
 	{
 		applyShaderUInt(uniformId, std::any_cast<uint32>(data));
 		return;
 	}
 
-	if(typeHash == Float32Hash) 
+	if(typeHash == Float32Hash)
 	{
 		applyShaderFloat(uniformId, std::any_cast<float32>(data));
 		return;
@@ -179,12 +188,12 @@ void ShaderProgram::applyShaderInt2(int32 uniformId, const glm::ivec2& value)
 	gl::glUniform2i(uniformId, value.x, value.y);
 }
 
-void ShaderProgram::applyShaderUInt(int32 uniformId, uint32 value) 
+void ShaderProgram::applyShaderUInt(int32 uniformId, uint32 value)
 {
 	gl::glUniform1ui(uniformId, value);
 }
 
-void ShaderProgram::applyShaderUInt2(int32 uniformId, const glm::uvec2& value) 
+void ShaderProgram::applyShaderUInt2(int32 uniformId, const glm::uvec2& value)
 {
 	gl::glUniform2ui(uniformId, value.x, value.y);
 }

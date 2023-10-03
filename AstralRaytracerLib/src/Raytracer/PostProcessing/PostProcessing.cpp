@@ -5,7 +5,7 @@ namespace AstralRaytracer
 	void PostProcessing::setUniform(const std::string& name, std::any data)
 	{
 		m_shaderProgram.use();
-		m_shaderProgram.setUniformValue(name, data);
+		m_shaderProgram.updateUniformData(name, data);
 		m_shaderProgram.unuse();
 	}
 
