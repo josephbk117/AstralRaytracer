@@ -28,8 +28,6 @@ namespace AstralRaytracer
 		m_renderTexture2.init({32, 32});
 		m_dwPanel.init(1.0f, 1.0f);
 
-		m_gammaPostProcess.init();
-		m_bilateralFilterPostProcess.init();
 		m_dwPanel.setTextureID(m_textureId);
 	}
 

@@ -1,7 +1,5 @@
 #include "Camera.h"
 #include "DrawingPanel.h"
-#include "PostProcessing/BilateralFilterPostProcess.h"
-#include "PostProcessing/GammaCorrectionPostProcess.h"
 #include "RenderTexture.h"
 #include "Scene.h"
 #include "ShaderProgram.h"
@@ -37,18 +35,16 @@ namespace AstralRaytracer
 		void       resetFrameIndex();
 
 		private:
-		TextureDataRGBF               m_texData;
-		std::vector<float32>          m_accumulatedColorData;
-		float32                       m_maxLuminance= 0;
-		std::vector<uint32>           m_rayIterator;
-		uint32                        m_textureId      = 0;
-		uint32                        m_outputTextureId= 0;
-		RenderTexture                 m_renderTexture1;
-		RenderTexture                 m_renderTexture2;
-		DrawingPanel                  m_dwPanel;
-		GammaCorrectionPostProcessing m_gammaPostProcess;
-		BilateralFilterPostProcess    m_bilateralFilterPostProcess;
-		uint32                        m_frameIndex = 1;
-		uint32                        m_BounceCount= 4;
+		TextureDataRGBF      m_texData;
+		std::vector<float32> m_accumulatedColorData;
+		float32              m_maxLuminance= 0;
+		std::vector<uint32>  m_rayIterator;
+		uint32               m_textureId      = 0;
+		uint32               m_outputTextureId= 0;
+		RenderTexture        m_renderTexture1;
+		RenderTexture        m_renderTexture2;
+		DrawingPanel         m_dwPanel;
+		uint32               m_frameIndex = 1;
+		uint32               m_BounceCount= 4;
 	};
 } // namespace AstralRaytracer

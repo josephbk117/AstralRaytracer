@@ -3,6 +3,7 @@
 #include "Raytracer/PostProcessing/BilateralFilterPostProcess.h"
 #include "Raytracer/PostProcessing/DesaturatePostProcess.h"
 #include "Raytracer/PostProcessing/GammaCorrectionPostProcess.h"
+#include "Raytracer/PostProcessing/LuminanceThresholdPostProcess.h"
 
 #include <fstream>
 #include <iostream>
@@ -28,9 +29,14 @@ namespace AstralRaytracer
 				std::make_unique<DesaturatePostProcessing>();
 		desaturatePP->init();
 
+		std::unique_ptr<LiminanceThresholdPostProcessing> luminanceThresholdPP=
+				std::make_unique<LiminanceThresholdPostProcessing>();
+		luminanceThresholdPP->init();
+
 		addPostProcessing(std::move(bilateralFilterPP));
 		addPostProcessing(std::move(gammaCorrectionPP));
 		addPostProcessing(std::move(desaturatePP));
+		addPostProcessing(std::move(luminanceThresholdPP));
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
