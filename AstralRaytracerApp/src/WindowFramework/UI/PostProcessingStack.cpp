@@ -39,7 +39,7 @@ namespace AstralRaytracer
 						if(typeHash == Float32Hash)
 						{
 							float32 value= std::any_cast<float32>(uniformValue);
-							if(ImGui::SliderFloat(uniformName.c_str(), &value, 0.0f, 100.0f))
+							if(ImGui::SliderFloat(uniformName.c_str(), &value, 0.0f, 10.0f))
 							{
 								postProcess.setUniform(uniformName, value);
 							}

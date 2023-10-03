@@ -2,6 +2,12 @@
 
 namespace AstralRaytracer
 {
+	const std::string& GammaCorrectionPostProcessing::getName() const
+	{
+		static const std::string name("Gamma Correction");
+		return name;
+	}
+
 	void GammaCorrectionPostProcessing::init()
 	{
 		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
@@ -31,11 +37,20 @@ namespace AstralRaytracer
 
 	const char* const GammaCorrectionPostProcessing::getFragmentShaderSrcCode() const
 	{
-		return ShaderLiterals::GammaCorrectionFS;
-	}
-	const std::string& GammaCorrectionPostProcessing::getName() const
-	{
-		static const std::string name("Gamma Correction"); 
-		return name;
+		return R"SHADER(
+						#version 330 core
+						in vec2				textureUV;
+						in vec3				worldPos;
+						out vec4			color;
+						uniform sampler2D	textureOne;
+						uniform float		gamma;
+
+						void main()
+						{
+							// Sample the texture
+							vec3 texColor = texture(textureOne, textureUV).rgb;
+							color = vec4(pow(texColor, vec3(1.0 / gamma)), 1.0);
+						}
+				)SHADER";
 	}
 } // namespace AstralRaytracer
