@@ -21,7 +21,7 @@ namespace AstralRaytracer
 		gl::glGenTextures(1, &m_texture);
 
 		gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
-		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
+		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_size.x, m_size.y, 0, gl::GL_RGB,
 										 gl::GL_FLOAT, nullptr);
 
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
@@ -70,7 +70,7 @@ namespace AstralRaytracer
 			// Resize Texture Attachment
 
 			gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
-			gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB, m_size.x, m_size.y, 0, gl::GL_RGB,
+			gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_size.x, m_size.y, 0, gl::GL_RGB,
 											 gl::GL_FLOAT, nullptr);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 		}
