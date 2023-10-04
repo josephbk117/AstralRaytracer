@@ -84,15 +84,6 @@ void TextureData<T, ComponentCount>::setTexelColor(const std::array<T, Component
 }
 
 template <typename T, uint8 ComponentCount>
-void TextureData<T, ComponentCount>::setTexelColor(ColourData& colourData, uint32 x, uint32 y)
-{
-	int32 i      = ((float32)m_width * (float32)y + (float32)x) * 4.0f;
-	m_data[i]    = colourData.getColour_8_BitClamped().r;
-	m_data[i + 1]= colourData.getColour_8_BitClamped().g;
-	m_data[i + 2]= colourData.getColour_8_BitClamped().b;
-}
-
-template <typename T, uint8 ComponentCount>
 glm::vec<ComponentCount, T, glm::defaultp>
 TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 {
@@ -111,8 +102,8 @@ template <typename T, uint8 ComponentCount>
 glm::vec<ComponentCount, T, glm::defaultp>
 TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v) const
 {
-	const uint32 xIndex= (static_cast<uint32>(u * m_width) + m_width) % m_width;
-	const uint32 yIndex= (static_cast<uint32>(v * m_height) + m_height) % m_height;
+	const uint32 xIndex= glm::abs(static_cast<uint32>(u * m_width) + m_width) % m_width;
+	const uint32 yIndex= glm::abs(static_cast<uint32>(v * m_height) + m_height) % m_height;
 
 	return getTexelColor(xIndex, yIndex);
 }
