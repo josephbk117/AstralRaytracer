@@ -230,8 +230,8 @@ namespace AstralRaytracer
 		colors[ImGuiCol_CheckMark]           = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_SliderGrab]          = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
 		colors[ImGuiCol_SliderGrabActive]    = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
-		colors[ImGuiCol_Button]              = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
-		colors[ImGuiCol_ButtonHovered]       = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_Button]              = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_ButtonHovered]       = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_ButtonActive]        = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_Header]              = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
 		colors[ImGuiCol_HeaderHovered]       = ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
@@ -514,7 +514,8 @@ namespace AstralRaytracer
 							ImGui::SeparatorText("POST-PROCESS STACK");
 							ImGui::PopFont();
 
-							m_postProcessingStack.display(scene, *this);
+							m_postProcessingStack.display(scene, *this,
+																						ImVec2(0.0f, viewportSceneInfoSplitHeight));
 							ImGui::EndTabItem();
 						}
 						ImGui::EndTabBar();
