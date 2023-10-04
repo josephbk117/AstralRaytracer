@@ -13,11 +13,11 @@ namespace AstralRaytracer
 {
 	namespace UI
 	{
-		void PostProcessingStack::display(Scene& scene, const Window& window)
+		void PostProcessingStack::display(Scene& scene, const Window& window, ImVec2 availableRegion)
 		{
-			ImGui::BeginChild("PostProcessingStack", ImGui::GetContentRegionAvail());
+			availableRegion.y-= 100.0f;
 			static bool addNewPostProcess= false;
-			if(ImGui::Button("Add"))
+			if(ImGui::Button("Add", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 			{
 				addNewPostProcess= true;
 			}
@@ -32,19 +32,18 @@ namespace AstralRaytracer
 																		ImGuiWindowFlags_AlwaysUseWindowPadding |
 																		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings))
 			{
-				static int selectedItem= 0;
 
 				const std::array<std::string, 4> items= {"Bilateral Filter", "Desaturate",
 																								 "Gamma Correction", "Luminance Threshold"};
-				if(ImGui::BeginCombo("##Post Processing Effect", items[selectedItem].c_str(),
+				if(ImGui::BeginCombo("##Post Processing Effect", items[m_selectedItem].c_str(),
 														 ImGuiComboFlags_None))
 				{
 					for(int i= 0; i < items.size(); i++)
 					{
-						bool isSelected= (selectedItem == i);
+						bool isSelected= (m_selectedItem == i);
 						if(ImGui::Selectable(items[i].c_str(), isSelected))
 						{
-							selectedItem= i;
+							m_selectedItem= i;
 						}
 						if(isSelected)
 						{
@@ -54,19 +53,24 @@ namespace AstralRaytracer
 					ImGui::EndCombo();
 				}
 
-				if(ImGui::Button("Select"))
+				float32 buttonWidth= (ImGui::GetWindowContentRegionWidth() * 0.5f) - 4.0f;
+
+				if(ImGui::Button("Select", ImVec2(buttonWidth, 0.0f)))
 				{
-					addPostProcessing(scene, static_cast<PostProcessingType>(selectedItem + 1));
+					addPostProcessing(scene, static_cast<PostProcessingType>(m_selectedItem + 1));
 					addNewPostProcess= false;
 				}
 				ImGui::SameLine();
-				if(ImGui::Button("Cancel"))
+				if(ImGui::Button("Cancel", ImVec2(buttonWidth, 0.0f)))
 				{
 					addNewPostProcess= false;
 				}
 
 				ImGui::EndPopup();
 			}
+
+			ImGui::BeginChild("PostProcessingStack", availableRegion, false,
+												ImGuiWindowFlags_AlwaysAutoResize);
 
 			std::vector<std::unique_ptr<PostProcessing>>& postProcessStack= scene.m_postProcessingStack;
 
