@@ -19,25 +19,20 @@ namespace AstralRaytracer
 
 		std::unique_ptr<GammaCorrectionPostProcessing> gammaCorrectionPP=
 				std::make_unique<GammaCorrectionPostProcessing>();
-		gammaCorrectionPP->init();
 
 		std::unique_ptr<BilateralFilterPostProcess> bilateralFilterPP=
 				std::make_unique<BilateralFilterPostProcess>();
-		bilateralFilterPP->init();
 
 		std::unique_ptr<DesaturatePostProcessing> desaturatePP=
 				std::make_unique<DesaturatePostProcessing>();
-		desaturatePP->init();
 
-		std::unique_ptr<LiminanceThresholdPostProcessing> luminanceThresholdPP=
-				std::make_unique<LiminanceThresholdPostProcessing>();
-		luminanceThresholdPP->init();
+		std::unique_ptr<LuminanceThresholdPostProcessing> luminanceThresholdPP=
+				std::make_unique<LuminanceThresholdPostProcessing>();
 
 		addPostProcessing(std::move(bilateralFilterPP));
 		addPostProcessing(std::move(luminanceThresholdPP));
 		addPostProcessing(std::move(gammaCorrectionPP));
 		addPostProcessing(std::move(desaturatePP));
-
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
@@ -53,6 +48,7 @@ namespace AstralRaytracer
 
 	void Scene::addPostProcessing(std::unique_ptr<PostProcessing>&& postProcessing)
 	{
+		postProcessing->init();
 		m_postProcessingStack.push_back(std::move(postProcessing));
 	}
 
