@@ -2,6 +2,7 @@ Scene: New
 Textures:
   - Floor1: ExampleProject/textures/floor_texture.jpg
   - Floor2: ExampleProject/textures/tough_grass.jpg
+  - Sky: ExampleProject/textures/sky1.hdr
 Materials:
   - mat1: ExampleProject/materials/mat1.asmat
   - mat2: ExampleProject/materials/mat2.asmat
