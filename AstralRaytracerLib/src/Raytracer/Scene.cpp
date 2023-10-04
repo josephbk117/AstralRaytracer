@@ -13,8 +13,8 @@ namespace AstralRaytracer
 	Scene::Scene()
 	{
 		addMaterial(Material());
-		TextureDataRGB defaultTexData(1, 1);
-		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
+		TextureDataRGBF defaultTexData(1, 1);
+		defaultTexData.setTexelColorAtPixelIndex(0, glm::vec3(1, 1, 1));
 		addTexture(std::move(defaultTexData));
 
 		addPostProcessing(std::make_unique<GammaCorrectionPostProcessing>());
@@ -29,7 +29,7 @@ namespace AstralRaytracer
 
 	void Scene::addMaterial(const Material& material) { m_materials.push_back(material); }
 
-	void Scene::addTexture(TextureDataRGB&& texture) { m_textures.push_back(std::move(texture)); }
+	void Scene::addTexture(TextureDataRGBF&& texture) { m_textures.push_back(std::move(texture)); }
 
 	void Scene::addPostProcessing(std::unique_ptr<PostProcessing>&& postProcessing)
 	{

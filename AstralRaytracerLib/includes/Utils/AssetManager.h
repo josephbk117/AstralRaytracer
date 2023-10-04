@@ -22,9 +22,9 @@ namespace AstralRaytracer
 
 		AssetManager();
 
-		[[nodiscard]] TextureDataRGB LoadTextureAsset(const fs::path& path, const std::string& name);
-		[[nodiscard]] bool           LoadMaterialAsset(const fs::path& path, const std::string& name,
-																									 Material& outMaterial);
+		[[nodiscard]] TextureDataRGBF LoadTextureAsset(const fs::path& path, const std::string& name);
+		[[nodiscard]] bool            LoadMaterialAsset(const fs::path& path, const std::string& name,
+																										Material& outMaterial);
 		[[nodiscard]] std::unique_ptr<Traceable> LoadTraceableAsset(const fs::path& path);
 		void SaveMaterialAsset(const fs::path& folderPath, const std::string& name,
 													 const Material& material);

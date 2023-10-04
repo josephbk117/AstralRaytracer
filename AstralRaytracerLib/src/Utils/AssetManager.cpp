@@ -21,13 +21,13 @@ namespace AstralRaytracer
 		m_materialNameAndPathMap.insert({0, {"Default Material", "NIL"}});
 	}
 
-	TextureDataRGB AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
+	TextureDataRGBF AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
 	{
 		static uint32 textureCount= 0;
 		NameAndPath   nameAndPath = {name, path.string()};
 		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
 		textureCount++;
-		return TextureManager::loadTextureDataFromFileRGB(path);
+		return TextureManager::loadTextureDataFromFileRGBF(path);
 	}
 
 	bool AssetManager::LoadMaterialAsset(const fs::path& path, const std::string& name,

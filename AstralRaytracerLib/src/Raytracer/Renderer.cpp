@@ -152,8 +152,6 @@ namespace AstralRaytracer
 
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
-		constexpr float32 uint8ToNormalizedFloatMul= 1.0f / 255.0f;
-
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
 			seedVal+= bounceIndex;
@@ -165,12 +163,10 @@ namespace AstralRaytracer
 			{
 				const Material& mat= scene.m_materials.at(closestHitInfo.materialIndex);
 
-				const TextureDataRGB& texData= scene.m_textures.at(mat.texture);
+				const TextureDataRGBF& texData= scene.m_textures.at(mat.texture);
 
 				glm::vec3 colorData= texData.getTexelColor(closestHitInfo.worldSpacePosition.x * 0.1f,
 																									 closestHitInfo.worldSpacePosition.z * 0.1f);
-
-				colorData*= uint8ToNormalizedFloatMul;
 
 				contribution*= mat.albedo.getColour_32_bit() * colorData;
 				light+= mat.getEmission() * colorData;

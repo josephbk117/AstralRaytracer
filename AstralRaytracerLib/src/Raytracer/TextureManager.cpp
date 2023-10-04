@@ -14,7 +14,7 @@ TextureDataRGB TextureManager::loadTextureDataFromFileRGB(const std::filesystem:
 	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 3);
 	assert(data);
 
-	TextureDataRGB      texData(width, height);
+	TextureDataRGB     texData(width, height);
 	std::vector<uint8> vecData;
 	vecData.resize(width * height * numChannels);
 
@@ -34,7 +34,7 @@ TextureDataRGBA TextureManager::loadTextureDataFromFileRGBA(const std::filesyste
 	stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 4);
 	assert(data);
 
-	TextureDataRGBA     texData(width, height);
+	TextureDataRGBA    texData(width, height);
 	std::vector<uint8> vecData;
 	vecData.resize(width * height * numChannels);
 
@@ -58,7 +58,8 @@ TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesyste
 	std::vector<float32> vecData;
 	vecData.resize(width * height * numChannels);
 
-	std::memcpy(vecData.data(), data, width * height * numChannels);
+	std::memcpy(vecData.data(), data,
+							static_cast<size_t>(width) * height * numChannels * sizeof(float32));
 
 	texData.setTextureData(vecData);
 	stbi_image_free(data);
