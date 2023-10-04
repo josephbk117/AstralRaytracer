@@ -24,18 +24,11 @@ namespace AstralRaytracer
 
 		onResize(32, 32);
 
-		m_renderTexture.init({32, 32});
+		m_renderTexture1.init({32, 32});
+		m_renderTexture2.init({32, 32});
 		m_dwPanel.init(1.0f, 1.0f);
 
-		m_shaderProgram.compileShadersFromSrcCode(ShaderLiterals::VertexShader,
-																							ShaderLiterals::FragmentShader);
-		m_shaderProgram.linkShaders();
-
-		m_shaderProgram.use();
-		const gl::GLint shaderModelLoc= m_shaderProgram.getUniformLocation("model");
-		m_shaderProgram.applyShaderUniformMatrix(shaderModelLoc, glm::mat4(1.0f));
 		m_dwPanel.setTextureID(m_textureId);
-		m_shaderProgram.unuse();
 	}
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
@@ -87,14 +80,26 @@ namespace AstralRaytracer
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
 
-		m_renderTexture.bind();
-		gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+		m_outputTextureId= m_textureId;
 
-		m_shaderProgram.use();
-		m_dwPanel.draw();
-		m_shaderProgram.unuse();
+		if(scene.m_postProcessingStack.size() > 0)
+		{
+			scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture1, m_textureId);
+			m_outputTextureId= m_renderTexture1.getTexture();
+			for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
+			{
+				const bool isOddIndex= (index - 1) % 2 != 0;
 
-		m_renderTexture.unbind();
+				const RenderTexture& selectedRenderTex= (isOddIndex) ? m_renderTexture1 : m_renderTexture2;
+
+				const uint32 selectedInputTex=
+						(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
+
+				scene.m_postProcessingStack[index]->processImage(m_dwPanel, selectedRenderTex,
+																												 selectedInputTex);
+				m_outputTextureId= selectedRenderTex.getTexture();
+			}
+		}
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(glm::vec2        coord,
@@ -126,7 +131,8 @@ namespace AstralRaytracer
 		}
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
-		m_renderTexture.resize({width, height});
+		m_renderTexture1.resize({width, height});
+		m_renderTexture2.resize({width, height});
 
 		return true;
 	}

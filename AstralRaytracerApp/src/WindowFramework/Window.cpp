@@ -230,8 +230,8 @@ namespace AstralRaytracer
 		colors[ImGuiCol_CheckMark]           = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_SliderGrab]          = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
 		colors[ImGuiCol_SliderGrabActive]    = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
-		colors[ImGuiCol_Button]              = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
-		colors[ImGuiCol_ButtonHovered]       = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_Button]              = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
+		colors[ImGuiCol_ButtonHovered]       = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_ButtonActive]        = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_Header]              = ImVec4(0.51f, 0.63f, 0.76f, 1.00f);
 		colors[ImGuiCol_HeaderHovered]       = ImVec4(0.53f, 0.75f, 0.82f, 1.00f);
@@ -492,15 +492,34 @@ namespace AstralRaytracer
 
 					ImGui::TableSetColumnIndex(2);
 
-					ImGui::PushFont(getSecondaryFont());
-					ImGui::SeparatorText("INSPECTOR");
-					ImGui::PopFont();
-					displayTransformUI(appStateInfo, scene, assetManager);
+					ImGuiTabBarFlags tab_bar_flags= ImGuiTabBarFlags_None;
+					if(ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
+					{
+						if(ImGui::BeginTabItem("Inspector"))
+						{
+							ImGui::PushFont(getSecondaryFont());
+							ImGui::SeparatorText("INSPECTOR");
+							ImGui::PopFont();
+							displayTransformUI(appStateInfo, scene, assetManager);
 
-					ImGui::Separator();
-					ImGui::Separator();
+							ImGui::Separator();
+							ImGui::Separator();
 
-					displayMaterialUI(appStateInfo, scene, assetManager);
+							displayMaterialUI(appStateInfo, scene, assetManager);
+							ImGui::EndTabItem();
+						}
+						if(ImGui::BeginTabItem("Post-Process Stack"))
+						{
+							ImGui::PushFont(getSecondaryFont());
+							ImGui::SeparatorText("POST-PROCESS STACK");
+							ImGui::PopFont();
+
+							m_postProcessingStack.display(scene, *this,
+																						ImVec2(0.0f, viewportSceneInfoSplitHeight));
+							ImGui::EndTabItem();
+						}
+						ImGui::EndTabBar();
+					}
 
 					ImGui::EndTable();
 				}

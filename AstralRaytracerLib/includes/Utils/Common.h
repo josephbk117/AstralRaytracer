@@ -10,6 +10,8 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <typeindex>
+#include <typeinfo>
 #include <uuid.h>
 
 #define assertm(exp, msg) assert(((void)msg, exp))
@@ -71,6 +73,17 @@ namespace AstralRaytracer
 		FONT,
 		MAX= FONT
 	};
+
+	static const size_t Int32Hash  = std::type_index(typeid(int32)).hash_code();
+	static const size_t UInt32Hash = std::type_index(typeid(uint32)).hash_code();
+	static const size_t I32Vec2Hash= std::type_index(typeid(glm::ivec2)).hash_code();
+	static const size_t U32Vec2Hash= std::type_index(typeid(glm::uvec2)).hash_code();
+	static const size_t I32Vec3Hash= std::type_index(typeid(glm::ivec3)).hash_code();
+	static const size_t U32Vec3Hash= std::type_index(typeid(glm::uvec3)).hash_code();
+
+	static const size_t Float32Hash= std::type_index(typeid(float32)).hash_code();
+	static const size_t F32Vec2Hash= std::type_index(typeid(glm::vec2)).hash_code();
+	static const size_t F32Vec3Hash= std::type_index(typeid(glm::vec3)).hash_code();
 
 	static const std::string              invalidString{};
 	static const std::vector<std::string> invalidVectorOfString{};

@@ -21,8 +21,6 @@ DrawingPanel::~DrawingPanel()
 
 void DrawingPanel::init(float32 width, float32 height)
 {
-	width*= 2;
-	height*= 2;
 	m_width = width;
 	m_height= height;
 	if(m_vaoID == 0)
@@ -30,39 +28,39 @@ void DrawingPanel::init(float32 width, float32 height)
 	if(m_vboID == 0)
 		gl::glGenBuffers(1, &m_vboID);
 
-	std::array<float32, 24> vertexData;
-	vertexData[0]= width * 0.5f;
-	vertexData[1]= height * 0.5f;
+	std::array<float32, 24> vertexData= {};
+	vertexData[0]                     = width;
+	vertexData[1]                     = height;
 
 	vertexData[2]= 1.0f;
 	vertexData[3]= 1.0f;
 
-	vertexData[4]= -width * 0.5f;
-	vertexData[5]= height * 0.5f;
+	vertexData[4]= -width;
+	vertexData[5]= height;
 
 	vertexData[6]= 0.0f;
 	vertexData[7]= 1.0f;
 
-	vertexData[8]= -width * 0.5f;
-	vertexData[9]= -height * 0.5f;
+	vertexData[8]= -width;
+	vertexData[9]= -height;
 
 	vertexData[10]= 0.0f;
 	vertexData[11]= 0.0f;
 
-	vertexData[12]= -width * 0.5f;
-	vertexData[13]= -height * 0.5f;
+	vertexData[12]= -width;
+	vertexData[13]= -height;
 
 	vertexData[14]= 0.0f;
 	vertexData[15]= 0.0f;
 
-	vertexData[16]= width * 0.5f;
-	vertexData[17]= -height * 0.5f;
+	vertexData[16]= width;
+	vertexData[17]= -height;
 
 	vertexData[18]= 1.0f;
 	vertexData[19]= 0;
 
-	vertexData[20]= width * 0.5f;
-	vertexData[21]= height * 0.5f;
+	vertexData[20]= width;
+	vertexData[21]= height;
 
 	vertexData[22]= 1.0f;
 	vertexData[23]= 1.0f;
@@ -84,12 +82,7 @@ const Transform& DrawingPanel::getTransform() const noexcept { return m_transfor
 
 Transform& DrawingPanel::getTransform() noexcept { return m_transform; }
 
-void DrawingPanel::setTextureID(uint32 textureID)
-{
-	if(m_textureID != textureID)
-		gl::glDeleteTextures(1, &m_textureID); //TODO: Potential issue when doing multiple passes
-	m_textureID= textureID;
-}
+void DrawingPanel::setTextureID(uint32 textureID) { m_textureID= textureID; }
 
 uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
 
@@ -110,7 +103,7 @@ glm::vec4 DrawingPanel::getPanelWorldDimension() noexcept
 									 top + m_transform.getPosition().y, bottom + m_transform.getPosition().y);
 }
 
-void DrawingPanel::draw() noexcept
+void DrawingPanel::draw() const noexcept
 {
 	gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID);
 	gl::glBindVertexArray(m_vaoID);
