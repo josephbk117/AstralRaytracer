@@ -3,7 +3,7 @@
 
 namespace AstralRaytracer
 {
-	class LiminanceThresholdPostProcessing: public PostProcessing
+	class LuminanceThresholdPostProcessing: public PostProcessing
 	{
 		public:
 		const std::string& getName() const override;

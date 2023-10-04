@@ -1,12 +1,12 @@
 #include "Raytracer/PostProcessing/LuminanceThresholdPostProcess.h"
 
-const std::string& AstralRaytracer::LiminanceThresholdPostProcessing::getName() const
+const std::string& AstralRaytracer::LuminanceThresholdPostProcessing::getName() const
 {
 	static const std::string name("Luminance Threshold");
 	return name;
 }
 
-void AstralRaytracer::LiminanceThresholdPostProcessing::init() 
+void AstralRaytracer::LuminanceThresholdPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 	m_shaderProgram.linkShaders();
@@ -17,7 +17,7 @@ void AstralRaytracer::LiminanceThresholdPostProcessing::init()
 	m_shaderProgram.unuse();
 }
 
-void AstralRaytracer::LiminanceThresholdPostProcessing::processImage(
+void AstralRaytracer::LuminanceThresholdPostProcessing::processImage(
 		DrawingPanel& drawPanel, const RenderTexture& renderTexture, gl::GLuint imageTexture)
 {
 	renderTexture.bind();
@@ -33,7 +33,7 @@ void AstralRaytracer::LiminanceThresholdPostProcessing::processImage(
 }
 
 const char* const
-AstralRaytracer::LiminanceThresholdPostProcessing::getFragmentShaderSrcCode() const
+AstralRaytracer::LuminanceThresholdPostProcessing::getFragmentShaderSrcCode() const
 {
 	return R"SHADER(		
 			#version 330 core
