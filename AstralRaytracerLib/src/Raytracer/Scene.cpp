@@ -17,22 +17,7 @@ namespace AstralRaytracer
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::u8vec3(255, 255, 255));
 		addTexture(std::move(defaultTexData));
 
-		std::unique_ptr<GammaCorrectionPostProcessing> gammaCorrectionPP=
-				std::make_unique<GammaCorrectionPostProcessing>();
-
-		std::unique_ptr<BilateralFilterPostProcess> bilateralFilterPP=
-				std::make_unique<BilateralFilterPostProcess>();
-
-		std::unique_ptr<DesaturatePostProcessing> desaturatePP=
-				std::make_unique<DesaturatePostProcessing>();
-
-		std::unique_ptr<LuminanceThresholdPostProcessing> luminanceThresholdPP=
-				std::make_unique<LuminanceThresholdPostProcessing>();
-
-		addPostProcessing(std::move(bilateralFilterPP));
-		addPostProcessing(std::move(luminanceThresholdPP));
-		addPostProcessing(std::move(gammaCorrectionPP));
-		addPostProcessing(std::move(desaturatePP));
+		addPostProcessing(std::make_unique<GammaCorrectionPostProcessing>());
 	}
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
