@@ -9,6 +9,7 @@
 #include <glm/gtx/matrix_decompose.hpp>
 #include <limits>
 #include <memory>
+#include <numbers>
 #include <string>
 #include <typeindex>
 #include <typeinfo>
