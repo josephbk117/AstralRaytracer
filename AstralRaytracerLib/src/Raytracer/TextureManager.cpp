@@ -2,6 +2,7 @@
 
 #include "Raytracer/TextureData.h"
 
+#include <execution>
 #include <iostream>
 #include <stbimage/stb_image.h>
 
@@ -60,6 +61,10 @@ TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesyste
 
 	std::memcpy(vecData.data(), data,
 							static_cast<size_t>(width) * height * numChannels * sizeof(float32));
+
+	//Apply gamma
+	std::for_each(std::execution::par_unseq, vecData.begin(), vecData.end(),
+								[=](float32& value) { value= glm::pow(value, 1.0f / 2.2f); });
 
 	texData.setTextureData(vecData);
 	stbi_image_free(data);

@@ -43,17 +43,19 @@ namespace AstralRaytracer
 		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
 		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
-		std::for_each(std::execution::par, m_rayIterator.begin(), m_rayIterator.end(),
+		std::for_each(std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
 									[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex,
 									 &inverseView, &inverseProjection, &scene, &cam](uint32 index)
 									{
 										uint32       seedVal         = index * m_frameIndex;
 										const uint32 pixelAccessIndex= index * 3;
 
-										const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) +
-																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
-										const float32 yIndex= static_cast<float32>(pixelAccessIndex / xAxisPixelCount) +
-																					((Random::randomFloat(seedVal) * 2.0f) - 1.0f);
+										const float32 randFloat1= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
+										const float32 randFloat2= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
+
+										const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) + randFloat1;
+										const float32 yIndex=
+												static_cast<float32>(pixelAccessIndex / xAxisPixelCount) + randFloat2;
 
 										const glm::vec2 coOrd{xIndex / xAxisPixelCount, yIndex / imageHeight};
 
@@ -181,8 +183,18 @@ namespace AstralRaytracer
 			}
 			else
 			{
+				constexpr float32 PI   = std::numbers::pi;
+				const float32     theta= glm::acos(-rayDir.y);          // Polar angle (latitude)
+				const float32     phi  = glm::atan(rayDir.z, rayDir.x); // Azimuthal angle (longitude)
+
+				const float32 u= (phi + PI) / (2.0f * PI); // Map longitude to U
+				const float32 v= 1.0f - (theta / PI);      // Map latitude to V
+
 				// No intersection; add background color
-				light+= glm::vec3(0.55f, 0.75f, 1.0f) * contribution;
+
+				const glm::vec3& skyColor=
+						scene.m_textures[scene.m_textures.size() - 1].getTexelColor(u, v);
+				light+= skyColor * contribution;
 			}
 		}
 
