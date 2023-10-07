@@ -573,16 +573,16 @@ namespace AstralRaytracer
 		AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
 		ImGui::Text(assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
 
-		if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float*>(&mat.albedo)))
+		if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float32*>(&mat.albedo)))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
-		if(ImGui::SliderInt("Texture", reinterpret_cast<int*>(&mat.texture), 0, textureCount - 1, "%d",
+		if(ImGui::SliderInt("Texture", reinterpret_cast<int32*>(&mat.texture), 0, textureCount - 1, "%d",
 												ImGuiSliderFlags_AlwaysClamp))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
-		if(ImGui::ColorEdit3("Emission", reinterpret_cast<float*>(&mat.emission)))
+		if(ImGui::ColorEdit3("Emission", reinterpret_cast<float32*>(&mat.emission)))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
