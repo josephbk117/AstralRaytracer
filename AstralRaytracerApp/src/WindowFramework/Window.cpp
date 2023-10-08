@@ -17,12 +17,16 @@ namespace AstralRaytracer
 		assert(m_instance == nullptr);
 		m_instance= this;
 
-		m_resolution= {1280, 720};
-
 		if(!glfwInit())
 		{
 			exit(EXIT_FAILURE);
 		}
+
+		GLFWmonitor* primaryMonitor= glfwGetPrimaryMonitor();
+		// Get the video mode of the primary monitor
+		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
+
+		m_resolution= {mode->width, mode->height};
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -37,6 +41,7 @@ namespace AstralRaytracer
 			exit(EXIT_FAILURE);
 		}
 
+		glfwSetWindowSizeLimits(m_glfwWindow, 720, 500, GLFW_DONT_CARE, GLFW_DONT_CARE);
 		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(m_glfwWindow);
 
@@ -62,6 +67,49 @@ namespace AstralRaytracer
 		m_primaryFont  = io.Fonts->AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", 16.0f);
 		m_secondaryFont= io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 22.0f);
 		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
+
+		// Setup Imgui File Dialog Callbacks
+		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(
+				[](IGFD_Thumbnail_Info* vThumbnail_Info) -> void
+				{
+					if(vThumbnail_Info && vThumbnail_Info->isReadyToUpload &&
+						 vThumbnail_Info->textureFileDatas)
+					{
+						gl::GLuint textureId= 0;
+						gl::glGenTextures(1, &textureId);
+						vThumbnail_Info->textureID= textureId;
+
+						gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+						gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGBA,
+														 (gl::GLsizei)vThumbnail_Info->textureWidth,
+														 (gl::GLsizei)vThumbnail_Info->textureHeight, 0, gl::GL_RGBA,
+														 gl::GL_UNSIGNED_BYTE, vThumbnail_Info->textureFileDatas);
+						gl::glFinish();
+						gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
+
+						delete[] vThumbnail_Info->textureFileDatas;
+						vThumbnail_Info->textureFileDatas= nullptr;
+
+						vThumbnail_Info->isReadyToUpload = false;
+						vThumbnail_Info->isReadyToDisplay= true;
+					}
+				});
+
+		// Destroy thumbnails texture
+		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(
+				[](IGFD_Thumbnail_Info* vThumbnail_Info)
+				{
+					if(vThumbnail_Info)
+					{
+						gl::GLuint texID= vThumbnail_Info->textureID;
+						gl::glDeleteTextures(1, &texID);
+						gl::glFinish();
+					}
+				});
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 
@@ -271,6 +319,8 @@ namespace AstralRaytracer
 		ImGuizmo::BeginFrame();
 		ImGuizmo::SetOrthographic(false);
 
+		ImGuiFileDialog::Instance()->ManageGPUThumbnails();
+
 		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
 
@@ -285,7 +335,17 @@ namespace AstralRaytracer
 			{
 				if(ImGui::BeginMenu("File"))
 				{
-					if(ImGui::MenuItem("Open", "Ctrl+O")) {}
+					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
+					{
+						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File",
+																										".png,.jpg,.hpp", ".", 1, nullptr,
+																										ImGuiFileDialogFlags_Modal);
+					}
+					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
+					{
+						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".ascene",
+																										".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					}
 					ImGui::EndMenu();
 				}
 				if(ImGui::BeginMenu("Preference"))
@@ -302,6 +362,28 @@ namespace AstralRaytracer
 				}
 				ImGui::EndMenuBar();
 			}
+
+			if(ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse,
+																							UI::toImVec2(m_minResolution), viewport->WorkSize))
+			{
+				if(ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					std::string filePath    = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+					if(scene.hasSceneLoaded())
+					{
+						scene.unload();
+					}
+
+					scene.deserialize(assetManager, filePathName);
+
+					appStateInfo.isSceneDirty= true;
+				}
+
+				ImGuiFileDialog::Instance()->Close();
+			}
+
 			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																				 ImGuiWindowFlags_AlwaysUseWindowPadding;
 
@@ -559,7 +641,7 @@ namespace AstralRaytracer
 																 const AssetManager& assetManager)
 	{
 		ImGui::PushFont(getTertiaryFont());
-		ImGui::Text("Material");
+		ImGui::TextUnformatted("Material");
 		ImGui::PopFont();
 
 		if(!scene.hasSceneLoaded())
@@ -571,14 +653,15 @@ namespace AstralRaytracer
 		const uint32 matIndex=
 				scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex).get()->getMaterialIndex();
 		AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
-		ImGui::Text(assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
+		ImGui::TextUnformatted(
+				assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
 
 		if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float32*>(&mat.albedo)))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
-		if(ImGui::SliderInt("Texture", reinterpret_cast<int32*>(&mat.texture), 0, textureCount - 1, "%d",
-												ImGuiSliderFlags_AlwaysClamp))
+		if(ImGui::SliderInt("Texture", reinterpret_cast<int32*>(&mat.texture), 0, textureCount - 1,
+												"%d", ImGuiSliderFlags_AlwaysClamp))
 		{
 			appStateInfo.isSceneDirty= true;
 		}
@@ -603,7 +686,7 @@ namespace AstralRaytracer
 																	const AssetManager& assetManager)
 	{
 		ImGui::PushFont(getTertiaryFont());
-		ImGui::Text("Transform");
+		ImGui::TextUnformatted("Transform");
 		ImGui::PopFont();
 		if(!scene.hasSceneLoaded())
 		{
