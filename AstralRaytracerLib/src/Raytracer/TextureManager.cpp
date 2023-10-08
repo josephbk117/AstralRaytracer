@@ -2,9 +2,12 @@
 
 #include "Raytracer/TextureData.h"
 
-#include <execution>
 #include <iostream>
 #include <stbimage/stb_image.h>
+
+#ifdef SUPPORT_STD_EXECUTION
+	#include <execution>
+#endif
 
 TextureDataRGB TextureManager::loadTextureDataFromFileRGB(const std::filesystem::path& path)
 {
@@ -62,8 +65,12 @@ TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesyste
 	std::memcpy(vecData.data(), data,
 							static_cast<size_t>(width) * height * numChannels * sizeof(float32));
 
-	//Apply gamma
+	// Apply gamma
+#ifdef SUPPORT_STD_EXECUTION
 	std::for_each(std::execution::par_unseq, vecData.begin(), vecData.end(),
+#else
+	std::for_each(vecData.begin(), vecData.end(),
+#endif // SUPPORT_STD_EXECUTION,
 								[=](float32& value) { value= glm::pow(value, 1.0f / 2.2f); });
 
 	texData.setTextureData(vecData);
