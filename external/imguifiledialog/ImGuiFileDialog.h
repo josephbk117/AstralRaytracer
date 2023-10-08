@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstddef>
 #if defined(__clang__)
 	#pragma clang diagnostic ignored "-Wunknown-pragmas"
 #elif defined(__GNUC__)
@@ -2106,7 +2106,7 @@ namespace IGFD
 		virtual ~FileDialog(); // ImGuiFileDialog Destructor
 
 		virtual // todo : need to refactor all theses function to maybe just one
-				//  standard dialog
+						//  standard dialog
 				void
 				OpenDialog(                      // open simple dialog (path and fileName can be specified)
 						const std::string&   vKey,   // key dialog
@@ -2419,8 +2419,8 @@ IGFD_GetSelection( // Open File behavior : will return selection via a map<FileN
 IGFD_C_API char* IGFD_GetFilePathName( // Save File behavior : will always return the content of the
 																			 // field with current filter extention and current path,
 																			 // WARNINGS you are responsible to free it
-		ImGuiFileDialog* vContextPtr, // ImGuiFileDialog context
-		IGFD_ResultMode  vMode);       // Result Mode
+		ImGuiFileDialog* vContextPtr,      // ImGuiFileDialog context
+		IGFD_ResultMode  vMode);            // Result Mode
 
 IGFD_C_API char*
 IGFD_GetCurrentFileName( // Save File behavior : will always return the content of the field with
@@ -2480,14 +2480,14 @@ IGFD_C_API void SetLocales(        // set locales to use before and after displa
 #ifdef USE_EXPLORATION_BY_KEYS
 IGFD_C_API void IGFD_SetFlashingAttenuationInSeconds( // set the flashing time of the line in file
 																											// list when use exploration keys
-		ImGuiFileDialog* vContextPtr, // ImGuiFileDialog context
-		float            vAttenValue);           // set the attenuation (from flashed to not flashed) in seconds
+		ImGuiFileDialog* vContextPtr,                     // ImGuiFileDialog context
+		float            vAttenValue); // set the attenuation (from flashed to not flashed) in seconds
 #endif
 
 #ifdef USE_BOOKMARK
 IGFD_C_API char* IGFD_SerializeBookmarks( // serialize bookmarks : return bookmark buffer to save in
 																					// a file, WARNINGS you are responsible to free it
-		ImGuiFileDialog* vContextPtr,           // ImGuiFileDialog context
+		ImGuiFileDialog* vContextPtr,         // ImGuiFileDialog context
 		bool vDontSerializeCodeBasedBookmarks); // for avoid serialization of bookmarks added by code
 
 IGFD_C_API void
@@ -2519,7 +2519,7 @@ SetDestroyThumbnailCallback(      // define the callback for destroy the thumbna
 
 IGFD_C_API void ManageGPUThumbnails( // must be call in gpu zone, possibly a thread, will call the
 																		 // callback for create / destroy the textures
-		ImGuiFileDialog* vContextPtr); // ImGuiFileDialog context
-#endif                             // USE_THUMBNAILS
+		ImGuiFileDialog* vContextPtr);   // ImGuiFileDialog context
+#endif                               // USE_THUMBNAILS
 
 #pragma endregion
