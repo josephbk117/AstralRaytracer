@@ -1281,7 +1281,7 @@ struct IGFD_Thumbnail_Info
 	int            textureHeight    = 0; // height of the texture to upload
 	int            textureChannels  = 0; // count channels of the texture to upload
 	unsigned char* textureFileDatas= 0; // file texture datas, will be rested to null after gpu upload
-	void*          textureID= 0; // 2d texture id (void* is like ImtextureID type) (GL, DX, VK, Etc..)
+	size_t         textureID= 0; // 2d texture id (void* is like ImtextureID type) (GL, DX, VK, Etc..)
 	void*          userDatas= 0; // user datas
 };
 #endif // USE_THUMBNAILS

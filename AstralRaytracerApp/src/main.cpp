@@ -19,7 +19,7 @@
 int main()
 {
 	AstralRaytracer::AssetManager assetManager;
-	AstralRaytracer::Window window("Astral Raytracer");
+	AstralRaytracer::Window       window("Astral Raytracer");
 	window.initialize();
 
 	// Destructors need to be called before context is removed
@@ -27,6 +27,8 @@ int main()
 		AstralRaytracer::Renderer renderer;
 		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
 		AstralRaytracer::Scene    scene;
+
+		// Load default scene
 		scene.deserialize(assetManager, R"(../../../../ExampleProject/scenes/scene1.ascene)");
 
 		AstralRaytracer::UI::AppStateInfo appStateInfo;

@@ -17,12 +17,16 @@ namespace AstralRaytracer
 		assert(m_instance == nullptr);
 		m_instance= this;
 
-		m_resolution= {1280, 720};
-
 		if(!glfwInit())
 		{
 			exit(EXIT_FAILURE);
 		}
+
+		GLFWmonitor* primaryMonitor= glfwGetPrimaryMonitor();
+		// Get the video mode of the primary monitor
+		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
+
+		m_resolution= {mode->width, mode->height};
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -73,7 +77,7 @@ namespace AstralRaytracer
 					{
 						gl::GLuint textureId= 0;
 						gl::glGenTextures(1, &textureId);
-						vThumbnail_Info->textureID= (void*)textureId;
+						vThumbnail_Info->textureID= textureId;
 
 						gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
 						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
@@ -101,7 +105,7 @@ namespace AstralRaytracer
 				{
 					if(vThumbnail_Info)
 					{
-						gl::GLuint texID= (std::uintptr_t)vThumbnail_Info->textureID;
+						gl::GLuint texID= vThumbnail_Info->textureID;
 						gl::glDeleteTextures(1, &texID);
 						gl::glFinish();
 					}
@@ -331,11 +335,16 @@ namespace AstralRaytracer
 			{
 				if(ImGui::BeginMenu("File"))
 				{
-					if(ImGui::MenuItem("Open", "Ctrl+O"))
+					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 					{
-						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseFileDlgKey", "Choose File", ".png,.jpg,.hpp", ".", 1, nullptr,
-								ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_ConfirmOverwrite);
+						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File",
+																										".png,.jpg,.hpp", ".", 1, nullptr,
+																										ImGuiFileDialogFlags_Modal);
+					}
+					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
+					{
+						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".ascene",
+																										".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 					}
 					ImGui::EndMenu();
 				}
@@ -361,6 +370,15 @@ namespace AstralRaytracer
 				{
 					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
 					std::string filePath    = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+					if(scene.hasSceneLoaded())
+					{
+						scene.unload();
+					}
+
+					scene.deserialize(assetManager, filePathName);
+
+					appStateInfo.isSceneDirty= true;
 				}
 
 				ImGuiFileDialog::Instance()->Close();

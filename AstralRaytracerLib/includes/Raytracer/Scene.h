@@ -25,6 +25,7 @@ namespace AstralRaytracer
 		void               addPostProcessing(std::unique_ptr<PostProcessing>&& postProcessing);
 		void serialize(const AssetManager& assetManager, const std::filesystem::path& path);
 		void deserialize(AssetManager& assetManager, const std::filesystem::path& path);
+		void unload();
 
 		std::vector<std::unique_ptr<Traceable>>      m_sceneTraceables;
 		std::vector<Material>                        m_materials;

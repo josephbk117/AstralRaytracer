@@ -10,15 +10,7 @@
 
 namespace AstralRaytracer
 {
-	Scene::Scene()
-	{
-		addMaterial(Material());
-		TextureDataRGBF defaultTexData(1, 1);
-		defaultTexData.setTexelColorAtPixelIndex(0, glm::vec3(1, 1, 1));
-		addTexture(std::move(defaultTexData));
-
-		addPostProcessing(std::make_unique<GammaCorrectionPostProcessing>());
-	}
+	Scene::Scene() { unload(); }
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
 
@@ -166,6 +158,22 @@ namespace AstralRaytracer
 						assetManager.LoadTraceableAsset("../../../../" + magic.second.as<std::string>()));
 			}
 		}
+	}
+
+	void Scene::unload()
+	{
+		m_sceneTraceables.clear();
+		m_materials.clear();
+		m_textures.clear();
+		m_postProcessingStack.clear();
+
+		// Set up defaults
+
+		addMaterial(Material());
+		TextureDataRGBF defaultTexData(1, 1);
+		defaultTexData.setTexelColorAtPixelIndex(0, glm::vec3(1, 1, 1));
+		addTexture(std::move(defaultTexData));
+		addPostProcessing(std::make_unique<GammaCorrectionPostProcessing>());
 	}
 
 } // namespace AstralRaytracer
