@@ -15,12 +15,7 @@
 #include <typeinfo>
 #include <uuid.h>
 
-#if defined(__APPLE__)
-	#define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
-	#if CLANG_VERSION >= 16000
-		#define SUPPORT_STD_EXECUTION
-	#endif
-#else
+#ifndef __APPLE__
 	#define SUPPORT_STD_EXECUTION
 #endif
 
