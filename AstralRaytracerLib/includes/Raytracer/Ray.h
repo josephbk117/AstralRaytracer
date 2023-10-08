@@ -1,8 +1,5 @@
 #pragma once
-#include "ColourData.h"
 #include "Utils/Common.h"
-
-#include <limits>
 
 struct Ray
 {
