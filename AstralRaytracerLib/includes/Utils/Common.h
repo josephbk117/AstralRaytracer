@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstring>
 #define GLM_FORCE_INTRINSICS
+#include <cstddef>
 #include <filesystem>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
