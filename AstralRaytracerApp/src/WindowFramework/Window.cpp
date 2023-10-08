@@ -641,7 +641,7 @@ namespace AstralRaytracer
 																 const AssetManager& assetManager)
 	{
 		ImGui::PushFont(getTertiaryFont());
-		ImGui::Text("Material");
+		ImGui::TextUnformatted("Material");
 		ImGui::PopFont();
 
 		if(!scene.hasSceneLoaded())
@@ -653,7 +653,8 @@ namespace AstralRaytracer
 		const uint32 matIndex=
 				scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex).get()->getMaterialIndex();
 		AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
-		ImGui::Text(assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
+		ImGui::TextUnformatted(
+				assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
 
 		if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float32*>(&mat.albedo)))
 		{
@@ -685,7 +686,7 @@ namespace AstralRaytracer
 																	const AssetManager& assetManager)
 	{
 		ImGui::PushFont(getTertiaryFont());
-		ImGui::Text("Transform");
+		ImGui::TextUnformatted("Transform");
 		ImGui::PopFont();
 		if(!scene.hasSceneLoaded())
 		{
