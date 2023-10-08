@@ -105,7 +105,7 @@ namespace AstralRaytracer
 			ImGui::BeginTooltip();
 			ImGui::BeginGroup();
 			ImDrawList* const    drawList          = ImGui::GetWindowDrawList();
-			static const float32 zoomRectangleWidth= 160.0f;
+			static const float32 zoomRectangleWidth= 180.0f;
 
 			// bitmap zoom
 			ImGui::InvisibleButton("AnotherInvisibleMan", ImVec2(zoomRectangleWidth, zoomRectangleWidth));
@@ -166,31 +166,29 @@ namespace AstralRaytracer
 			const glm::u8vec3& pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
 
 			PixelUnion pixel;
-			pixel.data[0]= pixData.r; // Convert HDR to 0-255 range
-			pixel.data[1]= pixData.g; // Convert HDR to 0-255 range
-			pixel.data[2]= pixData.b; // Convert HDR to 0-255 range
+			pixel.data[0]= pixData.r;
+			pixel.data[1]= pixData.g;
+			pixel.data[2]= pixData.b;
 			pixel.data[3]= 255;
 
 			const ImVec4 color= ImColor(pixel.texel);
-			ImVec4       colHSV;
+
+			ImVec4 colHSV;
 			ImGui::ColorConvertRGBtoHSV(color.x, color.y, color.z, colHSV.x, colHSV.y, colHSV.z);
-			ImGui::Text("U %1.2f V %1.2f", mouseUVCoord.x, mouseUVCoord.y);
-			ImGui::Text("Coord %d %d", static_cast<int32>(mouseUVCoord.x * width),
-									static_cast<int32>(mouseUVCoord.y * height));
+
+			ImGui::Text("Size %d, %d", width, height);
 			ImGui::Separator();
-			ImGui::Text("R 0x%02x  G 0x%02x  B 0x%02x", static_cast<int32>(color.x * 255.0f),
-									static_cast<int32>(color.y * 255.0f), static_cast<int32>(color.z * 255.0f));
-			ImGui::Text("R %1.2f G %1.2f B %1.2f", color.x, color.y, color.z);
+
+			ImGui::Text("%dpx, %dpx", static_cast<uint32>(mouseUVCoord.x * width),
+									static_cast<uint32>(mouseUVCoord.y * height));
+			ImGui::Text("U %1.3f, V %1.3f", mouseUVCoord.x, mouseUVCoord.y);
+
 			ImGui::Separator();
-			ImGui::Text("H 0x%02x  S 0x%02x  V 0x%02x", static_cast<int32>(colHSV.x * 255.0f),
-									static_cast<int32>(colHSV.y * 255.0f), static_cast<int32>(colHSV.z * 255.0f));
-			ImGui::Text("H %1.2f S %1.2f V %1.2f", colHSV.x, colHSV.y, colHSV.z);
+			ImGui::Text("R %1.3f, G %1.3f, B %1.3f", color.x, color.y, color.z);
+			ImGui::Text("H %1.3f, S %1.3f, V %1.3f", colHSV.x, colHSV.y, colHSV.z);
 			ImGui::Separator();
-			ImGui::Text("Alpha 0x%02x", static_cast<int32>(color.w * 255.0f));
-			ImGui::Text("Alpha %1.2f", color.w);
-			ImGui::Separator();
-			ImGui::Text("Size %d, %d", static_cast<int32>(displayedTextureSize.x),
-									static_cast<int32>(displayedTextureSize.y));
+			ImGui::Text("Alpha %1.3f", color.w);
+
 			ImGui::EndGroup();
 			histogram(texData);
 			ImGui::EndTooltip();
