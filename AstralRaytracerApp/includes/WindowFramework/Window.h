@@ -26,11 +26,13 @@ namespace AstralRaytracer
 		Window(const Window&)           = delete;
 		Window& operator=(const Window&)= delete;
 		~Window(){};
-		const std::string& getName() const;
-		ImFont* const      getPrimaryFont() const { return m_primaryFont; }
-		ImFont* const      getSecondaryFont() const { return m_secondaryFont; }
-		ImFont* const      getTertiaryFont() const { return m_tertiaryFont; }
-		bool               shouldWindowClose() const;
+		const std::string&  getName() const;
+		const glm::u32vec2& getMinResolution() const { return m_minResolution; };
+		const glm::u32vec2& getMaxResolution() const { return m_maxResolution; };
+		ImFont* const       getPrimaryFont() const { return m_primaryFont; }
+		ImFont* const       getSecondaryFont() const { return m_secondaryFont; }
+		ImFont* const       getTertiaryFont() const { return m_tertiaryFont; }
+		bool                shouldWindowClose() const;
 
 		void initialize();
 		void processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
@@ -58,6 +60,8 @@ namespace AstralRaytracer
 		ImFont*                   m_tertiaryFont = nullptr;
 		std::string               m_name;
 		std::pair<uint32, uint32> m_resolution{0, 0};
+		glm::u32vec2              m_minResolution{720, 500};
+		glm::u32vec2              m_maxResolution{3840, 2160};
 		std::queue<float32>       m_frameTimes;
 
 		UI::ContentBrowser      m_contentBrowser;

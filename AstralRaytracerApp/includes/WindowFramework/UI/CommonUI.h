@@ -18,6 +18,8 @@
 	#include <ImGuizmo.h>
 #endif // IMGUI_API
 
+#include <imguifiledialog/ImGuiFileDialog.h>
+
 namespace AstralRaytracer
 {
 	namespace UI
@@ -35,6 +37,11 @@ namespace AstralRaytracer
 			uint32       selectedObjectIndex   = 0;
 			bool         cameraUpdatedThisFrame= false;
 		};
+
+		ImVec2       toImVec2(const glm::vec2& vec2);
+		ImVec2       toImVec2(const glm::u32vec2& vec2);
+		glm::vec2    toVec2(const ImVec2& vec2);
+		glm::u32vec2 toU32Vec2(const ImVec2& vec2);
 
 		bool displayXYZFloat(glm::vec3& vec3, const std::string& label);
 
