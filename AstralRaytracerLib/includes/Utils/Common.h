@@ -15,6 +15,15 @@
 #include <typeinfo>
 #include <uuid.h>
 
+#if defined(__apple_build_version__)
+	#define CLANG_VERSION (__clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__)
+	#if CLANG_VERSION >= 16000
+		#define SUPPORT_STD_EXECUTION
+	#endif
+#else
+	#define SUPPORT_STD_EXECUTION
+#endif
+
 #define assertm(exp, msg) assert(((void)msg, exp))
 
 using int16 = int16_t;
