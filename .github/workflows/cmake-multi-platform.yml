@@ -48,9 +48,11 @@ jobs:
             c_compiler: cl
           - os: macos-latest
             c_compiler: gcc
+          - os: macos-latest
+            c_compiler: cl
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
