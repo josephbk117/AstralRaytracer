@@ -7,8 +7,11 @@ struct ColourData
 
 	public:
 	ColourData() { m_colour= glm::vec3(1.0f, 1.0f, 1.0f); }
+
 	ColourData(float32 r, float32 g, float32 b) { m_colour= glm::vec3(r, g, b); }
+
 	ColourData(const glm::vec3& normalized) { m_colour= normalized; }
+
 	void setColour_8_Bit(const glm::vec3& colour)
 	{
 		int32 r = glm::clamp((int32)colour.r, 0, 255);
@@ -16,6 +19,7 @@ struct ColourData
 		int32 b = glm::clamp((int32)colour.b, 0, 255);
 		m_colour= glm::vec3(r, g, b);
 	}
+
 	void setColour_8_Bit(uint8 r, uint8 g, uint8 b)
 	{
 		float32 _r= r / 255.0f;
@@ -23,17 +27,17 @@ struct ColourData
 		float32 _b= b / 255.0f;
 		m_colour  = glm::vec3(_r, _g, _b);
 	}
-	void        setColour_32_bit(const glm::vec3& colour) { m_colour= colour; }
-	void        setColour_32_bit(float32 r, float32 g, float32 b) { m_colour= glm::vec3(r, g, b); }
-	glm::vec3   getColour_32_bit() const { return m_colour; }
+
+	void setColour_32_bit(const glm::vec3& colour) { m_colour= colour; }
+
+	void setColour_32_bit(float32 r, float32 g, float32 b) { m_colour= glm::vec3(r, g, b); }
+
+	glm::vec3 getColour_32_bit() const { return m_colour; }
+
 	glm::u8vec3 getColour_8_BitClamped() const
 	{
-		const glm::vec3& clamped= glm::clamp(m_colour, glm::vec3(0.0f), glm::vec3(1.0f));
-
-		uint8 rV= (uint8)(clamped.r * 255.0f);
-		uint8 gV= (uint8)(clamped.g * 255.0f);
-		uint8 bV= (uint8)(clamped.b * 255.0f);
-		return glm::u8vec3(rV, gV, bV);
+		const glm::vec3& clamped= glm::min(m_colour, glm::vec3(1.0f)) * 255.0f;
+		return glm::u8vec3(clamped.r, clamped.g, clamped.b);
 	}
 };
 

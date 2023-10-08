@@ -112,13 +112,13 @@ namespace AstralRaytracer
 			const ImRect pickRc(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
 			drawList->AddRectFilled(pickRc.Min, pickRc.Max, 0xFF000000);
 
-			const int32   zoomSize = 4;
-			const float32 quadWidth= zoomRectangleWidth / float32(zoomSize * 2 + 1);
-			const ImVec2  quadSize(quadWidth, quadWidth);
-			const float32 coOrdX= ImClamp(mouseUVCoord.x * width, static_cast<float32>(zoomSize),
-																		static_cast<float32>(width - zoomSize));
-			const float32 coOrdY= ImClamp(mouseUVCoord.y * height, static_cast<float32>(zoomSize),
-																		static_cast<float32>(height - zoomSize));
+			constexpr int32 zoomSize = 4;
+			const float32   quadWidth= zoomRectangleWidth / float32(zoomSize * 2 + 1);
+			const ImVec2    quadSize(quadWidth, quadWidth);
+			const float32   coOrdX= glm::clamp(mouseUVCoord.x * width, static_cast<float32>(zoomSize),
+																				 static_cast<float32>(width - zoomSize - 1));
+			const float32   coOrdY= glm::clamp(mouseUVCoord.y * height, static_cast<float32>(zoomSize),
+																				 static_cast<float32>(height - zoomSize - 1));
 
 			union PixelUnion
 			{
@@ -160,13 +160,15 @@ namespace AstralRaytracer
 			ImGui::SameLine();
 			ImGui::BeginGroup();
 
-			glm::vec3 colData=
+			const ColourData& colData=
 					texData.getTexelColor(static_cast<uint32>(coOrdX), static_cast<uint32>(coOrdY));
 
+			const glm::u8vec3& pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
+
 			PixelUnion pixel;
-			pixel.data[0]= static_cast<uint8>(colData.r * 255.0f); // Convert HDR to 0-255 range
-			pixel.data[1]= static_cast<uint8>(colData.g * 255.0f); // Convert HDR to 0-255 range
-			pixel.data[2]= static_cast<uint8>(colData.b * 255.0f); // Convert HDR to 0-255 range
+			pixel.data[0]= pixData.r; // Convert HDR to 0-255 range
+			pixel.data[1]= pixData.g; // Convert HDR to 0-255 range
+			pixel.data[2]= pixData.b; // Convert HDR to 0-255 range
 			pixel.data[3]= 255;
 
 			const ImVec4 color= ImColor(pixel.texel);
