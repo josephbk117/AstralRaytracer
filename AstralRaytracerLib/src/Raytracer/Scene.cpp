@@ -103,6 +103,17 @@ namespace AstralRaytracer
 
 	void Scene::deserialize(AssetManager& assetManager, const std::filesystem::path& path)
 	{
+		if(!std::filesystem::exists(path))
+		{
+			std::cout << "\nFailed to deserialize scene file :"
+								<< std::filesystem::absolute(path).string().c_str();
+		}
+		else
+		{
+			std::cout << "\nSuccessfully deserialized scene file :"
+								<< std::filesystem::absolute(path).string().c_str();
+		}
+
 		std::ifstream stream(path);
 		YAML::Node    data= YAML::Load(stream);
 
