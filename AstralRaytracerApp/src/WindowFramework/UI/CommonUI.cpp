@@ -14,9 +14,9 @@ namespace AstralRaytracer
 
 		glm::u32vec2 toU32Vec2(const ImVec2& vec2) { return glm::u32vec2(vec2.x, vec2.y); }
 
-		bool displayXYZFloat(glm::vec3& vec3, const std::string& label)
+		bool displayXYZFloat(glm::vec3& vec3, const std::string& label, float32 speed /*=1.0f*/)
 		{
-			return ImGui::InputFloat3(label.c_str(), reinterpret_cast<float*>(&vec3));
+			return ImGui::DragFloat3(label.c_str(), reinterpret_cast<float32*>(&vec3), speed);
 		}
 
 		bool displayTransform(Traceable& traceable)
@@ -26,19 +26,19 @@ namespace AstralRaytracer
 			glm::vec3 scale= traceable.getScale();
 
 			bool modified= false;
-			if(displayXYZFloat(pos, "Position"))
+			if(displayXYZFloat(pos, "Position", 0.1f))
 			{
 				traceable.setPosition(pos);
 				modified= true;
 			}
 
-			if(ImGui::SliderFloat("Rotation", &rot, -180.f, 180.0f, "%.2f"))
+			if(ImGui::DragFloat("Rotation", &rot, 1.0f, -180.f, 180.0f, "%.2f"))
 			{
 				traceable.setRotation(rot);
 				modified= true;
 			}
 
-			if(displayXYZFloat(scale, "Scale"))
+			if(displayXYZFloat(scale, "Scale", 0.1f))
 			{
 				traceable.setScale(scale);
 				modified= true;

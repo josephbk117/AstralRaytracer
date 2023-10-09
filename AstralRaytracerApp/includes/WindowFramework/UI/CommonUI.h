@@ -43,7 +43,7 @@ namespace AstralRaytracer
 		glm::vec2    toVec2(const ImVec2& vec2);
 		glm::u32vec2 toU32Vec2(const ImVec2& vec2);
 
-		bool displayXYZFloat(glm::vec3& vec3, const std::string& label);
+		bool displayXYZFloat(glm::vec3& vec3, const std::string& label, float32 speed = 1.0f);
 
 		bool displayTransform(Traceable& traceable);
 	} // namespace UI

@@ -1,6 +1,7 @@
 #pragma once
 #include "UI/CommonUI.h"
 #include "UI/ContentBrowser.h"
+#include "UI/Inspector.h"
 #include "UI/PostProcessingStack.h"
 #include "Utils/Common.h"
 
@@ -64,21 +65,18 @@ namespace AstralRaytracer
 		glm::u32vec2              m_maxResolution{3840, 2160};
 		std::queue<float32>       m_frameTimes;
 
+		UI::Inspector           m_inspector;
 		UI::ContentBrowser      m_contentBrowser;
 		UI::PostProcessingStack m_postProcessingStack;
-		static void             windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
-		void                    setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
-																																 AstralRaytracer::UI::AppStateInfo& appStateInfo,
-																																 const AstralRaytracer::Renderer&   renderer,
-																																 const AstralRaytracer::Camera&     cam,
-																																 const AstralRaytracer::Scene&      scene);
+
+		static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
+		void        setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
+																										 AstralRaytracer::UI::AppStateInfo& appStateInfo,
+																										 const AstralRaytracer::Renderer&   renderer,
+																										 const AstralRaytracer::Camera&     cam,
+																										 const AstralRaytracer::Scene&      scene);
 
 		void displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
 															 const AssetManager& assetManager);
-
-		void displayMaterialUI(UI::AppStateInfo& appStateInfo, Scene& scene,
-													 const AssetManager& assetManager);
-		void displayTransformUI(UI::AppStateInfo& appStateInfo, Scene& scene,
-														const AssetManager& assetManager);
 	};
 } // namespace AstralRaytracer

@@ -15,6 +15,10 @@ namespace AstralRaytracer
 	{
 		void PostProcessingStack::display(Scene& scene, const Window& window, ImVec2 availableRegion)
 		{
+			ImGui::PushFont(window.getSecondaryFont());
+			ImGui::SeparatorText("POST-PROCESS STACK");
+			ImGui::PopFont();
+
 			availableRegion.y-= 100.0f;
 			static bool addNewPostProcess= false;
 			if(ImGui::Button("Add", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
