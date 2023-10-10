@@ -11,7 +11,7 @@ namespace AstralRaytracer
 		double xPos;
 		double yPos;
 		glfwGetCursorPos(const_cast<GLFWwindow*>(glfwWindow), &xPos, &yPos);
-		return {xPos, yPos};
+		return { xPos, yPos };
 	}
 
 	void Input::setCursorMode(CursorMode cursorMode)

@@ -31,16 +31,18 @@ namespace AstralRaytracer
 				ImGui::OpenPopup("Add New Post Process");
 			}
 
-			if(ImGui::BeginPopupModal("Add New Post Process", &addNewPostProcess,
-																ImGuiWindowFlags_AlwaysAutoResize |
-																		ImGuiWindowFlags_AlwaysUseWindowPadding |
-																		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings))
+			if(ImGui::BeginPopupModal(
+						 "Add New Post Process", &addNewPostProcess,
+						 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_AlwaysUseWindowPadding |
+								 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings
+				 ))
 			{
 
-				const std::array<std::string, 4> items= {"Bilateral Filter", "Desaturate",
-																								 "Gamma Correction", "Luminance Threshold"};
-				if(ImGui::BeginCombo("##Post Processing Effect", items[m_selectedItem].c_str(),
-														 ImGuiComboFlags_None))
+				const std::array<std::string, 4> items= { "Bilateral Filter", "Desaturate",
+																									"Gamma Correction", "Luminance Threshold" };
+				if(ImGui::BeginCombo(
+							 "##Post Processing Effect", items[m_selectedItem].c_str(), ImGuiComboFlags_None
+					 ))
 				{
 					for(int i= 0; i < items.size(); i++)
 					{
@@ -73,8 +75,9 @@ namespace AstralRaytracer
 				ImGui::EndPopup();
 			}
 
-			ImGui::BeginChild("PostProcessingStack", availableRegion, false,
-												ImGuiWindowFlags_AlwaysAutoResize);
+			ImGui::BeginChild(
+					"PostProcessingStack", availableRegion, false, ImGuiWindowFlags_AlwaysAutoResize
+			);
 
 			std::vector<std::unique_ptr<PostProcessing>>& postProcessStack= scene.m_postProcessingStack;
 

@@ -12,9 +12,12 @@ namespace AstralRaytracer
 		m_shaderProgram.setUniformValue("intensitySigma", 0.001f, 0.001f, 1.0f);
 		m_shaderProgram.unuse();
 	}
-	void BilateralFilterPostProcess::processImage(DrawingPanel&        drawPanel,
-																								const RenderTexture& renderTexture,
-																								gl::GLuint           imageTexture)
+
+	void BilateralFilterPostProcess::processImage(
+			DrawingPanel&        drawPanel,
+			const RenderTexture& renderTexture,
+			gl::GLuint           imageTexture
+	)
 	{
 		renderTexture.bind();
 		gl::glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
@@ -27,6 +30,7 @@ namespace AstralRaytracer
 
 		renderTexture.unbind();
 	}
+
 	const char* const BilateralFilterPostProcess::getFragmentShaderSrcCode() const
 	{
 		return R"SHADER(
@@ -69,6 +73,7 @@ namespace AstralRaytracer
 				}
 				)SHADER";
 	}
+
 	const std::string& BilateralFilterPostProcess::getName() const
 	{
 		static const std::string name("Bilateral Filter");

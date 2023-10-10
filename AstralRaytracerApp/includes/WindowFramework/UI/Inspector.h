@@ -15,14 +15,26 @@ namespace AstralRaytracer
 		class Inspector
 		{
 			public:
-			void display(const Window& window, AppStateInfo& appStateInfo, Scene& scene,
-									 const AssetManager& assetManager, ImVec2 availableRegion);
-
+				void display(
+						const Window&       window,
+						AppStateInfo&       appStateInfo,
+						Scene&              scene,
+						const AssetManager& assetManager,
+						ImVec2              availableRegion
+				);
 			private:
-			void displayMaterialUI(const Window& window, AppStateInfo& appStateInfo, Scene& scene,
-														 const AssetManager& assetManager);
-			void displayTransformUI(const Window& window, AppStateInfo& appStateInfo, Scene& scene,
-															const AssetManager& assetManager);
+				void displayMaterialUI(
+						const Window&       window,
+						AppStateInfo&       appStateInfo,
+						Scene&              scene,
+						const AssetManager& assetManager
+				);
+				void displayTransformUI(
+						const Window&       window,
+						AppStateInfo&       appStateInfo,
+						Scene&              scene,
+						const AssetManager& assetManager
+				);
 		};
 	} // namespace UI
 } // namespace AstralRaytracer

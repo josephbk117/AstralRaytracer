@@ -15,7 +15,8 @@ namespace AstralRaytracer
 	}
 
 	const ShaderProgram& PostProcessing::getShader() const { return m_shaderProgram; }
-	const char* const    PostProcessing::getVertexShaderSrcCode() const
+
+	const char* const PostProcessing::getVertexShaderSrcCode() const
 	{
 		return R"SHADER(
 						#version 330 core

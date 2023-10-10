@@ -14,7 +14,7 @@ namespace AstralRaytracer
 		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
 		m_lastMousePosition= glm::vec2(0.0f);
-		m_resolution       = {1, 1};
+		m_resolution       = { 1, 1 };
 
 		recalculateView();
 		recalculateProjection(m_resolution);
@@ -49,7 +49,8 @@ namespace AstralRaytracer
 		const glm::vec3& rightDir= glm::cross(m_direction, upDir);
 
 		glm::quat q= glm::normalize(
-				glm::cross(glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, upDir)));
+				glm::cross(glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, upDir))
+		);
 
 		m_direction= glm::rotate(q, m_direction);
 	}
@@ -63,8 +64,9 @@ namespace AstralRaytracer
 	void Camera::recalculateProjection(const glm::u32vec2& resolution)
 	{
 		const float32 fovRadian= glm::radians(m_fov);
-		m_projection= glm::perspectiveFov(fovRadian, (float32)resolution.x, (float32)resolution.y,
-																			m_nearClip, m_farClip);
+		m_projection           = glm::perspectiveFov(
+        fovRadian, (float32)resolution.x, (float32)resolution.y, m_nearClip, m_farClip
+    );
 		m_inverseProjection= glm::inverse(m_projection);
 	}
 

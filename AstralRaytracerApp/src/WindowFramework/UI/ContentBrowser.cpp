@@ -38,14 +38,18 @@ namespace AstralRaytracer
 					ImGui::OpenPopup("Create New File");
 				}
 
-				if(ImGui::BeginPopupModal("Create New File", nullptr,
-																	ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
-																			ImGuiWindowFlags_NoSavedSettings))
+				if(ImGui::BeginPopupModal(
+							 "Create New File", nullptr,
+							 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+									 ImGuiWindowFlags_NoSavedSettings
+					 ))
 				{
 					ImGui::Text("File Name");
 					std::array<char, 128> inputBuffer;
-					if(ImGui::InputText("File Name Input", inputBuffer.data(), inputBuffer.size(),
-															ImGuiInputTextFlags_EnterReturnsTrue))
+					if(ImGui::InputText(
+								 "File Name Input", inputBuffer.data(), inputBuffer.size(),
+								 ImGuiInputTextFlags_EnterReturnsTrue
+						 ))
 					{
 						const fs::path newFilePath= m_directoryForNewFile.string() + "/";
 						createNewMaterial(newFilePath, inputBuffer.data(), assetManager);
@@ -75,8 +79,11 @@ namespace AstralRaytracer
 			ImGui::EndTable();
 		}
 
-		void ContentBrowser::createNewMaterial(const fs::path& path, const std::string& name,
-																					 AssetManager& assetManager)
+		void ContentBrowser::createNewMaterial(
+				const fs::path&    path,
+				const std::string& name,
+				AssetManager&      assetManager
+		)
 		{
 			Material newMat;
 			assetManager.SaveMaterialAsset(path, name, newMat);
@@ -94,7 +101,7 @@ namespace AstralRaytracer
 
 					if(fs::is_directory(currentNode->pathStr))
 					{
-						for(const auto& entry: fs::directory_iterator(currentNode->pathStr))
+						for(const auto& entry : fs::directory_iterator(currentNode->pathStr))
 						{
 							std::unique_ptr<PathNode> newNode= std::make_unique<PathNode>();
 							newNode->parent                  = currentNode;
@@ -159,7 +166,7 @@ namespace AstralRaytracer
 
 			if(nodeOpen)
 			{
-				for(std::unique_ptr<PathNode>& child: node->nodes)
+				for(std::unique_ptr<PathNode>& child : node->nodes)
 				{
 					drawPathNode(child);
 				}

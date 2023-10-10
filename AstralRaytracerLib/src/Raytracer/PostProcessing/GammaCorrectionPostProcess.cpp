@@ -18,9 +18,11 @@ namespace AstralRaytracer
 		m_shaderProgram.unuse();
 	}
 
-	void GammaCorrectionPostProcessing::processImage(DrawingPanel&        drawPanel,
-																									 const RenderTexture& renderTexture,
-																									 gl::GLuint           imageTexture)
+	void GammaCorrectionPostProcessing::processImage(
+			DrawingPanel&        drawPanel,
+			const RenderTexture& renderTexture,
+			gl::GLuint           imageTexture
+	)
 
 	{
 		renderTexture.bind();

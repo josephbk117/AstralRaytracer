@@ -18,7 +18,10 @@ void AstralRaytracer::LuminanceThresholdPostProcessing::init()
 }
 
 void AstralRaytracer::LuminanceThresholdPostProcessing::processImage(
-		DrawingPanel& drawPanel, const RenderTexture& renderTexture, gl::GLuint imageTexture)
+		DrawingPanel&        drawPanel,
+		const RenderTexture& renderTexture,
+		gl::GLuint           imageTexture
+)
 {
 	renderTexture.bind();
 	gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);

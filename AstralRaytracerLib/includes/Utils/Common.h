@@ -38,13 +38,13 @@ using uintptr= std::uintptr_t;
 
 struct UiBounds
 {
-	glm::vec2 min{0, 0};
-	glm::vec2 max{1, 1};
+		glm::vec2 min{ 0, 0 };
+		glm::vec2 max{ 1, 1 };
 
-	bool isPointInBounds(const glm::vec2 point) const
-	{
-		return point.x > min.x && point.x < max.x && point.y > min.y && point.y < max.y;
-	}
+		bool isPointInBounds(const glm::vec2 point) const
+		{
+			return point.x > min.x && point.x < max.x && point.y > min.y && point.y < max.y;
+		}
 };
 
 namespace AstralRaytracer
@@ -93,15 +93,15 @@ namespace AstralRaytracer
 
 	static const std::string              invalidString{};
 	static const std::vector<std::string> invalidVectorOfString{};
-	static const std::vector<std::string> fileExtensionForImages{".png", ".jpg", ".jpeg", ".bmp"};
-	static const std::vector<std::string> fileExtensionForModels{".gltf", ".glb"};
-	static const std::vector<std::string> fileExtensionForText{".txt", ".md", ".csv"};
-	static const std::vector<std::string> fileExtensionForFont{".ttf"};
+	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp" };
+	static const std::vector<std::string> fileExtensionForModels{ ".gltf", ".glb" };
+	static const std::vector<std::string> fileExtensionForText{ ".txt", ".md", ".csv" };
+	static const std::vector<std::string> fileExtensionForFont{ ".ttf" };
 
-	static const std::string FileExtensionForScene{".ascene"};
-	static const std::string FileExtensionForTexture{".astex"};
-	static const std::string FileExtensionForMaterial{".asmat"};
-	static const std::string FileExtensionForTraceable{".astra"};
+	static const std::string FileExtensionForScene{ ".ascene" };
+	static const std::string FileExtensionForTexture{ ".astex" };
+	static const std::string FileExtensionForMaterial{ ".asmat" };
+	static const std::string FileExtensionForTraceable{ ".astra" };
 
 	std::string toString(AssetType assetType);
 	std::string toString(ResourceType resourceType);

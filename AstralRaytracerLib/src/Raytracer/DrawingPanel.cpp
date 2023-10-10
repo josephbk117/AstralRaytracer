@@ -14,9 +14,13 @@ DrawingPanel::DrawingPanel()
 DrawingPanel::~DrawingPanel()
 {
 	if(m_vboID != 0)
+	{
 		gl::glDeleteBuffers(1, &m_vboID);
+	}
 	if(m_vaoID != 0)
+	{
 		gl::glDeleteVertexArrays(1, &m_vaoID);
+	}
 }
 
 void DrawingPanel::init(float32 width, float32 height)
@@ -24,9 +28,13 @@ void DrawingPanel::init(float32 width, float32 height)
 	m_width = width;
 	m_height= height;
 	if(m_vaoID == 0)
+	{
 		gl::glGenVertexArrays(1, &m_vaoID);
+	}
 	if(m_vboID == 0)
+	{
 		gl::glGenBuffers(1, &m_vboID);
+	}
 
 	std::array<float32, 24> vertexData= {};
 	vertexData[0]                     = width;
@@ -71,8 +79,9 @@ void DrawingPanel::init(float32 width, float32 height)
 	gl::glEnableVertexAttribArray(0);
 	gl::glVertexAttribPointer(0, 2, gl::GL_FLOAT, gl::GL_FALSE, 4 * sizeof(float32), (void*)0);
 	gl::glEnableVertexAttribArray(1);
-	gl::glVertexAttribPointer(1, 2, gl::GL_FLOAT, gl::GL_FALSE, 4 * sizeof(float32),
-														(void*)(2 * sizeof(float32)));
+	gl::glVertexAttribPointer(
+			1, 2, gl::GL_FLOAT, gl::GL_FALSE, 4 * sizeof(float32), (void*)(2 * sizeof(float32))
+	);
 	gl::glBufferData(gl::GL_ARRAY_BUFFER, sizeof(vertexData), vertexData.data(), gl::GL_STATIC_DRAW);
 	gl::glBindBuffer(gl::GL_ARRAY_BUFFER, 0);
 	gl::glBindVertexArray(0);
@@ -89,8 +98,9 @@ uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
 bool DrawingPanel::isPointInPanel(float32 xpos, float32 ypos) noexcept
 {
 	glm::vec4 dimensions= getPanelWorldDimension();
-	return (xpos >= dimensions.x && xpos <= dimensions.y && ypos >= dimensions.w &&
-					ypos <= dimensions.z);
+	return (
+			xpos >= dimensions.x && xpos <= dimensions.y && ypos >= dimensions.w && ypos <= dimensions.z
+	);
 }
 
 glm::vec4 DrawingPanel::getPanelWorldDimension() noexcept
@@ -99,8 +109,10 @@ glm::vec4 DrawingPanel::getPanelWorldDimension() noexcept
 	const float32 right = (m_transform.getScale().x * 0.5f) + 0.5f;
 	const float32 top   = (m_transform.getScale().y * 0.5f) + 0.5f;
 	const float32 bottom= (-m_transform.getScale().y * 0.5f) + 0.5f;
-	return glm::vec4(left + m_transform.getPosition().x, right + m_transform.getPosition().x,
-									 top + m_transform.getPosition().y, bottom + m_transform.getPosition().y);
+	return glm::vec4(
+			left + m_transform.getPosition().x, right + m_transform.getPosition().x,
+			top + m_transform.getPosition().y, bottom + m_transform.getPosition().y
+	);
 }
 
 void DrawingPanel::draw() const noexcept

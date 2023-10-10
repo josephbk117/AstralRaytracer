@@ -7,8 +7,13 @@ namespace AstralRaytracer
 {
 	namespace UI
 	{
-		void Inspector::display(const Window& window, AppStateInfo& appStateInfo, Scene& scene,
-														const AssetManager& assetManager, ImVec2 availableRegion)
+		void Inspector::display(
+				const Window&       window,
+				AppStateInfo&       appStateInfo,
+				Scene&              scene,
+				const AssetManager& assetManager,
+				ImVec2              availableRegion
+		)
 		{
 			ImGui::PushFont(window.getSecondaryFont());
 			ImGui::SeparatorText("INSPECTOR");
@@ -23,8 +28,12 @@ namespace AstralRaytracer
 			ImGui::EndChild();
 		}
 
-		void Inspector::displayMaterialUI(const Window& window, AppStateInfo& appStateInfo,
-																			Scene& scene, const AssetManager& assetManager)
+		void Inspector::displayMaterialUI(
+				const Window&       window,
+				AppStateInfo&       appStateInfo,
+				Scene&              scene,
+				const AssetManager& assetManager
+		)
 		{
 			if(ImGui::CollapsingHeader("Material", nullptr))
 			{
@@ -37,15 +46,18 @@ namespace AstralRaytracer
 				const uint32 matIndex=
 						scene.m_sceneTraceables.at(appStateInfo.selectedObjectIndex).get()->getMaterialIndex();
 				AstralRaytracer::Material& mat= scene.m_materials.at(matIndex);
-				ImGui::Text("Name: %s",
-										assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str());
+				ImGui::Text(
+						"Name: %s", assetManager.getNameAndPathOfMaterial(matIndex).value().assetName.c_str()
+				);
 
 				if(ImGui::ColorEdit3("Albedo", reinterpret_cast<float32*>(&mat.albedo)))
 				{
 					appStateInfo.isSceneDirty= true;
 				}
-				if(ImGui::SliderInt("Texture", reinterpret_cast<int32*>(&mat.texture), 0, textureCount - 1,
-														"%d", ImGuiSliderFlags_AlwaysClamp))
+				if(ImGui::SliderInt(
+							 "Texture", reinterpret_cast<int32*>(&mat.texture), 0, textureCount - 1, "%d",
+							 ImGuiSliderFlags_AlwaysClamp
+					 ))
 				{
 					appStateInfo.isSceneDirty= true;
 				}
@@ -53,21 +65,28 @@ namespace AstralRaytracer
 				{
 					appStateInfo.isSceneDirty= true;
 				}
-				if(ImGui::SliderFloat("Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f, "%.2f",
-															ImGuiSliderFlags_AlwaysClamp))
+				if(ImGui::SliderFloat(
+							 "Emission Strength", &mat.emissionStrength, 0.0f, 1000.0f, "%.2f",
+							 ImGuiSliderFlags_AlwaysClamp
+					 ))
 				{
 					appStateInfo.isSceneDirty= true;
 				}
-				if(ImGui::SliderFloat("Roughness", &mat.roughness, 0.0f, 1.0f, "%.2f",
-															ImGuiSliderFlags_AlwaysClamp))
+				if(ImGui::SliderFloat(
+							 "Roughness", &mat.roughness, 0.0f, 1.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp
+					 ))
 				{
 					appStateInfo.isSceneDirty= true;
 				}
 			}
 		}
 
-		void Inspector::displayTransformUI(const Window& window, AppStateInfo& appStateInfo,
-																			 Scene& scene, const AssetManager& assetManager)
+		void Inspector::displayTransformUI(
+				const Window&       window,
+				AppStateInfo&       appStateInfo,
+				Scene&              scene,
+				const AssetManager& assetManager
+		)
 		{
 			if(ImGui::CollapsingHeader("Transform", nullptr))
 			{
@@ -77,7 +96,8 @@ namespace AstralRaytracer
 				}
 
 				if(AstralRaytracer::UI::displayTransform(
-							 *scene.m_sceneTraceables[appStateInfo.selectedObjectIndex]))
+							 *scene.m_sceneTraceables[appStateInfo.selectedObjectIndex]
+					 ))
 				{
 					appStateInfo.isSceneDirty= true;
 				}

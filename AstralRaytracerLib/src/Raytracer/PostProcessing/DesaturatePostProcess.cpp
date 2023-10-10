@@ -18,9 +18,11 @@ namespace AstralRaytracer
 		m_shaderProgram.unuse();
 	}
 
-	void DesaturatePostProcessing::processImage(DrawingPanel&        drawPanel,
-																							const RenderTexture& renderTexture,
-																							gl::GLuint           imageTexture)
+	void DesaturatePostProcessing::processImage(
+			DrawingPanel&        drawPanel,
+			const RenderTexture& renderTexture,
+			gl::GLuint           imageTexture
+	)
 
 	{
 		renderTexture.bind();

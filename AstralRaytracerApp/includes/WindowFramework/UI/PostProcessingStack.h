@@ -15,22 +15,21 @@ namespace AstralRaytracer
 		class PostProcessingStack
 		{
 			public:
-			void display(Scene& scene, const Window& window, ImVec2 availableRegion);
-
+				void display(Scene& scene, const Window& window, ImVec2 availableRegion);
 			private:
-			int32 m_selectedItem= 0;
-			enum class PostProcessingType
-			{
-				INVALID,
-				MIN,
-				BILATERAL_FILTER= MIN,
-				DESATURATE,
-				GAMMA_CORRECTION,
-				LUMINANCE_THRESHOLD,
-				MAX= LUMINANCE_THRESHOLD
-			};
+				int32 m_selectedItem= 0;
+				enum class PostProcessingType
+				{
+					INVALID,
+					MIN,
+					BILATERAL_FILTER= MIN,
+					DESATURATE,
+					GAMMA_CORRECTION,
+					LUMINANCE_THRESHOLD,
+					MAX= LUMINANCE_THRESHOLD
+				};
 
-			void addPostProcessing(Scene& scene, PostProcessingType type);
+				void addPostProcessing(Scene& scene, PostProcessingType type);
 		};
 	} // namespace UI
 } // namespace AstralRaytracer

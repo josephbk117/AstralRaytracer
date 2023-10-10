@@ -8,6 +8,6 @@ namespace AstralRaytracer
 	class ModelManager
 	{
 		public:
-		static StaticMesh getStaticMeshFromGLTF(const std::filesystem::path& path);
+			static StaticMesh getStaticMeshFromGLTF(const std::filesystem::path& path);
 	};
 } // namespace AstralRaytracer

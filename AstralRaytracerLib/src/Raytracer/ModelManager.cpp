@@ -45,7 +45,8 @@ namespace AstralRaytracer
 		for(size_t i= 0; i < accessor.count; ++i)
 		{
 			vertexPositions.push_back(
-					glm::vec3(positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2]));
+					glm::vec3(positions[i * 3 + 0], positions[i * 3 + 1], positions[i * 3 + 2])
+			);
 		}
 
 		const tinygltf::Accessor& indexAccessor=
@@ -56,12 +57,14 @@ namespace AstralRaytracer
 		std::vector<TriangleTraceable> triangles;
 
 		const int16* meshIndices= reinterpret_cast<const int16*>(
-				&indexBuffer.data[indexBufferView.byteOffset + indexAccessor.byteOffset]);
+				&indexBuffer.data[indexBufferView.byteOffset + indexAccessor.byteOffset]
+		);
 		for(size_t i= 0; i < indexAccessor.count; i+= 3)
 		{
-			triangles.push_back(TriangleTraceable(vertexPositions[meshIndices[i]],
-																						vertexPositions[meshIndices[i + 1]],
-																						vertexPositions[meshIndices[i + 2]]));
+			triangles.push_back(TriangleTraceable(
+					vertexPositions[meshIndices[i]], vertexPositions[meshIndices[i + 1]],
+					vertexPositions[meshIndices[i + 2]]
+			));
 		}
 
 		AABB boundingBox;

@@ -9,7 +9,8 @@
 
 namespace AstralRaytracer
 {
-	Window*            Window::m_instance= nullptr;
+	Window* Window::m_instance= nullptr;
+
 	const std::string& Window::getName() const { return m_name; }
 
 	void Window::initialize()
@@ -26,7 +27,7 @@ namespace AstralRaytracer
 		// Get the video mode of the primary monitor
 		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
 
-		m_resolution= {mode->width, mode->height};
+		m_resolution= { mode->width, mode->height };
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -84,10 +85,11 @@ namespace AstralRaytracer
 						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
 						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
 						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
-						gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGBA,
-														 (gl::GLsizei)vThumbnail_Info->textureWidth,
-														 (gl::GLsizei)vThumbnail_Info->textureHeight, 0, gl::GL_RGBA,
-														 gl::GL_UNSIGNED_BYTE, vThumbnail_Info->textureFileDatas);
+						gl::glTexImage2D(
+								gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, (gl::GLsizei)vThumbnail_Info->textureWidth,
+								(gl::GLsizei)vThumbnail_Info->textureHeight, 0, gl::GL_RGBA, gl::GL_UNSIGNED_BYTE,
+								vThumbnail_Info->textureFileDatas
+						);
 						gl::glFinish();
 						gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 
@@ -97,7 +99,8 @@ namespace AstralRaytracer
 						vThumbnail_Info->isReadyToUpload = false;
 						vThumbnail_Info->isReadyToDisplay= true;
 					}
-				});
+				}
+		);
 
 		// Destroy thumbnails texture
 		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(
@@ -109,7 +112,8 @@ namespace AstralRaytracer
 						gl::glDeleteTextures(1, &texID);
 						gl::glFinish();
 					}
-				});
+				}
+		);
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 
@@ -118,19 +122,24 @@ namespace AstralRaytracer
 		setDefaultTheme();
 	}
 
-	void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2&                   mousePos,
-																										AstralRaytracer::UI::AppStateInfo& appStateInfo,
-																										const AstralRaytracer::Renderer&   renderer,
-																										const AstralRaytracer::Camera&     cam,
-																										const AstralRaytracer::Scene&      scene)
+	void Window::setSelectedObjectIndexFromMouseCoord(
+			const glm::vec2&                   mousePos,
+			AstralRaytracer::UI::AppStateInfo& appStateInfo,
+			const AstralRaytracer::Renderer&   renderer,
+			const AstralRaytracer::Camera&     cam,
+			const AstralRaytracer::Scene&      scene
+	)
 	{
 		HitInfo   closestHitInfo;
-		glm::vec2 coOrd((mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
-										(mousePos.y - appStateInfo.uiBounds.min.y) / appStateInfo.rendererSize.y);
+		glm::vec2 coOrd(
+				(mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
+				(mousePos.y - appStateInfo.uiBounds.min.y) / appStateInfo.rendererSize.y
+		);
 		coOrd.y= 1.0f - coOrd.y;
 
 		const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
-				coOrd, cam.getInverseProjection(), cam.getInverseView());
+				coOrd, cam.getInverseProjection(), cam.getInverseView()
+		);
 		renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
 
 		if(closestHitInfo.isValid())
@@ -139,8 +148,13 @@ namespace AstralRaytracer
 		}
 	}
 
-	void Window::processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
-														Camera& cam, const Scene& scene)
+	void Window::processInput(
+			UI::AppStateInfo& appStateInfo,
+			float32           deltaTime,
+			Renderer&         renderer,
+			Camera&           cam,
+			const Scene&      scene
+	)
 	{
 		m_frameTimes.push(deltaTime);
 		if(m_frameTimes.size() > FrameSampleCount)
@@ -313,8 +327,13 @@ namespace AstralRaytracer
 		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 	}
 
-	void Window::displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene,
-												 Camera& cam, AssetManager& assetManager)
+	void Window::displayUI(
+			UI::AppStateInfo& appStateInfo,
+			Renderer&         renderer,
+			Scene&            scene,
+			Camera&           cam,
+			AssetManager&     assetManager
+	)
 	{
 		ImGuizmo::BeginFrame();
 		ImGuizmo::SetOrthographic(false);
@@ -336,34 +355,39 @@ namespace AstralRaytracer
 				{
 					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 					{
-						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File",
-																										".png,.jpg,.hpp", ".", 1, nullptr,
-																										ImGuiFileDialogFlags_Modal);
+						ImGuiFileDialog::Instance()->OpenDialog(
+								"ChooseFileDlgKey", "Choose File", ".png,.jpg,.hpp", ".", 1, nullptr,
+								ImGuiFileDialogFlags_Modal
+						);
 					}
 					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
 					{
-						ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".ascene",
-																										".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+						ImGuiFileDialog::Instance()->OpenDialog(
+								"ChooseFileDlgKey", "Choose File", ".ascene", ".", 1, nullptr,
+								ImGuiFileDialogFlags_Modal
+						);
 					}
 					ImGui::EndMenu();
 				}
 				if(ImGui::BeginMenu("Preference"))
 				{
-					if(ImGui::MenuItem("Themes")) {}
-					if(ImGui::MenuItem("Layout")) {}
+					if(ImGui::MenuItem("Themes")) { }
+					if(ImGui::MenuItem("Layout")) { }
 					ImGui::EndMenu();
 				}
 				if(ImGui::BeginMenu("View"))
 				{
-					if(ImGui::MenuItem("Toggle Preview View", "Alt+P")) {}
-					if(ImGui::MenuItem("Toggle Debug View", "Alt+D")) {}
+					if(ImGui::MenuItem("Toggle Preview View", "Alt+P")) { }
+					if(ImGui::MenuItem("Toggle Debug View", "Alt+D")) { }
 					ImGui::EndMenu();
 				}
 				ImGui::EndMenuBar();
 			}
 
-			if(ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse,
-																							UI::toImVec2(m_minResolution), viewport->WorkSize))
+			if(ImGuiFileDialog::Instance()->Display(
+						 "ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
+						 viewport->WorkSize
+				 ))
 			{
 				if(ImGuiFileDialog::Instance()->IsOk())
 				{
@@ -395,8 +419,9 @@ namespace AstralRaytracer
 			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 6.0f;
 
 			ImGui::SetNextItemWidth(sliderWidth);
-			if(ImGui::SliderInt("##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d",
-													ImGuiSliderFlags_AlwaysClamp))
+			if(ImGui::SliderInt(
+						 "##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d", ImGuiSliderFlags_AlwaysClamp
+				 ))
 			{
 				renderer.setBounceCount(bounceCount);
 				appStateInfo.isSceneDirty= true;
@@ -405,16 +430,20 @@ namespace AstralRaytracer
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(sliderWidth);
 
-			if(ImGui::SliderFloat("##Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 100.0f,
-														"Resolution Scale:%.1f%%", ImGuiSliderFlags_AlwaysClamp))
+			if(ImGui::SliderFloat(
+						 "##Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 100.0f,
+						 "Resolution Scale:%.1f%%", ImGuiSliderFlags_AlwaysClamp
+				 ))
 			{
 				appStateInfo.isSceneDirty= true;
 			}
 
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(sliderWidth);
-			if(ImGui::SliderInt2("Resolution", reinterpret_cast<int32*>(&appStateInfo.rendererResolution),
-													 64, 1920, "%dpx", ImGuiSliderFlags_AlwaysClamp))
+			if(ImGui::SliderInt2(
+						 "Resolution", reinterpret_cast<int32*>(&appStateInfo.rendererResolution), 64, 1920,
+						 "%dpx", ImGuiSliderFlags_AlwaysClamp
+				 ))
 			{
 				appStateInfo.isSceneDirty= true;
 			}
@@ -440,7 +469,9 @@ namespace AstralRaytracer
 
 				float32 average= 0.0f;
 				for(int32 n= 0; n < frameTimeCopy.size(); n++)
+				{
 					average+= frameTimeCopy[n];
+				}
 				average/= (float32)frameTimeCopy.size();
 
 				const float32 ms = average * 1000.0f;
@@ -450,8 +481,10 @@ namespace AstralRaytracer
 				sprintf(overlay.data(), "%.1f ms (%.1f fps)", ms, fps);
 				ImGui::SameLine();
 				ImGui::SetNextItemWidth(sliderWidth);
-				ImGui::PlotLines("##Framerate", frameTimeCopy.data(), frameTimeCopy.size(), 0,
-												 overlay.data(), 0.0f, maxValue);
+				ImGui::PlotLines(
+						"##Framerate", frameTimeCopy.data(), frameTimeCopy.size(), 0, overlay.data(), 0.0f,
+						maxValue
+				);
 			}
 
 			const float32 progress= glm::clamp(renderer.getFrameIndex() / 1000.0f, 0.0f, 1.0f);
@@ -473,10 +506,11 @@ namespace AstralRaytracer
 				ImGui::TableNextRow(rowFlags, 100.0f);
 				ImGui::TableSetColumnIndex(0);
 				const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.6f;
-				if(ImGui::BeginTable("viewportSceneInfoSplit", 3,
-														 tableFlags | ImGuiTableFlags_ContextMenuInBody |
-																 ImGuiTableFlags_Hideable,
-														 {ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight}))
+				if(ImGui::BeginTable(
+							 "viewportSceneInfoSplit", 3,
+							 tableFlags | ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Hideable,
+							 { ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight }
+					 ))
 				{
 					ImGui::TableSetupColumn("Scene", ImGuiTableColumnFlags_WidthStretch, 20.0f);
 					ImGui::TableSetupColumn("Viewport", ImGuiTableColumnFlags_WidthStretch, 60.0f);
@@ -491,32 +525,36 @@ namespace AstralRaytracer
 
 					ImVec2 availableRegion= ImGui::GetContentRegionAvail();
 					availableRegion.y     = viewportSceneInfoSplitHeight;
-					const float32 scale=
-							glm::min(availableRegion.x / (float32)appStateInfo.rendererResolution.x,
-											 availableRegion.y / (float32)appStateInfo.rendererResolution.y);
+					const float32 scale   = glm::min(
+              availableRegion.x / (float32)appStateInfo.rendererResolution.x,
+              availableRegion.y / (float32)appStateInfo.rendererResolution.y
+          );
 
-					const ImVec2 newRegion= {appStateInfo.rendererResolution.x * scale,
-																	 appStateInfo.rendererResolution.y * scale};
-					ImVec2       gapRegion= {(availableRegion.x - newRegion.x) * 0.5f,
-																	 (availableRegion.y - newRegion.y) * 0.5f};
+					const ImVec2 newRegion= { appStateInfo.rendererResolution.x * scale,
+																		appStateInfo.rendererResolution.y * scale };
+					ImVec2       gapRegion= { (availableRegion.x - newRegion.x) * 0.5f,
+																		(availableRegion.y - newRegion.y) * 0.5f };
 					gapRegion.x-= 8.0f; // Adjustment to keep Image centered horizontally
 
-					ImGui::Dummy({availableRegion.x, gapRegion.y});
-					ImGui::Dummy({gapRegion.x, newRegion.y});
+					ImGui::Dummy({ availableRegion.x, gapRegion.y });
+					ImGui::Dummy({ gapRegion.x, newRegion.y });
 
-					appStateInfo.rendererSize= {newRegion.x, newRegion.y};
+					appStateInfo.rendererSize= { newRegion.x, newRegion.y };
 
 					ImGui::SameLine();
-					ImGui::BeginChild(2, newRegion, false,
-														ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																ImGuiWindowFlags_NoResize |
-																ImGuiWindowFlags_AlwaysUseWindowPadding);
+					ImGui::BeginChild(
+							2, newRegion, false,
+							ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
+									ImGuiWindowFlags_AlwaysUseWindowPadding
+					);
 
 					ImVec2 imageDisplaySize= ImGui::GetContentRegionAvail();
 
 					const gl::GLuint renderTextureId= renderer.getTextureId();
-					ImGui::Image(reinterpret_cast<ImTextureID>(renderTextureId), imageDisplaySize,
-											 ImVec2(0, 1), ImVec2(1, 0));
+					ImGui::Image(
+							reinterpret_cast<ImTextureID>(renderTextureId), imageDisplaySize, ImVec2(0, 1),
+							ImVec2(1, 0)
+					);
 
 					auto&  io= ImGui::GetIO();
 					ImRect rc= ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
@@ -532,11 +570,12 @@ namespace AstralRaytracer
 						UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
 					}
 
-					appStateInfo.uiBounds.min= {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
-					appStateInfo.uiBounds.max= {ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y};
+					appStateInfo.uiBounds.min= { ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y };
+					appStateInfo.uiBounds.max= { ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y };
 
-					ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, newRegion.x,
-														newRegion.y);
+					ImGuizmo::SetRect(
+							ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, newRegion.x, newRegion.y
+					);
 					ImGuizmo::SetDrawlist();
 
 					if(scene.hasSceneLoaded())
@@ -546,9 +585,11 @@ namespace AstralRaytracer
 																		 .get()
 																		 ->getTransformMatrix();
 
-						ImGuizmo::Manipulate(glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-																 IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
-																 IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform));
+						ImGuizmo::Manipulate(
+								glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
+								IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
+								IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform)
+						);
 
 						appStateInfo.canSelectObjects= !ImGuizmo::IsOver();
 
@@ -569,7 +610,7 @@ namespace AstralRaytracer
 					}
 
 					ImGui::EndChild();
-					ImGui::Dummy({availableRegion.x, gapRegion.y});
+					ImGui::Dummy({ availableRegion.x, gapRegion.y });
 
 					ImGui::TableSetColumnIndex(2);
 
@@ -578,15 +619,18 @@ namespace AstralRaytracer
 					{
 						if(ImGui::BeginTabItem("Inspector"))
 						{
-							m_inspector.display(*this, appStateInfo, scene, assetManager,
-																	ImVec2(0.0f, viewportSceneInfoSplitHeight));
+							m_inspector.display(
+									*this, appStateInfo, scene, assetManager,
+									ImVec2(0.0f, viewportSceneInfoSplitHeight)
+							);
 
 							ImGui::EndTabItem();
 						}
 						if(ImGui::BeginTabItem("Post-Process Stack"))
 						{
-							m_postProcessingStack.display(scene, *this,
-																						ImVec2(0.0f, viewportSceneInfoSplitHeight));
+							m_postProcessingStack.display(
+									scene, *this, ImVec2(0.0f, viewportSceneInfoSplitHeight)
+							);
 							ImGui::EndTabItem();
 						}
 						ImGui::EndTabBar();
@@ -607,8 +651,11 @@ namespace AstralRaytracer
 		ImGui::End();
 	}
 
-	void Window::displaySceneObjectsUI(UI::AppStateInfo& appStateInfo, const Scene& scene,
-																		 const AssetManager& assetManager)
+	void Window::displaySceneObjectsUI(
+			UI::AppStateInfo&   appStateInfo,
+			const Scene&        scene,
+			const AssetManager& assetManager
+	)
 	{
 		ImGui::PushFont(getSecondaryFont());
 		ImGui::SeparatorText("SCENE");
@@ -618,8 +665,8 @@ namespace AstralRaytracer
 		{
 			bool isSelected= objIndex == appStateInfo.selectedObjectIndex;
 			if(ImGui::Selectable(
-						 assetManager.getNameAndPathOfTraceable(objIndex).value().assetName.c_str(),
-						 &isSelected))
+						 assetManager.getNameAndPathOfTraceable(objIndex).value().assetName.c_str(), &isSelected
+				 ))
 			{
 				appStateInfo.selectedObjectIndex= objIndex;
 			}

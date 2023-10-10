@@ -15,7 +15,7 @@ namespace AstralRaytracer
 			const int32 width = texData.getWidth();
 			const int32 height= texData.getHeight();
 
-			std::array<std::array<uint32, 256>, 3> count= {{{0}}};
+			std::array<std::array<uint32, 256>, 3> count= { { { 0 } } };
 
 			const float32* ptrCols= texData.getTextureData().data();
 
@@ -60,14 +60,21 @@ namespace AstralRaytracer
 			{
 				// pixel count << 2 + color index(on 2 bits)
 				std::array<uint32_t, 3> cols= {
-						{(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2}};
+					{(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2}
+				};
 
 				if(cols[0] > cols[1])
+				{
 					std::swap(cols[0], cols[1]);
+				}
 				if(cols[1] > cols[2])
+				{
 					std::swap(cols[1], cols[2]);
+				}
 				if(cols[0] > cols[1])
+				{
 					std::swap(cols[0], cols[1]);
+				}
 
 				std::array<float32, 3> heights= {};
 				std::array<uint32, 3>  colors = {};
@@ -89,15 +96,16 @@ namespace AstralRaytracer
 					{
 						continue;
 					}
-					drawList->AddRectFilled(ImVec2(left, currentHeight), ImVec2(right, heights[i]),
-																	colors[i]);
+					drawList->AddRectFilled(
+							ImVec2(left, currentHeight), ImVec2(right, heights[i]), colors[i]
+					);
 					currentHeight= heights[i];
 				}
 			}
 		}
 
-		inline void inspect(const TextureDataRGBF& texData, ImVec2 mouseUVCoord,
-												ImVec2 displayedTextureSize)
+		inline void
+		inspect(const TextureDataRGBF& texData, ImVec2 mouseUVCoord, ImVec2 displayedTextureSize)
 		{
 			const int32 width = texData.getWidth();
 			const int32 height= texData.getHeight();
@@ -115,23 +123,28 @@ namespace AstralRaytracer
 			constexpr int32 zoomSize = 4;
 			const float32   quadWidth= zoomRectangleWidth / float32(zoomSize * 2 + 1);
 			const ImVec2    quadSize(quadWidth, quadWidth);
-			const float32   coOrdX= glm::clamp(mouseUVCoord.x * width, static_cast<float32>(zoomSize),
-																				 static_cast<float32>(width - zoomSize - 1));
-			const float32   coOrdY= glm::clamp(mouseUVCoord.y * height, static_cast<float32>(zoomSize),
-																				 static_cast<float32>(height - zoomSize - 1));
+			const float32   coOrdX= glm::clamp(
+          mouseUVCoord.x * width, static_cast<float32>(zoomSize),
+          static_cast<float32>(width - zoomSize - 1)
+      );
+			const float32 coOrdY= glm::clamp(
+					mouseUVCoord.y * height, static_cast<float32>(zoomSize),
+					static_cast<float32>(height - zoomSize - 1)
+			);
 
 			union PixelUnion
 			{
-				std::array<uint8, 4> data;
-				uint32               texel;
+					std::array<uint8, 4> data;
+					uint32               texel;
 			};
 
 			for(int32 y= -zoomSize; y <= zoomSize; y++)
 			{
 				for(int32 x= -zoomSize; x <= zoomSize; x++)
 				{
-					const ColourData&  colData= texData.getTexelColor(static_cast<uint32>(coOrdX + x),
-																														static_cast<uint32>(coOrdY - y));
+					const ColourData& colData= texData.getTexelColor(
+							static_cast<uint32>(coOrdX + x), static_cast<uint32>(coOrdY - y)
+					);
 					const glm::u8vec3& pixData= colData.getColour_8_BitClamped(); // Adjusted for HDR values
 					PixelUnion         pixel;
 					pixel.data[0]= pixData.r;
@@ -179,8 +192,10 @@ namespace AstralRaytracer
 			ImGui::Text("Size %d, %d", width, height);
 			ImGui::Separator();
 
-			ImGui::Text("%dpx, %dpx", static_cast<uint32>(mouseUVCoord.x * width),
-									static_cast<uint32>(mouseUVCoord.y * height));
+			ImGui::Text(
+					"%dpx, %dpx", static_cast<uint32>(mouseUVCoord.x * width),
+					static_cast<uint32>(mouseUVCoord.y * height)
+			);
 			ImGui::Text("U %1.3f, V %1.3f", mouseUVCoord.x, mouseUVCoord.y);
 
 			ImGui::Separator();
