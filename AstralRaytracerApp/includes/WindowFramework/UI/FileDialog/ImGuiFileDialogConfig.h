@@ -3,7 +3,7 @@
 // uncomment and modify defines under for customize ImGuiFileDialog
 
 // this options need c++17
-// #define USE_STD_FILESYSTEM
+#define USE_STD_FILESYSTEM
 
 // #define MAX_FILE_DIALOG_NAME_BUFFER 1024
 // #define MAX_PATH_BUFFER_SIZE 1024
@@ -14,9 +14,17 @@
 // the spacing between button path's can be customized.
 // if disabled the spacing is defined by the imgui theme
 // define the space between path buttons
-// #define CUSTOM_PATH_SPACING 2
+#define CUSTOM_PATH_SPACING 0
 
-// #define USE_THUMBNAILS
+#define USE_THUMBNAILS
+
+#define DONT_DEFINE_AGAIN__STB_IMAGE_IMPLEMENTATION
+#define DONT_DEFINE_AGAIN__STB_IMAGE_RESIZE_IMPLEMENTATION
+
+#define DisplayMode_ThumbailsList_ImageHeight 48.0f
+
+#define tableHeaderFileThumbnailsString "Preview"
+
 // the thumbnail generation use the stb_image and stb_resize lib who need to define the
 // implementation btw if you already use them in your app, you can have compiler error due to
 // "implemntation found in double" so uncomment these line for prevent the creation of
@@ -83,12 +91,13 @@
 // #define OverWriteDialogCancelButtonString "Cancel"
 
 // Validation buttons
-// #define okButtonString " OK"
-// #define okButtonWidth 0.0f
-// #define cancelButtonString " Cancel"
-// #define cancelButtonWidth 0.0f
+#define okButtonString " Ok"
+#define okButtonWidth 80.0f
+#define cancelButtonString " Cancel"
+#define cancelButtonWidth 80.0f
 // alignement [0:1], 0.0 is left, 0.5 middle, 1.0 right, and other ratios
-// #define okCancelButtonAlignement 0.0f
+#define okCancelButtonAlignement 1.0f
+#define footerToBorderGap 10.0f;
 // #define invertOkAndCancelButtons 0
 
 // DateTimeFormat
@@ -105,10 +114,10 @@
 // #define tableHeaderFileTypeString " Type"
 // #define tableHeaderFileSizeString " Size"
 // #define tableHeaderFileDateTimeString " Date"
-// #define fileSizeBytes "o"
-// #define fileSizeKiloBytes "Ko"
-// #define fileSizeMegaBytes "Mo"
-// #define fileSizeGigaBytes "Go"
+#define fileSizeBytes     "B"
+#define fileSizeKiloBytes "KB"
+#define fileSizeMegaBytes "MB"
+#define fileSizeGigaBytes "GB"
 
 // default table sort field (must be FIELD_FILENAME, FIELD_TYPE, FIELD_SIZE, FIELD_DATE or
 // FIELD_THUMBNAILS)

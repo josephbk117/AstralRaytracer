@@ -18,7 +18,7 @@
 	#include <ImGuizmo.h>
 #endif // IMGUI_API
 
-#include <imguifiledialog/ImGuiFileDialog.h>
+#include "FileDialog/ImGuiFileDialog.h"
 
 namespace AstralRaytracer
 {

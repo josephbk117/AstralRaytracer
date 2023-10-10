@@ -37,7 +37,7 @@ SOFTWARE.
 	#define IMGUI_DEFINE_MATH_OPERATORS
 #endif
 
-#include "ImGuiFileDialog.h"
+#include "WindowFramework/UI/FileDialog/ImGuiFileDialog.h"
 
 #ifdef __cplusplus
 
