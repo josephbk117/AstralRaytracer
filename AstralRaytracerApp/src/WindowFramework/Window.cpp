@@ -356,14 +356,16 @@ namespace AstralRaytracer
 					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 					{
 						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseFileDlgKey", "Choose File", ".png,.jpg,.hpp", ".", 1, nullptr,
-								ImGuiFileDialogFlags_Modal
+								"ChooseProjectDlg", "Choose Project Directory", nullptr, ".", 1, nullptr,
+								ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DisableCreateDirectoryButton |
+										ImGuiFileDialogFlags_HideColumnType | ImGuiFileDialogFlags_HideColumnSize |
+										ImGuiFileDialogFlags_DisableThumbnailMode
 						);
 					}
 					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
 					{
 						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseFileDlgKey", "Choose File", ".ascene", ".", 1, nullptr,
+								"ChooseSceneDlg", "Choose Scene", ".ascene", ".", 1, nullptr,
 								ImGuiFileDialogFlags_Modal
 						);
 					}
@@ -385,7 +387,30 @@ namespace AstralRaytracer
 			}
 
 			if(ImGuiFileDialog::Instance()->Display(
-						 "ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
+						 "ChooseProjectDlg", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
+						 viewport->WorkSize
+				 ))
+			{
+				if(ImGuiFileDialog::Instance()->IsOk())
+				{
+					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					std::string filePath    = ImGuiFileDialog::Instance()->GetCurrentPath();
+
+					if(scene.hasSceneLoaded())
+					{
+						scene.unload();
+					}
+
+					scene.deserialize(assetManager, filePathName);
+
+					appStateInfo.isSceneDirty= true;
+				}
+
+				ImGuiFileDialog::Instance()->Close();
+			}
+
+			if(ImGuiFileDialog::Instance()->Display(
+						 "ChooseSceneDlg", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
 						 viewport->WorkSize
 				 ))
 			{
