@@ -104,7 +104,7 @@
 // see strftime functionin <ctime> for customize
 // "%Y/%m/%d %H:%M" give 2021:01:22 11:47
 // "%Y/%m/%d %i:%M%p" give 2021:01:22 11:45PM
-// #define DateTimeFormat "%Y/%m/%d %i:%M%p"
+#define DateTimeFormat "%H:%M | %d/%m/%Y "
 
 // theses icons will appear in table headers
 // #define USE_CUSTOM_SORTING_ICON
@@ -114,7 +114,7 @@
 // #define tableHeaderFileTypeString " Type"
 // #define tableHeaderFileSizeString " Size"
 // #define tableHeaderFileDateTimeString " Date"
-#define fileSizeBytes     "B"
+#define fileSizeBytes     "Bytes"
 #define fileSizeKiloBytes "KB"
 #define fileSizeMegaBytes "MB"
 #define fileSizeGigaBytes "GB"

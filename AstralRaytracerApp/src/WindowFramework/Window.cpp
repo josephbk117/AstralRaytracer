@@ -318,9 +318,6 @@ namespace AstralRaytracer
 		style->FrameRounding     = 2.0f;
 		style->FramePadding      = ImVec2(4.0f, 4.0f);
 		style->WindowPadding     = ImVec2(2.0f, 2.0f);
-		style->ItemSpacing       = ImVec2(4.0f, 4.0f);
-		style->ItemInnerSpacing  = ImVec2(4.0f, 4.0f);
-		style->PopupRounding     = 8.0f;
 		style->ChildRounding     = 2.0f;
 		style->ColumnsMinSpacing = 400.0f;
 		style->FrameBorderSize   = 0.0f;
