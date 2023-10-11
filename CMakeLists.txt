@@ -15,6 +15,7 @@ enable_testing()
 # Add the subdirectories for the library and the application
 add_subdirectory(AstralRaytracerLib)
 add_subdirectory(AstralRaytracerApp)
+add_subdirectory(AstralRaytracerCmdTool)
 add_subdirectory(AstralRaytracerTests)
 
 #Download all submodules
