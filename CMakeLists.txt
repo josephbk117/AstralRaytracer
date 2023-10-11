@@ -80,5 +80,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
          # Disable RTTI.
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /GR-")
+
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8")
     endif()
 endif()
