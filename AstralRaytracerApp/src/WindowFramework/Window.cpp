@@ -574,12 +574,7 @@ namespace AstralRaytracer
 					);
 
 					ImVec2 imageDisplaySize= ImGui::GetContentRegionAvail();
-
-					const gl::GLuint renderTextureId= renderer.getTextureId();
-					ImGui::Image(
-							reinterpret_cast<ImTextureID>(renderTextureId), imageDisplaySize, ImVec2(0, 1),
-							ImVec2(1, 0)
-					);
+					ImGui::Image(appStateInfo.outputTextureId, imageDisplaySize, ImVec2(0, 1), ImVec2(1, 0));
 
 					auto&  io= ImGui::GetIO();
 					ImRect rc= ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());

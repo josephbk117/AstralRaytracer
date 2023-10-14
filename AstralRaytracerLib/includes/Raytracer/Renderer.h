@@ -34,7 +34,7 @@ namespace AstralRaytracer
 					const glm::vec3& rayDir
 			) const;
 
-			gl::GLuint getTextureId() const { return m_outputTextureId; }
+			gl::GLuint getTextureId() const { return m_textureId; }
 
 			void setBounceCount(uint32 count) { m_BounceCount= count; }
 
@@ -49,11 +49,7 @@ namespace AstralRaytracer
 			std::vector<float32> m_accumulatedColorData;
 			float32              m_maxLuminance= 0;
 			std::vector<uint32>  m_rayIterator;
-			uint32               m_textureId      = 0;
-			uint32               m_outputTextureId= 0;
-			RenderTexture        m_renderTexture1;
-			RenderTexture        m_renderTexture2;
-			DrawingPanel         m_dwPanel;
+			uint32               m_textureId  = 0;
 			uint32               m_frameIndex = 1;
 			uint32               m_BounceCount= 4;
 	};

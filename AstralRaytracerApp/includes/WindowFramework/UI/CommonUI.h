@@ -30,6 +30,7 @@ namespace AstralRaytracer
 		{
 				glm::u32vec2 rendererSize{ 500, 500 };
 				glm::u32vec2 rendererResolution{ 500, 500 };
+				ImTextureID  outputTextureId= 0;
 				UiBounds     uiBounds;
 				float32      resolutionScale       = 50.0f;
 				bool         isSceneDirty          = false;

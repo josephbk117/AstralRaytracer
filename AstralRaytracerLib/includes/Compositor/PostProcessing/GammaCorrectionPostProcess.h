@@ -14,7 +14,7 @@ namespace AstralRaytracer
 					DrawingPanel&        drawPanel,
 					const RenderTexture& renderTexture,
 					gl::GLuint           imageTexture
-			) override;
+			) const override;
 		protected:
 			const char* const getFragmentShaderSrcCode() const override;
 	};

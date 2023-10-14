@@ -1,3 +1,4 @@
+#include "Compositor/Compositor.h"
 #include "Raytracer/Camera.h"
 #include "Raytracer/DrawingPanel.h"
 #include "Raytracer/ModelManager.h"
@@ -24,9 +25,10 @@ int main()
 
 	// Destructors need to be called before context is removed
 	{
-		AstralRaytracer::Renderer renderer;
-		AstralRaytracer::Camera   cam(60.0f, 0.1f, 100.0f);
-		AstralRaytracer::Scene    scene;
+		AstralRaytracer::Renderer   renderer;
+		AstralRaytracer::Camera     cam(60.0f, 0.1f, 100.0f);
+		AstralRaytracer::Scene      scene;
+		AstralRaytracer::Compositor compositor;
 
 		// Load default scene
 		scene.deserialize(assetManager, R"(../../../../ExampleProject/scenes/scene1.ascene)");
@@ -54,6 +56,9 @@ int main()
 
 			// Render scene
 			renderer.render(scene, cam);
+			compositor.processImage(scene, cam.getResolution(), renderer.getTextureId());
+
+			appStateInfo.outputTextureId = reinterpret_cast<ImTextureID>(compositor.getTextureId());
 
 			// Display UI
 			window.startUI();

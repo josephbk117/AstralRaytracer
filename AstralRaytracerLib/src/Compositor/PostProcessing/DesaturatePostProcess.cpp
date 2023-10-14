@@ -22,7 +22,7 @@ namespace AstralRaytracer
 			DrawingPanel&        drawPanel,
 			const RenderTexture& renderTexture,
 			gl::GLuint           imageTexture
-	)
+	) const
 
 	{
 		renderTexture.bind();

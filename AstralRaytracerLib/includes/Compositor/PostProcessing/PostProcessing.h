@@ -21,7 +21,7 @@ namespace AstralRaytracer
 					DrawingPanel&        drawPanel,
 					const RenderTexture& renderTexture,
 					gl::GLuint           imageTexture
-			)= 0;
+			) const= 0;
 
 			void setUniform(const std::string& name, std::any data);
 

@@ -26,12 +26,6 @@ namespace AstralRaytracer
 		m_textureId= TextureManager::loadTextureFromTextureData(m_texData, false);
 
 		onResize(32, 32);
-
-		m_renderTexture1.init({ 32, 32 });
-		m_renderTexture2.init({ 32, 32 });
-		m_dwPanel.init(1.0f, 1.0f);
-
-		m_dwPanel.setTextureID(m_textureId);
 	}
 
 	Renderer::~Renderer() { }
@@ -93,28 +87,6 @@ namespace AstralRaytracer
 
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
-
-		m_outputTextureId= m_textureId;
-
-		if(scene.m_postProcessingStack.size() > 0)
-		{
-			scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture1, m_textureId);
-			m_outputTextureId= m_renderTexture1.getTexture();
-			for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
-			{
-				const bool isOddIndex= (index - 1) % 2 != 0;
-
-				const RenderTexture& selectedRenderTex= (isOddIndex) ? m_renderTexture1 : m_renderTexture2;
-
-				const uint32 selectedInputTex=
-						(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
-
-				scene.m_postProcessingStack[index]->processImage(
-						m_dwPanel, selectedRenderTex, selectedInputTex
-				);
-				m_outputTextureId= selectedRenderTex.getTexture();
-			}
-		}
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(
@@ -148,8 +120,6 @@ namespace AstralRaytracer
 		}
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
-		m_renderTexture1.resize({ width, height });
-		m_renderTexture2.resize({ width, height });
 
 		return true;
 	}
