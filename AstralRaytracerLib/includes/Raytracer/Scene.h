@@ -13,7 +13,7 @@ namespace AstralRaytracer
 {
 	class Traceable;
 	class PostProcessing;
-}
+} // namespace AstralRaytracer
 
 namespace AstralRaytracer
 {
