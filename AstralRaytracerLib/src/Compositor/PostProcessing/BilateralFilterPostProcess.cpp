@@ -1,4 +1,4 @@
-#include "Raytracer/PostProcessing/BilateralFilterPostProcess.h"
+#include "Compositor/PostProcessing/BilateralFilterPostProcess.h"
 
 namespace AstralRaytracer
 {

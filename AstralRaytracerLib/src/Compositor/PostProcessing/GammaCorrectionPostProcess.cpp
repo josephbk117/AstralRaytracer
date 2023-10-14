@@ -1,4 +1,4 @@
-#include "Raytracer/PostProcessing/GammaCorrectionPostProcess.h"
+#include "Compositor/PostProcessing/GammaCorrectionPostProcess.h"
 
 namespace AstralRaytracer
 {

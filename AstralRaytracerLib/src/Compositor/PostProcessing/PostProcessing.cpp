@@ -1,7 +1,9 @@
-#include "Raytracer/PostProcessing/PostProcessing.h"
+#include "Compositor/PostProcessing/PostProcessing.h"
 
 namespace AstralRaytracer
 {
+	PostProcessing::~PostProcessing() { }
+	
 	void PostProcessing::setUniform(const std::string& name, std::any data)
 	{
 		m_shaderProgram.use();

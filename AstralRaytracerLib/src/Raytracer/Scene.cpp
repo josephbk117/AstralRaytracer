@@ -1,9 +1,11 @@
 #include "Raytracer/Scene.h"
 
-#include "Raytracer/PostProcessing/BilateralFilterPostProcess.h"
-#include "Raytracer/PostProcessing/DesaturatePostProcess.h"
-#include "Raytracer/PostProcessing/GammaCorrectionPostProcess.h"
-#include "Raytracer/PostProcessing/LuminanceThresholdPostProcess.h"
+#include "Compositor/PostProcessing/BilateralFilterPostProcess.h"
+#include "Compositor/PostProcessing/DesaturatePostProcess.h"
+#include "Compositor/PostProcessing/GammaCorrectionPostProcess.h"
+#include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
+#include "Compositor/PostProcessing/PostProcessing.h"
+#include "Raytracer/Traceable/Traceable.h"
 
 #include <fstream>
 #include <iostream>
@@ -11,6 +13,8 @@
 namespace AstralRaytracer
 {
 	Scene::Scene() { unload(); }
+
+	Scene::~Scene() { }
 
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
 

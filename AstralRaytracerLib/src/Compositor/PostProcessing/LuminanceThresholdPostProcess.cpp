@@ -1,4 +1,4 @@
-#include "Raytracer/PostProcessing/LuminanceThresholdPostProcess.h"
+#include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
 
 const std::string& AstralRaytracer::LuminanceThresholdPostProcessing::getName() const
 {

@@ -1,8 +1,6 @@
 #pragma once
 #include "Material.h"
-#include "PostProcessing/PostProcessing.h"
 #include "TextureData.h"
-#include "Traceable/Traceable.h"
 #include "Utils/AssetManager.h"
 
 #include <filesystem>
@@ -13,10 +11,17 @@
 
 namespace AstralRaytracer
 {
+	class Traceable;
+	class PostProcessing;
+}
+
+namespace AstralRaytracer
+{
 	class Scene
 	{
 		public:
 			Scene();
+			~Scene();
 
 			[[nodiscard]]
 			bool hasSceneLoaded() const;

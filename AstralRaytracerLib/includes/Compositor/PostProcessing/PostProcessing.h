@@ -11,7 +11,7 @@ namespace AstralRaytracer
 		public:
 			PostProcessing()= default;
 
-			virtual ~PostProcessing() { }
+			virtual ~PostProcessing();
 
 			virtual const std::string& getName() const= 0;
 
@@ -34,4 +34,5 @@ namespace AstralRaytracer
 
 			ShaderProgram m_shaderProgram;
 	};
+
 } // namespace AstralRaytracer

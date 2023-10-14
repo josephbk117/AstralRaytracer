@@ -12,6 +12,7 @@ namespace AstralRaytracer
 	{
 		public:
 			Renderer();
+			~Renderer();
 
 			void render(const Scene& scene, const Camera& cam);
 

@@ -1,5 +1,6 @@
 #include "Raytracer/Renderer.h"
 
+#include "Compositor/PostProcessing/PostProcessing.h"
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
 #include "Raytracer/TextureManager.h"
@@ -32,6 +33,8 @@ namespace AstralRaytracer
 
 		m_dwPanel.setTextureID(m_textureId);
 	}
+
+	Renderer::~Renderer() { }
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
