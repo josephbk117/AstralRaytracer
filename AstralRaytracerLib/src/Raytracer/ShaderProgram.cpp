@@ -86,7 +86,7 @@ void ShaderProgram::addAttribute(const std::string& attributeName)
 	gl::glBindAttribLocation(programID, attributeCount++, attributeName.c_str());
 }
 
-void ShaderProgram::use()
+void ShaderProgram::use() const
 {
 	gl::glUseProgram(programID);
 	for(int32 i= 0; i < attributeCount; i++)
@@ -95,7 +95,7 @@ void ShaderProgram::use()
 	}
 }
 
-void ShaderProgram::unuse()
+void ShaderProgram::unuse() const
 {
 	gl::glUseProgram(0);
 	for(int32 i= 0; i < attributeCount; i++)

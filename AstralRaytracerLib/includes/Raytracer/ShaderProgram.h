@@ -26,8 +26,8 @@ class ShaderProgram
 		);
 		void linkShaders();
 		void addAttribute(const std::string& attributeName);
-		void use();
-		void unuse();
+		void use() const;
+		void unuse() const;
 		const std::unordered_map<std::string, UniformData>& getUniformData() const;
 		gl::GLint getUniformLocation(const std::string& uniformName) const;
 		void setUniformValue(const std::string& uniformName, std::any data, float32 min, float32 max);
