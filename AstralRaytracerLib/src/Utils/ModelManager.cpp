@@ -1,4 +1,4 @@
-#include "Raytracer/ModelManager.h"
+#include "Utils/ModelManager.h"
 // Define these only in *one* .cc file.
 #define TINYGLTF_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION

@@ -1,5 +1,5 @@
-#include "Traceable/StaticMesh.h"
-#include "Utils/Common.h"
+#include "Raytracer/Traceable/StaticMesh.h"
+#include "Common.h"
 
 #include <filesystem>
 

@@ -1,7 +1,6 @@
 #include "Raytracer/Renderer.h"
 
 #include "Compositor/PostProcessing/PostProcessing.h"
-#include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
 #include "Utils/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"

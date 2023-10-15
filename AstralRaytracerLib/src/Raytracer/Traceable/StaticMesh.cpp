@@ -1,6 +1,6 @@
 #include "Raytracer/Traceable/StaticMesh.h"
 
-#include "Raytracer/ModelManager.h"
+#include "Utils/ModelManager.h"
 
 namespace AstralRaytracer
 {
@@ -25,7 +25,7 @@ namespace AstralRaytracer
 		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
 		{
 			HitInfo test_hitInfo;
-			if(m_triangles[triIndex].trace({rayIn.worldSpacePosition, rayIn.direction}, test_hitInfo))
+			if(m_triangles[triIndex].trace({ rayIn.worldSpacePosition, rayIn.direction }, test_hitInfo))
 			{
 				if(test_hitInfo.hitDistance < closestHitInfo.hitDistance)
 				{
