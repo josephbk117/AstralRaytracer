@@ -93,7 +93,8 @@ namespace AstralRaytracer
 
 	static const std::string              invalidString{};
 	static const std::vector<std::string> invalidVectorOfString{};
-	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp" };
+	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp",
+																																".hdr" };
 	static const std::vector<std::string> fileExtensionForModels{ ".gltf", ".glb" };
 	static const std::vector<std::string> fileExtensionForText{ ".txt", ".md", ".csv" };
 	static const std::vector<std::string> fileExtensionForFont{ ".ttf" };
