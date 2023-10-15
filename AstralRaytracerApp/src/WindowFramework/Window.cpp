@@ -46,14 +46,7 @@ namespace AstralRaytracer
 		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(m_glfwWindow);
 
-		TextureDataRGBA iconTexData=
-				TextureManager::loadTextureDataFromFileRGBA("app_assets/icons/astralraytracer.png");
-
-		GLFWimage image[1];
-		image[0].width = iconTexData.getWidth();
-		image[0].height= iconTexData.getHeight();
-		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
-		glfwSetWindowIcon(m_glfwWindow, 1, image);
+		SetWindowIcon("app_assets/icons/astralraytracer.png");
 
 		glbinding::initialize(glfwGetProcAddress);
 
@@ -120,6 +113,17 @@ namespace AstralRaytracer
 		AstralRaytracer::Input::initialize(*this);
 
 		setDefaultTheme();
+	}
+
+	void Window::SetWindowIcon(const std::filesystem::path& iconPath)
+	{
+		TextureDataRGBA iconTexData= TextureManager::loadTextureDataFromFileRGBA(iconPath);
+
+		GLFWimage image[1];
+		image[0].width = iconTexData.getWidth();
+		image[0].height= iconTexData.getHeight();
+		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
+		glfwSetWindowIcon(m_glfwWindow, 1, image);
 	}
 
 	void Window::clear() const { gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT); }
