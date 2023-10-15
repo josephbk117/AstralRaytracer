@@ -18,6 +18,21 @@ namespace AstralRaytracer
 
 namespace AstralRaytracer
 {
+	enum class ApplicationState
+	{
+		INVALID,
+		NONE,
+		LOADING_PROJECT,
+		LOADING_SCENE,
+		SAVING_PROJECT,
+		SAVING_SCENE,
+		ADDING_ASSET,
+		DELETING_ASSET,
+		TRANSFORM_MANIPULATION,
+		SCENE_CAMERA_MANIPULATION,
+		MAX= SCENE_CAMERA_MANIPULATION
+	};
+
 	class Window
 	{
 		public:
@@ -87,7 +102,11 @@ namespace AstralRaytracer
 			glm::u32vec2              m_maxResolution{ 3840, 2160 };
 			std::queue<float32>       m_frameTimes;
 
-			UI::SceneHierarchy      m_sceneHieracrhy;
+			ApplicationState m_appState= ApplicationState::NONE;
+
+			IMGUIZMO_NAMESPACE::OPERATION m_TransformOperation= IMGUIZMO_NAMESPACE::TRANSLATE;
+
+			UI::SceneHierarchy      m_sceneHierarchy;
 			UI::Inspector           m_inspector;
 			UI::ContentBrowser      m_contentBrowser;
 			UI::PostProcessingStack m_postProcessingStack;

@@ -168,6 +168,28 @@ namespace AstralRaytracer
 			m_frameTimes.pop();
 		}
 
+		//------- Transform Manipulation-------//
+
+		if(m_appState == ApplicationState::NONE)
+		{
+			bool isLeftShiftDown= Input::isKeyDown(InputKey::LEFT_SHIFT);
+			if(Input::isKeyDown(InputKey::T))
+			{
+				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::TRANSLATE
+																							: IMGUIZMO_NAMESPACE::TRANSLATE;
+			}
+			else if(Input::isKeyDown(InputKey::S))
+			{
+				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::SCALE
+																							: IMGUIZMO_NAMESPACE::SCALE;
+			}
+			else if(Input::isKeyDown(InputKey::R))
+			{
+				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::ROTATE
+																							: IMGUIZMO_NAMESPACE::ROTATE;
+			}
+		}
+
 		//------- Object selection--------//
 
 		const glm::vec2& mousePos= Input::getMousePosition();
@@ -203,6 +225,7 @@ namespace AstralRaytracer
 
 		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		{
+			m_appState = ApplicationState::NONE;
 			Input::setCursorMode(CursorMode::NORMAL);
 			return;
 		}
@@ -212,6 +235,7 @@ namespace AstralRaytracer
 		if(!forceRecalculate)
 		{
 			Input::setCursorMode(CursorMode::CAPTURED);
+			m_appState= ApplicationState::SCENE_CAMERA_MANIPULATION;
 
 			float32 moveSpeed= deltaTime;
 			if(Input::isKeyDown(InputKey::LEFT_SHIFT))
@@ -342,8 +366,8 @@ namespace AstralRaytracer
 			AssetManager&     assetManager
 	)
 	{
-		ImGuizmo::BeginFrame();
-		ImGuizmo::SetOrthographic(false);
+		IMGUIZMO_NAMESPACE::BeginFrame();
+		IMGUIZMO_NAMESPACE::SetOrthographic(false);
 
 		ImGuiFileDialog::Instance()->ManageGPUThumbnails();
 
@@ -554,7 +578,7 @@ namespace AstralRaytracer
 					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
 
-					m_sceneHieracrhy.display(
+					m_sceneHierarchy.display(
 							appStateInfo, scene, assetManager, *this, ImVec2(0.0f, viewportSceneInfoSplitHeight)
 					);
 
@@ -607,10 +631,10 @@ namespace AstralRaytracer
 					appStateInfo.uiBounds.min= { ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y };
 					appStateInfo.uiBounds.max= { ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y };
 
-					ImGuizmo::SetRect(
+					IMGUIZMO_NAMESPACE::SetRect(
 							ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, newRegion.x, newRegion.y
 					);
-					ImGuizmo::SetDrawlist();
+					IMGUIZMO_NAMESPACE::SetDrawlist();
 
 					if(scene.hasSceneLoaded())
 					{
@@ -619,15 +643,14 @@ namespace AstralRaytracer
 																		 .get()
 																		 ->getTransformMatrix();
 
-						ImGuizmo::Manipulate(
+						IMGUIZMO_NAMESPACE::Manipulate(
 								glm::value_ptr(cam.getView()), glm::value_ptr(cam.getProjection()),
-								IMGUIZMO_NAMESPACE::TRANSLATE | IMGUIZMO_NAMESPACE::SCALE,
-								IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform)
+								m_TransformOperation, IMGUIZMO_NAMESPACE::LOCAL, glm::value_ptr(transform)
 						);
 
-						appStateInfo.canSelectObjects= !ImGuizmo::IsOver();
+						appStateInfo.canSelectObjects= !IMGUIZMO_NAMESPACE::IsOver();
 
-						if(ImGuizmo::IsUsing())
+						if(IMGUIZMO_NAMESPACE::IsUsing())
 						{
 							glm::vec3 newScale;
 							glm::vec3 newTranslation;
