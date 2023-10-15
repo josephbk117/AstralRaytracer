@@ -1,6 +1,6 @@
 #pragma once
 #include "ColourData.h"
-#include "Utils/Common.h"
+#include "Common.h"
 
 #include <array>
 #include <vector>

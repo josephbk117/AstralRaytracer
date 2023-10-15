@@ -1,6 +1,6 @@
 #pragma once
 #include "Raytracer/Material.h"
-#include "Raytracer/TextureData.h"
+#include "Utils/TextureData.h"
 #include "Raytracer/Traceable/Traceable.h"
 #include "Serialization.h"
 

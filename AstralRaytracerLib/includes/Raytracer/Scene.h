@@ -1,6 +1,6 @@
 #pragma once
 #include "Material.h"
-#include "TextureData.h"
+#include "Utils/TextureData.h"
 #include "Utils/AssetManager.h"
 
 #include <filesystem>

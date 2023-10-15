@@ -1,6 +1,6 @@
 #pragma once
 #include "Common.h"
-#include "Raytracer/ColourData.h"
+#include "ColourData.h"
 #include "Raytracer/Transform.h"
 
 #include <yaml-cpp/yaml.h>

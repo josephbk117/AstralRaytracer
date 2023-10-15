@@ -1,4 +1,4 @@
-#include "Raytracer/TextureData.h"
+#include "Utils/TextureData.h"
 
 template <typename T, uint8 ComponentCount>
 TextureData<T, ComponentCount>::TextureData(): m_width(0), m_height(0)

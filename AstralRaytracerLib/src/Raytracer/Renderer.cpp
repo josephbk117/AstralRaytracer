@@ -3,7 +3,7 @@
 #include "Compositor/PostProcessing/PostProcessing.h"
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Scene.h"
-#include "Raytracer/TextureManager.h"
+#include "Utils/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"

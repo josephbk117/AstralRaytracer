@@ -1,7 +1,7 @@
 #include "WindowFramework/Window.h"
 
 #include "Raytracer/Renderer.h"
-#include "Raytracer/TextureManager.h"
+#include "Utils/TextureManager.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/UI/ImageInspect.h"
 

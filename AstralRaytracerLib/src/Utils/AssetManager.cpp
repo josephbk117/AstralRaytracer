@@ -1,7 +1,7 @@
 #include "Utils/AssetManager.h"
 
 #include "Raytracer/ModelManager.h"
-#include "Raytracer/TextureManager.h"
+#include "Utils/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
 

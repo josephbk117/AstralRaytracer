@@ -1,6 +1,6 @@
 #pragma once
 #include "TextureData.h"
-#include "Utils/Common.h"
+#include "Common.h"
 
 #include <filesystem>
 #include <glbinding/gl/gl.h>

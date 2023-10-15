@@ -1,6 +1,6 @@
 #pragma once
-#include "Raytracer/TextureData.h"
 #include "Utils/Common.h"
+#include "Utils/TextureData.h"
 
 #include <glm/glm.hpp>
 #include <imgui.h>
