@@ -1,4 +1,4 @@
-#include "Raytracer/DrawingPanel.h"
+#include "Compositor/DrawingPanel.h"
 
 #include <glbinding/gl/gl.h>
 
@@ -87,33 +87,9 @@ void DrawingPanel::init(float32 width, float32 height)
 	gl::glBindVertexArray(0);
 }
 
-const Transform& DrawingPanel::getTransform() const noexcept { return m_transform; }
-
-Transform& DrawingPanel::getTransform() noexcept { return m_transform; }
-
 void DrawingPanel::setTextureID(uint32 textureID) { m_textureID= textureID; }
 
 uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
-
-bool DrawingPanel::isPointInPanel(float32 xpos, float32 ypos) noexcept
-{
-	glm::vec4 dimensions= getPanelWorldDimension();
-	return (
-			xpos >= dimensions.x && xpos <= dimensions.y && ypos >= dimensions.w && ypos <= dimensions.z
-	);
-}
-
-glm::vec4 DrawingPanel::getPanelWorldDimension() noexcept
-{
-	const float32 left  = (-m_transform.getScale().x * 0.5f) + 0.5f;
-	const float32 right = (m_transform.getScale().x * 0.5f) + 0.5f;
-	const float32 top   = (m_transform.getScale().y * 0.5f) + 0.5f;
-	const float32 bottom= (-m_transform.getScale().y * 0.5f) + 0.5f;
-	return glm::vec4(
-			left + m_transform.getPosition().x, right + m_transform.getPosition().x,
-			top + m_transform.getPosition().y, bottom + m_transform.getPosition().y
-	);
-}
 
 void DrawingPanel::draw() const noexcept
 {

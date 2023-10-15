@@ -1,6 +1,4 @@
 #include "Camera.h"
-#include "DrawingPanel.h"
-#include "RenderTexture.h"
 #include "Scene.h"
 #include "ShaderProgram.h"
 #include "TextureData.h"

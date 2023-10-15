@@ -1,6 +1,6 @@
 #pragma once
-#include "Raytracer/DrawingPanel.h"
-#include "Raytracer/RenderTexture.h"
+#include "../DrawingPanel.h"
+#include "../RenderTexture.h"
 #include "Raytracer/ShaderProgram.h"
 #include "Utils/Common.h"
 

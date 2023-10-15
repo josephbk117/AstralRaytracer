@@ -1,6 +1,5 @@
 #include "Compositor/Compositor.h"
 #include "Raytracer/Camera.h"
-#include "Raytracer/DrawingPanel.h"
 #include "Raytracer/ModelManager.h"
 #include "Raytracer/Renderer.h"
 #include "Raytracer/ShaderProgram.h"

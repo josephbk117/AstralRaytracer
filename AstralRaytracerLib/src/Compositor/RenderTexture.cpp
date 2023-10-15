@@ -1,4 +1,4 @@
-#include "Raytracer/RenderTexture.h"
+#include "Compositor/RenderTexture.h"
 
 #include <iostream>
 
