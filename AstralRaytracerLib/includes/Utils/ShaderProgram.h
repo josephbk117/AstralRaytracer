@@ -1,5 +1,5 @@
 #pragma once
-#include "Utils/Common.h"
+#include "Common.h"
 
 #include <any>
 #include <glbinding/gl/gl.h>

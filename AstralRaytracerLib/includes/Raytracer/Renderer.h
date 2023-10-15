@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Scene.h"
-#include "ShaderProgram.h"
 #include "Utils/Common.h"
+#include "Utils/ShaderProgram.h"
 #include "Utils/TextureData.h"
 
 namespace AstralRaytracer

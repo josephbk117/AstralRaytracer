@@ -1,7 +1,7 @@
 #pragma once
 #include "../DrawingPanel.h"
 #include "../RenderTexture.h"
-#include "Raytracer/ShaderProgram.h"
+#include "Utils/ShaderProgram.h"
 #include "Utils/Common.h"
 
 namespace AstralRaytracer

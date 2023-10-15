@@ -1,15 +1,8 @@
 #include "Compositor/Compositor.h"
 #include "Raytracer/Camera.h"
 #include "Raytracer/Renderer.h"
-#include "Raytracer/ShaderProgram.h"
-#include "Raytracer/Traceable/SphereTraceable.h"
-#include "Raytracer/Traceable/StaticMesh.h"
-#include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Utils/AssetManager.h"
 #include "WindowFramework/Input.h"
-#include "WindowFramework/UI/CommonUI.h"
-#include "WindowFramework/UI/ContentBrowser.h"
-#include "WindowFramework/UI/ImageInspect.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
@@ -54,7 +47,7 @@ int main()
 			renderer.render(scene, cam);
 			compositor.processImage(scene, cam.getResolution(), renderer.getTextureId());
 
-			appStateInfo.outputTextureId = reinterpret_cast<ImTextureID>(compositor.getTextureId());
+			appStateInfo.outputTextureId= reinterpret_cast<ImTextureID>(compositor.getTextureId());
 
 			// Display UI
 			window.startUI();

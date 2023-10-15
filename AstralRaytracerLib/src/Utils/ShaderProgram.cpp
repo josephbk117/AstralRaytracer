@@ -1,4 +1,4 @@
-#include "Raytracer/ShaderProgram.h"
+#include "Utils/ShaderProgram.h"
 
 #include "Utils/Common.h"
 
@@ -14,32 +14,44 @@ ShaderProgram::ShaderProgram()
 	attributeCount  = 0;
 }
 
-ShaderProgram::~ShaderProgram() {}
+ShaderProgram::~ShaderProgram() { }
 
-void ShaderProgram::compileShaders(const std::string& vertexShaderPath,
-																	 const std::string& fragmentShaderPath)
+void ShaderProgram::compileShaders(
+		const std::string& vertexShaderPath,
+		const std::string& fragmentShaderPath
+)
 {
 	programID     = gl::glCreateProgram();
 	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
 	if(vertexShaderID == 0)
+	{
 		std::cout << "ERROR : Vertex shader creation";
+	}
 	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
 	if(vertexShaderID == 0)
+	{
 		std::cout << "ERROR : Fragment shader creation";
+	}
 	compileShaderFromFilePath(vertexShaderPath, vertexShaderID);
 	compileShaderFromFilePath(fragmentShaderPath, fragmentShaderID);
 }
 
-void ShaderProgram::compileShadersFromSrcCode(const std::string& vertexShaderSrcCode,
-																							const std::string& fragmentShaderSrcCode)
+void ShaderProgram::compileShadersFromSrcCode(
+		const std::string& vertexShaderSrcCode,
+		const std::string& fragmentShaderSrcCode
+)
 {
 	programID     = gl::glCreateProgram();
 	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
 	if(vertexShaderID == 0)
+	{
 		std::cout << "ERROR : Vertex shader creation";
+	}
 	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
 	if(vertexShaderID == 0)
+	{
 		std::cout << "ERROR : Fragment shader creation";
+	}
 
 	if(!compileShaderSourceCode(vertexShaderSrcCode, vertexShaderID))
 	{
@@ -114,11 +126,16 @@ gl::GLint ShaderProgram::getUniformLocation(const std::string& uniformName) cons
 	return gl::glGetUniformLocation(programID, uniformName.c_str());
 }
 
-void ShaderProgram::setUniformValue(const std::string& uniformName, std::any data, float32 min,
-																		float32 max)
+void ShaderProgram::setUniformValue(
+		const std::string& uniformName,
+		std::any           data,
+		float32            min,
+		float32            max
+)
 {
 	uint32 uniformId= 0;
-	auto   it       = m_uniformMap.find(uniformName);
+
+	auto it= m_uniformMap.find(uniformName);
 	if(it != m_uniformMap.end())
 	{
 		uniformId= it->second.uniformId;
@@ -126,10 +143,10 @@ void ShaderProgram::setUniformValue(const std::string& uniformName, std::any dat
 	else
 	{
 		uniformId                = getUniformLocation(uniformName);
-		m_uniformMap[uniformName]= {uniformId, min, max, data};
+		m_uniformMap[uniformName]= { uniformId, min, max, data };
 	}
 
-	m_uniformMap[uniformName]= {uniformId, min, max, data};
+	m_uniformMap[uniformName]= { uniformId, min, max, data };
 
 	updateUniformData(uniformName, data);
 }
