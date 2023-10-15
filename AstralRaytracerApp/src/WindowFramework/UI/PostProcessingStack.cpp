@@ -44,7 +44,7 @@ namespace AstralRaytracer
 							 "##Post Processing Effect", items[m_selectedItem].c_str(), ImGuiComboFlags_None
 					 ))
 				{
-					for(int i= 0; i < items.size(); i++)
+					for(uint32 i= 0; i < items.size(); i++)
 					{
 						bool isSelected= (m_selectedItem == i);
 						if(ImGui::Selectable(items[i].c_str(), isSelected))
