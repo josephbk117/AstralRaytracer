@@ -324,7 +324,7 @@ namespace AstralRaytracer
 		style->FrameRounding     = 2.0f;
 		style->FramePadding      = ImVec2(4.0f, 4.0f);
 		style->WindowPadding     = ImVec2(0.0f, 2.0f);
-		style->CellPadding       = ImVec2(10.0f, 10.0f);
+		style->CellPadding       = ImVec2(4.0f, 4.0f);
 		style->ChildRounding     = 2.0f;
 		style->ColumnsMinSpacing = 100.0f;
 		style->FrameBorderSize   = 0.0f;
@@ -562,15 +562,17 @@ namespace AstralRaytracer
 
 					ImVec2 availableRegion= ImGui::GetContentRegionAvail();
 					availableRegion.y     = viewportSceneInfoSplitHeight;
-					const float32 scale   = glm::min(
-              availableRegion.x / (float32)appStateInfo.rendererResolution.x,
-              availableRegion.y / (float32)appStateInfo.rendererResolution.y
-          );
+					availableRegion.y-= 25.0f;
+					const float32 scale= glm::min(
+							availableRegion.x / (float32)appStateInfo.rendererResolution.x,
+							availableRegion.y / (float32)appStateInfo.rendererResolution.y
+					);
 
 					const ImVec2 newRegion= { appStateInfo.rendererResolution.x * scale,
 																		appStateInfo.rendererResolution.y * scale };
-					ImVec2       gapRegion= { (availableRegion.x - newRegion.x) * 0.5f,
-																		(availableRegion.y - newRegion.y) * 0.5f };
+
+					ImVec2 gapRegion= { (availableRegion.x - newRegion.x) * 0.5f,
+															(availableRegion.y - newRegion.y) * 0.5f };
 					gapRegion.x-= 8.0f; // Adjustment to keep Image centered horizontally
 
 					ImGui::Dummy({ availableRegion.x, gapRegion.y });

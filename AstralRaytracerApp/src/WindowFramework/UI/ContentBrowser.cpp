@@ -22,7 +22,10 @@ namespace AstralRaytracer
 				ImGui::TableSetColumnIndex(0);
 				ImGui::SeparatorText("CONTENT BROWSER");
 
-				ImGui::BeginChild("Content Browser", ImGui::GetContentRegionAvail());
+				ImVec2 contentBrowserSize= ImGui::GetContentRegionAvail();
+				contentBrowserSize.y -= 12.0f;
+
+				ImGui::BeginChild("Content Browser", contentBrowserSize);
 
 				const fs::path resourcesPath= "../../../../ExampleProject";
 
