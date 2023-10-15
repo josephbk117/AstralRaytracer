@@ -35,7 +35,7 @@ int main()
 			// Process Input
 			window.processInput(appStateInfo, deltaTime, renderer, cam, scene);
 
-			gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+			window.clear();
 
 			if(appStateInfo.isSceneDirty || appStateInfo.cameraUpdatedThisFrame)
 			{

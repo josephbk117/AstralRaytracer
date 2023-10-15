@@ -122,6 +122,8 @@ namespace AstralRaytracer
 		setDefaultTheme();
 	}
 
+	void Window::clear() const { gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT); }
+
 	void Window::setSelectedObjectIndexFromMouseCoord(
 			const glm::vec2&                   mousePos,
 			AstralRaytracer::UI::AppStateInfo& appStateInfo,
@@ -702,7 +704,7 @@ namespace AstralRaytracer
 
 	bool Window::shouldWindowClose() const { return glfwWindowShouldClose(m_glfwWindow); }
 
-	void Window::shutdown()
+	void Window::shutdown() const
 	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -710,18 +712,18 @@ namespace AstralRaytracer
 		glfwTerminate();
 	}
 
-	void Window::swapBuffers() { glfwSwapBuffers(m_glfwWindow); }
+	void Window::swapBuffers() const { glfwSwapBuffers(m_glfwWindow); }
 
-	void Window::pollEvents() { glfwPollEvents(); }
+	void Window::pollEvents() const { glfwPollEvents(); }
 
-	void Window::startUI()
+	void Window::startUI() const
 	{
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
 
-	void Window::endUI()
+	void Window::endUI() const
 	{
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

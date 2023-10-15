@@ -36,17 +36,18 @@ namespace AstralRaytracer
 		bool                shouldWindowClose() const;
 
 		void initialize();
+		void clear() const;
 		void processInput(UI::AppStateInfo& appStateInfo, float32 deltaTime, Renderer& renderer,
 											Camera& cam, const Scene& scene);
 
 		void setDefaultTheme() const;
 		void displayUI(UI::AppStateInfo& appStateInfo, Renderer& renderer, Scene& scene, Camera& cam,
 									 AssetManager& assetManager);
-		void shutdown();
-		void swapBuffers();
-		void pollEvents();
-		void startUI();
-		void endUI();
+		void shutdown() const;
+		void swapBuffers() const;
+		void pollEvents() const;
+		void startUI() const;
+		void endUI() const;
 
 		const std::pair<uint32, uint32>& getResolution() const { return m_resolution; };
 
