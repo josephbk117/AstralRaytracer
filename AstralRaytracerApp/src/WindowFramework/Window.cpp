@@ -323,9 +323,10 @@ namespace AstralRaytracer
 		style->GrabRounding      = 2.0f;
 		style->FrameRounding     = 2.0f;
 		style->FramePadding      = ImVec2(4.0f, 4.0f);
-		style->WindowPadding     = ImVec2(2.0f, 2.0f);
+		style->WindowPadding     = ImVec2(0.0f, 2.0f);
+		style->CellPadding       = ImVec2(10.0f, 10.0f);
 		style->ChildRounding     = 2.0f;
-		style->ColumnsMinSpacing = 400.0f;
+		style->ColumnsMinSpacing = 100.0f;
 		style->FrameBorderSize   = 0.0f;
 		style->ChildBorderSize   = 0.0f;
 		style->WindowBorderSize  = 0.0f;
@@ -347,7 +348,8 @@ namespace AstralRaytracer
 		ImGuiFileDialog::Instance()->ManageGPUThumbnails();
 
 		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+																			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
+																			ImGuiWindowFlags_MenuBar;
 
 		const ImGuiViewport* viewport= ImGui::GetMainViewport();
 		ImGui::SetNextWindowPos(viewport->WorkPos);
@@ -439,6 +441,7 @@ namespace AstralRaytracer
 			}
 
 			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																				 ImGuiWindowFlags_NoResize |
 																				 ImGuiWindowFlags_AlwaysUseWindowPadding;
 
 			const uint32 toolBarHeight= 28;
@@ -539,7 +542,8 @@ namespace AstralRaytracer
 				const float32 viewportSceneInfoSplitHeight= ImGui::GetContentRegionAvail().y * 0.6f;
 				if(ImGui::BeginTable(
 							 "viewportSceneInfoSplit", 3,
-							 tableFlags | ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Hideable,
+							 tableFlags | ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_BordersOuter |
+									 ImGuiTableFlags_Hideable,
 							 { ImGui::GetContentRegionAvail().x, viewportSceneInfoSplitHeight }
 					 ))
 				{
@@ -550,7 +554,9 @@ namespace AstralRaytracer
 					ImGui::TableNextRow(rowFlags, 100.0f);
 					ImGui::TableSetColumnIndex(0);
 
-					displaySceneObjectsUI(appStateInfo, scene, assetManager);
+					m_sceneHieracrhy.display(
+							appStateInfo, scene, assetManager, *this, ImVec2(0.0f, viewportSceneInfoSplitHeight)
+					);
 
 					ImGui::TableSetColumnIndex(1);
 
@@ -675,28 +681,6 @@ namespace AstralRaytracer
 		}
 
 		ImGui::End();
-	}
-
-	void Window::displaySceneObjectsUI(
-			UI::AppStateInfo&   appStateInfo,
-			const Scene&        scene,
-			const AssetManager& assetManager
-	)
-	{
-		ImGui::PushFont(getSecondaryFont());
-		ImGui::SeparatorText("SCENE");
-		ImGui::PopFont();
-
-		for(uint32 objIndex= 0; objIndex < scene.m_sceneTraceables.size(); ++objIndex)
-		{
-			bool isSelected= objIndex == appStateInfo.selectedObjectIndex;
-			if(ImGui::Selectable(
-						 assetManager.getNameAndPathOfTraceable(objIndex).value().assetName.c_str(), &isSelected
-				 ))
-			{
-				appStateInfo.selectedObjectIndex= objIndex;
-			}
-		}
 	}
 
 	void Window::windowSizeCallback(GLFWwindow* window, int32 width, int32 height)

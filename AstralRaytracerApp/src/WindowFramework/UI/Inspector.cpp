@@ -19,7 +19,7 @@ namespace AstralRaytracer
 			ImGui::SeparatorText("INSPECTOR");
 			ImGui::PopFont();
 
-			availableRegion.y-= 72.0f;
+			availableRegion.y-= 80.0f;
 			ImGui::BeginChild("Inspector", availableRegion, false, ImGuiWindowFlags_AlwaysAutoResize);
 
 			displayTransformUI(window, appStateInfo, scene, assetManager);

@@ -3,6 +3,7 @@
 #include "UI/ContentBrowser.h"
 #include "UI/Inspector.h"
 #include "UI/PostProcessingStack.h"
+#include "UI/SceneHierarchy.h"
 #include "Utils/Common.h"
 
 #include <queue>
@@ -86,6 +87,7 @@ namespace AstralRaytracer
 			glm::u32vec2              m_maxResolution{ 3840, 2160 };
 			std::queue<float32>       m_frameTimes;
 
+			UI::SceneHierarchy      m_sceneHieracrhy;
 			UI::Inspector           m_inspector;
 			UI::ContentBrowser      m_contentBrowser;
 			UI::PostProcessingStack m_postProcessingStack;
@@ -98,11 +100,5 @@ namespace AstralRaytracer
 								 const AstralRaytracer::Camera&     cam,
 								 const AstralRaytracer::Scene&      scene
 						 );
-
-			void displaySceneObjectsUI(
-					UI::AppStateInfo&   appStateInfo,
-					const Scene&        scene,
-					const AssetManager& assetManager
-			);
 	};
 } // namespace AstralRaytracer
