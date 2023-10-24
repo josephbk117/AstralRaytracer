@@ -1,17 +1,29 @@
 #pragma once
 #include "Common.h"
 
-#include <any>
 #include <glbinding/gl/gl.h>
 #include <string>
 #include <unordered_map>
+#include <variant>
+
+using UniformDataType= std::variant<
+		int32,
+		uint32,
+		float32,
+		glm::ivec2,
+		glm::uvec2,
+		glm::vec2,
+		glm::ivec3,
+		glm::uvec3,
+		glm::vec3,
+		glm::mat4>;
 
 struct UniformData
 {
-		uint32   uniformId= 0;
-		float32  min      = 0.0f;
-		float32  max      = 1.0f;
-		std::any data;
+		uint32          uniformId= 0;
+		float32         min      = 0.0f;
+		float32         max      = 1.0f;
+		UniformDataType data;
 };
 
 class ShaderProgram
@@ -30,8 +42,14 @@ class ShaderProgram
 		void unuse() const;
 		const std::unordered_map<std::string, UniformData>& getUniformData() const;
 		gl::GLint getUniformLocation(const std::string& uniformName) const;
-		void setUniformValue(const std::string& uniformName, std::any data, float32 min, float32 max);
-		void updateUniformData(const std::string& uniformName, std::any data);
+
+		void setUniformValue(
+				const std::string&     uniformName,
+				const UniformDataType& data,
+				float32                min,
+				float32                max
+		);
+		void        updateUniformData(const std::string& uniformName, const UniformDataType& data);
 		static void applyShaderUniformMatrix(int32 uniformId, const glm::mat4& matrixValue);
 		static void applyShaderVector3(int32 uniformId, const glm::vec3& value);
 		static void applyShaderFloat(int32 uniformId, float32 value);

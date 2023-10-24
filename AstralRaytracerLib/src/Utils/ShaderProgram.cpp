@@ -127,10 +127,10 @@ gl::GLint ShaderProgram::getUniformLocation(const std::string& uniformName) cons
 }
 
 void ShaderProgram::setUniformValue(
-		const std::string& uniformName,
-		std::any           data,
-		float32            min,
-		float32            max
+		const std::string&     uniformName,
+		const UniformDataType& data,
+		float32                min,
+		float32                max
 )
 {
 	uint32 uniformId= 0;
@@ -151,31 +151,29 @@ void ShaderProgram::setUniformValue(
 	updateUniformData(uniformName, data);
 }
 
-void ShaderProgram::updateUniformData(const std::string& uniformName, std::any data)
+void ShaderProgram::updateUniformData(const std::string& uniformName, const UniformDataType& data)
 {
 	const int32 uniformId= m_uniformMap[uniformName].uniformId;
 
 	m_uniformMap[uniformName].data= data;
 
-	const size_t typeHash= data.type().hash_code();
-
 	using namespace AstralRaytracer;
 
-	if(typeHash == Int32Hash)
+	if(std::get_if<int32>(&data))
 	{
-		applyShaderInt(uniformId, std::any_cast<int32>(data));
+		applyShaderInt(uniformId, std::get<int32>(data));
 		return;
 	}
 
-	if(typeHash == UInt32Hash)
+	if(std::get_if<uint32>(&data))
 	{
-		applyShaderUInt(uniformId, std::any_cast<uint32>(data));
+		applyShaderUInt(uniformId, std::get<uint32>(data));
 		return;
 	}
 
-	if(typeHash == Float32Hash)
+	if(std::get_if<float32>(&data))
 	{
-		applyShaderFloat(uniformId, std::any_cast<float32>(data));
+		applyShaderFloat(uniformId, std::get<float32>(data));
 		return;
 	}
 }

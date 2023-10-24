@@ -4,14 +4,14 @@ namespace AstralRaytracer
 {
 	PostProcessing::~PostProcessing() { }
 	
-	void PostProcessing::setUniform(const std::string& name, std::any data)
+	void PostProcessing::setUniform(const std::string& name, const UniformDataType& data)
 	{
 		m_shaderProgram.use();
 		m_shaderProgram.updateUniformData(name, data);
 		m_shaderProgram.unuse();
 	}
 
-	std::any PostProcessing::getUniform(const std::string& name) const
+	UniformDataType PostProcessing::getUniform(const std::string& name) const
 	{
 		return m_shaderProgram.getUniformData().at(name).data;
 	}

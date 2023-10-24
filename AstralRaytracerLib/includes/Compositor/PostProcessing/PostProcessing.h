@@ -23,9 +23,9 @@ namespace AstralRaytracer
 					gl::GLuint           imageTexture
 			) const= 0;
 
-			void setUniform(const std::string& name, std::any data);
+			void setUniform(const std::string& name, const UniformDataType& data);
 
-			std::any getUniform(const std::string& name) const;
+			UniformDataType getUniform(const std::string& name) const;
 
 			const ShaderProgram& getShader() const;
 		protected:
