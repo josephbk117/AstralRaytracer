@@ -474,7 +474,7 @@ namespace AstralRaytracer
 			ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags2);
 			int32 bounceCount= renderer.getBounceCount();
 
-			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 6.0f;
+			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 7.0f;
 
 			ImGui::SetNextItemWidth(sliderWidth);
 			if(ImGui::SliderInt(
@@ -552,6 +552,12 @@ namespace AstralRaytracer
 			std::array<char, 32> overlay= {};
 			sprintf(overlay.data(), "Samples: %d/%d", renderer.getFrameIndex(), 1000);
 			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
+
+			ImGui::SameLine();
+			if(ImGui::Button("screenshot", {sliderWidth, 0})) 
+			{
+				TextureManager::saveTextureToFile(renderer.getTextureData(), "imgout.hdr");
+			}
 
 			ImGui::EndChild();
 			ImGui::PopStyleVar();
