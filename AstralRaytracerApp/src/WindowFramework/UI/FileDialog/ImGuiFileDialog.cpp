@@ -3330,7 +3330,7 @@ IGFD_API void IGFD::ThumbnailFeature::prThreadThumbnailFileDatasExtractionFunc()
 								const auto newWidth   = (int)newX;
 								const auto newHeight  = (int)newY;
 								const auto newBufSize = (size_t)(newWidth * newHeight * 4U); //-V112 //-V1028
-								auto       resizedData= new uint8_t[newBufSize];
+								uint8_t*   resizedData= new uint8_t[newBufSize];
 
 								const int resizeSucceeded=
 										stbir_resize_uint8(datas, w, h, 0, resizedData, newWidth, newHeight, 0,
