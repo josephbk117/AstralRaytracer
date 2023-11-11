@@ -1437,7 +1437,6 @@ namespace IGFD
 					std::string ext;
 					bool        isOk= false;
 			};
-		public:
 			static bool ImSplitter(
 					bool   split_vertically,
 					float  thickness,
@@ -1507,7 +1506,6 @@ namespace IGFD
 			std::string puSearchTag;
 			char        puSearchBuffer[MAX_FILE_DIALOG_NAME_BUFFER]= "";
 			bool        puSearchInputIsActive                      = false;
-		public:
 			void Clear();                                                // clear datas
 			void DrawSearchBar(FileDialogInternal& vFileDialogInternal); // draw the search bar
 	};
@@ -1569,7 +1567,6 @@ namespace IGFD
 		public:
 			std::string puDLGFilters;
 			std::string puDLGdefaultExt;
-		public:
 			const FilterInfos& GetSelectedFilter() const;
 			void               ParseFilters(const char* vFilters
 										); // Parse filter syntax, detect and parse filter collection
@@ -1865,7 +1862,6 @@ namespace IGFD
 					const FileDialogInternal& vFileDialogInternal,
 					const std::string&        vPath
 			); // scan the directory for retrieve the file list
-		public:
 			std::string GetResultingPath();
 			std::string
 			GetResultingFileName(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
@@ -1913,7 +1909,6 @@ namespace IGFD
 			int                  puLocaleCategory     = LC_ALL;  // locale category to use
 			std::string puLocaleBegin; // the locale who will be applied at start of the display dialog
 			std::string puLocaleEnd;   // the locale who will be applaied at end of the display dialog
-		public:
 			void NewFrame();          // new frame, so maybe neded to do somethings, like reset events
 			void EndFrame();          // end frame, so maybe neded to do somethings fater all
 			void ResetForNewDialog(); // reset what is needed to reset for the openging of a new dialog
