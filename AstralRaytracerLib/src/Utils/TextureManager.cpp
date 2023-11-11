@@ -3,7 +3,9 @@
 #include "Utils/TextureData.h"
 
 #include <iostream>
+
 #include <stbimage/stb_image.h>
+#include <stbimage/stb_image_write.h>
 
 #ifdef SUPPORT_STD_EXECUTION
 	#include <execution>
@@ -137,6 +139,15 @@ void TextureManager::resizeTexture(const TextureDataRGBF& textureData, uint32 te
 			gl::GL_RGB, gl::GL_FLOAT, textureData.getTextureData().data()
 	);
 	gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
+}
+
+void TextureManager::saveTextureToFile(
+		const TextureDataRGBF&       data,
+		const std::filesystem::path& path
+)
+{
+	stbi_flip_vertically_on_write(true);
+	stbi_write_hdr(path.string().c_str(), data.getWidth(), data.getHeight(), data.getComponentCount(), data.getTextureData().data());
 }
 
 gl::GLenum TextureManager::getTextureFormatFromData(TextureDataRGBF& textureData)

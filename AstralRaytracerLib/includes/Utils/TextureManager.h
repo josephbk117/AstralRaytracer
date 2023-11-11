@@ -1,6 +1,6 @@
 #pragma once
-#include "TextureData.h"
 #include "Common.h"
+#include "TextureData.h"
 
 #include <filesystem>
 #include <glbinding/gl/gl.h>
@@ -16,6 +16,7 @@ class TextureManager
 		static uint32          loadTextureFromTextureData(TextureDataRGBF& textureData, bool gamma);
 		static void            updateTexture(const TextureDataRGBF& textureData, uint32 textureId);
 		static void            resizeTexture(const TextureDataRGBF& textureData, uint32 textureId);
+		static void            saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path);
 		static gl::GLenum      getTextureFormatFromData(TextureDataRGBF& textureData);
 		static gl::GLenum      getTextureFormatFromData(uint8 componentCount);
 	private:
