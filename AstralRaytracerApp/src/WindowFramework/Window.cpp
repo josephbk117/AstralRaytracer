@@ -66,8 +66,8 @@ namespace AstralRaytracer
 		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(
 				[](IGFD_Thumbnail_Info* vThumbnail_Info) -> void
 				{
-					if(vThumbnail_Info && vThumbnail_Info->isReadyToUpload &&
-						 vThumbnail_Info->textureFileDatas)
+					if(vThumbnail_Info != nullptr && static_cast<bool>(vThumbnail_Info->isReadyToUpload) &&
+						 static_cast<bool>(vThumbnail_Info->textureFileDatas))
 					{
 						gl::GLuint textureId= 0;
 						gl::glGenTextures(1, &textureId);
@@ -89,8 +89,8 @@ namespace AstralRaytracer
 						delete[] vThumbnail_Info->textureFileDatas;
 						vThumbnail_Info->textureFileDatas= nullptr;
 
-						vThumbnail_Info->isReadyToUpload = false;
-						vThumbnail_Info->isReadyToDisplay= true;
+						vThumbnail_Info->isReadyToUpload = static_cast<int32>(false);
+						vThumbnail_Info->isReadyToDisplay= static_cast<int32>(true);
 					}
 				}
 		);
@@ -99,7 +99,7 @@ namespace AstralRaytracer
 		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(
 				[](IGFD_Thumbnail_Info* vThumbnail_Info)
 				{
-					if(vThumbnail_Info)
+					if(vThumbnail_Info != nullptr)
 					{
 						gl::GLuint texID= vThumbnail_Info->textureID;
 						gl::glDeleteTextures(1, &texID);

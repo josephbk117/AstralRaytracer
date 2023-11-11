@@ -1,4 +1,6 @@
 #pragma once
+#include "Utils/Common.h"
+
 #include <cstddef>
 #if defined(__clang__)
 	#pragma clang diagnostic ignored "-Wunknown-pragmas"
@@ -1273,14 +1275,13 @@ enum IGFD_ResultMode_
 #ifdef USE_THUMBNAILS
 struct IGFD_Thumbnail_Info
 {
-		int            isReadyToDisplay = 0; // ready to be rendered, so texture created
-		int            isReadyToUpload  = 0; // ready to upload to gpu
-		int            isLoadingOrLoaded= 0; // was sent to laoding or loaded
-		int            textureWidth     = 0; // width of the texture to upload
-		int            textureHeight    = 0; // height of the texture to upload
-		int            textureChannels  = 0; // count channels of the texture to upload
-		unsigned char* textureFileDatas=
-				0;               // file texture datas, will be rested to null after gpu upload
+		int32  isReadyToDisplay = 0;      // ready to be rendered, so texture created
+		int32  isReadyToUpload  = 0;      // ready to upload to gpu
+		int32  isLoadingOrLoaded= 0;      // was sent to laoding or loaded
+		int32  textureWidth     = 0;      // width of the texture to upload
+		int32  textureHeight    = 0;      // height of the texture to upload
+		int32  textureChannels  = 0;      // count channels of the texture to upload
+		uint8* textureFileDatas= nullptr; // file texture datas, will be rested to null after gpu upload
 		size_t textureID= 0; // 2d texture id (void* is like ImtextureID type) (GL, DX, VK, Etc..)
 		void*  userDatas= 0; // user datas
 };
@@ -1485,10 +1486,10 @@ namespace IGFD
 	{
 		public:
 			typedef std::function<bool(const FileInfos&, FileStyle&)> FileStyleFunctor;
-			ImVec4              color= ImVec4(0, 0, 0, 0);
-			std::string         icon;
-			ImFont*             font = nullptr;
-			IGFD_FileStyleFlags flags= 0;
+			ImVec4                                                    color= ImVec4(0, 0, 0, 0);
+			std::string                                               icon;
+			ImFont*                                                   font = nullptr;
+			IGFD_FileStyleFlags                                       flags= 0;
 			FileStyle();
 			FileStyle(const FileStyle& vStyle);
 			FileStyle(const ImVec4& vColor, const std::string& vIcon= "", ImFont* vFont= nullptr);
@@ -1529,10 +1530,10 @@ namespace IGFD
 															filters_optimized; // optimized filters for case insensitive search
 			std::vector<std::regex> filters_regex;     // collection of regex filter type
 			size_t                  count_dots= 0U; // the max count dot the max per filter of all filters
-			void               clear();                                      // clear the datas
-			bool               empty() const;                                // is filter empty
-			const std::string& getFirstFilter() const;                       // get the first filter
-			bool               regexExist(const std::string& vFilter) const; // is regex filter exist
+			void                    clear();        // clear the datas
+			bool                    empty() const;  // is filter empty
+			const std::string&      getFirstFilter() const;                       // get the first filter
+			bool                    regexExist(const std::string& vFilter) const; // is regex filter exist
 			bool exist(const FileInfos& vFileInfos, bool vIsCaseInsensitive) const; // is filter exist
 			void setCollectionTitle(const std::string& vTitle);               // set the collection title
 			void addFilter(const std::string& vFilter, const bool& vIsRegex); // add a filter
@@ -1601,7 +1602,7 @@ namespace IGFD
 			float GetFilterComboBoxWidth() const; // will return the current combo box widget width
 			bool  DrawFilterComboBox(FileDialogInternal& vFileDialogInternal
 			 ); // draw the filter combobox 	// get
-					// the current selected filter
+				 // the current selected filter
 			std::string ReplaceExtentionWithCurrentFilterIfNeeded(
 					const std::string& vFileName,
 					IGFD_ResultMode    vFlag
@@ -1871,7 +1872,7 @@ namespace IGFD
 			std::string
 			GetResultingFilePathName(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
 			std::map<std::string, std::string>
-			GetResultingSelection(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
+					 GetResultingSelection(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
 			void DrawDirectoryCreation(const FileDialogInternal& vFileDialogInternal
 			); // draw directory creation widget
 			void DrawPathComposer(const FileDialogInternal& vFileDialogInternal
@@ -1888,11 +1889,11 @@ namespace IGFD
 	class IGFD_API FileDialogInternal
 	{
 		public:
-			FileManager   puFileManager;   // the file manager
-			FilterManager puFilterManager; // the filter manager
-			SearchManager puSearchManager; // the search manager
-			std::string puName;                     // the internal dialog name (title + ##word)
-			bool        puShowDialog= false;        // the dialog is shown
+			FileManager   puFileManager;            // the file manager
+			FilterManager puFilterManager;          // the filter manager
+			SearchManager puSearchManager;          // the search manager
+			std::string   puName;                   // the internal dialog name (title + ##word)
+			bool          puShowDialog= false;      // the dialog is shown
 			ImVec2 puDialogCenterPos= ImVec2(0, 0); // center pos for display the confirm overwrite dialog
 			int    puLastImGuiFrameCount = 0;       // to be sure than only one dialog displayed per frame
 			float  puFooterHeight        = 0.0f;    // footer height
@@ -2133,6 +2134,7 @@ namespace IGFD
 				}
 				return &_instance;
 			}
+
 			FileDialog(); // ImGuiFileDialog Constructor. can be used for have many dialog at same time
 										// (not possible with singleton)
 			virtual ~FileDialog(); // ImGuiFileDialog Destructor
