@@ -4658,7 +4658,7 @@ IGFD_API void IGFD::FileDialog::prDrawContent()
 		{
 			case DisplayModeEnum::FILE_LIST: prDrawFileListView(size); break;
 			case DisplayModeEnum::THUMBNAILS_LIST: prDrawThumbnailsListView(size); break;
-			case DisplayModeEnum::THUMBNAILS_GRID: prDrawThumbnailsGridView(size);
+			case DisplayModeEnum::THUMBNAILS_GRID: prDrawThumbnailsGridView(size); break;
 		}
 	}
 	#else  // USE_THUMBNAILS
