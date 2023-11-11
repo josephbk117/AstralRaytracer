@@ -2702,9 +2702,9 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 			fpn= vInfos->filePath + std::string(1u, PATH_SEP) + vInfos->fileNameExt;
 		}
 
-		struct stat statInfos= {};
-		char        timebuf[100];
-		int         result= stat(fpn.c_str(), &statInfos);
+		struct stat           statInfos= {};
+		std::array<char, 100> timebuf;
+		int                   result= stat(fpn.c_str(), &statInfos);
 		if(!result)
 		{
 			if(!vInfos->fileType.isDir())
@@ -2719,7 +2719,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 			errno_t   err= localtime_s(&_tm, &statInfos.st_mtime);
 			if(!err)
 			{
-				len= strftime(timebuf, 99, DateTimeFormat, &_tm);
+				len= strftime(timebuf.data(), 99, DateTimeFormat, &_tm);
 			}
 	#else  // _MSC_VER
 			struct tm* _tm= localtime(&statInfos.st_mtime);
@@ -2730,7 +2730,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 	#endif // _MSC_VER
 			if(len)
 			{
-				vInfos->fileModifDate= std::string(timebuf, len);
+				vInfos->fileModifDate= std::string(timebuf.data(), len);
 			}
 		}
 	}
@@ -3638,12 +3638,12 @@ IGFD_API void IGFD::ThumbnailFeature::prVariadicProgressBar(
 {
 	va_list args;
 	va_start(args, fmt);
-	char      TempBuffer[512];
-	const int w= vsnprintf(TempBuffer, 511, fmt, args);
+	std::array<char, 512> TempBuffer;
+	const int             w= vsnprintf(TempBuffer.data(), 511, fmt, args);
 	va_end(args);
 	if(w)
 	{
-		ImGui::ProgressBar(fraction, size_arg, TempBuffer);
+		ImGui::ProgressBar(fraction, size_arg, TempBuffer.data());
 	}
 }
 

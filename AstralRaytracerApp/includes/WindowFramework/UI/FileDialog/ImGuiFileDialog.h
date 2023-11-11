@@ -1437,6 +1437,7 @@ namespace IGFD
 					std::string ext;
 					bool        isOk= false;
 			};
+
 			static bool ImSplitter(
 					bool   split_vertically,
 					float  thickness,
@@ -1506,8 +1507,8 @@ namespace IGFD
 			std::string puSearchTag;
 			char        puSearchBuffer[MAX_FILE_DIALOG_NAME_BUFFER]= "";
 			bool        puSearchInputIsActive                      = false;
-			void Clear();                                                // clear datas
-			void DrawSearchBar(FileDialogInternal& vFileDialogInternal); // draw the search bar
+			void        Clear();                                                // clear datas
+			void        DrawSearchBar(FileDialogInternal& vFileDialogInternal); // draw the search bar
 	};
 
 	#pragma endregion
@@ -1565,8 +1566,8 @@ namespace IGFD
 									prFilesStyleFunctors; // file style via lambda function
 			FilterInfos prSelectedFilter;
 		public:
-			std::string puDLGFilters;
-			std::string puDLGdefaultExt;
+			std::string        puDLGFilters;
+			std::string        puDLGdefaultExt;
 			const FilterInfos& GetSelectedFilter() const;
 			void               ParseFilters(const char* vFilters
 										); // Parse filter syntax, detect and parse filter collection
@@ -1743,11 +1744,11 @@ namespace IGFD
 			std::string puHeaderFileSize; // detail view name of column size
 			std::string puHeaderFileDate; // detail view name of column date + time
 	#ifdef USE_THUMBNAILS
-			std::string puHeaderFileThumbnails;  // detail view name of column thumbnails
-			bool        puSortingDirection[5]= { // true => Ascending, false => Descending
-        defaultSortOrderFilename, defaultSortOrderType, defaultSortOrderSize, defaultSortOrderDate,
-        defaultSortOrderThumbnails
-      };
+			std::string         puHeaderFileThumbnails; // detail view name of column thumbnails
+			std::array<bool, 5> puSortingDirection= {   // true => Ascending, false => Descending
+				defaultSortOrderFilename, defaultSortOrderType, defaultSortOrderSize, defaultSortOrderDate,
+				defaultSortOrderThumbnails
+			};
 	#else
 			bool puSortingDirection[4]= { // true => Ascending, false => Descending
 				defaultSortOrderFilename, defaultSortOrderType, defaultSortOrderSize, defaultSortOrderDate
@@ -1909,9 +1910,9 @@ namespace IGFD
 			int                  puLocaleCategory     = LC_ALL;  // locale category to use
 			std::string puLocaleBegin; // the locale who will be applied at start of the display dialog
 			std::string puLocaleEnd;   // the locale who will be applaied at end of the display dialog
-			void NewFrame();          // new frame, so maybe neded to do somethings, like reset events
-			void EndFrame();          // end frame, so maybe neded to do somethings fater all
-			void ResetForNewDialog(); // reset what is needed to reset for the openging of a new dialog
+			void        NewFrame();    // new frame, so maybe neded to do somethings, like reset events
+			void        EndFrame();    // end frame, so maybe neded to do somethings fater all
+			void ResetForNewDialog();  // reset what is needed to reset for the openging of a new dialog
 	};
 
 	#pragma endregion
