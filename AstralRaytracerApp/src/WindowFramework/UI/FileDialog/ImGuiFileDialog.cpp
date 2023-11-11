@@ -2725,7 +2725,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 			struct tm* _tm= localtime(&statInfos.st_mtime);
 			if(_tm)
 			{
-				len= strftime(timebuf, 99, DateTimeFormat, _tm);
+				len= strftime(timebuf.data(), 99, DateTimeFormat, _tm);
 			}
 	#endif // _MSC_VER
 			if(len)
