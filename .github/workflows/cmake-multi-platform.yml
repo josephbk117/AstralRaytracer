@@ -62,6 +62,13 @@ jobs:
         sudo apt-get update
         sudo apt-get install --fix-missing xorg-dev libglu1-mesa-dev
 
+    - name: Install latest Clang
+      if: matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'clang'
+      run: |
+        wget https://apt.llvm.org/llvm.sh
+        chmod +x llvm.sh
+        sudo ./llvm.sh latest
+
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
