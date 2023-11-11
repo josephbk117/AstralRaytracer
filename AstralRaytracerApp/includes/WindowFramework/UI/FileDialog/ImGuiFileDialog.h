@@ -1485,12 +1485,10 @@ namespace IGFD
 	{
 		public:
 			typedef std::function<bool(const FileInfos&, FileStyle&)> FileStyleFunctor;
-		public:
 			ImVec4              color= ImVec4(0, 0, 0, 0);
 			std::string         icon;
 			ImFont*             font = nullptr;
 			IGFD_FileStyleFlags flags= 0;
-		public:
 			FileStyle();
 			FileStyle(const FileStyle& vStyle);
 			FileStyle(const ImVec4& vColor, const std::string& vIcon= "", ImFont* vFont= nullptr);
@@ -1531,7 +1529,6 @@ namespace IGFD
 															filters_optimized; // optimized filters for case insensitive search
 			std::vector<std::regex> filters_regex;     // collection of regex filter type
 			size_t                  count_dots= 0U; // the max count dot the max per filter of all filters
-		public:
 			void               clear();                                      // clear the datas
 			bool               empty() const;                                // is filter empty
 			const std::string& getFirstFilter() const;                       // get the first filter
@@ -1676,7 +1673,6 @@ namespace IGFD
 	#ifdef USE_THUMBNAILS
 			IGFD_Thumbnail_Info thumbnailInfo; // structre for the display for image file tetxure
 	#endif                                 // USE_THUMBNAILS
-		public:
 			bool SearchForTag(const std::string& vTag
 			) const; // will search a tag in fileNameExt and fileNameExt_optimized
 			bool SearchForExt(
@@ -1876,7 +1872,6 @@ namespace IGFD
 			GetResultingFilePathName(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
 			std::map<std::string, std::string>
 			GetResultingSelection(FileDialogInternal& vFileDialogInternal, IGFD_ResultMode vFlag);
-		public:
 			void DrawDirectoryCreation(const FileDialogInternal& vFileDialogInternal
 			); // draw directory creation widget
 			void DrawPathComposer(const FileDialogInternal& vFileDialogInternal
@@ -1896,7 +1891,6 @@ namespace IGFD
 			FileManager   puFileManager;   // the file manager
 			FilterManager puFilterManager; // the filter manager
 			SearchManager puSearchManager; // the search manager
-		public:
 			std::string puName;                     // the internal dialog name (title + ##word)
 			bool        puShowDialog= false;        // the dialog is shown
 			ImVec2 puDialogCenterPos= ImVec2(0, 0); // center pos for display the confirm overwrite dialog
@@ -1949,7 +1943,6 @@ namespace IGFD
 			void QuitThumbnailFrame(FileDialogInternal& vFileDialogInternal);
 
 	#ifdef USE_THUMBNAILS
-		protected:
 			enum class DisplayModeEnum
 			{
 				FILE_LIST= 0,
@@ -2140,7 +2133,6 @@ namespace IGFD
 				}
 				return &_instance;
 			}
-		public:
 			FileDialog(); // ImGuiFileDialog Constructor. can be used for have many dialog at same time
 										// (not possible with singleton)
 			virtual ~FileDialog(); // ImGuiFileDialog Destructor
