@@ -935,7 +935,7 @@ IGFD_API void IGFD::FilterManager::ParseFilters(const char* vFilters)
 {
 	prParsedFilters.clear();
 
-	if(vFilters)
+	if(vFilters != nullptr)
 	{
 		puDLGFilters= vFilters; // file mode
 	}
@@ -1305,7 +1305,7 @@ IGFD_API void IGFD::FilterManager::SetFileStyle(
 )
 {
 	std::string _criteria;
-	if(vCriteria)
+	if(vCriteria != nullptr)
 	{
 		_criteria= std::string(vCriteria);
 	}
@@ -1330,7 +1330,7 @@ IGFD_API bool IGFD::FilterManager::GetFileStyle(
 		ImFont**                   vOutFont
 )
 {
-	if(vOutColor)
+	if(vOutColor != nullptr)
 	{
 		if(!prFilesStyle.empty())
 		{
@@ -1364,11 +1364,11 @@ IGFD_API bool IGFD::FilterManager::GetFileStyle(
 					if(prFilesStyle.at(vFlags).find(vCriteria) != prFilesStyle.at(vFlags).end())
 					{ // found
 						*vOutColor= prFilesStyle[vFlags][vCriteria]->color;
-						if(vOutIcon)
+						if(vOutIcon != nullptr)
 						{
 							*vOutIcon= prFilesStyle[vFlags][vCriteria]->icon;
 						}
-						if(vOutFont)
+						if(vOutFont != nullptr)
 						{
 							*vOutFont= prFilesStyle[vFlags][vCriteria]->font;
 						}
@@ -2482,7 +2482,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 			}
 	#else  // _MSC_VER
 			struct tm* _tm= localtime(&statInfos.st_mtime);
-			if(_tm)
+			if(_tm != nullptr)
 			{
 				len= strftime(timebuf.data(), 99, DateTimeFormat, _tm);
 			}
@@ -3309,9 +3309,9 @@ IGFD_API void IGFD::ThumbnailFeature::prThreadThumbnailFileDatasExtractionFunc()
 						int      h    = 0;
 						int      chans= 0;
 						uint8_t* datas= stbi_load(fpn.c_str(), &w, &h, &chans, STBI_rgb_alpha);
-						if(datas)
+						if(datas != nullptr)
 						{
-							if(w && h)
+							if((w != 0) && (h != 0))
 							{
 								// resize with respect to glyph ratio
 								const float ratioX= (float)w / (float)h;
@@ -3386,7 +3386,7 @@ IGFD_API void IGFD::ThumbnailFeature::prVariadicProgressBar(
 	std::array<char, 512> TempBuffer;
 	const int             w= vsnprintf(TempBuffer.data(), 511, fmt, args);
 	va_end(args);
-	if(w)
+	if(w != 0)
 	{
 		ImGui::ProgressBar(fraction, size_arg, TempBuffer.data());
 	}
@@ -5169,7 +5169,7 @@ IGFD_API void IGFD::FileDialog::prBeginFileColorIconStyle(
 
 IGFD_API void IGFD::FileDialog::prEndFileColorIconStyle(const bool& vShowColor, ImFont* vFont)
 {
-	if(vFont)
+	if(vFont != nullptr)
 	{
 		ImGui::PopFont();
 	}
@@ -6131,7 +6131,7 @@ IGFD_C_API void IGFD_CloseDialog(ImGuiFileDialog* vContextPtr)
 
 IGFD_C_API bool IGFD_IsOk(ImGuiFileDialog* vContextPtr)
 {
-	if(vContextPtr)
+	if(vContextPtr != nullptr)
 	{
 		return vContextPtr->IsOk();
 	}
@@ -6161,7 +6161,7 @@ IGFD_C_API bool IGFD_WasOpenedThisFrame(ImGuiFileDialog* vContextPtr)
 
 IGFD_C_API bool IGFD_IsKeyOpened(ImGuiFileDialog* vContextPtr, const char* vCurrentOpenedKey)
 {
-	if(vContextPtr)
+	if(vContextPtr != nullptr)
 	{
 		return vContextPtr->IsOpened(vCurrentOpenedKey);
 	}
@@ -6241,7 +6241,7 @@ IGFD_C_API char* IGFD_GetFilePathName(ImGuiFileDialog* vContextPtr, IGFD_ResultM
 		{
 			size_t siz= s.size() + 1U;
 			res       = (char*)malloc(siz);
-			if(res)
+			if(res != nullptr)
 			{
 #ifndef _MSC_VER
 				strncpy(res, s.c_str(), siz);
@@ -6267,7 +6267,7 @@ IGFD_C_API char* IGFD_GetCurrentFileName(ImGuiFileDialog* vContextPtr, IGFD_Resu
 		{
 			size_t siz= s.size() + 1U;
 			res       = (char*)malloc(siz);
-			if(res)
+			if(res != nullptr)
 			{
 #ifndef _MSC_VER
 				strncpy(res, s.c_str(), siz);
@@ -6293,7 +6293,7 @@ IGFD_C_API char* IGFD_GetCurrentPath(ImGuiFileDialog* vContextPtr)
 		{
 			size_t siz= s.size() + 1U;
 			res       = (char*)malloc(siz);
-			if(res)
+			if(res != nullptr)
 			{
 #ifndef _MSC_VER
 				strncpy(res, s.c_str(), siz);
@@ -6319,7 +6319,7 @@ IGFD_C_API char* IGFD_GetCurrentFilter(ImGuiFileDialog* vContextPtr)
 		{
 			size_t siz= s.size() + 1U;
 			res       = (char*)malloc(siz);
-			if(res)
+			if(res != nullptr)
 			{
 #ifndef _MSC_VER
 				strncpy(res, s.c_str(), siz);
@@ -6394,7 +6394,7 @@ IGFD_C_API bool IGFD_GetFileStyle(
 		{
 			size_t siz   = icon.size() + 1U;
 			*vOutIconText= (char*)malloc(siz);
-			if(*vOutIconText)
+			if(*vOutIconText != nullptr)
 			{
 #ifndef _MSC_VER
 				strncpy(*vOutIconText, icon.c_str(), siz);
@@ -6412,7 +6412,7 @@ IGFD_C_API bool IGFD_GetFileStyle(
 
 IGFD_C_API void IGFD_ClearFilesStyle(ImGuiFileDialog* vContextPtr)
 {
-	if(vContextPtr)
+	if(vContextPtr != nullptr)
 	{
 		vContextPtr->ClearFilesStyle();
 	}
@@ -6425,7 +6425,7 @@ IGFD_C_API void SetLocales(
 		const char*      vEndLocale
 )
 {
-	if(vContextPtr)
+	if(vContextPtr != nullptr)
 	{
 		vContextPtr->SetLocales(
 				vCategory, (vBeginLocale ? vBeginLocale : ""), (vEndLocale ? vEndLocale : "")
