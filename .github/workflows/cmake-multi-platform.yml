@@ -68,8 +68,9 @@ jobs:
         wget https://apt.llvm.org/llvm.sh
         chmod +x llvm.sh
         sudo ./llvm.sh 17
-        sudo update-alternatives --config cc
-        sudo update-alternatives --config c++
+        sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-17 100
+        sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-17 100
+        clang --version
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
