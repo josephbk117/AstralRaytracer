@@ -1590,7 +1590,7 @@ namespace IGFD
 					const IGFD_FileStyleFlags& vFlags,
 					const std::string&         vCriteria,
 					ImVec4*                    vOutColor,
-					std::string*               vOutIcon,
+					std::string* const         vOutIcon,
 					ImFont**                   vOutFont
 			);                      // Get Color and Icon for Filter
 			void ClearFilesStyle(); // clear prFileStyle
@@ -2246,7 +2246,7 @@ namespace IGFD
 					const IGFD_FileStyleFlags& vFlags, // file style
 					const std::string& vCriteria,      // extention filter (same as used in SetExtentionInfos)
 					ImVec4*            vOutColor,      // color to retrieve
-					std::string*       vOutIcon= nullptr, // icon or text to retrieve
+					std::string* const vOutIcon= nullptr, // icon or text to retrieve
 					ImFont**           vOutFont= nullptr
 			);                      // font to retreive
 			void ClearFilesStyle(); // clear extentions setttings

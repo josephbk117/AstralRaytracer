@@ -1326,7 +1326,7 @@ IGFD_API bool IGFD::FilterManager::GetFileStyle(
 		const IGFD_FileStyleFlags& vFlags,
 		const std::string&         vCriteria,
 		ImVec4*                    vOutColor,
-		std::string*               vOutIcon,
+		std::string* const         vOutIcon,
 		ImFont**                   vOutFont
 )
 {
@@ -5839,7 +5839,7 @@ IGFD_API bool IGFD::FileDialog::GetFileStyle(
 		const IGFD_FileStyleFlags& vFlags,
 		const std::string&         vCriteria,
 		ImVec4*                    vOutColor,
-		std::string*               vOutIcon,
+		std::string* const         vOutIcon,
 		ImFont**                   vOutFont
 )
 {
