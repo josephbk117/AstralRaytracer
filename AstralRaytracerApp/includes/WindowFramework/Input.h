@@ -1,5 +1,6 @@
 #pragma once
 #include "Window.h"
+
 namespace AstralRaytracer
 {
 	enum class MouseButtonIndex : uint8
@@ -159,15 +160,11 @@ namespace AstralRaytracer
 	class Input
 	{
 		public:
-		static void      initialize(const Window& window);
-		static glm::vec2 getMousePosition();
-		static void      setCursorMode(CursorMode cursorMode);
-		static bool      isMouseButtonDown(MouseButtonIndex mouseButtonIndex);
-		static bool      isMouseButtonUp(MouseButtonIndex mouseButtonIndex);
-		static bool      isKeyDown(InputKey inputKey);
-		static float64   getTimeSinceStart();
-
-		private:
-		static const GLFWwindow* glfwWindow;
+			static glm::vec2 getMousePosition(const Window& window);
+			static void      setCursorMode(const Window& window, CursorMode cursorMode);
+			static bool      isMouseButtonDown(const Window& window, MouseButtonIndex mouseButtonIndex);
+			static bool      isMouseButtonUp(const Window& window, MouseButtonIndex mouseButtonIndex);
+			static bool      isKeyDown(const Window& window, InputKey inputKey);
+			static float64   getTimeSinceStart();
 	};
 } // namespace AstralRaytracer

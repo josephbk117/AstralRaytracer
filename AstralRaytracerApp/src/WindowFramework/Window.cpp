@@ -110,8 +110,6 @@ namespace AstralRaytracer
 
 		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
 
-		AstralRaytracer::Input::initialize(*this);
-
 		setDefaultTheme();
 	}
 
@@ -172,18 +170,18 @@ namespace AstralRaytracer
 
 		if(m_appState == ApplicationState::NONE)
 		{
-			bool isLeftShiftDown= Input::isKeyDown(InputKey::LEFT_SHIFT);
-			if(Input::isKeyDown(InputKey::T))
+			bool isLeftShiftDown= Input::isKeyDown(*this, InputKey::LEFT_SHIFT);
+			if(Input::isKeyDown(*this, InputKey::T))
 			{
 				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::TRANSLATE
 																							: IMGUIZMO_NAMESPACE::TRANSLATE;
 			}
-			else if(Input::isKeyDown(InputKey::S))
+			else if(Input::isKeyDown(*this, InputKey::S))
 			{
 				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::SCALE
 																							: IMGUIZMO_NAMESPACE::SCALE;
 			}
-			else if(Input::isKeyDown(InputKey::R))
+			else if(Input::isKeyDown(*this, InputKey::R))
 			{
 				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::ROTATE
 																							: IMGUIZMO_NAMESPACE::ROTATE;
@@ -192,9 +190,9 @@ namespace AstralRaytracer
 
 		//------- Object selection--------//
 
-		const glm::vec2& mousePos= Input::getMousePosition();
+		const glm::vec2& mousePos= Input::getMousePosition(*this);
 		if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
-			 Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_LEFT) &&
+			 Input::isMouseButtonDown(*this, MouseButtonIndex::MOUSE_BUTTON_LEFT) &&
 			 appStateInfo.uiBounds.isPointInBounds(mousePos))
 		{
 			setSelectedObjectIndexFromMouseCoord(mousePos, appStateInfo, renderer, cam, scene);
@@ -214,7 +212,7 @@ namespace AstralRaytracer
 
 		if(m_lastMousePosition == glm::vec2(0.0f))
 		{
-			m_lastMousePosition= Input::getMousePosition();
+			m_lastMousePosition= Input::getMousePosition(*this);
 			return;
 		}
 
@@ -223,10 +221,10 @@ namespace AstralRaytracer
 
 		bool forceRecalculate= cam.getResolution() != newCamRes;
 
-		if(!Input::isMouseButtonDown(MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
+		if(!Input::isMouseButtonDown(*this, MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		{
-			m_appState = ApplicationState::NONE;
-			Input::setCursorMode(CursorMode::NORMAL);
+			m_appState= ApplicationState::NONE;
+			Input::setCursorMode(*this, CursorMode::NORMAL);
 			return;
 		}
 
@@ -234,46 +232,46 @@ namespace AstralRaytracer
 
 		if(!forceRecalculate)
 		{
-			Input::setCursorMode(CursorMode::CAPTURED);
+			Input::setCursorMode(*this, CursorMode::CAPTURED);
 			m_appState= ApplicationState::SCENE_CAMERA_MANIPULATION;
 
 			float32 moveSpeed= deltaTime;
-			if(Input::isKeyDown(InputKey::LEFT_SHIFT))
+			if(Input::isKeyDown(*this, InputKey::LEFT_SHIFT))
 			{
 				moveSpeed*= 5.0f;
 			}
 
-			if(Input::isKeyDown(InputKey::W))
+			if(Input::isKeyDown(*this, InputKey::W))
 			{
 				cam.moveForward(moveSpeed);
 				moved= true;
 			}
 
-			if(Input::isKeyDown(InputKey::S))
+			if(Input::isKeyDown(*this, InputKey::S))
 			{
 				cam.moveForward(-moveSpeed);
 				moved= true;
 			}
 
-			if(Input::isKeyDown(InputKey::A))
+			if(Input::isKeyDown(*this, InputKey::A))
 			{
 				cam.moveRight(-moveSpeed);
 				moved= true;
 			}
 
-			if(Input::isKeyDown(InputKey::D))
+			if(Input::isKeyDown(*this, InputKey::D))
 			{
 				cam.moveRight(moveSpeed);
 				moved= true;
 			}
 
-			if(Input::isKeyDown(InputKey::Q))
+			if(Input::isKeyDown(*this, InputKey::Q))
 			{
 				cam.moveUp(moveSpeed);
 				moved= true;
 			}
 
-			if(Input::isKeyDown(InputKey::E))
+			if(Input::isKeyDown(*this, InputKey::E))
 			{
 				cam.moveUp(-moveSpeed);
 				moved= true;
@@ -554,7 +552,7 @@ namespace AstralRaytracer
 			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 
 			ImGui::SameLine();
-			if(ImGui::Button("screenshot", {sliderWidth, 0})) 
+			if(ImGui::Button("screenshot", { sliderWidth, 0 }))
 			{
 				TextureManager::saveTextureToFile(renderer.getTextureData(), "imgout.hdr");
 			}

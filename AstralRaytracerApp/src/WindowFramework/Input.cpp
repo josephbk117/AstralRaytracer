@@ -2,40 +2,34 @@
 
 namespace AstralRaytracer
 {
-	const GLFWwindow* Input::glfwWindow= nullptr;
-
-	void Input::initialize(const Window& window) { glfwWindow= window.m_glfwWindow; }
-
-	glm::vec2 Input::getMousePosition()
+	glm::vec2 Input::getMousePosition(const Window& window)
 	{
 		double xPos;
 		double yPos;
-		glfwGetCursorPos(const_cast<GLFWwindow*>(glfwWindow), &xPos, &yPos);
+		glfwGetCursorPos(window.m_glfwWindow, &xPos, &yPos);
 		return { xPos, yPos };
 	}
 
-	void Input::setCursorMode(CursorMode cursorMode)
+	void Input::setCursorMode(const Window& window, CursorMode cursorMode)
 	{
-		glfwSetInputMode(const_cast<GLFWwindow*>(glfwWindow), GLFW_CURSOR, (int32)cursorMode);
+		glfwSetInputMode(window.m_glfwWindow, GLFW_CURSOR, (int32)cursorMode);
 	}
 
-	bool Input::isMouseButtonDown(MouseButtonIndex mouseButtonIndex)
+	bool Input::isMouseButtonDown(const Window& window, MouseButtonIndex mouseButtonIndex)
 	{
-		int32 newState=
-				glfwGetMouseButton(const_cast<GLFWwindow*>(glfwWindow), (int32)mouseButtonIndex);
+		const int32 newState= glfwGetMouseButton(window.m_glfwWindow, (int32)mouseButtonIndex);
 		return newState == GLFW_PRESS;
 	}
 
-	bool Input::isMouseButtonUp(MouseButtonIndex mouseButtonIndex)
+	bool Input::isMouseButtonUp(const Window& window, MouseButtonIndex mouseButtonIndex)
 	{
-		int32 newState=
-				glfwGetMouseButton(const_cast<GLFWwindow*>(glfwWindow), (int32)mouseButtonIndex);
+		const int32 newState= glfwGetMouseButton(window.m_glfwWindow, (int32)mouseButtonIndex);
 		return newState == GLFW_RELEASE;
 	}
 
-	bool Input::isKeyDown(InputKey inputKey)
+	bool Input::isKeyDown(const Window& window, InputKey inputKey)
 	{
-		int32 state= glfwGetKey(const_cast<GLFWwindow*>(glfwWindow), (int32)inputKey);
+		const int32 state= glfwGetKey(window.m_glfwWindow, (int32)inputKey);
 		return state == GLFW_PRESS;
 	}
 
