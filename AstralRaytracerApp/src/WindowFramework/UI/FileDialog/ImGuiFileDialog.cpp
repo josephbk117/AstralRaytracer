@@ -2487,7 +2487,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 				len= strftime(timebuf.data(), 99, DateTimeFormat, _tm);
 			}
 	#endif // _MSC_VER
-			if(len)
+			if(len != 0u)
 			{
 				vInfos->fileModifDate= std::string(timebuf.data(), len);
 			}
@@ -5161,7 +5161,7 @@ IGFD_API void IGFD::FileDialog::prBeginFileColorIconStyle(
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, vFileInfos->fileStyle->color);
 	}
-	if(*vOutFont)
+	if(*vOutFont != nullptr)
 	{
 		ImGui::PushFont(*vOutFont);
 	}
