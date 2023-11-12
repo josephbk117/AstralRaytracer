@@ -146,7 +146,7 @@ void TextureManager::saveTextureToFile(
 		const std::filesystem::path& path
 )
 {
-	stbi_flip_vertically_on_write(true);
+	stbi_flip_vertically_on_write(static_cast<int32>(true));
 	stbi_write_hdr(path.string().c_str(), data.getWidth(), data.getHeight(), data.getComponentCount(), data.getTextureData().data());
 }
 
