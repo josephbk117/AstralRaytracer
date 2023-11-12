@@ -4295,9 +4295,7 @@ IGFD_API void IGFD::KeyExplorerFeature::SetFlashingAttenuationInSeconds(float vA
 
 	#pragma region FileDialog
 
-IGFD_API IGFD::FileDialog::FileDialog(): BookMarkFeature(), KeyExplorerFeature(), ThumbnailFeature()
-{
-}
+IGFD_API IGFD::FileDialog::FileDialog()= default;
 
 IGFD_API IGFD::FileDialog::~FileDialog()= default;
 
