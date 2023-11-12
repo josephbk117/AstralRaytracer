@@ -1731,14 +1731,19 @@ namespace IGFD
 			bool puInputPathActivated= false; // show input for path edition
 			bool puDrivesClicked     = false; // event when a drive button is clicked
 			bool puPathClicked       = false; // event when a path button was clicked
-			char puInputPathBuffer[MAX_PATH_BUFFER_SIZE]=
-					""; // input path buffer for imgui widget input text (displayed in palce of composer)
-			char puVariadicBuffer[MAX_FILE_DIALOG_NAME_BUFFER]= ""; // called by prSelectableItem
-			char puFileNameBuffer[MAX_FILE_DIALOG_NAME_BUFFER]=
-					""; // file name buffer in footer for imgui widget input text
-			char puDirectoryNameBuffer[MAX_FILE_DIALOG_NAME_BUFFER]=
-					""; // directory name buffer in footer for imgui widget input text (when is directory
-							// mode)
+			std::array<char, MAX_FILE_DIALOG_NAME_BUFFER> puInputPathBuffer= {
+				""
+			}; // input path buffer for imgui widget input text (displayed in palce of composer)
+			std::array<char, MAX_FILE_DIALOG_NAME_BUFFER> puVariadicBuffer= {
+				""
+			}; // called by prSelectableItem
+			std::array<char, MAX_FILE_DIALOG_NAME_BUFFER> puFileNameBuffer= {
+				""
+			}; // file name buffer in footer for imgui widget input text
+			std::array<char, MAX_FILE_DIALOG_NAME_BUFFER> puDirectoryNameBuffer= {
+				""
+			};                            // directory name buffer in footer for imgui widget input text
+																		// (when is directory mode)
 			std::string puHeaderFileName; // detail view name of column file
 			std::string puHeaderFileType; // detail view name of column type
 			std::string puHeaderFileSize; // detail view name of column size
