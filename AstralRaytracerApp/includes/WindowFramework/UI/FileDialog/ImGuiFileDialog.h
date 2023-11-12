@@ -1504,11 +1504,11 @@ namespace IGFD
 	class IGFD_API SearchManager
 	{
 		public:
-			std::string puSearchTag;
-			char        puSearchBuffer[MAX_FILE_DIALOG_NAME_BUFFER]= "";
-			bool        puSearchInputIsActive                      = false;
-			void        Clear();                                                // clear datas
-			void        DrawSearchBar(FileDialogInternal& vFileDialogInternal); // draw the search bar
+			std::string                                   puSearchTag;
+			std::array<char, MAX_FILE_DIALOG_NAME_BUFFER> puSearchBuffer       = { "" };
+			bool                                          puSearchInputIsActive= false;
+			void                                          Clear();       // clear datas
+			void DrawSearchBar(FileDialogInternal& vFileDialogInternal); // draw the search bar
 	};
 
 	#pragma endregion

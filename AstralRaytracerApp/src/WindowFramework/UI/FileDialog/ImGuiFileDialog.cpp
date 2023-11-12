@@ -773,7 +773,7 @@ IGFD_API IGFD::FileStyle::FileStyle(const ImVec4& vColor, const std::string& vIc
 IGFD_API void IGFD::SearchManager::Clear()
 {
 	puSearchTag.clear();
-	IGFD::Utils::ResetBuffer(puSearchBuffer);
+	IGFD::Utils::ResetBuffer(puSearchBuffer.data());
 }
 
 IGFD_API void IGFD::SearchManager::DrawSearchBar(FileDialogInternal& vFileDialogInternal)
@@ -793,7 +793,7 @@ IGFD_API void IGFD::SearchManager::DrawSearchBar(FileDialogInternal& vFileDialog
 	ImGui::SameLine();
 	ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 	bool edited= ImGui::InputText(
-			"##InputImGuiFileDialogSearchField", puSearchBuffer, MAX_FILE_DIALOG_NAME_BUFFER
+			"##InputImGuiFileDialogSearchField", puSearchBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER
 	);
 	if(ImGui::GetItemID() == ImGui::GetActiveID())
 	{
@@ -802,7 +802,7 @@ IGFD_API void IGFD::SearchManager::DrawSearchBar(FileDialogInternal& vFileDialog
 	ImGui::PopItemWidth();
 	if(edited)
 	{
-		puSearchTag= puSearchBuffer;
+		puSearchTag= puSearchBuffer.data();
 		vFileDialogInternal.puFileManager.ApplyFilteringOnFileList(vFileDialogInternal);
 	}
 }
@@ -2570,12 +2570,13 @@ IGFD_API void IGFD::FileManager::SetCurrentDir(const std::string& vPath)
 		}
 		if(!real_path.empty())
 	#elif defined(_IGFD_UNIX_) // _IGFD_UNIX_ is _IGFD_WIN_ or APPLE
-		char  real_path[PATH_MAX];
-		char* numchar= realpath(path.c_str(), real_path);
+		std::array<char, PATH_MAX> real_path;
+
+		char* numchar= realpath(path.c_str(), real_path.data());
 		if(numchar != nullptr)
 	#endif                     // _IGFD_WIN_
 		{
-			prCurrentPath= std::move(real_path);
+			prCurrentPath= real_path.data();
 			if(prCurrentPath[prCurrentPath.size() - 1] == PATH_SEP)
 			{
 				prCurrentPath= prCurrentPath.substr(0, prCurrentPath.size() - 1);
@@ -2903,7 +2904,9 @@ IGFD_API void IGFD::FileManager::DrawDirectoryCreation(const FileDialogInternal&
 		ImGui::SameLine();
 
 		ImGui::PushItemWidth(100.0f);
-		ImGui::InputText("##DirectoryFileName", puDirectoryNameBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER);
+		ImGui::InputText(
+				"##DirectoryFileName", puDirectoryNameBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER
+		);
 		ImGui::PopItemWidth();
 
 		ImGui::SameLine();
@@ -3381,9 +3384,9 @@ IGFD_API void IGFD::ThumbnailFeature::prVariadicProgressBar(
 		...
 )
 {
-	va_list args;
+	va_list args{};
 	va_start(args, fmt);
-	std::array<char, 512> TempBuffer;
+	std::array<char, 512> TempBuffer{};
 	const int             w= vsnprintf(TempBuffer.data(), 511, fmt, args);
 	va_end(args);
 	if(w != 0)
@@ -5012,7 +5015,9 @@ IGFD_API bool IGFD::FileDialog::prDrawFooter()
 	{
 		flags|= ImGuiInputTextFlags_ReadOnly;
 	}
-	if(ImGui::InputText("##FileName", fdFile.puFileNameBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER, flags))
+	if(ImGui::InputText(
+				 "##FileName", fdFile.puFileNameBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER, flags
+		 ))
 	{
 		prFileDialogInternal.puIsOk= true;
 	}
@@ -5049,7 +5054,7 @@ IGFD_API void IGFD::FileDialog::prSelectableItem(
 																							 ImGuiSelectableFlags_SpanAllColumns |
 																							 ImGuiSelectableFlags_SpanAvailWidth;
 
-	va_list args;
+	va_list args{};
 	va_start(args, vFmt);
 	vsnprintf(fdi.puVariadicBuffer.data(), MAX_FILE_DIALOG_NAME_BUFFER, vFmt, args);
 	va_end(args);
@@ -5074,7 +5079,8 @@ IGFD_API void IGFD::FileDialog::prSelectableItem(
 	#else  // USE_EXPLORATION_BY_KEYS
 	(void)vidx; // remove a warnings ofr unused var
 
-	bool res= ImGui::Selectable(fdi.puVariadicBuffer.data(), vSelected, selectableFlags, ImVec2(-1.0f, h));
+	bool res=
+			ImGui::Selectable(fdi.puVariadicBuffer.data(), vSelected, selectableFlags, ImVec2(-1.0f, h));
 	#endif // USE_EXPLORATION_BY_KEYS
 	if(res)
 	{
