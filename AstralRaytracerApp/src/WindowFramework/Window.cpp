@@ -22,14 +22,11 @@ namespace AstralRaytracer
 		// Get the video mode of the primary monitor
 		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
 
-		m_resolution= { mode->width, mode->height };
-
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		m_glfwWindow=
-				glfwCreateWindow(m_resolution.first, m_resolution.second, m_name.c_str(), nullptr, nullptr);
+		m_glfwWindow= glfwCreateWindow(mode->width, mode->height, m_name.c_str(), nullptr, nullptr);
 
 		if(m_glfwWindow == nullptr)
 		{
@@ -103,7 +100,7 @@ namespace AstralRaytracer
 				}
 		);
 
-		gl::glViewport(0, 0, m_resolution.first, m_resolution.second);
+		gl::glViewport(0, 0, mode->width, mode->height);
 
 		setDefaultTheme();
 	}

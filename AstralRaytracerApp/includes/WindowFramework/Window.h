@@ -95,7 +95,6 @@ namespace AstralRaytracer
 			ImFont*                   m_secondaryFont= nullptr;
 			ImFont*                   m_tertiaryFont = nullptr;
 			std::string               m_name;
-			std::pair<uint32, uint32> m_resolution{ 0, 0 };
 			glm::u32vec2              m_minResolution{ 720, 500 };
 			glm::u32vec2              m_maxResolution{ 3840, 2160 };
 			std::queue<float32>       m_frameTimes;
