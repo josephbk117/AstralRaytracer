@@ -9,15 +9,10 @@
 
 namespace AstralRaytracer
 {
-	Window* Window::m_instance= nullptr;
-
 	const std::string& Window::getName() const { return m_name; }
 
 	void Window::initialize()
 	{
-		assert(m_instance == nullptr);
-		m_instance= this;
-
 		if(!glfwInit())
 		{
 			exit(EXIT_FAILURE);
@@ -714,8 +709,6 @@ namespace AstralRaytracer
 
 	void Window::windowSizeCallback(GLFWwindow* window, int32 width, int32 height)
 	{
-		m_instance->m_resolution.first = width;
-		m_instance->m_resolution.second= height;
 		gl::glViewport(0, 0, width, height);
 	}
 
@@ -744,5 +737,13 @@ namespace AstralRaytracer
 	{
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	glm::u32vec2 Window::getResolution() const
+	{
+		int32 width;
+		int32 height;
+		glfwGetWindowSize(m_glfwWindow, &width, &height);
+		return { width, height };
 	}
 } // namespace AstralRaytracer

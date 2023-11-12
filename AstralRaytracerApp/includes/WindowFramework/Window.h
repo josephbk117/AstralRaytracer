@@ -86,10 +86,8 @@ namespace AstralRaytracer
 			void startUI() const;
 			void endUI() const;
 
-			const std::pair<uint32, uint32>& getResolution() const { return m_resolution; };
+			glm::u32vec2 getResolution() const;
 		private:
-			static Window* m_instance;
-
 			const static uint32 FrameSampleCount= 100;
 
 			GLFWwindow*               m_glfwWindow   = nullptr;
