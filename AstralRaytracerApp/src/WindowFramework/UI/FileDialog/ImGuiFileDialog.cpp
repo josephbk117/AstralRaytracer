@@ -52,12 +52,8 @@ SOFTWARE.
 	#include <iomanip>
 	#include <sstream>
 	#include <sys/stat.h>
-
-	// this option need c++17
-	#ifdef USE_STD_FILESYSTEM
-		#include <exception>
-		#include <filesystem>
-	#endif // USE_STD_FILESYSTEM
+	#include <exception>
+	#include <filesystem>
 
 	#ifdef __EMSCRIPTEN__
 		#include <emscripten.h>
@@ -78,12 +74,7 @@ SOFTWARE.
 		#define stat    _stat
 		#define stricmp _stricmp
 		#include <cctype>
-		// this option need c++17
-		#ifdef USE_STD_FILESYSTEM
-			#include <windows.h>
-		#else
-			#include "dirent/dirent.h" // directly open the dirent file attached to this lib
-		#endif                       // USE_STD_FILESYSTEM
+		#include <windows.h>
 		#define PATH_SEP '\\'
 		#ifndef PATH_MAX
 			#define PATH_MAX 260
@@ -93,10 +84,6 @@ SOFTWARE.
 		#define _IGFD_UNIX_
 		#define stricmp strcasecmp
 		#include <sys/types.h>
-		// this option need c++17
-		#ifndef USE_STD_FILESYSTEM
-			#include <dirent.h>
-		#endif // USE_STD_FILESYSTEM
 		#define PATH_SEP '/'
 	#endif // _IGFD_UNIX_
 
@@ -403,13 +390,6 @@ class IGFDException: public std::exception
 
 	#pragma region Utils
 
-	#ifndef USE_STD_FILESYSTEM
-inline int inAlphaSort(const struct dirent** a, const struct dirent** b)
-{
-	return strcoll((*a)->d_name, (*b)->d_name);
-}
-	#endif
-
 // https://github.com/ocornut/imgui/issues/1720
 IGFD_API bool IGFD::Utils::ImSplitter(
 		bool   split_vertically,
@@ -575,14 +555,13 @@ IGFD_API bool IGFD::Utils::IsDirectoryCanBeOpened(const std::string& name)
 
 	if(!name.empty())
 	{
-	#ifdef USE_STD_FILESYSTEM
 		namespace fs= std::filesystem;
-		#ifdef _IGFD_WIN_
+	#ifdef _IGFD_WIN_
 		std::wstring wname   = IGFD::Utils::UTF8Decode(name.c_str());
 		fs::path     pathName= fs::path(wname);
-		#else  // _IGFD_WIN_
+	#else  // _IGFD_WIN_
 		fs::path pathName= fs::path(name);
-		#endif // _IGFD_WIN_
+	#endif // _IGFD_WIN_
 		try
 		{
 			// interesting, in the case of a protected dir or for any reason the dir cant be opened
@@ -598,17 +577,6 @@ IGFD_API bool IGFD::Utils::IsDirectoryCanBeOpened(const std::string& name)
 			// fail so this dir cant be opened
 			bExists= false;
 		}
-	#else
-		DIR* pDir= nullptr;
-		// interesting, in the case of a protected dir or for any reason the dir cant be opened
-		// this func will fail
-		pDir= opendir(name.c_str());
-		if(pDir != nullptr)
-		{
-			bExists= true;
-			(void)closedir(pDir);
-		}
-	#endif // USE_STD_FILESYSTEM
 	}
 
 	return bExists; // this is not a directory!
@@ -620,36 +588,14 @@ IGFD_API bool IGFD::Utils::IsDirectoryExist(const std::string& name)
 
 	if(!name.empty())
 	{
-	#ifdef USE_STD_FILESYSTEM
 		namespace fs= std::filesystem;
-		#ifdef _IGFD_WIN_
+	#ifdef _IGFD_WIN_
 		std::wstring wname   = IGFD::Utils::UTF8Decode(name.c_str());
 		fs::path     pathName= fs::path(wname);
-		#else  // _IGFD_WIN_
+	#else  // _IGFD_WIN_
 		fs::path pathName= fs::path(name);
-		#endif // _IGFD_WIN_
+	#endif // _IGFD_WIN_
 		bExists= fs::is_directory(pathName);
-	#else
-		DIR* pDir= nullptr;
-		pDir     = opendir(name.c_str());
-		if(pDir)
-		{
-			bExists= true;
-			closedir(pDir);
-		}
-		else if(ENOENT == errno)
-		{
-			/* Directory does not exist. */
-			// bExists = false;
-		}
-		else
-		{
-			/* opendir() failed for some other reason.
-				 like if a dir is protected, or not accessable with user right
-			*/
-			bExists= true;
-		}
-	#endif // USE_STD_FILESYSTEM
 	}
 
 	return bExists; // this is not a directory!
@@ -663,32 +609,17 @@ IGFD_API bool IGFD::Utils::CreateDirectoryIfNotExist(const std::string& name)
 	{
 		if(!IsDirectoryExist(name))
 		{
-	#ifdef _IGFD_WIN_
-		#ifdef USE_STD_FILESYSTEM
+	#ifndef __EMSCRIPTEN__
 			namespace fs         = std::filesystem;
 			std::wstring wname   = IGFD::Utils::UTF8Decode(name.c_str());
 			fs::path     pathName= fs::path(wname);
 			res                  = fs::create_directory(pathName);
-		#else                       // USE_STD_FILESYSTEM
-			std::wstring wname= IGFD::Utils::UTF8Decode(name);
-			if(CreateDirectoryW(wname.c_str(), nullptr))
-			{
-				res= true;
-			}
-		#endif                      // USE_STD_FILESYSTEM
-	#elif defined(__EMSCRIPTEN__) // _IGFD_WIN_
+	#else
 			std::string str= std::string("FS.mkdir('") + name + "');";
 			emscripten_run_script(str.c_str());
 			res= true;
-	#elif defined(_IGFD_UNIX_)
-			char buffer[PATH_MAX]= {};
-			snprintf(buffer, PATH_MAX, "mkdir -p \"%s\"", name.c_str());
-			const int dir_err= std::system(buffer);
-			if(dir_err != -1)
-			{
-				res= true;
-			}
-	#endif // _IGFD_WIN_
+
+	#endif
 			if(!res)
 			{
 				std::cout << "Error creating directory " << name << std::endl;
@@ -701,7 +632,6 @@ IGFD_API bool IGFD::Utils::CreateDirectoryIfNotExist(const std::string& name)
 
 IGFD_API IGFD::Utils::PathStruct IGFD::Utils::ParsePathFileName(const std::string& vPathFileName)
 {
-	#ifdef USE_STD_FILESYSTEM
 	// https://github.com/aiekick/ImGuiFileDialog/issues/54
 	namespace fs= std::filesystem;
 	PathStruct res;
@@ -726,45 +656,6 @@ IGFD_API IGFD::Utils::PathStruct IGFD::Utils::ParsePathFileName(const std::strin
 	}
 
 	return res;
-	#else
-	PathStruct res;
-
-	if(!vPathFileName.empty())
-	{
-		std::string pfn= vPathFileName;
-		std::string separator(1u, PATH_SEP);
-		IGFD::Utils::ReplaceString(pfn, "\\", separator);
-		IGFD::Utils::ReplaceString(pfn, "/", separator);
-
-		size_t lastSlash= pfn.find_last_of(separator);
-		if(lastSlash != std::string::npos)
-		{
-			res.name= pfn.substr(lastSlash + 1);
-			res.path= pfn.substr(0, lastSlash);
-			res.isOk= true;
-		}
-
-		size_t lastPoint= pfn.find_last_of('.');
-		if(lastPoint != std::string::npos)
-		{
-			if(!res.isOk)
-			{
-				res.name= pfn;
-				res.isOk= true;
-			}
-			res.ext= pfn.substr(lastPoint + 1);
-			IGFD::Utils::ReplaceString(res.name, "." + res.ext, "");
-		}
-
-		if(!res.isOk)
-		{
-			res.name= std::move(pfn);
-			res.isOk= true;
-		}
-	}
-
-	return res;
-	#endif // USE_STD_FILESYSTEM
 }
 
 IGFD_API void IGFD::Utils::AppendToBuffer(char* vBuffer, size_t vBufferLen, const std::string& vStr)
@@ -804,7 +695,7 @@ IGFD_API void IGFD::Utils::SetBuffer(char* vBuffer, size_t vBufferLen, const std
 
 IGFD_API std::string IGFD::Utils::LowerCaseString(const std::string& vString)
 {
-	auto str= vString;
+	std::string str= vString;
 
 	// convert to lower case
 	for(char& c : str)
@@ -1604,7 +1495,7 @@ IGFD_API std::string IGFD::FilterManager::ReplaceExtentionWithCurrentFilterIfNee
 		IGFD_ResultMode    vFlag
 ) const
 {
-	auto result= vFileName;
+	std::string result= vFileName;
 	if(!result.empty())
 	{
 		const auto& current_filter= prSelectedFilter.getFirstFilter();
@@ -2275,8 +2166,6 @@ IGFD::FileManager::ScanDir(const FileDialogInternal& vFileDialogInternal, const 
 	#endif // _IGFD_WIN_
 
 		ClearFileLists();
-
-	#ifdef USE_STD_FILESYSTEM
 		try
 		{
 			const std::filesystem::path fspath(path);
@@ -2315,94 +2204,6 @@ IGFD::FileManager::ScanDir(const FileDialogInternal& vFileDialogInternal, const 
 		{
 			printf("%s", ex.what());
 		}
-	#else // dirent
-		struct dirent** files= nullptr;
-		size_t          n    = scandir(path.c_str(), &files, nullptr, inAlphaSort);
-		if(n && files)
-		{
-			size_t i;
-
-			for(i= 0; i < n; i++)
-			{
-				struct dirent* ent= files[i];
-
-				FileType fileType;
-				switch(ent->d_type)
-				{
-					case DT_DIR: fileType.SetContent(FileType::ContentType::Directory); break;
-					case DT_REG: fileType.SetContent(FileType::ContentType::File); break;
-		#if DT_LNK != DT_UNKNOWN
-					case DT_LNK:
-						{
-							fileType.SetSymLink(true);
-							fileType.SetContent(FileType::ContentType::LinkToUnknown
-							); // by default if we can't figure out
-								 // the target type.
-							struct stat statInfos= {};
-							int         result   = stat((path + PATH_SEP + ent->d_name).c_str(), &statInfos);
-							if(result == 0)
-							{
-								if(statInfos.st_mode & S_IFREG)
-								{
-									fileType.SetContent(FileType::ContentType::File);
-								}
-								else if(statInfos.st_mode & S_IFDIR)
-								{
-									fileType.SetContent(FileType::ContentType::Directory);
-								}
-							}
-							break;
-						}
-		#endif
-					case DT_UNKNOWN:
-						{
-							struct stat sb      = {};
-		#ifdef _IGFD_WIN_
-							auto        filePath= path + ent->d_name;
-		#else
-							auto filePath= path + std::string(1u, PATH_SEP) + ent->d_name;
-		#endif
-
-							if(!stat(filePath.c_str(), &sb))
-							{
-								if(sb.st_mode & S_IFLNK)
-								{
-									fileType.SetSymLink(true);
-									fileType.SetContent(FileType::ContentType::LinkToUnknown
-									); // by default if we can't figure out the
-										 // target type.
-								}
-								if(sb.st_mode & S_IFREG)
-								{
-									fileType.SetContent(FileType::ContentType::File);
-									break;
-								}
-								else if(sb.st_mode & S_IFDIR)
-								{
-									fileType.SetContent(FileType::ContentType::Directory);
-									break;
-								}
-							}
-							break;
-						}
-					default: break; // leave it invalid (devices, etc.)
-				}
-
-				if(fileType.isValid())
-				{
-					AddFile(vFileDialogInternal, path, ent->d_name, fileType);
-				}
-			}
-
-			for(i= 0; i < n; i++)
-			{
-				free(files[i]);
-			}
-
-			free(files);
-		}
-	#endif // USE_STD_FILESYSTEM
-
 		SortFields(vFileDialogInternal, prFileList, prFilteredFileList);
 	}
 }
@@ -2425,7 +2226,6 @@ IGFD_API void IGFD::FileManager::ScanDirForPathSelection(
 
 		ClearPathLists();
 
-	#ifdef USE_STD_FILESYSTEM
 		const std::filesystem::path fspath(path);
 		const auto                  dir_iter= std::filesystem::directory_iterator(fspath);
 		FileType                    fstype  = FileType(
@@ -2448,47 +2248,6 @@ IGFD_API void IGFD::FileManager::ScanDirForPathSelection(
 				AddPath(vFileDialogInternal, path, fileNameExt, fileType);
 			}
 		}
-	#else // dirent
-		struct dirent** files= nullptr;
-		size_t          n    = scandir(path.c_str(), &files, nullptr, inAlphaSort);
-		if(n)
-		{
-			size_t i;
-
-			for(i= 0; i < n; i++)
-			{
-				struct dirent* ent= files[i];
-				struct stat    sb = {};
-				int            result;
-				if(ent->d_type == DT_UNKNOWN)
-				{
-		#ifdef _IGFD_WIN_
-					auto filePath= path + ent->d_name;
-		#else
-					auto filePath= path + std::string(1u, PATH_SEP) + ent->d_name;
-		#endif
-
-					result= stat(filePath.c_str(), &sb);
-				}
-
-				if(ent->d_type == DT_DIR ||
-					 (ent->d_type == DT_UNKNOWN && result == 0 && sb.st_mode & S_IFDIR))
-				{
-					AddPath(
-							vFileDialogInternal, path, ent->d_name,
-							FileType(FileType::ContentType::Directory, false)
-					);
-				}
-			}
-
-			for(i= 0; i < n; i++)
-			{
-				free(files[i]);
-			}
-
-			free(files);
-		}
-	#endif // USE_STD_FILESYSTEM
 
 		SortFields(vFileDialogInternal, prPathList, prFilteredPathList);
 	}
@@ -2788,7 +2547,6 @@ IGFD_API void IGFD::FileManager::SetCurrentDir(const std::string& vPath)
 	}
 	#endif // _IGFD_WIN_
 
-	#ifdef USE_STD_FILESYSTEM
 	namespace fs   = std::filesystem;
 	bool dir_opened= fs::is_directory(vPath);
 	if(!dir_opened)
@@ -2797,16 +2555,6 @@ IGFD_API void IGFD::FileManager::SetCurrentDir(const std::string& vPath)
 		dir_opened= fs::is_directory(vPath);
 	}
 	if(dir_opened)
-	#else
-	DIR* dir= opendir(path.c_str());
-	if(dir == nullptr)
-	{
-		path= ".";
-		dir = opendir(path.c_str());
-	}
-
-	if(dir != nullptr)
-	#endif // USE_STD_FILESYSTEM
 	{
 	#ifdef _IGFD_WIN_
 		DWORD        numchar= 0;
@@ -2846,9 +2594,6 @@ IGFD_API void IGFD::FileManager::SetCurrentDir(const std::string& vPath)
 	#endif // _IGFD_WIN_
 			}
 		}
-	#ifndef USE_STD_FILESYSTEM
-		closedir(dir);
-	#endif
 	}
 }
 
@@ -5149,10 +4894,9 @@ IGFD_API void IGFD::FileDialog::DisplayPathPopup(ImVec2 vSize)
 
 						if(ImGui::TableNextColumn()) // file name
 						{
-							if(ImGui::Selectable(
-										 infos->fileNameExt.c_str(), &selected,
-										 ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_SpanAvailWidth
-								 ))
+							constexpr int32 flag1= static_cast<int32>(ImGuiSelectableFlags_SpanAllColumns);
+							constexpr int32 flag2= static_cast<int32>(ImGuiSelectableFlags_SpanAvailWidth);
+							if(ImGui::Selectable(infos->fileNameExt.c_str(), &selected, flag1 | flag2))
 							{
 								fdi.SetCurrentPath(fdi.ComposeNewPath(fdi.GetCurrentPopupComposedPath()));
 								fdi.puPathClicked= fdi.SelectDirectory(infos);
