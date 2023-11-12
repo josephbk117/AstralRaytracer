@@ -885,7 +885,7 @@ bool IGFD::FilterInfos::exist(const FileInfos& vFileInfos, bool vIsCaseInsensiti
 
 bool IGFD::FilterInfos::regexExist(const std::string& vFilter) const
 {
-	for(auto regex : filters_regex)
+	for(const std::regex& regex : filters_regex)
 	{
 		if(std::regex_search(vFilter, regex))
 		{
@@ -2462,7 +2462,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 		}
 
 		struct stat           statInfos= {};
-		std::array<char, 100> timebuf;
+		std::array<char, 100> timebuf{};
 		int                   result= stat(fpn.c_str(), &statInfos);
 		if(!result)
 		{
@@ -3188,7 +3188,6 @@ IGFD_API void IGFD::FileDialogInternal::EndFrame()
 
 	if(puFileManager.puInputPathActivated)
 	{
-		auto gio= ImGui::GetIO();
 		if(ImGui::IsKeyReleased(ImGuiKey_Enter))
 		{
 			puFileManager.SetCurrentPath(std::string(puFileManager.puInputPathBuffer.data()));
