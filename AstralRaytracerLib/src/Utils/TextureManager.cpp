@@ -3,7 +3,6 @@
 #include "Utils/TextureData.h"
 
 #include <iostream>
-
 #include <stbimage/stb_image.h>
 #include <stbimage/stb_image_write.h>
 
@@ -147,43 +146,37 @@ void TextureManager::saveTextureToFile(
 )
 {
 	stbi_flip_vertically_on_write(static_cast<int32>(true));
-	stbi_write_hdr(path.string().c_str(), data.getWidth(), data.getHeight(), data.getComponentCount(), data.getTextureData().data());
+	stbi_write_hdr(
+			path.string().c_str(), data.getWidth(), data.getHeight(), data.getComponentCount(),
+			data.getTextureData().data()
+	);
 }
 
 gl::GLenum TextureManager::getTextureFormatFromData(TextureDataRGBF& textureData)
 {
-	using namespace gl;
-	GLenum format= GL_RED;
-	if(textureData.getComponentCount() == 1)
-	{
-		format= GL_RED;
-	}
-	else if(textureData.getComponentCount() == 3)
-	{
-		format= GL_RGB;
-	}
-	else if(textureData.getComponentCount() == 4)
-	{
-		format= GL_RGBA;
-	}
-	return format;
+	return getTextureFormatFromData(textureData.getComponentCount());
 }
 
 gl::GLenum TextureManager::getTextureFormatFromData(uint8 componentCount)
 {
-	using namespace gl;
-	GLenum format= GL_RED;
+	assertm(componentCount > 4, "Invalid component count requested");
+
 	if(componentCount == 1)
 	{
-		format= GL_RED;
+		return gl::GLenum::GL_RED;
+	}
+	else if(componentCount == 2)
+	{
+		return gl::GLenum::GL_RG;
 	}
 	else if(componentCount == 3)
 	{
-		format= GL_RGB;
+		return gl::GLenum::GL_RGB;
 	}
 	else if(componentCount == 4)
 	{
-		format= GL_RGBA;
+		return gl::GLenum::GL_RGBA;
 	}
-	return format;
+
+	return gl::GLenum::GL_INVALID_ENUM;
 }
