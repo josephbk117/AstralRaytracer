@@ -12,7 +12,7 @@ void AstralRaytracer::VerticalGaussBlurPostProcessing::init()
 	m_shaderProgram.linkShaders();
 
 	m_shaderProgram.use();
-	m_shaderProgram.setUniformValue("blurSize", 11, 1, 11);
+	m_shaderProgram.setUniformValue("blurSize", 11, 1, 15);
 	m_shaderProgram.unuse();
 }
 
@@ -46,11 +46,13 @@ const char* const AstralRaytracer::VerticalGaussBlurPostProcessing::getFragmentS
 
 						void main()
 						{
-							const int maxKernelSize = 11;
+							const int maxKernelSize = 15;
 							int kernelSize = min(blurSize, maxKernelSize);
+							
+							vec2 texelSize = 1.0 / textureSize(textureOne, 0);
 
 							// Compute Gaussian weights
-							float sigma = float(kernelSize) / 3.0;
+							float sigma = float(kernelSize) / texelSize.y;
 							float sumWeights = 0.0;
 							float weights[maxKernelSize];
 
@@ -66,7 +68,6 @@ const char* const AstralRaytracer::VerticalGaussBlurPostProcessing::getFragmentS
 								weights[i] /= sumWeights;
 							}
 
-							vec2 texelSize = 1.0 / textureSize(textureOne, 0);
 
 							// Gaussian kernel offsets (vertical)
 							vec2 offsets[maxKernelSize];
