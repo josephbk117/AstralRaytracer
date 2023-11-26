@@ -5,6 +5,7 @@
 #include "Compositor/PostProcessing/GammaCorrectionPostProcess.h"
 #include "Compositor/PostProcessing/HorizontalGaussBlurPostProcess.h"
 #include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
+#include "Compositor/PostProcessing/NonLocalMeansPostProcess.h"
 #include "Compositor/PostProcessing/PostProcessing.h"
 #include "Compositor/PostProcessing/VerticalGaussBlurPostProcess.h"
 #include "Raytracer/Scene.h"
@@ -40,9 +41,10 @@ namespace AstralRaytracer
 				 ))
 			{
 
-				const std::array<std::string, 6> items= { "Bilateral Filter",      "Desaturate",
+				const std::array<std::string, 7> items= { "Bilateral Filter",      "Desaturate",
 																									"Gamma Correction",      "Luminance Threshold",
-																									"Horizontal Gauss Blur", "Vertical Gauss Blur" };
+																									"Horizontal Gauss Blur", "Vertical Gauss Blur",
+																									"Non-Local Means" };
 				if(ImGui::BeginCombo(
 							 "##Post Processing Effect", items[m_selectedItem].c_str(), ImGuiComboFlags_None
 					 ))
@@ -162,6 +164,9 @@ namespace AstralRaytracer
 					return;
 				case PostProcessingType::VERTICAL_GAUSS_BLUR:
 					scene.addPostProcessing(std::make_unique<VerticalGaussBlurPostProcessing>());
+					return;
+				case PostProcessingType::NON_LOCAL_MEANS:
+					scene.addPostProcessing(std::make_unique<NonLocalMeansPostProcessing>());
 					return;
 				default: assertm(false, "Invalid Post Processing Type");
 			}

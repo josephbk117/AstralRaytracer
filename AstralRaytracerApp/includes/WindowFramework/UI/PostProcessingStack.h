@@ -28,7 +28,8 @@ namespace AstralRaytracer
 					LUMINANCE_THRESHOLD,
 					HORIZONTAl_GAUSS_BLUR,
 					VERTICAL_GAUSS_BLUR,
-					MAX= VERTICAL_GAUSS_BLUR
+					NON_LOCAL_MEANS,
+					MAX= NON_LOCAL_MEANS
 				};
 
 				void addPostProcessing(Scene& scene, PostProcessingType type);
