@@ -725,7 +725,7 @@ IGFD_API size_t IGFD::Utils::GetLastCharPosWithMinCharCount(
 		const size_t&      vMinCharCount
 )
 {
-	if(vMinCharCount)
+	if(vMinCharCount > 0)
 	{
 		size_t last_dot_pos= vString.size() + 1U;
 		size_t count_dots  = vMinCharCount;
@@ -1336,7 +1336,7 @@ IGFD_API bool IGFD::FilterManager::GetFileStyle(
 		{
 			if(prFilesStyle.find(vFlags) != prFilesStyle.end())
 			{ // found
-				if(vFlags & IGFD_FileStyleByContainedInFullName)
+				if(static_cast<bool>(vFlags & IGFD_FileStyleByContainedInFullName))
 				{
 					// search for vCriteria who are containing the criteria
 					for(const auto& _file : prFilesStyle.at(vFlags))
@@ -2464,7 +2464,7 @@ IGFD_API void IGFD::FileManager::prCompleteFileInfos(const std::shared_ptr<FileI
 		struct stat           statInfos= {};
 		std::array<char, 100> timebuf{};
 		int                   result= stat(fpn.c_str(), &statInfos);
-		if(!result)
+		if(static_cast<bool>(!result))
 		{
 			if(!vInfos->fileType.isDir())
 			{
@@ -2881,7 +2881,7 @@ IGFD_API void IGFD::FileManager::SelectFileName(
 IGFD_API void IGFD::FileManager::DrawDirectoryCreation(const FileDialogInternal& vFileDialogInternal
 )
 {
-	if(vFileDialogInternal.puDLGflags & ImGuiFileDialogFlags_DisableCreateDirectoryButton)
+	if(static_cast<bool>(vFileDialogInternal.puDLGflags & ImGuiFileDialogFlags_DisableCreateDirectoryButton))
 	{
 		return;
 	}
@@ -3334,7 +3334,7 @@ IGFD_API void IGFD::ThumbnailFeature::prThreadThumbnailFileDatasExtractionFunc()
 										4
 								); //-V112
 
-								if(resizeSucceeded)
+								if(static_cast<bool>(resizeSucceeded))
 								{
 									auto th= &file->thumbnailInfo;
 
@@ -6395,7 +6395,7 @@ IGFD_C_API bool IGFD_GetFileStyle(
 	{
 		std::string icon;
 		bool        res= vContextPtr->GetFileStyle(vFlags, vCriteria, vOutColor, &icon, vOutFont);
-		if(!icon.empty() && vOutIconText)
+		if(!icon.empty() && vOutIconText != nullptr)
 		{
 			size_t siz   = icon.size() + 1U;
 			*vOutIconText= (char*)malloc(siz);
@@ -6433,7 +6433,8 @@ IGFD_C_API void SetLocales(
 	if(vContextPtr != nullptr)
 	{
 		vContextPtr->SetLocales(
-				vCategory, (vBeginLocale ? vBeginLocale : ""), (vEndLocale ? vEndLocale : "")
+				vCategory, ((vBeginLocale != nullptr) ? vBeginLocale : ""),
+				((vEndLocale != nullptr) ? vEndLocale : "")
 		);
 	}
 }

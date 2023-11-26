@@ -2125,11 +2125,11 @@ namespace IGFD
 			{
 				static FileDialog  _instance;
 				static FileDialog* _instance_copy= nullptr;
-				if(vCopy || vForce)
+				if((vCopy != nullptr) || vForce)
 				{
 					_instance_copy= vCopy;
 				}
-				if(_instance_copy)
+				if(_instance_copy != nullptr)
 				{
 					return _instance_copy;
 				}
