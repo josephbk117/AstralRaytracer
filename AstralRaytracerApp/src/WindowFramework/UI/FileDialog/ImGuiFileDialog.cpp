@@ -2657,12 +2657,12 @@ IGFD_API std::string IGFD::FileManager::ComposeNewPath(std::vector<std::string>:
 
 IGFD_API bool IGFD::FileManager::SetPathOnParentDirectoryIfAny()
 {
-	if(prCurrentPathDecomposition.size() > 1)
+	if(prCurrentPathDecomposition.size() <= 1)
 	{
-		prCurrentPath= ComposeNewPath(prCurrentPathDecomposition.end() - 2);
-		return true;
+		return false;
 	}
-	return false;
+	prCurrentPath= ComposeNewPath(prCurrentPathDecomposition.end() - 2);
+	return true;
 }
 
 IGFD_API std::string IGFD::FileManager::GetCurrentPath()
@@ -2881,7 +2881,9 @@ IGFD_API void IGFD::FileManager::SelectFileName(
 IGFD_API void IGFD::FileManager::DrawDirectoryCreation(const FileDialogInternal& vFileDialogInternal
 )
 {
-	if(static_cast<bool>(vFileDialogInternal.puDLGflags & ImGuiFileDialogFlags_DisableCreateDirectoryButton))
+	if(static_cast<bool>(
+				 vFileDialogInternal.puDLGflags & ImGuiFileDialogFlags_DisableCreateDirectoryButton
+		 ))
 	{
 		return;
 	}
@@ -4941,18 +4943,15 @@ IGFD_API bool IGFD::FileDialog::prDrawOkButton()
 
 IGFD_API bool IGFD::FileDialog::prDrawCancelButton()
 {
-	if(IMGUI_BUTTON(cancelButtonString "##validationdialog", ImVec2(cancelButtonWidth, 0.0f)) ||
-		 prFileDialogInternal.puNeedToExitDialog) // dialog exit asked
-	{
-		prFileDialogInternal.puIsOk= false;
-		return true;
-	}
+	prFileDialogInternal.puIsOk=
+			!(IMGUI_BUTTON(cancelButtonString "##validationdialog", ImVec2(cancelButtonWidth, 0.0f)) ||
+				prFileDialogInternal.puNeedToExitDialog);
 
 	#if invertOkAndCancelButtons
 	ImGui::SameLine();
 	#endif
 
-	return false;
+	return !prFileDialogInternal.puIsOk;
 }
 
 IGFD_API bool IGFD::FileDialog::prDrawValidationButtons()

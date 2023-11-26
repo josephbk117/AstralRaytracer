@@ -1400,24 +1400,26 @@ namespace IGFD
 
 			bool try_add(T vKey)
 			{
-				if(!exist(vKey))
+				if(exist(vKey))
 				{
-					m_Dico[vKey]= m_Array.size();
-					m_Array.push_back(vKey);
-					return true;
+					return false;
 				}
-				return false;
+
+				m_Dico[vKey]= m_Array.size();
+				m_Array.push_back(vKey);
+				return true;
 			}
 
 			bool try_set_existing(T vKey)
 			{
-				if(exist(vKey))
+				if(!exist(vKey))
 				{
-					auto row    = m_Dico.at(vKey);
-					m_Array[row]= vKey;
-					return true;
+					return false;
 				}
-				return false;
+
+				auto row    = m_Dico.at(vKey);
+				m_Array[row]= vKey;
+				return true;
 			}
 
 			bool exist(const std::string& vKey) const { return (m_Dico.find(vKey) != m_Dico.end()); }
