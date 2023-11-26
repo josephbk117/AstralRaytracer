@@ -26,7 +26,9 @@ namespace AstralRaytracer
 					DESATURATE,
 					GAMMA_CORRECTION,
 					LUMINANCE_THRESHOLD,
-					MAX= LUMINANCE_THRESHOLD
+					HORIZONTAl_GAUSS_BLUR,
+					VERTICAL_GAUSS_BLUR,
+					MAX= VERTICAL_GAUSS_BLUR
 				};
 
 				void addPostProcessing(Scene& scene, PostProcessingType type);
