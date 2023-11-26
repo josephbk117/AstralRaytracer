@@ -3,9 +3,10 @@
 #include "Compositor/PostProcessing/BilateralFilterPostProcess.h"
 #include "Compositor/PostProcessing/DesaturatePostProcess.h"
 #include "Compositor/PostProcessing/GammaCorrectionPostProcess.h"
-#include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
 #include "Compositor/PostProcessing/HorizontalGaussBlurPostProcess.h"
+#include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
 #include "Compositor/PostProcessing/PostProcessing.h"
+#include "Compositor/PostProcessing/VerticalGaussBlurPostProcess.h"
 #include "Raytracer/Scene.h"
 #include "Utils/Common.h"
 #include "WindowFramework/Window.h"
@@ -39,8 +40,9 @@ namespace AstralRaytracer
 				 ))
 			{
 
-				const std::array<std::string, 5> items= { "Bilateral Filter", "Desaturate",
-																									"Gamma Correction", "Luminance Threshold", "Horizontal Gauss Blur" };
+				const std::array<std::string, 6> items= { "Bilateral Filter",      "Desaturate",
+																									"Gamma Correction",      "Luminance Threshold",
+																									"Horizontal Gauss Blur", "Vertical Gauss Blur" };
 				if(ImGui::BeginCombo(
 							 "##Post Processing Effect", items[m_selectedItem].c_str(), ImGuiComboFlags_None
 					 ))
@@ -157,6 +159,9 @@ namespace AstralRaytracer
 					return;
 				case PostProcessingType::HORIZONTAl_GAUSS_BLUR:
 					scene.addPostProcessing(std::make_unique<HorizontalGaussBlurPostProcessing>());
+					return;
+				case PostProcessingType::VERTICAL_GAUSS_BLUR:
+					scene.addPostProcessing(std::make_unique<VerticalGaussBlurPostProcessing>());
 					return;
 				default: assertm(false, "Invalid Post Processing Type");
 			}
