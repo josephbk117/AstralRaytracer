@@ -4,6 +4,7 @@ std::string AstralRaytracer::toString(AssetType assetType)
 {
 	switch(assetType)
 	{
+		case AstralRaytracer::AssetType::PROJECT: return "Project";
 		case AstralRaytracer::AssetType::SCENE: return "Scene";
 		case AstralRaytracer::AssetType::TEXTURE: return "Texture";
 		case AstralRaytracer::AssetType::MATERIAL: return "Material";
@@ -30,6 +31,7 @@ const std::string& AstralRaytracer::getFileExtensionForAssetType(AssetType type)
 {
 	switch(type)
 	{
+		case AssetType::PROJECT: return FileExtensionForProject;
 		case AssetType::SCENE: return FileExtensionForScene;
 		case AssetType::TEXTURE: return FileExtensionForTexture;
 		case AssetType::MATERIAL: return FileExtensionForMaterial;
@@ -62,19 +64,23 @@ AstralRaytracer::getAssetTypeFromFilePath(const std::filesystem::path& filepath)
 
 	std::string fileExtension= filepath.extension().string();
 
-	if(fileExtension == ".ascene")
+	if(fileExtension == AstralRaytracer::FileExtensionForProject)
+	{
+		return AstralRaytracer::AssetType::PROJECT;
+	}
+	if(fileExtension == AstralRaytracer::FileExtensionForScene)
 	{
 		return AstralRaytracer::AssetType::SCENE;
 	}
-	if(fileExtension == ".astex")
+	if(fileExtension == AstralRaytracer::FileExtensionForTexture)
 	{
 		return AstralRaytracer::AssetType::TEXTURE;
 	}
-	if(fileExtension == ".asmat")
+	if(fileExtension == AstralRaytracer::FileExtensionForMaterial)
 	{
 		return AstralRaytracer::AssetType::MATERIAL;
 	}
-	if(fileExtension == ".astra")
+	if(fileExtension == AstralRaytracer::FileExtensionForTraceable)
 	{
 		return AstralRaytracer::AssetType::TRACEABLE;
 	}

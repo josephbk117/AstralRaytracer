@@ -62,7 +62,8 @@ namespace AstralRaytracer
 	{
 		INVALID,
 		MIN,
-		SCENE= MIN,
+		PROJECT= MIN,
+		SCENE,
 		TEXTURE,
 		MATERIAL,
 		TRACEABLE,
@@ -80,17 +81,6 @@ namespace AstralRaytracer
 		MAX= FONT
 	};
 
-	static const size_t Int32Hash  = std::type_index(typeid(int32)).hash_code();
-	static const size_t UInt32Hash = std::type_index(typeid(uint32)).hash_code();
-	static const size_t I32Vec2Hash= std::type_index(typeid(glm::ivec2)).hash_code();
-	static const size_t U32Vec2Hash= std::type_index(typeid(glm::uvec2)).hash_code();
-	static const size_t I32Vec3Hash= std::type_index(typeid(glm::ivec3)).hash_code();
-	static const size_t U32Vec3Hash= std::type_index(typeid(glm::uvec3)).hash_code();
-
-	static const size_t Float32Hash= std::type_index(typeid(float32)).hash_code();
-	static const size_t F32Vec2Hash= std::type_index(typeid(glm::vec2)).hash_code();
-	static const size_t F32Vec3Hash= std::type_index(typeid(glm::vec3)).hash_code();
-
 	static const std::string              invalidString{};
 	static const std::vector<std::string> invalidVectorOfString{};
 	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp",
@@ -99,6 +89,7 @@ namespace AstralRaytracer
 	static const std::vector<std::string> fileExtensionForText{ ".txt", ".md", ".csv" };
 	static const std::vector<std::string> fileExtensionForFont{ ".ttf" };
 
+	static const std::string FileExtensionForProject{ ".asproj" };
 	static const std::string FileExtensionForScene{ ".ascene" };
 	static const std::string FileExtensionForTexture{ ".astex" };
 	static const std::string FileExtensionForMaterial{ ".asmat" };
