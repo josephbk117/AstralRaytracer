@@ -377,17 +377,22 @@ namespace AstralRaytracer
 				{
 					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 					{
-						ImGuiFileDialog::Instance()->OpenDialog(
+						/*ImGuiFileDialog::Instance()->OpenDialog(
 								"ChooseProjectDlg", "Choose Project Directory", nullptr, ".", 1, nullptr,
 								ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DisableCreateDirectoryButton |
 										ImGuiFileDialogFlags_HideColumnType | ImGuiFileDialogFlags_HideColumnSize |
 										ImGuiFileDialogFlags_DisableThumbnailMode
+						);*/
+
+						ImGuiFileDialog::Instance()->OpenDialog(
+								"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1, nullptr,
+								ImGuiFileDialogFlags_Modal
 						);
 					}
 					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
 					{
 						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseSceneDlg", "Choose Scene", ".ascene", ".", 1, nullptr,
+								"ChooseSceneDlg", "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
 								ImGuiFileDialogFlags_Modal
 						);
 					}
@@ -416,15 +421,12 @@ namespace AstralRaytracer
 				if(ImGuiFileDialog::Instance()->IsOk())
 				{
 					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
-					std::string filePath    = ImGuiFileDialog::Instance()->GetCurrentPath();
-
 					if(scene.hasSceneLoaded())
 					{
 						scene.unload();
 					}
 
 					scene.deserialize(assetManager, filePathName);
-
 					appStateInfo.isSceneDirty= true;
 				}
 
@@ -439,7 +441,6 @@ namespace AstralRaytracer
 				if(ImGuiFileDialog::Instance()->IsOk())
 				{
 					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
-					std::string filePath    = ImGuiFileDialog::Instance()->GetCurrentPath();
 
 					if(scene.hasSceneLoaded())
 					{
@@ -447,7 +448,6 @@ namespace AstralRaytracer
 					}
 
 					scene.deserialize(assetManager, filePathName);
-
 					appStateInfo.isSceneDirty= true;
 				}
 
