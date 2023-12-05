@@ -12,6 +12,7 @@ void AstralRaytracer::AddPostProcessing::init()
 	m_shaderProgram.linkShaders();
 
 	m_shaderProgram.use();
+	m_shaderProgram.setUniformValue("multiplier", 1.0f, -1.0f, 1.0f);
 	m_shaderProgram.unuse();
 }
 
@@ -50,13 +51,14 @@ const char* const AstralRaytracer::AddPostProcessing::getFragmentShaderSrcCode()
 			out vec4 color;
 			uniform sampler2D inputTexture0;
 			uniform sampler2D inputTexture1;
+			uniform float multiplier;
 
 			void main()
 			{
 				vec4 texColor0 = texture(inputTexture0, textureUV);
 				vec4 texColor1 = texture(inputTexture1, textureUV);
 
-				vec4 output = texColor0 + texColor1;
+				vec4 output = texColor0 + texColor1 * multiplier;
 
 				color = vec4(output.rgb, 1.0);
 			})SHADER";
