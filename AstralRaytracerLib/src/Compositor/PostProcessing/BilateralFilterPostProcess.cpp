@@ -38,7 +38,7 @@ namespace AstralRaytracer
 				#version 330 core
 				in vec2 textureUV;
 				out vec4 color;
-				uniform sampler2D inputTexture;
+				uniform sampler2D inputTexture0;
 				uniform float spatialSigma;   // Spatial standard deviation
 				uniform float intensitySigma; // Intensity standard deviation
 
@@ -46,8 +46,8 @@ namespace AstralRaytracer
 
 				void main()
 				{
-					vec2 texelSize = 1.0 / textureSize(inputTexture, 0);
-					vec4 centerColor = texture(inputTexture, textureUV);
+					vec2 texelSize = 1.0 / textureSize(inputTexture0, 0);
+					vec4 centerColor = texture(inputTexture0, textureUV);
 
 					vec3 sum = vec3(0.0);
 					float weightSum = 0.0;
@@ -57,7 +57,7 @@ namespace AstralRaytracer
 						for (int j = 0; j < KERNEL_SIZE; j++)
 						{
 							vec2 offset = vec2(i - KERNEL_SIZE / 2, j - KERNEL_SIZE / 2) * texelSize;
-							vec4 sampleColor = texture(inputTexture, textureUV + offset);
+							vec4 sampleColor = texture(inputTexture0, textureUV + offset);
 
 							vec3 colorDiff = sampleColor.rgb - centerColor.rgb;
 							float spatialWeight = exp(-(length(offset) * length(offset)) / (2.0 * spatialSigma * spatialSigma));

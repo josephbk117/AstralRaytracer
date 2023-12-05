@@ -42,7 +42,7 @@ AstralRaytracer::HorizontalGaussBlurPostProcessing::getFragmentShaderSrcCode() c
 						in vec2				textureUV;
 						in vec3				worldPos;
 						out vec4			color;
-						uniform sampler2D	textureOne;
+						uniform sampler2D	inputTexture0;
 						uniform int			blurSize;
 
 						void main()
@@ -50,7 +50,7 @@ AstralRaytracer::HorizontalGaussBlurPostProcessing::getFragmentShaderSrcCode() c
 							const int maxKernelSize = 15;
 							int kernelSize = min(blurSize, maxKernelSize);
 
-							vec2 texelSize = 1.0 / textureSize(textureOne, 0);
+							vec2 texelSize = 1.0 / textureSize(inputTexture0, 0);
 
 							// Compute Gaussian weights
 							float sigma = float(kernelSize) / texelSize.x;
@@ -82,7 +82,7 @@ AstralRaytracer::HorizontalGaussBlurPostProcessing::getFragmentShaderSrcCode() c
 							    vec2 sampleCoord = textureUV + offsets[i] * texelSize;
 							    sampleCoord.x = clamp(sampleCoord.x, 0.0, 1.0); // Clamp X-coordinate
 
-							    blur += texture(textureOne, sampleCoord).rgb * weights[i];
+							    blur += texture(inputTexture0, sampleCoord).rgb * weights[i];
 							}
 
 							color = vec4(blur, 1.0);

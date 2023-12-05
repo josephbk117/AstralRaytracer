@@ -43,7 +43,7 @@ const char* const AstralRaytracer::NonLocalMeansPostProcessing::getFragmentShade
 						in vec2				textureUV;
 						in vec3				worldPos;
 						out vec4			color;
-						uniform sampler2D	inputTexture;
+						uniform sampler2D	inputTexture0;
 						uniform int			searchRadius; //Adjust the search radius as needed
 						uniform float		patchRadius; //Adjust the patch radius as needed
 						uniform float		noiseLevel; //Adjust the noise level as needed
@@ -56,13 +56,13 @@ const char* const AstralRaytracer::NonLocalMeansPostProcessing::getFragmentShade
 
 							for (float i = -searchRadius; i <= searchRadius; i++) {
 							    for (float j = -searchRadius; j <= searchRadius; j++) {
-							        vec2 offset = vec2(i, j) / textureSize(inputTexture, 0);
+							        vec2 offset = vec2(i, j) / textureSize(inputTexture0, 0);
 
 							        // Calculate similarity measure based on patch comparison
-							        float weight = exp(-dot(texture(inputTexture, uv).rgb - texture(inputTexture, uv + offset).rgb, texture(inputTexture, uv).rgb - texture(inputTexture, uv + offset).rgb) / (2.0 * noiseLevel * noiseLevel));
+							        float weight = exp(-dot(texture(inputTexture0, uv).rgb - texture(inputTexture0, uv + offset).rgb, texture(inputTexture0, uv).rgb - texture(inputTexture0, uv + offset).rgb) / (2.0 * noiseLevel * noiseLevel));
 
 							        // Accumulate weighted color values
-							        resultColor += weight * texture(inputTexture, uv + offset).rgb;
+							        resultColor += weight * texture(inputTexture0, uv + offset).rgb;
 							        totalWeight += weight;
 							    }
 							}

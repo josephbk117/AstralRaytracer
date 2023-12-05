@@ -3,7 +3,12 @@
 namespace AstralRaytracer
 {
 	PostProcessing::~PostProcessing() { }
-	
+
+	void PostProcessing::setMainColorTexture(gl::GLuint mainColorTexture)
+	{
+		m_mainColorTexture= mainColorTexture;
+	}
+
 	void PostProcessing::setUniform(const std::string& name, const UniformDataType& data)
 	{
 		m_shaderProgram.use();

@@ -42,13 +42,13 @@ AstralRaytracer::LuminanceThresholdPostProcessing::getFragmentShaderSrcCode() co
 			#version 330 core
 			in vec2 textureUV;
 			out vec4 color;
-			uniform sampler2D inputTexture;
+			uniform sampler2D inputTexture0;
 			uniform float minThreshold;
 			uniform float maxThreshold;
 
 			void main()
 			{
-				vec4 texColor = texture(inputTexture, textureUV);
+				vec4 texColor = texture(inputTexture0, textureUV);
 				float luminance = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
 				
 				if(luminance < minThreshold || luminance > maxThreshold)

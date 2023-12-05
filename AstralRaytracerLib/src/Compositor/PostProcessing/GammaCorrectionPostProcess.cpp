@@ -44,13 +44,13 @@ namespace AstralRaytracer
 						in vec2				textureUV;
 						in vec3				worldPos;
 						out vec4			color;
-						uniform sampler2D	textureOne;
+						uniform sampler2D	inputTexture0;
 						uniform float		gamma;
 
 						void main()
 						{
 							// Sample the texture
-							vec3 texColor = texture(textureOne, textureUV).rgb;
+							vec3 texColor = texture(inputTexture0, textureUV).rgb;
 							color = vec4(pow(texColor, vec3(1.0 / gamma)), 1.0);
 						}
 				)SHADER";

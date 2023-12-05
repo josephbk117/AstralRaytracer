@@ -43,12 +43,12 @@ namespace AstralRaytracer
 			#version 330 core
 			in vec2 textureUV;
 			out vec4 color;
-			uniform sampler2D inputTexture;
+			uniform sampler2D inputTexture0;
 			uniform float desaturationFactor; // Range from 0.0 (fully desaturated) to 1.0 (no desaturation)
 
 			void main()
 			{
-				vec4 texColor = texture(inputTexture, textureUV);
+				vec4 texColor = texture(inputTexture0, textureUV);
 				float grayValue = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
 				vec3 desaturatedColor = mix(texColor.rgb, vec3(grayValue), desaturationFactor);
 				color = vec4(desaturatedColor, texColor.a);
