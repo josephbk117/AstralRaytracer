@@ -23,6 +23,8 @@ namespace AstralRaytracer
 					gl::GLuint           imageTexture
 			) const= 0;
 
+			void setMainColorTexture(gl::GLuint mainColorTexture);
+
 			void setUniform(const std::string& name, const UniformDataType& data);
 
 			UniformDataType getUniform(const std::string& name) const;
@@ -33,6 +35,7 @@ namespace AstralRaytracer
 			virtual const char* const getFragmentShaderSrcCode() const= 0;
 
 			ShaderProgram m_shaderProgram;
+			gl::GLuint m_mainColorTexture = 0;
 	};
 
 } // namespace AstralRaytracer

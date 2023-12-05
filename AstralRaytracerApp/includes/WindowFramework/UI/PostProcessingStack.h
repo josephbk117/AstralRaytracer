@@ -29,7 +29,8 @@ namespace AstralRaytracer
 					HORIZONTAl_GAUSS_BLUR,
 					VERTICAL_GAUSS_BLUR,
 					NON_LOCAL_MEANS,
-					MAX= NON_LOCAL_MEANS
+					ADD,
+					MAX= ADD
 				};
 
 				void addPostProcessing(Scene& scene, PostProcessingType type);

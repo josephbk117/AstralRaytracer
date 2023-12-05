@@ -8,7 +8,7 @@ DrawingPanel::DrawingPanel()
 	m_vaoID    = 0;
 	m_width    = 0;
 	m_height   = 0;
-	m_textureID= 0;
+	m_textureID.fill(0);
 }
 
 DrawingPanel::~DrawingPanel()
@@ -87,13 +87,20 @@ void DrawingPanel::init(float32 width, float32 height)
 	gl::glBindVertexArray(0);
 }
 
-void DrawingPanel::setTextureID(uint32 textureID) { m_textureID= textureID; }
+void DrawingPanel::setTextureID(uint32 textureID, uint32 index) { m_textureID[index] = textureID; }
 
-uint32 DrawingPanel::getTextureID() const noexcept { return m_textureID; }
+uint32 DrawingPanel::getTextureID(uint32 index) const noexcept { return m_textureID[index]; }
 
 void DrawingPanel::draw() const noexcept
 {
-	gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID);
+	gl::glActiveTexture(gl::GL_TEXTURE0);
+	gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID[0]);
+	if(m_textureID[1] != 0) 
+	{
+		gl::glActiveTexture(gl::GL_TEXTURE1);
+		gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID[1]);
+	}
+
 	gl::glBindVertexArray(m_vaoID);
 	gl::glDrawArrays(gl::GL_TRIANGLES, 0, 6);
 	gl::glBindVertexArray(0);

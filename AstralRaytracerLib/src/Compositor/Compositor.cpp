@@ -27,6 +27,7 @@ namespace AstralRaytracer
 		if(scene.m_postProcessingStack.size() > 0)
 		{
 			scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture1, inputTextureId);
+			scene.m_postProcessingStack[0]->setMainColorTexture(inputTextureId);
 			m_outputTextureId= m_renderTexture1.getTexture();
 			for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
 			{
@@ -37,6 +38,8 @@ namespace AstralRaytracer
 				const uint32 selectedInputTex=
 						(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
 
+				scene.m_postProcessingStack[index]
+						->setMainColorTexture(inputTextureId);
 				scene.m_postProcessingStack[index]->processImage(
 						m_dwPanel, selectedRenderTex, selectedInputTex
 				);

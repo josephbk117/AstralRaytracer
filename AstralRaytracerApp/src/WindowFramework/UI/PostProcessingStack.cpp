@@ -1,5 +1,6 @@
 #include "WindowFramework/UI/PostProcessingStack.h"
 
+#include "Compositor/PostProcessing/AddPostProcess.h"
 #include "Compositor/PostProcessing/BilateralFilterPostProcess.h"
 #include "Compositor/PostProcessing/DesaturatePostProcess.h"
 #include "Compositor/PostProcessing/GammaCorrectionPostProcess.h"
@@ -41,10 +42,10 @@ namespace AstralRaytracer
 				 ))
 			{
 
-				const std::array<std::string, 7> items= { "Bilateral Filter",      "Desaturate",
+				const std::array<std::string, 8> items= { "Bilateral Filter",      "Desaturate",
 																									"Gamma Correction",      "Luminance Threshold",
 																									"Horizontal Gauss Blur", "Vertical Gauss Blur",
-																									"Non-Local Means" };
+																									"Non-Local Means",       "Add" };
 				if(ImGui::BeginCombo(
 							 "##Post Processing Effect", items[m_selectedItem].c_str(), ImGuiComboFlags_None
 					 ))
@@ -167,6 +168,9 @@ namespace AstralRaytracer
 					return;
 				case PostProcessingType::NON_LOCAL_MEANS:
 					scene.addPostProcessing(std::make_unique<NonLocalMeansPostProcessing>());
+					return;
+				case PostProcessingType::ADD:
+					scene.addPostProcessing(std::make_unique<AddPostProcessing>());
 					return;
 				default: assertm(false, "Invalid Post Processing Type");
 			}
