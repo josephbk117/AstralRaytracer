@@ -26,7 +26,10 @@ target_link_directories(AstralRaytracerLib
     PRIVATE ${PROJECT_SOURCE_DIR}/external/yamlcpp/src
 )
 
+find_package(spdlog)
+
 target_link_libraries(AstralRaytracerLib
     glbinding
     yaml-cpp
+    spdlog
 )
