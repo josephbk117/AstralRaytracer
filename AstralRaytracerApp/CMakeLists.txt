@@ -35,10 +35,6 @@ target_include_directories(AstralRaytracerApp
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/imguizmo
 )
 
-target_link_directories(AstralRaytracerApp
-                        PRIVATE external/glfw/src
-)
-
 # Link the executable with the library
 target_link_libraries(AstralRaytracerApp 
                             PRIVATE AstralRaytracerLib

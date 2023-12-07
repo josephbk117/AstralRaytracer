@@ -19,14 +19,8 @@ target_include_directories(AstralRaytracerLib
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/stduuid/include"
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/glBinding/source/glbinding/include"
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/yamlcpp/include"
+                           PUBLIC "${PROJECT_SOURCE_DIR}/external/spdlog/include"
 )
-
-target_link_directories(AstralRaytracerLib
-    PRIVATE ${PROJECT_SOURCE_DIR}/external/glBinding/source/glbinding/source
-    PRIVATE ${PROJECT_SOURCE_DIR}/external/yamlcpp/src
-)
-
-find_package(spdlog)
 
 target_link_libraries(AstralRaytracerLib
     glbinding
