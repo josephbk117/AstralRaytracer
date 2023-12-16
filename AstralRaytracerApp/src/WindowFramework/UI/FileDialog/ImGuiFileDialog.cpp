@@ -92,7 +92,7 @@ SOFTWARE.
 
 	#include <algorithm>
 	#include <cstdlib>
-	#include <iostream>
+
 
 	#pragma endregion
 
@@ -622,7 +622,7 @@ IGFD_API bool IGFD::Utils::CreateDirectoryIfNotExist(const std::string& name)
 	#endif
 			if(!res)
 			{
-				std::cout << "Error creating directory " << name << std::endl;
+				ASTRAL_LOG_ERROR("Error creating directory : {}", name);
 			}
 		}
 	}

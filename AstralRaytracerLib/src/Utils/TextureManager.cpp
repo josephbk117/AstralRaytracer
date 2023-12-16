@@ -2,7 +2,6 @@
 
 #include "Utils/TextureData.h"
 
-#include <iostream>
 #include <stbimage/stb_image.h>
 #include <stbimage/stb_image_write.h>
 
@@ -100,23 +99,22 @@ void TextureManager::loadTextureFromRawData(
 		uint32               textureID
 )
 {
-	if(data != nullptr)
+	if(data == nullptr)
 	{
-		gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
-		gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
-		gl::glTexImage2D(
-				gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, width, height, 0, gl::GL_RGB, gl::GL_FLOAT, data
-		);
+		ASTRAL_LOG_ERROR("Texture failed to load with texture data");
+		return;
+	}
 
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
-		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
-	}
-	else
-	{
-		std::cout << "\nTexture failed to load with texture data " << std::endl;
-	}
+	gl::glPixelStorei(gl::GL_UNPACK_ALIGNMENT, 1);
+	gl::glBindTexture(gl::GL_TEXTURE_2D, textureID);
+	gl::glTexImage2D(
+			gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, width, height, 0, gl::GL_RGB, gl::GL_FLOAT, data
+	);
+
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
+	gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
 }
 
 void TextureManager::updateTexture(const TextureDataRGBF& textureData, uint32 textureId)

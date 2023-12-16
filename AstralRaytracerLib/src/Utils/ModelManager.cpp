@@ -6,7 +6,6 @@
 #define TINYGLTF_NOEXCEPTION
 
 #include <glm/glm.hpp>
-#include <iostream>
 #include <tinygltf/tiny_gltf.h>
 
 namespace AstralRaytracer
@@ -25,12 +24,12 @@ namespace AstralRaytracer
 
 		if(!warning.empty())
 		{
-			std::cout << "\nWarning: " << warning << "\n";
+			ASTRAL_LOG_WARN("Loading mesh warning :{}",warning);
 		}
 
 		if(!error.empty())
 		{
-			std::cout << "\nError: " << error << "\n";
+			ASTRAL_LOG_ERROR("Loading mesh error :{}", error);
 		}
 
 		const tinygltf::Accessor& accessor=
