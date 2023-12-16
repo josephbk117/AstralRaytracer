@@ -5,6 +5,7 @@
 #define GLM_FORCE_INTRINSICS
 #include <cstddef>
 #include <filesystem>
+#include <format>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -21,11 +22,11 @@
 	#define SUPPORT_STD_EXECUTION
 #endif
 
-#define ASTRAL_LOG_TRACE(msg) spdlog::trace(msg)
-#define ASTRAL_LOG_DEBUG(msg) spdlog::debug(msg)
-#define ASTRAL_LOG_INFO(msg)  spdlog::info(msg)
-#define ASTRAL_LOG_WARN(msg)  spdlog::warn(msg)
-#define ASTRAL_LOG_ERROR(msg) spdlog::error(msg)
+#define ASTRAL_LOG_TRACE(...) spdlog::trace(__VA_ARGS__)
+#define ASTRAL_LOG_DEBUG(...) spdlog::debug(__VA_ARGS__)
+#define ASTRAL_LOG_INFO(...)  spdlog::info(__VA_ARGS__)
+#define ASTRAL_LOG_WARN(...)  spdlog::warn(__VA_ARGS__)
+#define ASTRAL_LOG_ERROR(...) spdlog::error(__VA_ARGS__)
 #define ASTRAL_ASSERTM(exp, msg) \
 	if(!(exp))                     \
 		spdlog::critical(msg);       \
