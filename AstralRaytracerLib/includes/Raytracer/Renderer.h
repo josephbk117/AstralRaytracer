@@ -23,7 +23,7 @@ namespace AstralRaytracer
 			) const;
 
 			glm::vec3
-			perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir);
+			perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir) const;
 
 			void findClosestHit(
 					HitInfo&         closestHitInfo,

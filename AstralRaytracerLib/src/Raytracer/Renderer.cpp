@@ -2,11 +2,11 @@
 
 #include "Compositor/PostProcessing/PostProcessing.h"
 #include "Raytracer/Scene.h"
-#include "Utils/TextureManager.h"
 #include "Raytracer/Traceable/SphereTraceable.h"
 #include "Raytracer/Traceable/StaticMesh.h"
 #include "Raytracer/Traceable/TriangleTraceable.h"
 #include "Utils/Random.h"
+#include "Utils/TextureManager.h"
 
 #ifdef SUPPORT_STD_EXECUTION
 	#include <execution>
@@ -134,11 +134,14 @@ namespace AstralRaytracer
 
 	glm::vec3
 	Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir)
+			const
 	{
 		glm::vec3 light(0.0f);
 		glm::vec3 contribution(1.0f);
 
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
+
+		const uint32 skyTexIndex= scene.m_textures.size() - 1;
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -168,7 +171,7 @@ namespace AstralRaytracer
 						mat.roughness * Random::unitHemiSphere(seedVal, closestHitInfo.worldSpaceNormal);
 				rayDir= glm::reflect(rayDir, closestHitInfo.worldSpaceNormal + roughnessOffset);
 			}
-			else
+			else // No hit, Render sky
 			{
 				constexpr float32 PI   = std::numbers::pi;
 				const float32     theta= glm::acos(-rayDir.y);          // Polar angle (latitude)
@@ -179,8 +182,7 @@ namespace AstralRaytracer
 
 				// No intersection; add background color
 
-				const glm::vec3& skyColor=
-						scene.m_textures[scene.m_textures.size() - 1].getTexelColor(u, v);
+				const glm::vec3& skyColor= scene.m_textures[skyTexIndex].getTexelColor(u, v);
 				light+= skyColor * contribution;
 			}
 		}
