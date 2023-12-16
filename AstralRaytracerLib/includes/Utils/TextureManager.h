@@ -18,7 +18,7 @@ class TextureManager
 		static void            resizeTexture(const TextureDataRGBF& textureData, uint32 textureId);
 		static void            saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path);
 		static gl::GLenum      getTextureFormatFromData(TextureDataRGBF& textureData);
-		static gl::GLenum      getTextureFormatFromData(uint8 componentCount);
+		static gl::GLenum      getTextureFormatFromData(uint32 componentCount);
 	private:
 		static void loadTextureFromRawData(
 				const float32* const data,

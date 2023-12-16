@@ -3,7 +3,6 @@
 #include "Utils/Common.h"
 
 #include <fstream>
-#include <iostream>
 #include <vector>
 
 ShaderProgram::ShaderProgram()
@@ -25,12 +24,12 @@ void ShaderProgram::compileShaders(
 	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
 	if(vertexShaderID == 0)
 	{
-		std::cout << "ERROR : Vertex shader creation";
+		ASTRAL_LOG_WARN("Vertex shader creation failed");
 	}
 	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
 	if(vertexShaderID == 0)
 	{
-		std::cout << "ERROR : Fragment shader creation";
+		ASTRAL_LOG_WARN("Fragment shader creation failed");
 	}
 	compileShaderFromFilePath(vertexShaderPath, vertexShaderID);
 	compileShaderFromFilePath(fragmentShaderPath, fragmentShaderID);
@@ -45,21 +44,21 @@ void ShaderProgram::compileShadersFromSrcCode(
 	vertexShaderID= gl::glCreateShader(gl::GL_VERTEX_SHADER);
 	if(vertexShaderID == 0)
 	{
-		std::cout << "ERROR : Vertex shader creation";
+		ASTRAL_LOG_WARN("Vertex shader creation failed");
 	}
 	fragmentShaderID= gl::glCreateShader(gl::GL_FRAGMENT_SHADER);
 	if(vertexShaderID == 0)
 	{
-		std::cout << "ERROR : Fragment shader creation";
+		ASTRAL_LOG_WARN("Fragment shader creation failed");
 	}
 
 	if(!compileShaderSourceCode(vertexShaderSrcCode, vertexShaderID))
 	{
-		std::cout << "ERROR : Vertex shader compilation";
+		ASTRAL_LOG_WARN("Vertex shader compilation failed");
 	}
 	if(!compileShaderSourceCode(fragmentShaderSrcCode, fragmentShaderID))
 	{
-		std::cout << "ERROR : Fragment shader compilation";
+		ASTRAL_LOG_WARN("Fragment shader compilation failed");
 	}
 }
 
@@ -76,7 +75,7 @@ void ShaderProgram::linkShaders()
 		gl::GLint maxLength= 0;
 		gl::glGetProgramiv(programID, gl::GL_INFO_LOG_LENGTH, (int32*)&isLinked);
 		std::vector<char> infoLog(maxLength);
-		std::cout << &(infoLog[0]);
+		ASTRAL_LOG_DEBUG(&(infoLog[0]));
 		gl::glGetProgramInfoLog(programID, maxLength, &maxLength, &infoLog[0]);
 		gl::glDeleteProgram(programID);
 		gl::glDeleteShader(vertexShaderID);
@@ -84,7 +83,7 @@ void ShaderProgram::linkShaders()
 	}
 	else
 	{
-		std::cout << "\nLinked successfully";
+		ASTRAL_LOG_TRACE("Shader linked successfully");
 	}
 
 	gl::glDetachShader(programID, vertexShaderID);
@@ -223,8 +222,9 @@ void ShaderProgram::compileShaderFromFilePath(const std::string& filePath, uint3
 	std::ifstream shaderFile(filePath);
 	if(shaderFile.fail())
 	{
-		perror(filePath.c_str());
-		std::cout << "ERROR : file : " << filePath << " couldn't be loaded";
+		ASTRAL_LOG_ERROR("FilePath " + filePath + " couldn't be loaded");
+		shaderFile.close();
+		return;
 	}
 	std::string fileContents= "";
 	std::string line;
@@ -237,11 +237,11 @@ void ShaderProgram::compileShaderFromFilePath(const std::string& filePath, uint3
 
 	if(compileShaderSourceCode(charPointer, ID))
 	{
-		std::cout << filePath << " compiled successfully";
+		ASTRAL_LOG_TRACE(filePath + " compiled successfully");
 	}
 	else
 	{
-		std::cout << filePath << " failed to compile";
+		ASTRAL_LOG_TRACE(filePath + " failed to compile");
 	}
 }
 
@@ -260,13 +260,11 @@ bool ShaderProgram::compileShaderSourceCode(const std::string& srcCode, uint32 I
 		gl::glGetShaderiv(ID, gl::GL_INFO_LOG_LENGTH, &maxLength);
 		std::vector<char> errorLog(maxLength);
 		gl::glGetShaderInfoLog(ID, maxLength, &maxLength, &errorLog[0]);
-		std::cout << &(errorLog[0]);
+		ASTRAL_LOG_DEBUG(&(errorLog[0]));
 
 		gl::glDeleteShader(ID);
 		return false;
 	}
-	else
-	{
-		return true;
-	}
+
+	return true;
 }

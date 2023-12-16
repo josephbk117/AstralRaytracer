@@ -157,9 +157,9 @@ gl::GLenum TextureManager::getTextureFormatFromData(TextureDataRGBF& textureData
 	return getTextureFormatFromData(textureData.getComponentCount());
 }
 
-gl::GLenum TextureManager::getTextureFormatFromData(uint8 componentCount)
+gl::GLenum TextureManager::getTextureFormatFromData(uint32 componentCount)
 {
-	assertm(componentCount <= 4, "Invalid component count requested");
+	ASTRAL_ASSERTM(componentCount <= 4, "Invalid component count requested");
 
 	if(componentCount == 1)
 	{

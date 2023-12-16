@@ -11,7 +11,7 @@ TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
 	m_width = width;
 	m_height= height;
 
-	assertm(ComponentCount <= 4, "Invalid Component count");
+	ASTRAL_ASSERTM(ComponentCount <= 4, "Invalid Component count");
 
 	m_data.resize(width * height * ComponentCount);
 }
@@ -64,7 +64,7 @@ template <typename T, uint8 ComponentCount>
 void TextureData<T, ComponentCount>::setTexelColorAtPixelIndex(
 		uint32 index, const glm::vec<ComponentCount, T, glm::defaultp>& rgb)
 {
-	assertm(index <= (m_data.size() - ComponentCount),
+	ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount),
 					"Can't set color at pixel index, invalid range");
 
 	m_data[index]    = rgb.r;

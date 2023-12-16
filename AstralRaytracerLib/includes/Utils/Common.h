@@ -11,6 +11,7 @@
 #include <limits>
 #include <memory>
 #include <numbers>
+#include <spdlog/spdlog.h>
 #include <string>
 #include <typeindex>
 #include <typeinfo>
@@ -20,7 +21,15 @@
 	#define SUPPORT_STD_EXECUTION
 #endif
 
-#define assertm(exp, msg) assert(((void)msg, exp))
+#define ASTRAL_LOG_TRACE(msg) spdlog::trace(msg)
+#define ASTRAL_LOG_DEBUG(msg) spdlog::debug(msg)
+#define ASTRAL_LOG_INFO(msg)  spdlog::info(msg)
+#define ASTRAL_LOG_WARN(msg)  spdlog::warn(msg)
+#define ASTRAL_LOG_ERROR(msg) spdlog::error(msg)
+#define ASTRAL_ASSERTM(exp, msg) \
+	if(!(exp))                     \
+		spdlog::critical(msg);       \
+	assert(((void)msg, exp))
 
 using int16 = int16_t;
 using int32 = int32_t;

@@ -172,7 +172,7 @@ namespace AstralRaytracer
 				case PostProcessingType::ADD:
 					scene.addPostProcessing(std::make_unique<AddPostProcessing>());
 					return;
-				default: assertm(false, "Invalid Post Processing Type");
+				default: ASTRAL_ASSERTM(false, "Invalid Post Processing Type");
 			}
 		}
 	} // namespace UI
