@@ -37,6 +37,7 @@ namespace AstralRaytracer
 		glfwSetWindowSizeLimits(m_glfwWindow, 720, 500, GLFW_DONT_CARE, GLFW_DONT_CARE);
 		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(m_glfwWindow);
+		glfwSwapInterval(0); // Disable vsync
 
 		SetWindowIcon("app_assets/icons/astralraytracer.png");
 
