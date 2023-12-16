@@ -8,6 +8,8 @@
 
 int main()
 {
+	spdlog::default_logger_raw()->set_level(spdlog::level::level_enum::trace);
+
 	AstralRaytracer::AssetManager assetManager;
 	AstralRaytracer::Window       window("Astral Raytracer");
 	window.initialize();
