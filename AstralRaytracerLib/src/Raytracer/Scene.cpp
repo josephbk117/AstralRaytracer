@@ -8,7 +8,6 @@
 #include "Raytracer/Traceable/Traceable.h"
 
 #include <fstream>
-#include <iostream>
 
 namespace AstralRaytracer
 {
@@ -107,15 +106,14 @@ namespace AstralRaytracer
 
 	void Scene::deserialize(AssetManager& assetManager, const std::filesystem::path& path)
 	{
+		const std::string absolutePath= std::filesystem::absolute(path).string();
 		if(!std::filesystem::exists(path))
 		{
-			std::cout << "\nFailed to deserialize scene file :"
-								<< std::filesystem::absolute(path).string().c_str();
+			ASTRAL_LOG_ERROR("Scene file at path :{}, does not exist", absolutePath);
 		}
 		else
 		{
-			std::cout << "\nSuccessfully deserialized scene file :"
-								<< std::filesystem::absolute(path).string().c_str();
+			ASTRAL_LOG_TRACE("Successfully deserialized scene file : {}", absolutePath);
 		}
 
 		std::ifstream stream(path);
@@ -123,14 +121,14 @@ namespace AstralRaytracer
 
 		if(!data["Scene"])
 		{
+			ASTRAL_LOG_WARN("Tried to deserialize non-existing scene");
 			return;
 		}
 
-		std::cout << "Scene " << data["Scene"].as<std::string>();
+		ASTRAL_LOG_TRACE("Scene : {}", data["Scene"].as<std::string>());
 
 		const auto& textures= data["Textures"];
-
-		std::cout << "\nNumber of textures " << textures.size();
+		ASTRAL_LOG_TRACE("Number of textures : {}", textures.size());
 
 		for(uint32 texIndex= 0; texIndex < textures.size(); ++texIndex)
 		{
@@ -140,12 +138,12 @@ namespace AstralRaytracer
 				addTexture(assetManager.LoadTextureAsset(
 						"../../../../" + magic.second.as<std::string>(), magic.first.as<std::string>()
 				));
-				std::cout << "\n Texture at index : " << texIndex << " : " << magic.first.as<std::string>();
+				ASTRAL_LOG_TRACE("Texture at index : {}, {}", texIndex, magic.first.as<std::string>());
 			}
 		}
 
 		const auto& materials= data["Materials"];
-		std::cout << "\nNumber of materials " << materials.size();
+		ASTRAL_LOG_TRACE("Number of materials : {}", materials.size());
 
 		for(uint32 matIndex= 0; matIndex < materials.size(); ++matIndex)
 		{
@@ -159,13 +157,12 @@ namespace AstralRaytracer
 				);
 				addMaterial(materialNew);
 
-				std::cout << "\n Material at index : " << matIndex << " : "
-									<< magic.first.as<std::string>();
+				ASTRAL_LOG_TRACE("Material at index {} : {}", matIndex, magic.first.as<std::string>());
 			}
 		}
 
 		const auto& traceables= data["Traceables"];
-		std::cout << "\nNumber of traceables " << traceables.size();
+		ASTRAL_LOG_TRACE("Number of traceables {}", traceables.size());
 
 		for(uint32 traceIndex= 0; traceIndex < traceables.size(); ++traceIndex)
 		{
