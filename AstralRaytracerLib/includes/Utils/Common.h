@@ -5,7 +5,6 @@
 #define GLM_FORCE_INTRINSICS
 #include <cstddef>
 #include <filesystem>
-#include <format>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
