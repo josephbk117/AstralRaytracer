@@ -141,7 +141,7 @@ namespace AstralRaytracer
 
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
-		const uint32 skyTexIndex= scene.m_textures.size() - 1;
+		const TextureDataRGBF& skyTexData = scene.m_textures[scene.m_textures.size() - 1];
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -182,7 +182,7 @@ namespace AstralRaytracer
 
 				// No intersection; add background color
 
-				const glm::vec3& skyColor= scene.m_textures[skyTexIndex].getTexelColor(u, v);
+				const glm::vec3& skyColor= skyTexData.getTexelColor(u, v);
 				light+= skyColor * contribution;
 			}
 		}
