@@ -1,4 +1,4 @@
-Scene: New
+Scene: Second Scene Test
 Textures:
   - Floor1: ExampleProject/textures/floor_texture.jpg
   - Floor2: ExampleProject/textures/tough_grass.jpg
