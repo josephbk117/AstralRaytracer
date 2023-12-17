@@ -9,7 +9,7 @@ namespace AstralRaytracer
 {
 
 	Camera::Camera(float32 fov, float32 nearClip, float32 farClip)
-			: m_fov(fov), m_nearClip(nearClip), m_farClip(farClip)
+			: m_vFov(fov), m_nearClip(nearClip), m_farClip(farClip)
 	{
 		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
@@ -63,9 +63,9 @@ namespace AstralRaytracer
 
 	void Camera::recalculateProjection(const glm::u32vec2& resolution)
 	{
-		const float32 fovRadian= glm::radians(m_fov);
-		m_projection           = glm::perspectiveFov(
-        fovRadian, (float32)resolution.x, (float32)resolution.y, m_nearClip, m_farClip
+		const float32 fovRadian= glm::radians(m_vFov);
+		m_projection           = glm::perspective(
+        fovRadian, (float32)resolution.x / (float32)resolution.y, m_nearClip, m_farClip
     );
 		m_inverseProjection= glm::inverse(m_projection);
 	}

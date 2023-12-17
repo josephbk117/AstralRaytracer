@@ -41,7 +41,7 @@ namespace AstralRaytracer
 			glm::vec3 m_position{ 0.0f };
 			glm::vec3 m_direction{ 0.0f };
 
-			float32 m_fov;
+			float32 m_vFov;
 			float32 m_nearClip;
 			float32 m_farClip;
 
