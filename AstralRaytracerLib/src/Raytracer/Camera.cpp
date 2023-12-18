@@ -55,6 +55,16 @@ namespace AstralRaytracer
 		m_direction= glm::rotate(q, m_direction);
 	}
 
+	const glm::vec3 Camera::getRight() const
+	{
+		return glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+	}
+
+	const glm::vec3 Camera::getUp() const
+	{
+		return glm::normalize(glm::cross(getRight(), m_direction));
+	}
+
 	void Camera::recalculateView()
 	{
 		m_view       = glm::lookAt(m_position, m_position + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
