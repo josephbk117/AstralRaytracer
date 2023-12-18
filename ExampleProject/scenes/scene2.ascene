@@ -8,4 +8,4 @@ Materials:
   - mat2: ExampleProject/materials/mat2.asmat
 Traceables:
   - Floor: ExampleProject/traceables/Floor.astra
-  - Cube: ExampleProject/traceables/Cube.astra
+  - Cube: ExampleProject/traceables/Crystal.astra
