@@ -63,9 +63,25 @@ namespace AstralRaytracer
 
 					const glm::vec2 coOrd{ xIndex / xAxisPixelCount, yIndex / imageHeight };
 
+					glm::vec3 rayOrigin= cam.getPosition();
+
+					// Depth of Field: Adjust the ray origin based on aperture size
+					if(cam.getAperture() > 0.0f)
+					{
+						glm::vec3 apertureSample= Random::unitDisk(seedVal) * cam.getAperture();
+						glm::vec3 apertureOffset=
+								glm::normalize(glm::cross(cam.getUp(), cam.getDirection())) * apertureSample.x +
+								cam.getUp() * apertureSample.y;
+
+						rayOrigin+= apertureOffset;
+					}
+
 					glm::vec3 rayDir=
 							getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
-					glm::vec3 rayOrigin= cam.getPosition();
+
+					// Adjust ray direction
+					glm::vec3 focalPoint= cam.getPosition() + cam.getFocusDistance() * rayDir;
+					rayDir              = glm::normalize(focalPoint - rayOrigin);
 
 					const glm::vec3& outColor=
 							perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
@@ -141,7 +157,7 @@ namespace AstralRaytracer
 
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
-		const TextureDataRGBF& skyTexData = scene.m_textures[scene.m_textures.size() - 1];
+		const TextureDataRGBF& skyTexData= scene.m_textures[scene.m_textures.size() - 1];
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
