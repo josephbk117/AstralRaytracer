@@ -20,13 +20,25 @@ namespace AstralRaytracer
 
 			const glm::vec3& getDirection() const { return m_direction; }
 
+			void setFarClipDistance(float32 farClip) { m_farClip= farClip; }
+
+			float32 getFarClip() const { return m_farClip; }
+
+			void setNearClipDistance(float32 nearClip) { m_nearClip= nearClip; }
+
+			float32 getNearClip() const { return m_nearClip; }
+
+			void setVerticalFov(float32 verticalFov) { m_vFov= verticalFov; }
+
+			float32 getVerticalFov() const { return m_vFov; }
+
 			void setAperture(float32 apertureSize) { m_apertureSize= apertureSize; }
 
-			const float32 getAperture() const { return m_apertureSize; }
+			float32 getAperture() const { return m_apertureSize; }
 
 			void setFocusDistance(float32 focusDistance) { m_focusDistance= focusDistance; }
 
-			const float32 getFocusDistance() const { return m_focusDistance; }
+			float32 getFocusDistance() const { return m_focusDistance; }
 
 			const glm::vec3 getRight() const;
 
