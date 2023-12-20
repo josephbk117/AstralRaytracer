@@ -386,8 +386,8 @@ namespace AstralRaytracer
 						);*/
 
 						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1, nullptr,
-								ImGuiFileDialogFlags_Modal
+								"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1,
+								nullptr, ImGuiFileDialogFlags_Modal
 						);
 					}
 					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
@@ -475,6 +475,9 @@ namespace AstralRaytracer
 				renderer.setBounceCount(bounceCount);
 				appStateInfo.isSceneDirty= true;
 			}
+
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(sliderWidth);
 
 			ImGui::SameLine();
 			ImGui::SetNextItemWidth(sliderWidth);
@@ -685,6 +688,54 @@ namespace AstralRaytracer
 							m_postProcessingStack.display(
 									scene, *this, ImVec2(0.0f, viewportSceneInfoSplitHeight)
 							);
+							ImGui::EndTabItem();
+						}
+						if(ImGui::BeginTabItem("Environment"))
+						{
+							ImGui::PushFont(getSecondaryFont());
+							ImGui::SeparatorText("ENVIRONMENT");
+							ImGui::PopFont();
+
+							availableRegion.y-= 80.0f;
+							ImGui::BeginChild(
+									"Environment", availableRegion, false, ImGuiWindowFlags_AlwaysAutoResize
+							);
+
+							ImGui::Text("Camera");
+							float32 vFov= cam.getVerticalFov();
+							if(ImGui::SliderFloat(
+										 "##Vertical FOV", &vFov, 1.0f, 180.0f, "Vertical FOV: %.2f Deg"
+								 ))
+							{
+								cam.setVerticalFov(vFov);
+								appStateInfo.isSceneDirty= true;
+								cam.update(appStateInfo.rendererResolution);
+							}
+
+							float32 aperture= cam.getAperture();
+							if(ImGui::SliderFloat(
+										 "##Aperture Area", &aperture, 0.01f, 1.0f, "Aperture Area: %.2fmmsq"
+								 ))
+							{
+								cam.setAperture(aperture);
+								appStateInfo.isSceneDirty= true;
+								cam.update(appStateInfo.rendererResolution);
+							}
+
+							float32 focusDistance= cam.getFocusDistance();
+
+							constexpr float32 max_float= std::numeric_limits<float32>::max();
+							if(ImGui::DragFloat(
+										 "##Focus Distance", &focusDistance, 0.25f, 0.0f, max_float,
+										 "Focus Distance: %.2fm"
+								 ))
+							{
+								cam.setFocusDistance(focusDistance);
+								appStateInfo.isSceneDirty= true;
+								cam.update(appStateInfo.rendererResolution);
+							}
+
+							ImGui::EndChild();
 							ImGui::EndTabItem();
 						}
 						ImGui::EndTabBar();
