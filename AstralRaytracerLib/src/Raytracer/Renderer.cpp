@@ -66,9 +66,9 @@ namespace AstralRaytracer
 					glm::vec3 rayOrigin= cam.getPosition();
 
 					// Depth of Field: Adjust the ray origin based on aperture size
-					if(cam.getAperture() > 0.0f)
+					if(cam.getApertureDiameter() > 0.0f)
 					{
-						glm::vec3 apertureSample= Random::unitDisk(seedVal) * cam.getAperture();
+						glm::vec3 apertureSample= Random::unitDisk(seedVal) * cam.getApertureDiameter();
 						glm::vec3 apertureOffset=
 								glm::normalize(glm::cross(cam.getUp(), cam.getDirection())) * apertureSample.x +
 								cam.getUp() * apertureSample.y;

@@ -6,7 +6,14 @@ namespace AstralRaytracer
 	class Camera
 	{
 		public:
-			Camera(float32 fov, float32 nearClip, float32 farClip);
+			Camera(
+					float32 focalLength,
+					float32 sensorHeight,
+					float32 focusDistance,
+					float32 apertureDiameter,
+					float32 nearClip= 0.01f,
+					float32 farClip = 100.0f
+			);
 			void update(const glm::u32vec2& resolution);
 
 			void moveForward(float32 units);
@@ -28,13 +35,25 @@ namespace AstralRaytracer
 
 			float32 getNearClip() const { return m_nearClip; }
 
-			void setVerticalFov(float32 verticalFov) { m_vFov= verticalFov; }
+			void setSensorHeight(float32 sensorHeight) { m_sensorHeight= sensorHeight; }
 
-			float32 getVerticalFov() const { return m_vFov; }
+			float32 getSensorHeight() const { return m_sensorHeight; }
 
-			void setAperture(float32 apertureSize) { m_apertureSize= apertureSize; }
+			void setFocalLength(float32 focalLength) { m_focalLength= focalLength; }
 
-			float32 getAperture() const { return m_apertureSize; }
+			float32 getFocalLength() const { return m_focalLength; }
+
+			void setVerticalFov(float32 vFov, float32 sensorHeight);
+
+			float32 getVerticalFov() const;
+
+			void setFStop(float32 fStop);
+
+			float32 getFStop() const;
+
+			void setAperture(float32 apertureSize) { m_apertureDiameter= apertureSize; }
+
+			float32 getApertureDiameter() const { return m_apertureDiameter; }
 
 			void setFocusDistance(float32 focusDistance) { m_focusDistance= focusDistance; }
 
@@ -65,12 +84,12 @@ namespace AstralRaytracer
 			glm::vec3 m_position{ 0.0f };
 			glm::vec3 m_direction{ 0.0f };
 
-			float32 m_apertureSize = 0.2f;
-			float32 m_focusDistance= 10.0f;
-
-			float32 m_vFov;
-			float32 m_nearClip;
-			float32 m_farClip;
+			float32 m_focalLength     = 0.0f;
+			float32 m_sensorHeight    = 0.0f;
+			float32 m_focusDistance   = 0.0f;
+			float32 m_apertureDiameter= 0.0f;
+			float32 m_nearClip        = 0.0f;
+			float32 m_farClip         = 0.0f;
 
 			glm::vec2 m_lastMousePosition;
 	};

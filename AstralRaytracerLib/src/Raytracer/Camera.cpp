@@ -7,9 +7,20 @@
 
 namespace AstralRaytracer
 {
-
-	Camera::Camera(float32 fov, float32 nearClip, float32 farClip)
-			: m_vFov(fov), m_nearClip(nearClip), m_farClip(farClip)
+	Camera::Camera(
+			float32 focalLength,
+			float32 sensorHeight,
+			float32 focusDistance,
+			float32 apertureDiameter,
+			float32 nearClip,
+			float32 farClip
+	)
+			: m_focalLength(focalLength),
+				m_sensorHeight(sensorHeight),
+				m_focusDistance(focusDistance),
+				m_apertureDiameter(apertureDiameter),
+				m_nearClip(nearClip),
+				m_farClip(farClip)
 	{
 		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
@@ -55,6 +66,20 @@ namespace AstralRaytracer
 		m_direction= glm::rotate(q, m_direction);
 	}
 
+	void Camera::setVerticalFov(float32 vFov, float32 sensorHeight)
+	{
+		m_focalLength= sensorHeight / (2.0f * glm::tan(vFov * 0.5f));
+	}
+
+	float32 Camera::getVerticalFov() const
+	{
+		return 2.0f * glm::atan(m_sensorHeight / (2.0f * m_focalLength));
+	}
+
+	void Camera::setFStop(float32 fStop) { m_apertureDiameter= m_focalLength / fStop; }
+
+	float32 Camera::getFStop() const { return m_focalLength / m_apertureDiameter; }
+
 	const glm::vec3 Camera::getRight() const
 	{
 		return glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -73,10 +98,9 @@ namespace AstralRaytracer
 
 	void Camera::recalculateProjection(const glm::u32vec2& resolution)
 	{
-		const float32 fovRadian= glm::radians(m_vFov);
-		m_projection           = glm::perspective(
-        fovRadian, (float32)resolution.x / (float32)resolution.y, m_nearClip, m_farClip
-    );
+		const float32 aspectRatio= static_cast<float32>(resolution.x) / resolution.y;
+
+		m_projection       = glm::perspective(getVerticalFov(), aspectRatio, m_nearClip, m_farClip);
 		m_inverseProjection= glm::inverse(m_projection);
 	}
 
