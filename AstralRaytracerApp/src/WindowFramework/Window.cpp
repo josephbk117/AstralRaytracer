@@ -696,16 +696,14 @@ namespace AstralRaytracer
 							ImGui::SeparatorText("ENVIRONMENT");
 							ImGui::PopFont();
 
-							availableRegion.y-= 80.0f;
 							ImGui::BeginChild(
-									"Environment", availableRegion, false, ImGuiWindowFlags_AlwaysAutoResize
+									"Environment", ImVec2(0.0f, viewportSceneInfoSplitHeight), false,
+									ImGuiWindowFlags_AlwaysAutoResize
 							);
 
 							ImGui::Text("Camera");
 							float32 focalLength= cam.getFocalLength();
-							if(ImGui::DragFloat(
-										 "##Focal Length", &focalLength, 0.1f, 0.01f, 100.0f, "Focal Length: %.2f mm"
-								 ))
+							if(ImGui::DragFloat("Focal Length", &focalLength, 0.1f, 0.01f, 100.0f, "%.2f mm"))
 							{
 								cam.setFocalLength(focalLength);
 								appStateInfo.isSceneDirty= true;
@@ -713,9 +711,7 @@ namespace AstralRaytracer
 							}
 
 							float32 vFov= glm::degrees(cam.getVerticalFov());
-							if(ImGui::SliderFloat(
-										 "##Vertical FOV", &vFov, 1.0f, 179.0f, "Vertical FOV: %.2f Deg"
-								 ))
+							if(ImGui::SliderFloat("Vertical FOV", &vFov, 1.0f, 179.0f, "%.2f Deg"))
 							{
 								cam.setVerticalFov(glm::radians(vFov), cam.getSensorHeight());
 								appStateInfo.isSceneDirty= true;
@@ -723,19 +719,15 @@ namespace AstralRaytracer
 							}
 
 							float32 sensorHeight= cam.getSensorHeight();
-							if(ImGui::DragFloat(
-										 "##Sensor Height", &sensorHeight, 0.1f, 0.01f, 100.0f, "Sensor Height: %.2f mm"
-								 ))
+							if(ImGui::DragFloat("Sensor Height", &sensorHeight, 0.1f, 0.01f, 100.0f, "%.2f mm"))
 							{
 								cam.setSensorHeight(sensorHeight);
 								appStateInfo.isSceneDirty= true;
 								cam.update(appStateInfo.rendererResolution);
 							}
 
-							float32 fStop = cam.getFStop();
-							if(ImGui::SliderFloat(
-										 "##F-Stop", &fStop, 0.1f, 100.0f, "F-Stop: %.2f"
-								 ))
+							float32 fStop= cam.getFStop();
+							if(ImGui::SliderFloat("F-Stop", &fStop, 0.1f, 100.0f, "%.2f"))
 							{
 								cam.setFStop(fStop);
 								appStateInfo.isSceneDirty= true;
@@ -743,9 +735,7 @@ namespace AstralRaytracer
 							}
 
 							float32 aperture= cam.getApertureDiameter();
-							if(ImGui::SliderFloat(
-										 "##Aperture Diameter", &aperture, 0.01f, 10.0f, "Aperture Diameter: %.2f mm"
-								 ))
+							if(ImGui::SliderFloat("Aperture Diameter", &aperture, 0.01f, 10.0f, "%.2f mm"))
 							{
 								cam.setAperture(aperture);
 								appStateInfo.isSceneDirty= true;
@@ -756,8 +746,7 @@ namespace AstralRaytracer
 
 							constexpr float32 max_float= std::numeric_limits<float32>::max();
 							if(ImGui::DragFloat(
-										 "##Focus Distance", &focusDistance, 0.25f, 0.0f, max_float,
-										 "Focus Distance: %.2f m"
+										 "Focus Distance", &focusDistance, 0.25f, 0.0f, max_float, "%.2f m"
 								 ))
 							{
 								cam.setFocusDistance(focusDistance);
