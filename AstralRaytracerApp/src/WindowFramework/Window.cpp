@@ -349,6 +349,15 @@ namespace AstralRaytracer
 		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 	}
 
+	void Window::drawSampleProgress(const uint32 frameIndex)
+	{
+		std::array<char, 32> overlay= {};
+		sprintf(overlay.data(), "Samples: %d/%d", frameIndex, 1000);
+
+		const float32 progress= glm::clamp(frameIndex / 1000.0f, 0.0f, 1.0f);
+		ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
+	}
+
 	void Window::displayUI(
 			UI::AppStateInfo& appStateInfo,
 			Renderer&         renderer,
@@ -372,47 +381,7 @@ namespace AstralRaytracer
 
 		if(ImGui::Begin("Main Window", nullptr, flags))
 		{
-			if(ImGui::BeginMenuBar())
-			{
-				if(ImGui::BeginMenu("File"))
-				{
-					if(ImGui::MenuItem("Open Project", "Ctrl+O"))
-					{
-						/*ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseProjectDlg", "Choose Project Directory", nullptr, ".", 1, nullptr,
-								ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DisableCreateDirectoryButton |
-										ImGuiFileDialogFlags_HideColumnType | ImGuiFileDialogFlags_HideColumnSize |
-										ImGuiFileDialogFlags_DisableThumbnailMode
-						);*/
-
-						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1,
-								nullptr, ImGuiFileDialogFlags_Modal
-						);
-					}
-					if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
-					{
-						ImGuiFileDialog::Instance()->OpenDialog(
-								"ChooseSceneDlg", "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
-								ImGuiFileDialogFlags_Modal
-						);
-					}
-					ImGui::EndMenu();
-				}
-				if(ImGui::BeginMenu("Preference"))
-				{
-					if(ImGui::MenuItem("Themes")) { }
-					if(ImGui::MenuItem("Layout")) { }
-					ImGui::EndMenu();
-				}
-				if(ImGui::BeginMenu("View"))
-				{
-					if(ImGui::MenuItem("Toggle Preview View", "Alt+P")) { }
-					if(ImGui::MenuItem("Toggle Debug View", "Alt+D")) { }
-					ImGui::EndMenu();
-				}
-				ImGui::EndMenuBar();
-			}
+			drawMenuBar();
 
 			if(ImGuiFileDialog::Instance()->Display(
 						 "ChooseProjectDlg", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
@@ -421,14 +390,8 @@ namespace AstralRaytracer
 			{
 				if(ImGuiFileDialog::Instance()->IsOk())
 				{
-					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
-					if(scene.hasSceneLoaded())
-					{
-						scene.unload();
-					}
-
-					scene.deserialize(assetManager, filePathName);
-					appStateInfo.isSceneDirty= true;
+					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					handleChooseProjectDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
 				ImGuiFileDialog::Instance()->Close();
@@ -441,120 +404,14 @@ namespace AstralRaytracer
 			{
 				if(ImGuiFileDialog::Instance()->IsOk())
 				{
-					std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
-
-					if(scene.hasSceneLoaded())
-					{
-						scene.unload();
-					}
-
-					scene.deserialize(assetManager, filePathName);
-					appStateInfo.isSceneDirty= true;
+					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					handleChooseSceneDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
 				ImGuiFileDialog::Instance()->Close();
 			}
 
-			constexpr ImGuiWindowFlags flags2= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																				 ImGuiWindowFlags_NoResize |
-																				 ImGuiWindowFlags_AlwaysUseWindowPadding;
-
-			const uint32 toolBarHeight= 28;
-
-			ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 4));
-			ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags2);
-			int32 bounceCount= renderer.getBounceCount();
-
-			const float32 sliderWidth= ImGui::GetContentRegionAvail().x / 7.0f;
-
-			ImGui::SetNextItemWidth(sliderWidth);
-			if(ImGui::SliderInt(
-						 "##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d", ImGuiSliderFlags_AlwaysClamp
-				 ))
-			{
-				renderer.setBounceCount(bounceCount);
-				appStateInfo.isSceneDirty= true;
-			}
-
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(sliderWidth);
-
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(sliderWidth);
-
-			if(ImGui::SliderFloat(
-						 "##Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 100.0f,
-						 "Resolution Scale:%.1f%%", ImGuiSliderFlags_AlwaysClamp
-				 ))
-			{
-				appStateInfo.isSceneDirty= true;
-			}
-
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(sliderWidth);
-			if(ImGui::SliderInt2(
-						 "Resolution", reinterpret_cast<int32*>(&appStateInfo.rendererResolution), 64, 1920,
-						 "%dpx", ImGuiSliderFlags_AlwaysClamp
-				 ))
-			{
-				appStateInfo.isSceneDirty= true;
-			}
-
-			{
-				std::array<float32, FrameSampleCount> frameTimeCopy= {};
-
-				std::queue<float32> copiedQueue= m_frameTimes;
-
-				uint32  index   = 0;
-				float32 maxValue= 0.0f;
-
-				while(!copiedQueue.empty())
-				{
-					frameTimeCopy[index]= copiedQueue.front();
-					if(frameTimeCopy[index] > maxValue)
-					{
-						maxValue= frameTimeCopy[index];
-					}
-					copiedQueue.pop();
-					index++;
-				}
-
-				float32 average= 0.0f;
-				for(int32 n= 0; n < frameTimeCopy.size(); n++)
-				{
-					average+= frameTimeCopy[n];
-				}
-				average/= (float32)frameTimeCopy.size();
-
-				const float32 ms = average * 1000.0f;
-				const float32 fps= 1.0f / average;
-
-				std::array<char, 32> overlay= {};
-				sprintf(overlay.data(), "%.1f ms (%.1f fps)", ms, fps);
-				ImGui::SameLine();
-				ImGui::SetNextItemWidth(sliderWidth);
-				ImGui::PlotLines(
-						"##Framerate", frameTimeCopy.data(), frameTimeCopy.size(), 0, overlay.data(), 0.0f,
-						maxValue
-				);
-			}
-
-			const float32 progress= glm::clamp(renderer.getFrameIndex() / 1000.0f, 0.0f, 1.0f);
-
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(sliderWidth);
-			std::array<char, 32> overlay= {};
-			sprintf(overlay.data(), "Samples: %d/%d", renderer.getFrameIndex(), 1000);
-			ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
-
-			ImGui::SameLine();
-			if(ImGui::Button("screenshot", { sliderWidth, 0 }))
-			{
-				TextureManager::saveTextureToFile(renderer.getTextureData(), "imgout.hdr");
-			}
-
-			ImGui::EndChild();
-			ImGui::PopStyleVar();
+			drawToolbar(renderer, appStateInfo);
 
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersInner | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
@@ -711,6 +568,187 @@ namespace AstralRaytracer
 		}
 
 		ImGui::End();
+	}
+
+	void Window::drawToolbar(
+			AstralRaytracer::Renderer&         renderer,
+			AstralRaytracer::UI::AppStateInfo& appStateInfo
+	)
+	{
+		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
+																			 ImGuiWindowFlags_NoResize |
+																			 ImGuiWindowFlags_AlwaysUseWindowPadding;
+
+		const float32 sliderWidth  = ImGui::GetContentRegionAvail().x / 7.0f;
+		const uint32  toolBarHeight= 28;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 4));
+		ImGui::BeginChild(1, ImVec2(ImGui::GetWindowWidth(), toolBarHeight), true, flags);
+
+		ImGui::SetNextItemWidth(sliderWidth);
+
+		int32 bounceCount= renderer.getBounceCount();
+		if(ImGui::SliderInt(
+					 "##Bounce Count", &bounceCount, 1, 32, "Bounce Count:%d", ImGuiSliderFlags_AlwaysClamp
+			 ))
+		{
+			renderer.setBounceCount(bounceCount);
+			appStateInfo.isSceneDirty= true;
+		}
+
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(sliderWidth);
+
+		if(ImGui::SliderFloat(
+					 "##Resolution Scale", &appStateInfo.resolutionScale, 10.0f, 100.0f,
+					 "Resolution Scale:%.1f%%", ImGuiSliderFlags_AlwaysClamp
+			 ))
+		{
+			appStateInfo.isSceneDirty= true;
+		}
+
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(sliderWidth);
+		if(ImGui::SliderInt2(
+					 "Resolution", reinterpret_cast<int32*>(&appStateInfo.rendererResolution), 64, 1920,
+					 "%dpx", ImGuiSliderFlags_AlwaysClamp
+			 ))
+		{
+			appStateInfo.isSceneDirty= true;
+		}
+
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(sliderWidth);
+		drawFrameratePlot();
+
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(sliderWidth);
+
+		const uint32 frameIndex= renderer.getFrameIndex();
+		drawSampleProgress(frameIndex);
+
+		ImGui::SameLine();
+		if(ImGui::Button("screenshot", { sliderWidth, 0 }))
+		{
+			TextureManager::saveTextureToFile(renderer.getTextureData(), "imgout.hdr");
+		}
+
+		ImGui::EndChild();
+		ImGui::PopStyleVar();
+	}
+
+	void Window::handleChooseSceneDialog(
+			AstralRaytracer::Scene&            scene,
+			AstralRaytracer::AssetManager&     assetManager,
+			const std::string&                 filePathName,
+			AstralRaytracer::UI::AppStateInfo& appStateInfo
+	)
+	{
+		if(scene.hasSceneLoaded())
+		{
+			scene.unload();
+		}
+
+		scene.deserialize(assetManager, filePathName);
+		appStateInfo.isSceneDirty= true;
+	}
+
+	void Window::handleChooseProjectDialog(
+			AstralRaytracer::Scene&            scene,
+			AstralRaytracer::AssetManager&     assetManager,
+			const std::string&                 filePathName,
+			AstralRaytracer::UI::AppStateInfo& appStateInfo
+	)
+	{
+		if(scene.hasSceneLoaded())
+		{
+			scene.unload();
+		}
+
+		scene.deserialize(assetManager, filePathName);
+		appStateInfo.isSceneDirty= true;
+	}
+
+	void Window::drawMenuBar()
+	{
+		if(ImGui::BeginMenuBar())
+		{
+			if(ImGui::BeginMenu("File"))
+			{
+				if(ImGui::MenuItem("Open Project", "Ctrl+O"))
+				{
+					/*ImGuiFileDialog::Instance()->OpenDialog(
+							"ChooseProjectDlg", "Choose Project Directory", nullptr, ".", 1, nullptr,
+							ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DisableCreateDirectoryButton |
+									ImGuiFileDialogFlags_HideColumnType | ImGuiFileDialogFlags_HideColumnSize |
+									ImGuiFileDialogFlags_DisableThumbnailMode
+					);*/
+
+					ImGuiFileDialog::Instance()->OpenDialog(
+							"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1,
+							nullptr, ImGuiFileDialogFlags_Modal
+					);
+				}
+				if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
+				{
+					ImGuiFileDialog::Instance()->OpenDialog(
+							"ChooseSceneDlg", "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
+							ImGuiFileDialogFlags_Modal
+					);
+				}
+				ImGui::EndMenu();
+			}
+			if(ImGui::BeginMenu("Preference"))
+			{
+				if(ImGui::MenuItem("Themes")) { }
+				if(ImGui::MenuItem("Layout")) { }
+				ImGui::EndMenu();
+			}
+			if(ImGui::BeginMenu("View"))
+			{
+				if(ImGui::MenuItem("Toggle Preview View", "Alt+P")) { }
+				if(ImGui::MenuItem("Toggle Debug View", "Alt+D")) { }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+	}
+
+	void Window::drawFrameratePlot()
+	{
+		std::array<float32, FrameSampleCount> frameTimeCopy= {};
+
+		std::queue<float32> copiedQueue= m_frameTimes;
+
+		uint32  index   = 0;
+		float32 maxValue= 0.0f;
+
+		while(!copiedQueue.empty())
+		{
+			frameTimeCopy[index]= copiedQueue.front();
+			if(frameTimeCopy[index] > maxValue)
+			{
+				maxValue= frameTimeCopy[index];
+			}
+			copiedQueue.pop();
+			index++;
+		}
+
+		float32 average= 0.0f;
+		for(int32 n= 0; n < frameTimeCopy.size(); n++)
+		{
+			average+= frameTimeCopy[n];
+		}
+		average/= (float32)frameTimeCopy.size();
+
+		const float32 ms = average * 1000.0f;
+		const float32 fps= 1.0f / average;
+
+		std::array<char, 32> overlay= {};
+		sprintf(overlay.data(), "%.1f ms (%.1f fps)", ms, fps);
+		ImGui::PlotLines(
+				"##Framerate", frameTimeCopy.data(), frameTimeCopy.size(), 0, overlay.data(), 0.0f, maxValue
+		);
 	}
 
 	void Window::windowSizeCallback(GLFWwindow* window, int32 width, int32 height)

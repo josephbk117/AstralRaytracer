@@ -81,6 +81,30 @@ namespace AstralRaytracer
 					Camera&           cam,
 					AssetManager&     assetManager
 			);
+
+			void drawToolbar(
+					AstralRaytracer::Renderer&         renderer,
+					AstralRaytracer::UI::AppStateInfo& appStateInfo
+			);
+
+			void handleChooseSceneDialog(
+					AstralRaytracer::Scene&            scene,
+					AstralRaytracer::AssetManager&     assetManager,
+					const std::string&                 filePathName,
+					AstralRaytracer::UI::AppStateInfo& appStateInfo
+			);
+
+			void handleChooseProjectDialog(
+					AstralRaytracer::Scene&            scene,
+					AstralRaytracer::AssetManager&     assetManager,
+					const std::string&                 filePathName,
+					AstralRaytracer::UI::AppStateInfo& appStateInfo
+			);
+
+			void drawMenuBar();
+			void drawFrameratePlot();
+			void drawSampleProgress(const uint32 frameIndex);
+
 			void shutdown() const;
 			void swapBuffers() const;
 			void pollEvents() const;
