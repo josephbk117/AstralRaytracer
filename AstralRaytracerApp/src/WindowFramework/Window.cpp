@@ -110,7 +110,7 @@ namespace AstralRaytracer
 	{
 		TextureDataRGBA iconTexData= TextureManager::loadTextureDataFromFileRGBA(iconPath);
 
-		GLFWimage image[1];
+		GLFWimage image[1]{};
 		image[0].width = iconTexData.getWidth();
 		image[0].height= iconTexData.getHeight();
 		image[0].pixels= const_cast<uint8*>(iconTexData.getTextureData().data());
