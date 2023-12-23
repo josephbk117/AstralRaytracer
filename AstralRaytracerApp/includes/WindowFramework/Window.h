@@ -1,6 +1,7 @@
 #pragma once
 #include "UI/CommonUI.h"
 #include "UI/ContentBrowser.h"
+#include "UI/EnvironmentSettings.h"
 #include "UI/Inspector.h"
 #include "UI/PostProcessingStack.h"
 #include "UI/SceneHierarchy.h"
@@ -90,14 +91,14 @@ namespace AstralRaytracer
 		private:
 			const static uint32 FrameSampleCount= 100;
 
-			GLFWwindow*               m_glfwWindow   = nullptr;
-			ImFont*                   m_primaryFont  = nullptr;
-			ImFont*                   m_secondaryFont= nullptr;
-			ImFont*                   m_tertiaryFont = nullptr;
-			std::string               m_name;
-			glm::u32vec2              m_minResolution{ 720, 500 };
-			glm::u32vec2              m_maxResolution{ 3840, 2160 };
-			std::queue<float32>       m_frameTimes;
+			GLFWwindow*         m_glfwWindow   = nullptr;
+			ImFont*             m_primaryFont  = nullptr;
+			ImFont*             m_secondaryFont= nullptr;
+			ImFont*             m_tertiaryFont = nullptr;
+			std::string         m_name;
+			glm::u32vec2        m_minResolution{ 720, 500 };
+			glm::u32vec2        m_maxResolution{ 3840, 2160 };
+			std::queue<float32> m_frameTimes;
 
 			ApplicationState m_appState= ApplicationState::NONE;
 
@@ -107,6 +108,7 @@ namespace AstralRaytracer
 			UI::Inspector           m_inspector;
 			UI::ContentBrowser      m_contentBrowser;
 			UI::PostProcessingStack m_postProcessingStack;
+			UI::EnvironmentSettings m_environmentSettings;
 
 			static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
 			void        setSelectedObjectIndexFromMouseCoord(

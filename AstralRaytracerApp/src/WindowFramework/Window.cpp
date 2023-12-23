@@ -692,69 +692,7 @@ namespace AstralRaytracer
 						}
 						if(ImGui::BeginTabItem("Environment"))
 						{
-							ImGui::PushFont(getSecondaryFont());
-							ImGui::SeparatorText("ENVIRONMENT");
-							ImGui::PopFont();
-
-							ImGui::BeginChild(
-									"Environment", ImVec2(0.0f, viewportSceneInfoSplitHeight), false,
-									ImGuiWindowFlags_AlwaysAutoResize
-							);
-
-							ImGui::Text("Camera");
-							float32 focalLength= cam.getFocalLength();
-							if(ImGui::DragFloat("Focal Length", &focalLength, 0.1f, 0.01f, 100.0f, "%.2f mm"))
-							{
-								cam.setFocalLength(focalLength);
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							float32 vFov= glm::degrees(cam.getVerticalFov());
-							if(ImGui::SliderFloat("Vertical FOV", &vFov, 1.0f, 179.0f, "%.2f Deg"))
-							{
-								cam.setVerticalFov(glm::radians(vFov), cam.getSensorHeight());
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							float32 sensorHeight= cam.getSensorHeight();
-							if(ImGui::DragFloat("Sensor Height", &sensorHeight, 0.1f, 0.01f, 100.0f, "%.2f mm"))
-							{
-								cam.setSensorHeight(sensorHeight);
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							float32 fStop= cam.getFStop();
-							if(ImGui::SliderFloat("F-Stop", &fStop, 0.1f, 100.0f, "%.2f"))
-							{
-								cam.setFStop(fStop);
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							float32 aperture= cam.getApertureDiameter();
-							if(ImGui::SliderFloat("Aperture Diameter", &aperture, 0.01f, 10.0f, "%.2f mm"))
-							{
-								cam.setAperture(aperture);
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							float32 focusDistance= cam.getFocusDistance();
-
-							constexpr float32 max_float= std::numeric_limits<float32>::max();
-							if(ImGui::DragFloat(
-										 "Focus Distance", &focusDistance, 0.25f, 0.0f, max_float, "%.2f m"
-								 ))
-							{
-								cam.setFocusDistance(focusDistance);
-								appStateInfo.isSceneDirty= true;
-								cam.update(appStateInfo.rendererResolution);
-							}
-
-							ImGui::EndChild();
+							m_environmentSettings.display(appStateInfo, cam, *this);
 							ImGui::EndTabItem();
 						}
 						ImGui::EndTabBar();
