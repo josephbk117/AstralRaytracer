@@ -1,5 +1,7 @@
 #include "WindowFramework/UI/FileInspector.h"
 
+#include "Utils/Common.h"
+
 #include <imgui.h>
 
 namespace AstralRaytracer
@@ -18,14 +20,19 @@ namespace AstralRaytracer
 				ImGui::SameLine();
 
 				std::string typeNameStr= "";
-
-				if(fileType == FileType::ASSET)
+				switch(fileType)
 				{
-					typeNameStr= toString(getAssetTypeFromFilePath(m_currentFIle));
-				}
-				else if(fileType == FileType::RESOURCE)
-				{
-					typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle));
+					case FileType::ASSET:
+						{
+							typeNameStr= toString(getAssetTypeFromFilePath(m_currentFIle));
+						}
+						break;
+					case FileType::RESOURCE:
+						{
+							typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle));
+						}
+						break;
+					default: ASTRAL_LOG_ERROR("Invalid Filetype enum"); break;
 				}
 
 				ImGui::TextUnformatted(typeNameStr.c_str());
