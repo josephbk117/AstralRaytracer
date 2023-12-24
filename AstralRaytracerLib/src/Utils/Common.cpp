@@ -45,11 +45,11 @@ const std::vector<std::string>& AstralRaytracer::getFileExtensionForResourceType
 {
 	switch(type)
 	{
-		case AstralRaytracer::ResourceType::IMAGE: return fileExtensionForImages;
-		case AstralRaytracer::ResourceType::MODEL: return fileExtensionForModels;
-		case AstralRaytracer::ResourceType::TEXT_FILE: return fileExtensionForText;
-		case AstralRaytracer::ResourceType::FONT: return fileExtensionForFont;
-		case AstralRaytracer::ResourceType::INVALID:
+		case ResourceType::IMAGE: return fileExtensionForImages;
+		case ResourceType::MODEL: return fileExtensionForModels;
+		case ResourceType::TEXT_FILE: return fileExtensionForText;
+		case ResourceType::FONT: return fileExtensionForFont;
+		case ResourceType::INVALID:
 		default: return invalidVectorOfString;
 	}
 }

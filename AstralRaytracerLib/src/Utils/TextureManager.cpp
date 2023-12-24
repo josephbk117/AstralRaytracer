@@ -159,21 +159,12 @@ gl::GLenum TextureManager::getTextureFormatFromData(uint32 componentCount)
 {
 	ASTRAL_ASSERTM(componentCount <= 4, "Invalid component count requested");
 
-	if(componentCount == 1)
+	switch(componentCount)
 	{
-		return gl::GLenum::GL_RED;
-	}
-	else if(componentCount == 2)
-	{
-		return gl::GLenum::GL_RG;
-	}
-	else if(componentCount == 3)
-	{
-		return gl::GLenum::GL_RGB;
-	}
-	else if(componentCount == 4)
-	{
-		return gl::GLenum::GL_RGBA;
+		case 1: return gl::GLenum::GL_RED;
+		case 2: return gl::GLenum::GL_RG;
+		case 3: return gl::GLenum::GL_RGB;
+		case 4: return gl::GLenum::GL_RGBA;
 	}
 
 	return gl::GLenum::GL_INVALID_ENUM;

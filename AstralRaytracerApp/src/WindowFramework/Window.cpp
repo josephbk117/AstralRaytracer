@@ -163,7 +163,7 @@ namespace AstralRaytracer
 
 		if(m_appState == ApplicationState::NONE)
 		{
-			bool isLeftShiftDown= Input::isKeyDown(*this, InputKey::LEFT_SHIFT);
+			const bool isLeftShiftDown= Input::isKeyDown(*this, InputKey::LEFT_SHIFT);
 			if(Input::isKeyDown(*this, InputKey::T))
 			{
 				m_TransformOperation= isLeftShiftDown ? m_TransformOperation | IMGUIZMO_NAMESPACE::TRANSLATE
@@ -201,16 +201,16 @@ namespace AstralRaytracer
 
 		const glm::u32vec2 newCamRes(camResolutionX, camResolutionY);
 
-		static glm::vec2 m_lastMousePosition(0.0f);
+		static glm::vec2 lastMousePosition(0.0f);
 
-		if(m_lastMousePosition == glm::vec2(0.0f))
+		if(lastMousePosition == glm::vec2(0.0f))
 		{
-			m_lastMousePosition= Input::getMousePosition(*this);
+			lastMousePosition= Input::getMousePosition(*this);
 			return;
 		}
 
-		const glm::vec2& mouseDelta= (mousePos - m_lastMousePosition);
-		m_lastMousePosition        = mousePos;
+		const glm::vec2& mouseDelta= (mousePos - lastMousePosition);
+		lastMousePosition        = mousePos;
 
 		bool forceRecalculate= cam.getResolution() != newCamRes;
 
@@ -576,8 +576,8 @@ namespace AstralRaytracer
 	)
 	{
 		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
-																			 ImGuiWindowFlags_NoResize |
-																			 ImGuiWindowFlags_AlwaysUseWindowPadding;
+																			ImGuiWindowFlags_NoResize |
+																			ImGuiWindowFlags_AlwaysUseWindowPadding;
 
 		const float32 sliderWidth  = ImGui::GetContentRegionAvail().x / 7.0f;
 		const uint32  toolBarHeight= 28;
