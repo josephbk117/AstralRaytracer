@@ -112,7 +112,7 @@ jobs:
       with:    
         # A file, directory or wildcard pattern that describes what to upload
         # Required.
-        path: ${ { steps.cmake_and_ninja.outputs.cmake_dir } }
+        path: ${{ steps.strings.outputs.build-output-dir }}
         # Duration after which artifact will expire in days. 0 means using default retention.
         # Minimum 1 day.
         # Maximum 90 days unless changed from the repository settings page.
