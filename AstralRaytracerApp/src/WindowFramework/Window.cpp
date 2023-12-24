@@ -210,7 +210,7 @@ namespace AstralRaytracer
 		}
 
 		const glm::vec2& mouseDelta= (mousePos - lastMousePosition);
-		lastMousePosition        = mousePos;
+		lastMousePosition          = mousePos;
 
 		bool forceRecalculate= cam.getResolution() != newCamRes;
 
@@ -290,7 +290,7 @@ namespace AstralRaytracer
 	void Window::setDefaultTheme() const
 	{
 		ImGuiStyle* style = &ImGui::GetStyle();
-		ImVec4*     colors= style->Colors;
+		ImVec4*     colors= static_cast<ImVec4*>(style->Colors);
 		ImGui::StyleColorsDark(style); // Reset to base/dark theme
 		colors[ImGuiCol_Text]                = ImVec4(0.85f, 0.87f, 0.91f, 0.88f);
 		colors[ImGuiCol_TextDisabled]        = ImVec4(0.49f, 0.50f, 0.53f, 1.00f);
