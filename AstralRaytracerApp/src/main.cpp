@@ -17,7 +17,7 @@ int main()
 	// Destructors need to be called before context is removed
 	{
 		AstralRaytracer::Renderer   renderer;
-		AstralRaytracer::Camera     cam(1.0f, 1.0f, 10.0f, 0.0f, 0.1f, 100.0f);
+		AstralRaytracer::Camera     cam(15.0f, 15.0f, 10.0f, 0.0f);
 		AstralRaytracer::Scene      scene;
 		AstralRaytracer::Compositor compositor;
 
