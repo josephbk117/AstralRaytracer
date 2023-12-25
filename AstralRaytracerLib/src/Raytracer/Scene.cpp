@@ -104,20 +104,21 @@ namespace AstralRaytracer
 		ofs.close();
 	}
 
-	void Scene::deserialize(AssetManager& assetManager, const std::filesystem::path& path)
+	void Scene::deserialize(AssetManager& assetManager, const std::filesystem::path& absolutePath)
 	{
-		const std::string absolutePath= std::filesystem::absolute(path).string();
-		if(!std::filesystem::exists(path))
+		const std::string absolutePathStr= absolutePath.string();
+
+		if(!std::filesystem::exists(absolutePath))
 		{
-			ASTRAL_LOG_ERROR("Scene file at path :{}, does not exist", absolutePath);
+			ASTRAL_LOG_ERROR("Scene file at path :{}, does not exist", absolutePathStr);
 		}
 		else
 		{
-			ASTRAL_LOG_TRACE("Successfully deserialized scene file : {}", absolutePath);
+			ASTRAL_LOG_TRACE("Successfully deserialized scene file : {}", absolutePathStr);
 		}
 
-		std::ifstream stream(path);
-		YAML::Node    data= YAML::Load(stream);
+		std::ifstream stream(absolutePathStr);
+		YAML::Node    data  = YAML::Load(stream);
 
 		if(!data["Scene"])
 		{

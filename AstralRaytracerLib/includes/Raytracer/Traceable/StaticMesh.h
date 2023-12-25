@@ -37,8 +37,8 @@ namespace AstralRaytracer
 
 		void setMaterialIndex(uint32 materialIndex) override;
 
-		void serialize(YAML::Emitter& out) const override;
-		void deserialize(YAML::Node& node) override;
+		void serialize(AssetManager& assetManager, YAML::Emitter& out) const override;
+		void deserialize(AssetManager& assetManager, YAML::Node& node) override;
 
 		private:
 		bool intersectsBoundingBox(const Ray& rayIn) const;

@@ -3,4 +3,4 @@ Traceable: Crystal
 Transform: [2, 0, -1, 0, 1, 1, 1]
 Material: 1
 Type: 3
-Source Path: ExampleProject/crystal.gltf
+Source Path: models/crystal.gltf

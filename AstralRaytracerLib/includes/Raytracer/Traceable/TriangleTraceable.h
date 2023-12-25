@@ -13,8 +13,8 @@ namespace AstralRaytracer
 		float32      getTriangleDistance() const;
 		bool         trace(const Ray& rayIn, HitInfo& hitInfo) const override;
 
-		void serialize(YAML::Emitter& out) const override;
-		void deserialize(YAML::Node& node) override;
+		void serialize(AssetManager& assetManager, YAML::Emitter& out) const override;
+		void deserialize(AssetManager& assetManager, YAML::Node& node) override;
 
 		private:
 		glm::vec3 m_vertexA, m_vertexB, m_vertexC;

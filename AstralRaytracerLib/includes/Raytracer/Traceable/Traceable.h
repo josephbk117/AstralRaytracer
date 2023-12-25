@@ -23,8 +23,8 @@ namespace AstralRaytracer
 		virtual uint32 getMaterialIndex() const { return m_materialIndex; }
 		virtual bool   trace(const Ray& rayIn, HitInfo& hitInfo) const= 0;
 
-		virtual void serialize(YAML::Emitter& out) const override;
-		virtual void deserialize(YAML::Node& node) override;
+		virtual void serialize(AssetManager& assetManager, YAML::Emitter& out) const override;
+		virtual void deserialize(AssetManager& assetManager, YAML::Node& node) override;
 
 		protected:
 		Transform m_transform;

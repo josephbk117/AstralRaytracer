@@ -42,17 +42,17 @@ namespace AstralRaytracer
 		return false;
 	}
 
-	void SphereTraceable::serialize(YAML::Emitter& out) const
+	void SphereTraceable::serialize(AssetManager& assetManager, YAML::Emitter& out) const
 	{
 		using namespace Serialization;
-		Traceable::serialize(out);
+		Traceable::serialize(assetManager, out);
 		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::SPEHRE);
 		out << YAML::Key << "Radius" << YAML::Value << m_radius;
 	}
 
-	void SphereTraceable::deserialize(YAML::Node& node)
+	void SphereTraceable::deserialize(AssetManager& assetManager, YAML::Node& node)
 	{
-		Traceable::deserialize(node);
+		Traceable::deserialize(assetManager, node);
 		m_id    = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		m_radius= node["Radius"].as<float32>();
 		Traceable::setScale(glm::vec3(m_radius));

@@ -4,12 +4,16 @@ namespace AstralRaytracer
 {
 	TriangleTraceable::TriangleTraceable()
 	{
-		TriangleTraceable(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f),
-											glm::vec3(0.0f, 0.0f, 1.0f));
+		TriangleTraceable(
+				glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)
+		);
 	}
 
-	TriangleTraceable::TriangleTraceable(const glm::vec3& vertexA, const glm::vec3& vertexB,
-																			 const glm::vec3& vertexC)
+	TriangleTraceable::TriangleTraceable(
+			const glm::vec3& vertexA,
+			const glm::vec3& vertexB,
+			const glm::vec3& vertexC
+	)
 			: m_vertexA(vertexA), m_vertexB(vertexB), m_vertexC(vertexC)
 	{
 		m_InitialVertexA= m_vertexA;
@@ -86,10 +90,10 @@ namespace AstralRaytracer
 		return true;
 	}
 
-	void TriangleTraceable::serialize(YAML::Emitter& out) const
+	void TriangleTraceable::serialize(AssetManager& assetManager, YAML::Emitter& out) const
 	{
 		using namespace Serialization;
-		Traceable::serialize(out);
+		Traceable::serialize(assetManager, out);
 
 		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::TRIANGLE);
 
@@ -98,7 +102,7 @@ namespace AstralRaytracer
 		out << YAML::Key << "vertex C" << YAML::Value << m_vertexC;
 	}
 
-	void TriangleTraceable::deserialize(YAML::Node& node)
+	void TriangleTraceable::deserialize(AssetManager& assetManager, YAML::Node& node)
 	{
 		m_vertexA= node["vertex A"].as<glm::vec3>();
 		m_vertexB= node["vertex B"].as<glm::vec3>();
@@ -107,7 +111,7 @@ namespace AstralRaytracer
 		*this= TriangleTraceable(m_vertexA, m_vertexB, m_vertexC);
 		m_id = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		// Creates new TriangleTraceable so need to deserialize parent after
-		Traceable::deserialize(node);
+		Traceable::deserialize(assetManager, node);
 	}
 
 } // namespace AstralRaytracer

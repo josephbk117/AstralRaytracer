@@ -660,13 +660,19 @@ namespace AstralRaytracer
 			AstralRaytracer::UI::AppStateInfo& appStateInfo
 	)
 	{
-		if(scene.hasSceneLoaded())
+		if(assetManager.LoadProject(filePathName))
 		{
-			scene.unload();
+			if(scene.hasSceneLoaded())
+			{
+				scene.unload();
+			}
+
+			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
+			appStateInfo.isSceneDirty= true;
+			return;
 		}
 
-		scene.deserialize(assetManager, filePathName);
-		appStateInfo.isSceneDirty= true;
+		ASTRAL_LOG_WARN("Failed to project from : {}", filePathName);
 	}
 
 	void Window::drawMenuBar()

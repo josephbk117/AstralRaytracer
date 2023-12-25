@@ -1,8 +1,8 @@
 #pragma once
 #include "Raytracer/Material.h"
-#include "Utils/TextureData.h"
 #include "Raytracer/Traceable/Traceable.h"
 #include "Serialization.h"
+#include "Utils/TextureData.h"
 
 #include <filesystem>
 #include <optional>
@@ -22,6 +22,8 @@ namespace AstralRaytracer
 			};
 
 			AssetManager();
+
+			bool LoadProject(const fs::path& absolutePath);
 
 			[[nodiscard]]
 			TextureDataRGBF LoadTextureAsset(const fs::path& path, const std::string& name);
@@ -44,6 +46,13 @@ namespace AstralRaytracer
 			std::optional<NameAndPath> getNameAndPathOfMaterial(uint32 id) const;
 			[[nodiscard]]
 			std::optional<NameAndPath> getNameAndPathOfTraceable(uint32 id) const;
+
+			const std::string& getCurrentRelativePath() const { return m_currentRelativePath; }
+
+			const std::string& getDefaultSceneRelativePath() const { return m_defaultScenePath; }
+
+			std::string getDefaultSceneAbsolutePath() const;
+
 		private:
 			std::unordered_map<uint32, NameAndPath> m_traceableNameAndPathMap;
 			std::unordered_map<uint32, NameAndPath> m_materialNameAndPathMap;
@@ -51,6 +60,7 @@ namespace AstralRaytracer
 			std::mt19937                            m_randomNumGenerator;
 
 			std::string m_currentRelativePath= "../../../../";
+			std::string m_defaultScenePath;
 
 			uuids::uuid generateUUID();
 			std::string generateUUIDasString();

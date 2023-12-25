@@ -21,8 +21,11 @@ int main()
 		AstralRaytracer::Scene      scene;
 		AstralRaytracer::Compositor compositor;
 
-		// Load default scene
-		scene.deserialize(assetManager, R"(../../../../ExampleProject/scenes/scene1.ascene)");
+		// Load default project
+		if(assetManager.LoadProject(R"(../../../../ExampleProject/defaultProject.asproj)"))
+		{
+			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
+		}
 
 		AstralRaytracer::UI::AppStateInfo appStateInfo;
 

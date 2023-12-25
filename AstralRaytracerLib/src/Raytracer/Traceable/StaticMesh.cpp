@@ -1,15 +1,15 @@
 #include "Raytracer/Traceable/StaticMesh.h"
 
+#include "Utils/AssetManager.h"
 #include "Utils/ModelManager.h"
 
 namespace AstralRaytracer
 {
-
 	StaticMesh::StaticMesh(const std::filesystem::path& meshFilePath)
 	{
 		m_sourceMeshFilePath= meshFilePath.string();
 
-		*this= ModelManager::getStaticMeshFromGLTF("../../../../" + meshFilePath.string());
+		*this= ModelManager::getStaticMeshFromGLTF(meshFilePath.string());
 	}
 
 	const std::string& StaticMesh::getSourceMeshFilePath() const { return m_sourceMeshFilePath; }
@@ -73,19 +73,20 @@ namespace AstralRaytracer
 		}
 	}
 
-	void StaticMesh::serialize(YAML::Emitter& out) const
+	void StaticMesh::serialize(AssetManager& assetManager, YAML::Emitter& out) const
 	{
 		using namespace Serialization;
-		Traceable::serialize(out);
+		Traceable::serialize(assetManager, out);
 		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::STATIC_MESH);
 		out << YAML::Key << "Source Path" << YAML::Value << m_sourceMeshFilePath;
 	}
 
-	void StaticMesh::deserialize(YAML::Node& node)
+	void StaticMesh::deserialize(AssetManager& assetManager, YAML::Node& node)
 	{
-		*this= StaticMesh(node["Source Path"].as<std::string>());
+		*this=
+				StaticMesh(assetManager.getCurrentRelativePath() + node["Source Path"].as<std::string>());
 		// Creates new StaticMesh so need to deserialize parent after
-		Traceable::deserialize(node);
+		Traceable::deserialize(assetManager, node);
 		m_id= uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		setMaterialIndex(m_materialIndex);
 		setPosition(m_transform.getPosition());

@@ -5,6 +5,11 @@
 
 #include <yaml-cpp/yaml.h>
 
+namespace AstralRaytracer
+{
+	class AssetManager;
+}
+
 namespace YAML
 {
 	template<>
@@ -129,8 +134,8 @@ namespace AstralRaytracer
 		{
 			public:
 				Serializable()                                  = default;
-				virtual void serialize(YAML::Emitter& out) const= 0;
-				virtual void deserialize(YAML::Node& node)      = 0;
+				virtual void serialize(AssetManager& assetManager, YAML::Emitter& out) const= 0;
+				virtual void deserialize(AssetManager& assetManager, YAML::Node& node)        = 0;
 
 				void setUUID(uuids::uuid id) { m_id= id; };
 

@@ -24,6 +24,23 @@ namespace AstralRaytracer
     });
 	}
 
+	bool AssetManager::LoadProject(const fs::path& absolutePath)
+	{
+		std::ifstream stream(absolutePath.string());
+
+		YAML::Node data= YAML::Load(stream);
+
+		if(!data["Project"])
+		{
+			return false;
+		}
+
+		m_defaultScenePath   = data["Default Scene"].as<std::string>();
+		m_currentRelativePath= absolutePath.parent_path().string() + "/";
+
+		return true;
+	}
+
 	TextureDataRGBF AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
 	{
 		static uint32 textureCount= 0;
@@ -52,7 +69,7 @@ namespace AstralRaytracer
 			return false;
 		}
 
-		outMaterial.deserialize(data);
+		outMaterial.deserialize(*this, data);
 		return true;
 	}
 
@@ -80,19 +97,19 @@ namespace AstralRaytracer
 			case AstralRaytracer::Serialization::TraceableType::SPEHRE:
 				{
 					auto sphere= std::make_unique<AstralRaytracer::SphereTraceable>();
-					sphere->deserialize(data);
+					sphere->deserialize(*this, data);
 					return sphere;
 				};
 			case AstralRaytracer::Serialization::TraceableType::TRIANGLE:
 				{
 					auto triangle= std::make_unique<AstralRaytracer::TriangleTraceable>();
-					triangle->deserialize(data);
+					triangle->deserialize(*this, data);
 					return triangle;
 				}
 			case AstralRaytracer::Serialization::TraceableType::STATIC_MESH:
 				{
 					auto mesh= std::make_unique<AstralRaytracer::StaticMesh>();
-					mesh->deserialize(data);
+					mesh->deserialize(*this, data);
 					return mesh;
 				}
 			default: break;
@@ -113,7 +130,7 @@ namespace AstralRaytracer
 		out << YAML::BeginMap;
 		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Material" << YAML::Value << name;
-		material.serialize(out);
+		material.serialize(*this, out);
 		out << YAML::EndMap;
 
 		if(!fs::exists(folderPath) && fs::is_directory(folderPath))
@@ -143,7 +160,7 @@ namespace AstralRaytracer
 		out << YAML::BeginMap;
 		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
 		out << YAML::Key << "Traceable" << YAML::Value << name;
-		traceable->serialize(out);
+		traceable->serialize(*this, out);
 		out << YAML::EndMap;
 
 		const fs::path outputPath= fs::current_path().string() + path.string();
@@ -187,6 +204,11 @@ namespace AstralRaytracer
 		}
 
 		return std::nullopt;
+	}
+
+	std::string AssetManager::getDefaultSceneAbsolutePath() const
+	{
+		return m_currentRelativePath + m_defaultScenePath;
 	}
 
 	uuids::uuid AssetManager::generateUUID()

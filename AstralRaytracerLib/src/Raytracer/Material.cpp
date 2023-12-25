@@ -5,7 +5,7 @@ namespace AstralRaytracer
 
 	glm::vec3 Material::getEmission() const { return emission.getColour_32_bit() * emissionStrength; }
 
-	void Material::serialize(YAML::Emitter& out) const
+	void Material::serialize(AssetManager& assetManager, YAML::Emitter& out) const
 	{
 		using namespace Serialization;
 
@@ -16,7 +16,7 @@ namespace AstralRaytracer
 		out << YAML::Key << "Texture" << YAML::Value << texture;
 	}
 
-	void Material::deserialize(YAML::Node& node)
+	void Material::deserialize(AssetManager& assetManager, YAML::Node& node)
 	{
 		m_id            = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
 		albedo          = node["Albedo"].as<ColourData>();
