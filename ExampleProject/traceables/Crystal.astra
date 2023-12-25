@@ -1,6 +1,6 @@
 UUID: f2312d82-70a3-40b1-bd30-5ed89688ef5a
 Traceable: Crystal
-Transform: [2, 0, -1, 0, 1, 1, 1]
+Transform: [2, 2, -1, 0, 1, 1, 1]
 Material: 1
 Type: 3
 Source Path: models/crystal.gltf
