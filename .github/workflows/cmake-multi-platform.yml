@@ -109,7 +109,8 @@ jobs:
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
-      with:    
+      with:
+        name: ${{ matrix.config.name }}
         # A file, directory or wildcard pattern that describes what to upload
         # Required.
         path: ${{ steps.strings.outputs.build-output-dir }}
@@ -122,4 +123,4 @@ jobs:
         # The value can range from 0 to 9.
         # For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
         # Optional. Default is '6'
-        compression-level: 2
+        compression-level: 7
