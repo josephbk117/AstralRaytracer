@@ -50,6 +50,8 @@ namespace AstralRaytracer
 			std::unordered_map<uint32, NameAndPath> m_textureNameAndPathMap;
 			std::mt19937                            m_randomNumGenerator;
 
+			std::string m_currentRelativePath= "../../../../";
+
 			uuids::uuid generateUUID();
 			std::string generateUUIDasString();
 	};

@@ -30,7 +30,7 @@ namespace AstralRaytracer
 		NameAndPath   nameAndPath = { name, path.string() };
 		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
 		textureCount++;
-		return TextureManager::loadTextureDataFromFileRGBF(path);
+		return TextureManager::loadTextureDataFromFileRGBF(m_currentRelativePath + path.string());
 	}
 
 	bool AssetManager::LoadMaterialAsset(
@@ -44,7 +44,7 @@ namespace AstralRaytracer
 		m_materialNameAndPathMap.emplace(matCount, nameAndPath);
 		matCount++;
 
-		std::ifstream stream(path);
+		std::ifstream stream(m_currentRelativePath + path.string());
 		YAML::Node    data= YAML::Load(stream);
 
 		if(!data["Material"])
@@ -59,8 +59,7 @@ namespace AstralRaytracer
 	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::LoadTraceableAsset(const fs::path& path)
 	{
 		static uint32 traceableCount= 0;
-
-		std::ifstream stream(path);
+		std::ifstream stream(m_currentRelativePath + path.string());
 		YAML::Node    data= YAML::Load(stream);
 
 		if(!data["Traceable"])
