@@ -108,6 +108,7 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Upload build artifacts
+      if: matrix.build_type == Release
       uses: actions/upload-artifact@v4
       with:
         name: binary-${{ matrix.os }}-${{ matrix.cpp_compiler }}
@@ -123,4 +124,4 @@ jobs:
         # The value can range from 0 to 9.
         # For large files that are not easily compressed, a value of 0 is recommended for significantly faster uploads.
         # Optional. Default is '6'
-        compression-level: 7
+        compression-level: 9
