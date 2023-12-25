@@ -108,7 +108,7 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Upload build artifacts
-      if: matrix.build_type == Release
+      if: matrix.build_type == 'Release'
       uses: actions/upload-artifact@v4
       with:
         name: binary-${{ matrix.os }}-${{ matrix.cpp_compiler }}
