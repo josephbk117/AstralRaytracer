@@ -110,7 +110,7 @@ jobs:
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.config.name }}
+        name: binary-${{ matrix.os }}-${{ matrix.cpp_compiler }}
         # A file, directory or wildcard pattern that describes what to upload
         # Required.
         path: ${{ steps.strings.outputs.build-output-dir }}
