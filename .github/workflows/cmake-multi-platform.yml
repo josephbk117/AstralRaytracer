@@ -127,10 +127,13 @@ jobs:
         echo "Fetching files for GCC/Clang and placing it in artifact folder"
         cp -r $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/app_assets artifact/
         cp $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/AstralRaytracerApp artifact/
+        fi
         echo "Remove CMake related files"
         cd artifact/app_assets
-        rm -r CMakeFiles CMakeLists.txt CTestTestfile.cmake cmake_install.cmake Makefile
-        fi
+        # Use find to delete all files and folders except the ones you want to keep
+        find . ! -name 'fonts' ! -name 'icons' ! -name 'shaders' -type d -exec rm -rf {} +
+        # Use find to delete all files
+        find . -type f -exec rm -f {} +
      
     - name: Upload build artifacts
       if: matrix.build_type == 'Release'
