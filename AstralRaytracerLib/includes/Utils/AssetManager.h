@@ -55,6 +55,10 @@ namespace AstralRaytracer
 			std::string getDefaultSceneAbsolutePath() const;
 
 			const std::string& getCurrentProjectName() const { return m_currentProjectName; }
+
+			[[nodiscard]]
+			bool isProjectOpen() const;
+
 		private:
 			uint32 textureCount  = 0;
 			uint32 matCount      = 1;

@@ -8,6 +8,11 @@ namespace AstralRaytracer
 	{
 		void ContentBrowser::display(AssetManager& assetManager)
 		{
+			if(!assetManager.isProjectOpen())
+			{
+				return;
+			}
+
 			constexpr int32 tableFlags= ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Hideable |
 																	ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;

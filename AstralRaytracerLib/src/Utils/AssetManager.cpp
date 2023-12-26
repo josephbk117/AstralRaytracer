@@ -227,6 +227,8 @@ namespace AstralRaytracer
 		return m_currentRelativePath + m_defaultScenePath;
 	}
 
+	bool AssetManager::isProjectOpen() const { return !m_currentProjectName.empty(); }
+
 	uuids::uuid AssetManager::generateUUID()
 	{
 		return uuids::uuid_random_generator(m_randomNumGenerator)();
