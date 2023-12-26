@@ -114,6 +114,9 @@ namespace AstralRaytracer
 
 			glm::u32vec2 getResolution() const;
 		private:
+			static constexpr const char* FileDialogProjectKey= "ChooseProjectDialog";
+			static constexpr const char* FileDialogSceneKey= "ChooseSceneDialog";
+
 			const static uint32 FrameSampleCount= 100;
 
 			GLFWwindow*         m_glfwWindow   = nullptr;

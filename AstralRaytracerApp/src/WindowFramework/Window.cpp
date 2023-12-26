@@ -51,9 +51,16 @@ namespace AstralRaytracer
 
 		ImFontAtlas& fontAtlas= *ImGui::GetIO().Fonts;
 
-		m_primaryFont  = fontAtlas.AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", 16.0f);
-		m_secondaryFont= fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 22.0f);
-		m_tertiaryFont = fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
+		constexpr float32 primaryFontSize  = 16.0f;
+		constexpr float32 secondaryFontSize= 22.0f;
+		constexpr float32 tertiaryFontSize = 18.0f;
+
+		m_primaryFont=
+				fontAtlas.AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", primaryFontSize);
+		m_secondaryFont=
+				fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", secondaryFontSize);
+		m_tertiaryFont=
+				fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", tertiaryFontSize);
 
 		// Setup Imgui File Dialog Callbacks
 		auto createThumbnailFunc=
@@ -176,7 +183,7 @@ namespace AstralRaytracer
 		const glm::vec2& mouseDelta= (mousePos - lastMousePosition);
 		lastMousePosition          = mousePos;
 
-		bool forceRecalculate= cam.getResolution() != newCamRes;
+		const bool forceRecalculate= cam.getResolution() != newCamRes;
 
 		if(!Input::isMouseButtonDown(*this, MouseButtonIndex::MOUSE_BUTTON_RIGHT) && !forceRecalculate)
 		{
@@ -354,7 +361,7 @@ namespace AstralRaytracer
 			drawMenuBar();
 
 			if(ImGuiFileDialog::Instance()->Display(
-						 "ChooseProjectDlg", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
+						 FileDialogProjectKey, ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
 						 viewport->WorkSize
 				 ))
 			{
@@ -368,7 +375,7 @@ namespace AstralRaytracer
 			}
 
 			if(ImGuiFileDialog::Instance()->Display(
-						 "ChooseSceneDlg", ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
+						 FileDialogSceneKey, ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
 						 viewport->WorkSize
 				 ))
 			{
@@ -653,14 +660,14 @@ namespace AstralRaytracer
 				if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 				{
 					ImGuiFileDialog::Instance()->OpenDialog(
-							"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1,
+							FileDialogProjectKey, "Choose Project", FileExtensionForProject.c_str(), ".", 1,
 							nullptr, ImGuiFileDialogFlags_Modal
 					);
 				}
 				if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
 				{
 					ImGuiFileDialog::Instance()->OpenDialog(
-							"ChooseSceneDlg", "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
+							FileDialogSceneKey, "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
 							ImGuiFileDialogFlags_Modal
 					);
 				}
