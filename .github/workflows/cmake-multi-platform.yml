@@ -111,10 +111,13 @@ jobs:
       if: matrix.build_type == 'Release'
       run:  |
         mkdir artifact
-        if [ "${{ matrix.cpp_compiler }}" = "msvc" ]; then
+        if [ "${{ matrix.cpp_compiler }}" == "msvc" ]; then
         echo "Fetchin files for MSVC and placing it in artifact folder"
         cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
         cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/Release/AstralRaytracerApp.exe artifact/
+        echo "Remove CMake related files"
+        cd artifact/app_assets
+        rm -r CMakeFiles CMakeLists.txt CTestTestfile.cmake cmake_install.cmake Makefile
         else
         echo "Fetchin files for GCC/Clang and placing it in artifact folder"
         cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
