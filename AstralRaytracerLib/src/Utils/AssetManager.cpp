@@ -34,7 +34,7 @@ namespace AstralRaytracer
 
 		if(!data["Project"])
 		{
-			ASTRAL_LOG_WARN("FProject failed to load: {}", absolutePathStr);
+			ASTRAL_LOG_WARN("Project failed to load: {}", absolutePathStr);
 			return false;
 		}
 
