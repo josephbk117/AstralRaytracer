@@ -56,50 +56,14 @@ namespace AstralRaytracer
 		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
 
 		// Setup Imgui File Dialog Callbacks
-		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(
-				[](IGFD_Thumbnail_Info* vThumbnail_Info) -> void
-				{
-					if(vThumbnail_Info != nullptr && static_cast<bool>(vThumbnail_Info->isReadyToUpload) &&
-						 static_cast<bool>(vThumbnail_Info->textureFileDatas))
-					{
-						gl::GLuint textureId= 0;
-						gl::glGenTextures(1, &textureId);
-						vThumbnail_Info->textureID= textureId;
-
-						gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
-						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
-						gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
-						gl::glTexImage2D(
-								gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, (gl::GLsizei)vThumbnail_Info->textureWidth,
-								(gl::GLsizei)vThumbnail_Info->textureHeight, 0, gl::GL_RGBA, gl::GL_UNSIGNED_BYTE,
-								vThumbnail_Info->textureFileDatas
-						);
-						gl::glFinish();
-						gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
-
-						delete[] vThumbnail_Info->textureFileDatas;
-						vThumbnail_Info->textureFileDatas= nullptr;
-
-						vThumbnail_Info->isReadyToUpload = static_cast<int32>(false);
-						vThumbnail_Info->isReadyToDisplay= static_cast<int32>(true);
-					}
-				}
-		);
+		auto createThumbnailFunc=
+				std::bind(&AstralRaytracer::Window::createThumbnailCallback, this, std::placeholders::_1);
+		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(createThumbnailFunc);
 
 		// Destroy thumbnails texture
-		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(
-				[](IGFD_Thumbnail_Info* vThumbnail_Info)
-				{
-					if(vThumbnail_Info != nullptr)
-					{
-						gl::GLuint texID= vThumbnail_Info->textureID;
-						gl::glDeleteTextures(1, &texID);
-						gl::glFinish();
-					}
-				}
-		);
+		auto destroyThumbnailFunc=
+				std::bind(&AstralRaytracer::Window::destroyThumbnailCallback, this, std::placeholders::_1);
+		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(destroyThumbnailFunc);
 
 		gl::glViewport(0, 0, mode->width, mode->height);
 
@@ -688,13 +652,6 @@ namespace AstralRaytracer
 			{
 				if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 				{
-					/*ImGuiFileDialog::Instance()->OpenDialog(
-							"ChooseProjectDlg", "Choose Project Directory", nullptr, ".", 1, nullptr,
-							ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_DisableCreateDirectoryButton |
-									ImGuiFileDialogFlags_HideColumnType | ImGuiFileDialogFlags_HideColumnSize |
-									ImGuiFileDialogFlags_DisableThumbnailMode
-					);*/
-
 					ImGuiFileDialog::Instance()->OpenDialog(
 							"ChooseProjectDlg", "Choose Project", FileExtensionForProject.c_str(), ".", 1,
 							nullptr, ImGuiFileDialogFlags_Modal
@@ -765,6 +722,46 @@ namespace AstralRaytracer
 	void Window::windowSizeCallback(GLFWwindow* window, int32 width, int32 height)
 	{
 		gl::glViewport(0, 0, width, height);
+	}
+
+	void Window::createThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo)
+	{
+		if(thumbnailInfo != nullptr && static_cast<bool>(thumbnailInfo->isReadyToUpload) &&
+			 static_cast<bool>(thumbnailInfo->textureFileDatas))
+		{
+			gl::GLuint textureId= 0;
+			gl::glGenTextures(1, &textureId);
+			thumbnailInfo->textureID= textureId;
+
+			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
+			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
+			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
+			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
+			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
+			gl::glTexImage2D(
+					gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, (gl::GLsizei)thumbnailInfo->textureWidth,
+					(gl::GLsizei)thumbnailInfo->textureHeight, 0, gl::GL_RGBA, gl::GL_UNSIGNED_BYTE,
+					thumbnailInfo->textureFileDatas
+			);
+			gl::glFinish();
+			gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
+
+			delete[] thumbnailInfo->textureFileDatas;
+			thumbnailInfo->textureFileDatas= nullptr;
+
+			thumbnailInfo->isReadyToUpload = static_cast<int32>(false);
+			thumbnailInfo->isReadyToDisplay= static_cast<int32>(true);
+		}
+	}
+
+	void Window::destroyThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo)
+	{
+		if(thumbnailInfo != nullptr)
+		{
+			gl::GLuint texID= thumbnailInfo->textureID;
+			gl::glDeleteTextures(1, &texID);
+			gl::glFinish();
+		}
 	}
 
 	bool Window::shouldWindowClose() const { return glfwWindowShouldClose(m_glfwWindow); }
