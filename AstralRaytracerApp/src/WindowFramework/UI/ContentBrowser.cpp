@@ -23,11 +23,11 @@ namespace AstralRaytracer
 				ImGui::SeparatorText("CONTENT BROWSER");
 
 				ImVec2 contentBrowserSize= ImGui::GetContentRegionAvail();
-				contentBrowserSize.y -= 12.0f;
+				contentBrowserSize.y-= 12.0f;
 
 				ImGui::BeginChild("Content Browser", contentBrowserSize);
 
-				const fs::path resourcesPath= "../../../../ExampleProject";
+				const fs::path resourcesPath= fs::path(assetManager.getCurrentRelativePath()).parent_path();
 
 				std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
 				rootNode->pathStr                 = resourcesPath;
