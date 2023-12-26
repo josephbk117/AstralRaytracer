@@ -38,6 +38,7 @@ namespace AstralRaytracer
 			return false;
 		}
 
+		m_currentProjectName = data["Project"].as<std::string>();
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
 		m_currentRelativePath= absolutePath.parent_path().string() + "/";
 

@@ -349,6 +349,12 @@ namespace AstralRaytracer
 		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 	}
 
+	void Window::setProjectName(const std::string& projectName)
+	{
+		m_projectName= projectName;
+		glfwSetWindowTitle(m_glfwWindow, (m_name + " " + m_projectName).c_str());
+	}
+
 	void Window::drawSampleProgress(const uint32 frameIndex)
 	{
 		std::array<char, 32> overlay= {};
@@ -667,6 +673,7 @@ namespace AstralRaytracer
 				scene.unload();
 			}
 
+			setProjectName(assetManager.getCurrentProjectName());
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
 			appStateInfo.isSceneDirty= true;
 			return;

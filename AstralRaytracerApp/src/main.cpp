@@ -25,6 +25,7 @@ int main()
 		if(assetManager.LoadProject(R"(../../../../ExampleProject/defaultProject.asproj)"))
 		{
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
+			window.setProjectName(assetManager.getCurrentProjectName());
 		}
 
 		AstralRaytracer::UI::AppStateInfo appStateInfo;

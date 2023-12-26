@@ -53,12 +53,14 @@ namespace AstralRaytracer
 
 			std::string getDefaultSceneAbsolutePath() const;
 
+			const std::string& getCurrentProjectName() const { return m_currentProjectName; }
 		private:
 			std::unordered_map<uint32, NameAndPath> m_traceableNameAndPathMap;
 			std::unordered_map<uint32, NameAndPath> m_materialNameAndPathMap;
 			std::unordered_map<uint32, NameAndPath> m_textureNameAndPathMap;
 			std::mt19937                            m_randomNumGenerator;
 
+			std::string m_currentProjectName;
 			std::string m_currentRelativePath= "../../../../";
 			std::string m_defaultScenePath;
 
