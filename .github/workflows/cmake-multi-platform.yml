@@ -107,6 +107,18 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest --build-config ${{ matrix.build_type }}
 
+    - name: Prepare Artifacts
+      if: matrix.build_type == 'Release' && 
+      run:  |
+        mkdir artifact
+        if [ "${{ matrix.cpp_compiler }}" = "msvc" ]; then
+        cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
+        cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/Release/AstralRaytracerApp.exe artifact/
+        else
+        cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
+        cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/AstralRaytracerApp artifact/
+        fi
+     
     - name: Upload build artifacts
       if: matrix.build_type == 'Release'
       uses: actions/upload-artifact@v4
@@ -114,7 +126,7 @@ jobs:
         name: binary-${{ matrix.os }}-${{ matrix.cpp_compiler }}
         # A file, directory or wildcard pattern that describes what to upload
         # Required.
-        path: ${{ steps.strings.outputs.build-output-dir }}
+        path: artifact
         # Duration after which artifact will expire in days. 0 means using default retention.
         # Minimum 1 day.
         # Maximum 90 days unless changed from the repository settings page.
