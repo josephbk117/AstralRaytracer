@@ -112,17 +112,21 @@ jobs:
       shell: bash
       run:  |
         echo "Compiler: ${{ matrix.cpp_compiler }}"
-        echo "Output dir ${{ steps.strings.outputs.build-output-dir }}"
-        echo "Shell Output dir $GITHUB_OUTPUT"
+
+        # Make path uniform across operating system's bash
+
+        ARTIFACT_OUTPUT_DIR=$(echo "${{ steps.strings.outputs.build-output-dir }}" | tr '\\' '/')
+        echo "Output path: $ARTIFACT_OUTPUT_DIR"
+
         mkdir artifact
         if [ "${{ matrix.cpp_compiler }}" = "cl" ]; then
         echo "Fetching files for MSVC and placing it in artifact folder"
-        cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
-        cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/Release/AstralRaytracerApp.exe artifact/
+        cp -r $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/app_assets artifact/
+        cp $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/Release/AstralRaytracerApp.exe artifact/
         else
         echo "Fetching files for GCC/Clang and placing it in artifact folder"
-        cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
-        cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/AstralRaytracerApp artifact/
+        cp -r $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/app_assets artifact/
+        cp $ARTIFACT_OUTPUT_DIR/AstralRaytracerApp/AstralRaytracerApp artifact/
         echo "Remove CMake related files"
         cd artifact/app_assets
         rm -r CMakeFiles CMakeLists.txt CTestTestfile.cmake cmake_install.cmake Makefile
