@@ -131,9 +131,7 @@ jobs:
         echo "Remove CMake related files"
         cd artifact/app_assets
         # Use find to delete all files and folders except the ones you want to keep
-        find . ! -name 'fonts' ! -name 'icons' ! -name 'shaders' -type d -exec rm -rf {} +
-        # Use find to delete all files
-        find . -type f -exec rm -f {} +
+        find . -mindepth 1 -maxdepth 1 ! -name 'fonts' ! -name 'icons' ! -name 'shaders' -exec rm -rf {} +
      
     - name: Upload build artifacts
       if: matrix.build_type == 'Release'
