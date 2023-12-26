@@ -260,9 +260,9 @@ namespace AstralRaytracer
 
 	void Window::setDefaultTheme() const
 	{
-		ImGuiStyle* style = &ImGui::GetStyle();
-		ImVec4*     colors= static_cast<ImVec4*>(style->Colors);
-		ImGui::StyleColorsDark(style); // Reset to base/dark theme
+		ImGuiStyle& style = ImGui::GetStyle();
+		ImVec4*     colors= static_cast<ImVec4*>(style.Colors);
+		ImGui::StyleColorsDark(&style); // Reset to base/dark theme
 		colors[ImGuiCol_Text]                = ImVec4(0.85f, 0.87f, 0.91f, 0.88f);
 		colors[ImGuiCol_TextDisabled]        = ImVec4(0.49f, 0.50f, 0.53f, 1.00f);
 		colors[ImGuiCol_WindowBg]            = ImVec4(0.18f, 0.20f, 0.25f, 1.00f);
@@ -305,19 +305,19 @@ namespace AstralRaytracer
 		colors[ImGuiCol_TextSelectedBg]      = ImVec4(0.37f, 0.51f, 0.67f, 1.00f);
 		colors[ImGuiCol_NavHighlight]        = ImVec4(0.53f, 0.75f, 0.82f, 0.86f);
 
-		style->GrabMinSize       = 20.00f;
-		style->GrabRounding      = 2.0f;
-		style->FrameRounding     = 2.0f;
-		style->FramePadding      = ImVec2(4.0f, 4.0f);
-		style->WindowPadding     = ImVec2(0.0f, 2.0f);
-		style->CellPadding       = ImVec2(4.0f, 4.0f);
-		style->ChildRounding     = 2.0f;
-		style->ColumnsMinSpacing = 100.0f;
-		style->FrameBorderSize   = 0.0f;
-		style->ChildBorderSize   = 0.0f;
-		style->WindowBorderSize  = 0.0f;
-		style->IndentSpacing     = 24.0f;
-		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
+		style.GrabMinSize       = 20.00f;
+		style.GrabRounding      = 2.0f;
+		style.FrameRounding     = 2.0f;
+		style.FramePadding      = ImVec2(4.0f, 4.0f);
+		style.WindowPadding     = ImVec2(0.0f, 2.0f);
+		style.CellPadding       = ImVec2(4.0f, 4.0f);
+		style.ChildRounding     = 2.0f;
+		style.ColumnsMinSpacing = 100.0f;
+		style.FrameBorderSize   = 0.0f;
+		style.ChildBorderSize   = 0.0f;
+		style.WindowBorderSize  = 0.0f;
+		style.IndentSpacing     = 24.0f;
+		style.SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 	}
 
 	void Window::setWindowTitle(const AssetManager& assetManager, const Scene& activeScene)
@@ -361,32 +361,35 @@ namespace AstralRaytracer
 		{
 			drawMenuBar();
 
-			if(ImGuiFileDialog::Instance()->Display(
-						 FileDialogProjectKey, ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
-						 viewport->WorkSize
+			ImGuiFileDialog& fileDialog= *ImGuiFileDialog::Instance();
+
+			const ImVec2 minDialogRes    = UI::toImVec2(m_minResolution);
+			const ImVec2 viewportWorkSize= viewport->WorkSize;
+
+			if(fileDialog.Display(
+						 FileDialogProjectKey, ImGuiWindowFlags_NoCollapse, minDialogRes, viewportWorkSize
 				 ))
 			{
-				if(ImGuiFileDialog::Instance()->IsOk())
+				if(fileDialog.IsOk())
 				{
 					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
 					handleChooseProjectDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
-				ImGuiFileDialog::Instance()->Close();
+				fileDialog.Close();
 			}
 
-			if(ImGuiFileDialog::Instance()->Display(
-						 FileDialogSceneKey, ImGuiWindowFlags_NoCollapse, UI::toImVec2(m_minResolution),
-						 viewport->WorkSize
+			if(fileDialog.Display(
+						 FileDialogSceneKey, ImGuiWindowFlags_NoCollapse, minDialogRes, viewportWorkSize
 				 ))
 			{
-				if(ImGuiFileDialog::Instance()->IsOk())
+				if(fileDialog.IsOk())
 				{
 					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
 					handleChooseSceneDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
-				ImGuiFileDialog::Instance()->Close();
+				fileDialog.Close();
 			}
 
 			drawToolbar(renderer, appStateInfo);
