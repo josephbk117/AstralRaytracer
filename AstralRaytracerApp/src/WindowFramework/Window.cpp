@@ -372,7 +372,7 @@ namespace AstralRaytracer
 			{
 				if(fileDialog.IsOk())
 				{
-					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					const std::string filePathName= fileDialog.GetFilePathName();
 					handleChooseProjectDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
@@ -385,7 +385,7 @@ namespace AstralRaytracer
 			{
 				if(fileDialog.IsOk())
 				{
-					const std::string filePathName= ImGuiFileDialog::Instance()->GetFilePathName();
+					const std::string filePathName= fileDialog.GetFilePathName();
 					handleChooseSceneDialog(scene, assetManager, filePathName, appStateInfo);
 				}
 
