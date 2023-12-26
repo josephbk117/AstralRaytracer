@@ -108,7 +108,7 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Prepare Artifacts
-      if: matrix.build_type == 'Release' && 
+      if: matrix.build_type == 'Release'
       run:  |
         mkdir artifact
         if [ "${{ matrix.cpp_compiler }}" = "msvc" ]; then
