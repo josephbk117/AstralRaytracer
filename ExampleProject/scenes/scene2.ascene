@@ -8,4 +8,4 @@ Materials:
   - mat2: materials/mat2.asmat
 Traceables:
   - Floor: traceables/Floor.astra
-  - Cube: traceables/Crystal.astra
+  - Crystal: traceables/Crystal.astra
