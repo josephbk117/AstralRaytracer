@@ -15,6 +15,8 @@ namespace AstralRaytracer
 
 	Scene::~Scene() { }
 
+	const std::string& Scene::getName() const { return m_name; }
+
 	bool Scene::hasSceneLoaded() const { return m_sceneTraceables.size() > 0; }
 
 	void Scene::addTraceable(std::unique_ptr<Traceable>&& traceable)
@@ -118,7 +120,7 @@ namespace AstralRaytracer
 		}
 
 		std::ifstream stream(absolutePathStr);
-		YAML::Node    data  = YAML::Load(stream);
+		YAML::Node    data= YAML::Load(stream);
 
 		if(!data["Scene"])
 		{
@@ -126,7 +128,8 @@ namespace AstralRaytracer
 			return;
 		}
 
-		ASTRAL_LOG_TRACE("Scene : {}", data["Scene"].as<std::string>());
+		m_name= data["Scene"].as<std::string>();
+		ASTRAL_LOG_TRACE("Scene : {}", m_name);
 
 		const auto& textures= data["Textures"];
 		ASTRAL_LOG_TRACE("Number of textures : {}", textures.size());
@@ -134,12 +137,12 @@ namespace AstralRaytracer
 		for(uint32 texIndex= 0; texIndex < textures.size(); ++texIndex)
 		{
 			const auto& tex= textures[texIndex];
-			for(auto magic : tex)
+			for(auto it : tex)
 			{
 				addTexture(assetManager.LoadTextureAsset(
-						magic.second.as<std::string>(), magic.first.as<std::string>()
+						it.second.as<std::string>(), it.first.as<std::string>()
 				));
-				ASTRAL_LOG_TRACE("Texture at index : {}, {}", texIndex, magic.first.as<std::string>());
+				ASTRAL_LOG_TRACE("Texture at index : {}, {}", texIndex, it.first.as<std::string>());
 			}
 		}
 
@@ -172,9 +175,10 @@ namespace AstralRaytracer
 		for(uint32 traceIndex= 0; traceIndex < traceables.size(); ++traceIndex)
 		{
 			const auto& traceable= traceables[traceIndex];
-			for(auto magic : traceable)
+			for(auto it : traceable)
 			{
-				addTraceable(assetManager.LoadTraceableAsset(magic.second.as<std::string>()));
+				addTraceable(assetManager.LoadTraceableAsset(it.second.as<std::string>()));
+				ASTRAL_LOG_TRACE("Traceable at index {} : {}", traceIndex, it.first.as<std::string>());
 			}
 		}
 	}

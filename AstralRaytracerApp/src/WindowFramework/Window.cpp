@@ -320,10 +320,11 @@ namespace AstralRaytracer
 		style->SeparatorTextAlign= ImVec2(0.5f, 0.0f);
 	}
 
-	void Window::setProjectName(const std::string& projectName)
+	void Window::setWindowTitle(const AssetManager& assetManager, const Scene& activeScene)
 	{
-		m_projectName= projectName;
-		glfwSetWindowTitle(m_glfwWindow, (m_name + " " + m_projectName).c_str());
+		const std::string& projectName= assetManager.getCurrentProjectName();
+		const std::string& sceneName  = activeScene.getName();
+		glfwSetWindowTitle(m_glfwWindow, (m_name + " | " + projectName + " | " + sceneName).c_str());
 	}
 
 	void Window::drawSampleProgress(const uint32 frameIndex)
@@ -624,9 +625,12 @@ namespace AstralRaytracer
 		if(scene.hasSceneLoaded())
 		{
 			scene.unload();
+			assetManager.ClearCachedData();
 		}
 
 		scene.deserialize(assetManager, filePathName);
+		setWindowTitle(assetManager, scene);
+
 		appStateInfo.isSceneDirty= true;
 	}
 
@@ -644,8 +648,9 @@ namespace AstralRaytracer
 				scene.unload();
 			}
 
-			setProjectName(assetManager.getCurrentProjectName());
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
+			setWindowTitle(assetManager, scene);
+
 			appStateInfo.isSceneDirty= true;
 			return;
 		}

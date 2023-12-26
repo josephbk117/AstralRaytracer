@@ -1,7 +1,7 @@
 #pragma once
 #include "Material.h"
-#include "Utils/TextureData.h"
 #include "Utils/AssetManager.h"
+#include "Utils/TextureData.h"
 
 #include <filesystem>
 #include <memory>
@@ -24,6 +24,9 @@ namespace AstralRaytracer
 			~Scene();
 
 			[[nodiscard]]
+			const std::string& getName() const;
+
+			[[nodiscard]]
 			bool hasSceneLoaded() const;
 			void addTraceable(std::unique_ptr<Traceable>&& traceable);
 			void addMaterial(const Material& material);
@@ -37,5 +40,7 @@ namespace AstralRaytracer
 			std::vector<Material>                        m_materials;
 			std::vector<TextureDataRGBF>                 m_textures;
 			std::vector<std::unique_ptr<PostProcessing>> m_postProcessingStack;
+		private:
+			std::string m_name;
 	};
 } // namespace AstralRaytracer

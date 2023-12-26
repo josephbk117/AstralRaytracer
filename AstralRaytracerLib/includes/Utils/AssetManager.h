@@ -24,6 +24,7 @@ namespace AstralRaytracer
 			AssetManager();
 
 			bool LoadProject(const fs::path& absolutePath);
+			void ClearCachedData();
 
 			[[nodiscard]]
 			TextureDataRGBF LoadTextureAsset(const fs::path& path, const std::string& name);
@@ -55,6 +56,10 @@ namespace AstralRaytracer
 
 			const std::string& getCurrentProjectName() const { return m_currentProjectName; }
 		private:
+			uint32 textureCount  = 0;
+			uint32 matCount      = 1;
+			uint32 traceableCount= 0;
+
 			std::unordered_map<uint32, NameAndPath> m_traceableNameAndPathMap;
 			std::unordered_map<uint32, NameAndPath> m_materialNameAndPathMap;
 			std::unordered_map<uint32, NameAndPath> m_textureNameAndPathMap;

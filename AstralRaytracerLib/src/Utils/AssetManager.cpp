@@ -42,15 +42,27 @@ namespace AstralRaytracer
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
 		m_currentRelativePath= absolutePath.parent_path().string() + "/";
 
+		ClearCachedData();
+
 		ASTRAL_LOG_TRACE("Project file loaded successfully: {}", absolutePathStr);
 
 		return true;
 	}
 
+	void AssetManager::ClearCachedData()
+	{
+		m_traceableNameAndPathMap.clear();
+		m_materialNameAndPathMap.clear();
+		m_textureNameAndPathMap.clear();
+
+		textureCount  = 0;
+		matCount      = 1;
+		traceableCount= 0;
+	}
+
 	TextureDataRGBF AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
 	{
-		static uint32 textureCount= 0;
-		NameAndPath   nameAndPath = { name, path.string() };
+		NameAndPath nameAndPath= { name, path.string() };
 		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
 		textureCount++;
 		return TextureManager::loadTextureDataFromFileRGBF(m_currentRelativePath + path.string());
@@ -62,8 +74,7 @@ namespace AstralRaytracer
 			Material&          outMaterial
 	)
 	{
-		static uint32 matCount   = 1;
-		NameAndPath   nameAndPath= { name, path.string() };
+		NameAndPath nameAndPath= { name, path.string() };
 		m_materialNameAndPathMap.emplace(matCount, nameAndPath);
 		matCount++;
 
@@ -81,7 +92,6 @@ namespace AstralRaytracer
 
 	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::LoadTraceableAsset(const fs::path& path)
 	{
-		static uint32 traceableCount= 0;
 		std::ifstream stream(m_currentRelativePath + path.string());
 		YAML::Node    data= YAML::Load(stream);
 
