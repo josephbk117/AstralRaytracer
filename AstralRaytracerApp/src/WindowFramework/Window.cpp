@@ -37,7 +37,7 @@ namespace AstralRaytracer
 		glfwSetWindowSizeLimits(m_glfwWindow, 720, 500, GLFW_DONT_CARE, GLFW_DONT_CARE);
 		glfwSetWindowSizeCallback(m_glfwWindow, windowSizeCallback);
 		glfwMakeContextCurrent(m_glfwWindow);
-		glfwSwapInterval(0); // Disable vsync
+		glfwSwapInterval(0); // Disable v-sync
 
 		SetWindowIcon("app_assets/icons/astralraytracer.png");
 
@@ -49,11 +49,11 @@ namespace AstralRaytracer
 		ImGui_ImplGlfw_InitForOpenGL(m_glfwWindow, true);
 		ImGui_ImplOpenGL3_Init("#version 420 core");
 
-		ImGuiIO& io= ImGui::GetIO();
+		ImFontAtlas& fontAtlas= *ImGui::GetIO().Fonts;
 
-		m_primaryFont  = io.Fonts->AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", 16.0f);
-		m_secondaryFont= io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 22.0f);
-		m_tertiaryFont = io.Fonts->AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
+		m_primaryFont  = fontAtlas.AddFontFromFileTTF("app_assets/fonts/ABeeZee-Regular.ttf", 16.0f);
+		m_secondaryFont= fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 22.0f);
+		m_tertiaryFont = fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", 18.0f);
 
 		// Setup Imgui File Dialog Callbacks
 		auto createThumbnailFunc=
