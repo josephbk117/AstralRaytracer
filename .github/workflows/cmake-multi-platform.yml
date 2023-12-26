@@ -111,8 +111,9 @@ jobs:
       if: matrix.build_type == 'Release'
       shell: bash
       run:  |
+        echo "Compiler: ${{ matrix.cpp_compiler }}"
         mkdir artifact
-        if [ "${{ matrix.cpp_compiler }}" = "msvc" ]; then
+        if [ "${{ matrix.cpp_compiler }}" = "cl" ]; then
         echo "Fetchin files for MSVC and placing it in artifact folder"
         cp -r ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/app_assets artifact/
         cp ${{ steps.strings.outputs.build-output-dir }}/AstralRaytracerApp/Release/AstralRaytracerApp.exe artifact/
