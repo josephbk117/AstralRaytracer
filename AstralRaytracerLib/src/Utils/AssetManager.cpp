@@ -26,17 +26,22 @@ namespace AstralRaytracer
 
 	bool AssetManager::LoadProject(const fs::path& absolutePath)
 	{
-		std::ifstream stream(absolutePath.string());
+		const std::string absolutePathStr= absolutePath.string();
+
+		std::ifstream stream(absolutePathStr);
 
 		YAML::Node data= YAML::Load(stream);
 
 		if(!data["Project"])
 		{
+			ASTRAL_LOG_WARN("FProject failed to load: {}", absolutePathStr);
 			return false;
 		}
 
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
 		m_currentRelativePath= absolutePath.parent_path().string() + "/";
+
+		ASTRAL_LOG_TRACE("Project file loaded successfully: {}", absolutePathStr);
 
 		return true;
 	}

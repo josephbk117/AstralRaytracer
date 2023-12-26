@@ -671,8 +671,6 @@ namespace AstralRaytracer
 			appStateInfo.isSceneDirty= true;
 			return;
 		}
-
-		ASTRAL_LOG_WARN("Failed to project from : {}", filePathName);
 	}
 
 	void Window::drawMenuBar()
