@@ -40,4 +40,5 @@ target_include_directories(AstralRaytracerApp
 target_link_libraries(AstralRaytracerApp 
                             PRIVATE AstralRaytracerLib
                             PRIVATE glfw
+                            PRIVATE efsw
 )
