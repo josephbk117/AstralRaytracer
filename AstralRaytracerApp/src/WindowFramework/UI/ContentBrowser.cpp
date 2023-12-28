@@ -157,39 +157,35 @@ namespace AstralRaytracer
 					if(fs::is_directory(currentNode->pathStr))
 					{
 						fs::directory_iterator iter;
-						bool                   error= false;
-						try
+
+						std::error_code ec;
+						iter= fs::directory_iterator(currentNode->pathStr, ec);
+
+						if(ec)
 						{
-							iter= fs::directory_iterator(currentNode->pathStr);
-						}
-						catch(const std::exception& e)
-						{
-							ASTRAL_LOG_INFO("Failed to get directory iterator, reason: {}", e.what());
-							error= true;
+							ASTRAL_LOG_INFO("Failed to get directory iterator, reason: {}", ec.message());
+							continue;
 						}
 
-						if(!error)
+						for(const auto& entry : iter)
 						{
-							for(const auto& entry : iter)
+							const fs::file_status entryFileStatus    = fs::status(entry.path());
+							const fs::perms       entryFilePermission= entryFileStatus.permissions();
+							const fs::file_type   entryFileType      = entryFileStatus.type();
+
+							const bool ownerAccessible= (entryFilePermission & std::filesystem::perms::owner_all
+																					) != std::filesystem::perms::none;
+
+							const bool isRegular= entryFileType == fs::file_type::directory ||
+																		entryFileType == fs::file_type::regular;
+
+							if(ownerAccessible && isRegular)
 							{
-								const fs::file_status entryFileStatus    = fs::status(entry.path());
-								const fs::perms       entryFilePermission= entryFileStatus.permissions();
-								const fs::file_type   entryFileType      = entryFileStatus.type();
+								std::unique_ptr<PathNode> newNode= std::make_unique<PathNode>();
+								newNode->parent                  = currentNode;
+								newNode->pathStr                 = entry.path();
 
-								const bool ownerAccessible= (entryFilePermission & std::filesystem::perms::owner_all
-																						) != std::filesystem::perms::none;
-
-								const bool isRegular= entryFileType == fs::file_type::directory ||
-																			entryFileType == fs::file_type::regular;
-
-								if(ownerAccessible && isRegular)
-								{
-									std::unique_ptr<PathNode> newNode= std::make_unique<PathNode>();
-									newNode->parent                  = currentNode;
-									newNode->pathStr                 = entry.path();
-
-									currentNode->nodes.push_back(std::move(newNode));
-								}
+								currentNode->nodes.push_back(std::move(newNode));
 							}
 						}
 					}
