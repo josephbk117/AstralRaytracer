@@ -6,6 +6,15 @@ namespace AstralRaytracer
 {
 	namespace UI
 	{
+
+		ContentBrowser::~ContentBrowser()
+		{
+			if(m_watchID != 0)
+			{
+				m_fileWatcher.removeWatch(m_watchID);
+			}
+		}
+
 		void ContentBrowser::display(AssetManager& assetManager)
 		{
 			if(!assetManager.isProjectOpen())
@@ -13,11 +22,26 @@ namespace AstralRaytracer
 				return;
 			}
 
+			const std::string& currentRelativePath= assetManager.getCurrentRelativePath();
+			const fs::path     projectRootPath    = fs::path(currentRelativePath).parent_path();
+			if(m_currentProjectRootPath != projectRootPath || m_dirToWatchIsDirty)
+			{
+				if(m_watchID != 0)
+				{
+					m_fileWatcher.removeWatch(m_watchID);
+				}
+
+				m_currentProjectRootPath= projectRootPath;
+				updateProjectRootPath();
+
+				m_watchID= m_fileWatcher.addWatch(currentRelativePath, this, true);
+				m_fileWatcher.watch();
+			}
+
 			constexpr int32 tableFlags= ImGuiTableFlags_ContextMenuInBody | ImGuiTableFlags_Hideable |
 																	ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
 
-			constexpr ImGuiTableRowFlags rowFlags= ImGuiTableRowFlags_None;
 			if(ImGui::BeginTable("contentBrowserSplit", 2, tableFlags, ImGui::GetContentRegionAvail()))
 			{
 				ImGui::TableSetupColumn("Content Browser", ImGuiTableColumnFlags_WidthStretch, 80.0f);
@@ -32,52 +56,12 @@ namespace AstralRaytracer
 
 				ImGui::BeginChild("Content Browser", contentBrowserSize);
 
-				const fs::path resourcesPath= fs::path(assetManager.getCurrentRelativePath()).parent_path();
+				drawPathNode(m_projectRootNode);
 
-				std::unique_ptr<PathNode> rootNode= std::make_unique<PathNode>();
-				rootNode->pathStr                 = resourcesPath;
+				handleCreateFilePopupModal(assetManager);
 
-				traverseDirectoryFromRoot(rootNode);
-
-				drawPathNode(rootNode);
-
-				if(m_showCreateNewFilePopUp)
-				{
-					ImGui::OpenPopup("Create New File");
-				}
-
-				if(ImGui::BeginPopupModal(
-							 "Create New File", nullptr,
-							 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
-									 ImGuiWindowFlags_NoSavedSettings
-					 ))
-				{
-					ImGui::Text("File Name");
-					std::array<char, 128> inputBuffer;
-					if(ImGui::InputText(
-								 "File Name Input", inputBuffer.data(), inputBuffer.size(),
-								 ImGuiInputTextFlags_EnterReturnsTrue
-						 ))
-					{
-						const fs::path newFilePath= m_directoryForNewFile.string() + "/";
-						createNewMaterial(newFilePath, inputBuffer.data(), assetManager);
-					}
-					if(ImGui::Button("Accept"))
-					{
-						m_showCreateNewFilePopUp= false;
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::SameLine();
-					if(ImGui::Button("Close"))
-					{
-						m_showCreateNewFilePopUp= false;
-						ImGui::CloseCurrentPopup();
-					}
-					ImGui::EndPopup();
-				}
+				ImGui::EndChild();
 			}
-
-			ImGui::EndChild();
 
 			ImGui::TableSetColumnIndex(1);
 
@@ -85,6 +69,69 @@ namespace AstralRaytracer
 			m_fileInspector.display();
 
 			ImGui::EndTable();
+		}
+
+		void ContentBrowser::updateProjectRootPath()
+		{
+			m_projectRootNode         = std::make_unique<PathNode>();
+			m_projectRootNode->pathStr= m_currentProjectRootPath;
+			traverseDirectoryFromRoot(m_projectRootNode);
+
+			m_dirToWatchIsDirty= false;
+		}
+
+		void ContentBrowser::handleCreateFilePopupModal(AssetManager& assetManager)
+		{
+			if(m_showCreateNewFilePopUp)
+			{
+				ImGui::OpenPopup("Create New File");
+			}
+
+			if(ImGui::BeginPopupModal(
+						 "Create New File", nullptr,
+						 ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove |
+								 ImGuiWindowFlags_NoSavedSettings
+				 ))
+			{
+				ImGui::Text("File Name");
+				static std::array<char, 128> inputBuffer{};
+				ImGui::InputText(
+						"File Name Input", inputBuffer.data(), inputBuffer.size(),
+						ImGuiInputTextFlags_AutoSelectAll
+				);
+
+				if(ImGui::Button("Accept"))
+				{
+					const fs::path newFilePath= m_directoryForNewFile.string() + "/";
+					createNewMaterial(newFilePath, inputBuffer.data(), assetManager);
+
+					inputBuffer= { 0 };
+
+					m_showCreateNewFilePopUp= false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("Close"))
+				{
+					inputBuffer= { 0 };
+
+					m_showCreateNewFilePopUp= false;
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
+		void ContentBrowser::handleFileAction(
+				efsw::WatchID      watchId,
+				const std::string& dir,
+				const std::string& filename,
+				efsw::Action       action,
+				std::string        oldFilename /*= "" */
+		)
+		{
+			m_dirToWatchIsDirty= true;
+			ASTRAL_LOG_TRACE("Update to watched directory: {}, File {}", dir, filename);
 		}
 
 		void ContentBrowser::createNewMaterial(
@@ -109,13 +156,41 @@ namespace AstralRaytracer
 
 					if(fs::is_directory(currentNode->pathStr))
 					{
-						for(const auto& entry : fs::directory_iterator(currentNode->pathStr))
+						fs::directory_iterator iter;
+						bool                   error= false;
+						try
 						{
-							std::unique_ptr<PathNode> newNode= std::make_unique<PathNode>();
-							newNode->parent                  = currentNode;
-							newNode->pathStr                 = entry.path();
+							iter= fs::directory_iterator(currentNode->pathStr);
+						}
+						catch(const std::exception& e)
+						{
+							ASTRAL_LOG_INFO("Failed to get directory iterator, reason: {}", e.what());
+							error= true;
+						}
 
-							currentNode->nodes.push_back(std::move(newNode));
+						if(!error)
+						{
+							for(const auto& entry : iter)
+							{
+								const fs::file_status entryFileStatus    = fs::status(entry.path());
+								const fs::perms       entryFilePermission= entryFileStatus.permissions();
+								const fs::file_type   entryFileType      = entryFileStatus.type();
+
+								const bool ownerAccessible= (entryFilePermission & std::filesystem::perms::owner_all
+																						) != std::filesystem::perms::none;
+
+								const bool isRegular= entryFileType == fs::file_type::directory ||
+																			entryFileType == fs::file_type::regular;
+
+								if(ownerAccessible && isRegular)
+								{
+									std::unique_ptr<PathNode> newNode= std::make_unique<PathNode>();
+									newNode->parent                  = currentNode;
+									newNode->pathStr                 = entry.path();
+
+									currentNode->nodes.push_back(std::move(newNode));
+								}
+							}
 						}
 					}
 				}
@@ -145,21 +220,31 @@ namespace AstralRaytracer
 
 		void ContentBrowser::drawPathNode(std::unique_ptr<PathNode>& node)
 		{
-			const bool isFile= node->pathStr.has_extension();
+			const std::filesystem::path& nodePath= node->pathStr;
 
-			bool selected= m_selectedFile == node->pathStr;
+			const bool isFile= std::filesystem::is_regular_file(nodePath);
+
+			std::string stem;
+			if(nodePath.root_path() == nodePath) // Handle special case when its root directory (D://)
+			{
+				stem= nodePath.generic_string();
+			}
+			else
+			{
+				stem= nodePath.stem().generic_string();
+			}
+
+			bool selected= m_selectedFile == nodePath;
 			if(isFile)
 			{
-				if(ImGui::Selectable(node->pathStr.stem().string().c_str(), selected))
+				if(ImGui::Selectable(stem.c_str(), selected))
 				{
-					m_selectedFile= node->pathStr;
+					m_selectedFile= nodePath;
 				}
 				return;
 			}
 
-			bool nodeOpen= ImGui::TreeNode(node->pathStr.stem().string().c_str());
-
-			ImGui::PushID(node->pathStr.string().c_str());
+			ImGui::PushID(nodePath.generic_string().c_str());
 			if(ImGui::BeginPopupContextItem())
 			{
 				bool clicked= false;
@@ -171,6 +256,8 @@ namespace AstralRaytracer
 				ImGui::EndPopup();
 			}
 			ImGui::PopID();
+
+			bool nodeOpen= ImGui::TreeNode(stem.c_str());
 
 			if(nodeOpen)
 			{

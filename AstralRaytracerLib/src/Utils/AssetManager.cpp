@@ -26,7 +26,7 @@ namespace AstralRaytracer
 
 	bool AssetManager::LoadProject(const fs::path& absolutePath)
 	{
-		const std::string absolutePathStr= absolutePath.string();
+		const std::string absolutePathStr= absolutePath.generic_string();
 
 		std::ifstream stream(absolutePathStr);
 
@@ -40,7 +40,7 @@ namespace AstralRaytracer
 
 		m_currentProjectName = data["Project"].as<std::string>();
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
-		m_currentRelativePath= absolutePath.parent_path().string() + "/";
+		m_currentRelativePath= absolutePath.parent_path().generic_string() + "/";
 
 		ClearCachedData();
 

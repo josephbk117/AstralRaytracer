@@ -3,23 +3,33 @@
 #include "FileInspector.h"
 #include "Utils/AssetManager.h"
 
+#include <efsw/efsw.hpp>
 #include <filesystem>
 
 namespace AstralRaytracer
 {
 	namespace UI
 	{
-		class ContentBrowser
+		class ContentBrowser: public efsw::FileWatchListener
 		{
 			public:
 				ContentBrowser(){};
 				ContentBrowser(const ContentBrowser&)= delete;
-
-				void setRootContentPath(const fs::path& path) { m_rootContentPath= path; };
-
-				const fs::path& getRootContentPath() const { return m_rootContentPath; };
+				~ContentBrowser();
 
 				void display(AssetManager& assetManager);
+
+				void updateProjectRootPath();
+
+				void handleCreateFilePopupModal(AssetManager& assetManager);
+
+				void handleFileAction(
+						efsw::WatchID      watchId,
+						const std::string& dir,
+						const std::string& filename,
+						efsw::Action       action,
+						std::string        oldFilename= ""
+				) override;
 			private:
 				struct PathNode
 				{
@@ -29,12 +39,18 @@ namespace AstralRaytracer
 						bool                                   visited= false;
 				};
 
-				fs::path      m_selectedFile{ "" };
-				fs::path      m_directoryForNewFile{ "" };
-				fs::path      m_rootContentPath{ "/resources" };
-				FileInspector m_fileInspector;
+				fs::path m_selectedFile{ "" };
+				fs::path m_directoryForNewFile{ "" };
+				fs::path m_currentProjectRootPath{ "" };
 
+				FileInspector     m_fileInspector;
+				efsw::FileWatcher m_fileWatcher;
+				efsw::WatchID     m_watchID= 0;
+
+				bool m_dirToWatchIsDirty     = true;
 				bool m_showCreateNewFilePopUp= false;
+
+				std::unique_ptr<PathNode> m_projectRootNode;
 
 				void createNewMaterial(
 						const fs::path&    path,
