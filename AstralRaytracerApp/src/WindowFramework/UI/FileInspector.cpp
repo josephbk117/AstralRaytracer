@@ -32,7 +32,7 @@ namespace AstralRaytracer
 							typeNameStr= toString(getResourceTypeFromFilePath(m_currentFIle));
 						}
 						break;
-					default: ASTRAL_LOG_ERROR("Invalid Filetype enum"); break;
+					default: typeNameStr= "Unsupported"; break;
 				}
 
 				ImGui::TextUnformatted(typeNameStr.c_str());
