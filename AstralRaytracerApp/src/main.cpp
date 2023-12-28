@@ -9,6 +9,7 @@
 int main()
 {
 	spdlog::default_logger_raw()->set_level(spdlog::level::level_enum::trace);
+	spdlog::default_logger_raw()->set_pattern("[Thread:%t][Time Diff(ms):+%-6i][%D %T][%l] %v");
 
 	AstralRaytracer::AssetManager assetManager;
 	AstralRaytracer::Window       window("Astral Raytracer");
