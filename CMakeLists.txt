@@ -30,6 +30,11 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
+
+set(MI_WIN_REDIRECT OFF)
+#set(MI_BUILD_OBJECT OFF)
+#set(MI_BUILD_SHARED OFF)
+add_subdirectory(external/mimalloc)
 set(BUILD_SHARED_LIBS OFF)
 add_subdirectory(external/efsw)
 set(TINYGLTF_HEADER_ONLY ON CACHE INTERNAL "" FORCE)

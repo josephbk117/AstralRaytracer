@@ -20,10 +20,12 @@ target_include_directories(AstralRaytracerLib
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/glBinding/source/glbinding/include"
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/yamlcpp/include"
                            PUBLIC "${PROJECT_SOURCE_DIR}/external/spdlog/include"
+                           PUBLIC "${PROJECT_SOURCE_DIR}/external/mimalloc/include"
 )
 
 target_link_libraries(AstralRaytracerLib
     glbinding
     yaml-cpp
     spdlog
+    mimalloc-static
 )
