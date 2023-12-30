@@ -1,7 +1,10 @@
 #include "Utils/Common.h"
-#include <mimalloc/include/mimalloc.h>
-#include <mimalloc/include/mimalloc-override.h>  // redefines malloc etc.
-#include <mimalloc/include/mimalloc-new-delete.h>
+
+#include <mimalloc-override.h> // redefines malloc etc.
+#include <mimalloc.h>
+#ifdef _WIN32
+	#include <mimalloc-new-delete.h>
+#endif
 
 std::string AstralRaytracer::toString(AssetType assetType)
 {

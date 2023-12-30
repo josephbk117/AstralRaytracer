@@ -2,19 +2,20 @@
 #include "Raytracer/Camera.h"
 #include "Raytracer/Renderer.h"
 #include "Utils/AssetManager.h"
+#include "Utils/Common.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/Window.h"
 #include "WindowFramework/WindowUtils.h"
 
-#include <mimalloc/include/mimalloc.h>
+#include <mimalloc.h>
 
 int main()
 {
-	mi_option_enable(mi_option_t::mi_option_show_stats);
 	mi_option_enable(mi_option_t::mi_option_verbose);
+	mi_option_enable(mi_option_t::mi_option_show_stats);
 	mi_option_enable(mi_option_t::mi_option_show_errors);
 	mi_option_enable(mi_option_t::mi_option_allow_large_os_pages);
-	mi_option_set(mi_option_t::mi_option_purge_delay, 100);
+	mi_option_set(mi_option_t::mi_option_purge_delay, 0);
 
 	spdlog::default_logger_raw()->set_level(spdlog::level::level_enum::trace);
 	spdlog::default_logger_raw()->set_pattern("[Thread:%t][Time Delta(ms):+%-6i][%D %T][%l] %v");
