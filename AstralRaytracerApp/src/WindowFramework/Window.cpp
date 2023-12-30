@@ -392,7 +392,7 @@ namespace AstralRaytracer
 				fileDialog.Close();
 			}
 
-			drawToolbar(renderer, appStateInfo);
+			drawToolbar(renderer, assetManager, appStateInfo);
 
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersInner | ImGuiTableFlags_Resizable |
 																	ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_NoHostExtendX;
@@ -552,8 +552,9 @@ namespace AstralRaytracer
 	}
 
 	void Window::drawToolbar(
-			AstralRaytracer::Renderer&         renderer,
-			AstralRaytracer::UI::AppStateInfo& appStateInfo
+			AstralRaytracer::Renderer&           renderer,
+			const AstralRaytracer::AssetManager& assetManager,
+			AstralRaytracer::UI::AppStateInfo&   appStateInfo
 	)
 	{
 		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
@@ -611,7 +612,9 @@ namespace AstralRaytracer
 		ImGui::SameLine();
 		if(ImGui::Button("screenshot", { sliderWidth, 0 }))
 		{
-			TextureManager::saveTextureToFile(renderer.getTextureData(), "imgout.hdr");
+			TextureManager::saveTextureToFile(
+					renderer.getTextureData(), assetManager.getCurrentRelativePath() + "screenshot.hdr"
+			);
 		}
 
 		ImGui::EndChild();

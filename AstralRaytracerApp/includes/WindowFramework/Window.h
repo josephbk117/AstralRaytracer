@@ -85,8 +85,9 @@ namespace AstralRaytracer
 			);
 
 			void drawToolbar(
-					AstralRaytracer::Renderer&         renderer,
-					AstralRaytracer::UI::AppStateInfo& appStateInfo
+					AstralRaytracer::Renderer&           renderer,
+					const AstralRaytracer::AssetManager& assetManager,
+					AstralRaytracer::UI::AppStateInfo&   appStateInfo
 			);
 
 			void handleChooseSceneDialog(
@@ -116,7 +117,7 @@ namespace AstralRaytracer
 			glm::u32vec2 getResolution() const;
 		private:
 			static constexpr const char* FileDialogProjectKey= "ChooseProjectDialog";
-			static constexpr const char* FileDialogSceneKey= "ChooseSceneDialog";
+			static constexpr const char* FileDialogSceneKey  = "ChooseSceneDialog";
 
 			const static uint32 FrameSampleCount= 100;
 
