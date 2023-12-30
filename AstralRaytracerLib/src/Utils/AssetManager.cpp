@@ -18,10 +18,10 @@ namespace AstralRaytracer
 		std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
 		m_randomNumGenerator= std::mt19937(seq);
 
-		ClearAndResetCachedData();
+		clearAndResetCachedData();
 	}
 
-	bool AssetManager::LoadProject(const fs::path& absolutePath)
+	bool AssetManager::loadProject(const fs::path& absolutePath)
 	{
 		const std::string absolutePathStr= absolutePath.generic_string();
 
@@ -39,14 +39,14 @@ namespace AstralRaytracer
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
 		m_currentRelativePath= absolutePath.parent_path().generic_string() + "/";
 
-		ClearAndResetCachedData();
+		clearAndResetCachedData();
 
 		ASTRAL_LOG_TRACE("Project file loaded successfully: {}", absolutePathStr);
 
 		return true;
 	}
 
-	void AssetManager::ClearAndResetCachedData()
+	void AssetManager::clearAndResetCachedData()
 	{
 		m_traceableNameAndPathMap.clear();
 		m_materialNameAndPathMap.clear();
@@ -62,7 +62,7 @@ namespace AstralRaytracer
     });
 	}
 
-	TextureDataRGBF AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
+	TextureDataRGBF AssetManager::loadTextureAsset(const fs::path& path, const std::string& name)
 	{
 		NameAndPath nameAndPath= { name, path.string() };
 		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
@@ -70,7 +70,7 @@ namespace AstralRaytracer
 		return TextureManager::loadTextureDataFromFileRGBF(m_currentRelativePath + path.string());
 	}
 
-	bool AssetManager::LoadMaterialAsset(
+	bool AssetManager::loadMaterialAsset(
 			const fs::path&    path,
 			const std::string& name,
 			Material&          outMaterial
@@ -92,7 +92,7 @@ namespace AstralRaytracer
 		return true;
 	}
 
-	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::LoadTraceableAsset(const fs::path& path)
+	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::loadTraceableAsset(const fs::path& path)
 	{
 		std::ifstream stream(m_currentRelativePath + path.string());
 		YAML::Node    data= YAML::Load(stream);
@@ -136,7 +136,7 @@ namespace AstralRaytracer
 		return nullptr;
 	}
 
-	void AssetManager::SaveMaterialAsset(
+	void AssetManager::saveMaterialAsset(
 			const fs::path&    folderPath,
 			const std::string& name,
 			const Material&    material
@@ -161,10 +161,10 @@ namespace AstralRaytracer
 		ofs.close();
 	}
 
-	void AssetManager::SaveMaterialAsset(const std::string& name, const Material& material)
+	void AssetManager::saveMaterialAsset(const std::string& name, const Material& material)
 	{
 		fs::path path= "/resources/materials/";
-		SaveMaterialAsset(path, name, material);
+		saveMaterialAsset(path, name, material);
 	}
 
 	void AssetManager::SaveTraceableAsset(

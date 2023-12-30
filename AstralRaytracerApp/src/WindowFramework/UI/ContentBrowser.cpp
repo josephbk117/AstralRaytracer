@@ -141,7 +141,7 @@ namespace AstralRaytracer
 		)
 		{
 			Material newMat;
-			assetManager.SaveMaterialAsset(path, name, newMat);
+			assetManager.saveMaterialAsset(path, name, newMat);
 		}
 
 		void ContentBrowser::traverseDirectoryFromRoot(std::unique_ptr<PathNode>& root)

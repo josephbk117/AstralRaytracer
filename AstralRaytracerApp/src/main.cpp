@@ -32,7 +32,7 @@ int main()
 		AstralRaytracer::Compositor compositor;
 
 		// Load default project
-		if(assetManager.LoadProject(R"(../../../../ExampleProject/defaultProject.asproj)"))
+		if(assetManager.loadProject(R"(../../../../ExampleProject/defaultProject.asproj)"))
 		{
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
 			window.setWindowTitle(assetManager, scene);

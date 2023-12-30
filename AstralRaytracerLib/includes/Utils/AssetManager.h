@@ -23,21 +23,21 @@ namespace AstralRaytracer
 
 			AssetManager();
 
-			bool LoadProject(const fs::path& absolutePath);
-			void ClearAndResetCachedData();
+			bool loadProject(const fs::path& absolutePath);
+			void clearAndResetCachedData();
 
 			[[nodiscard]]
-			TextureDataRGBF LoadTextureAsset(const fs::path& path, const std::string& name);
+			TextureDataRGBF loadTextureAsset(const fs::path& path, const std::string& name);
 			[[nodiscard]]
-			bool LoadMaterialAsset(const fs::path& path, const std::string& name, Material& outMaterial);
+			bool loadMaterialAsset(const fs::path& path, const std::string& name, Material& outMaterial);
 			[[nodiscard]]
-			std::unique_ptr<Traceable> LoadTraceableAsset(const fs::path& path);
-			void                       SaveMaterialAsset(
+			std::unique_ptr<Traceable> loadTraceableAsset(const fs::path& path);
+			void                       saveMaterialAsset(
 																const fs::path&    folderPath,
 																const std::string& name,
 																const Material&    material
 														);
-			void SaveMaterialAsset(const std::string& name, const Material& material);
+			void saveMaterialAsset(const std::string& name, const Material& material);
 
 			void SaveTraceableAsset(const std::string& name, const std::unique_ptr<Traceable>& traceable);
 

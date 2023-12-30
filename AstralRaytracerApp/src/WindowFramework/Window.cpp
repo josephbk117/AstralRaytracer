@@ -631,7 +631,7 @@ namespace AstralRaytracer
 		if(scene.hasSceneLoaded())
 		{
 			scene.unload();
-			assetManager.ClearAndResetCachedData();
+			assetManager.clearAndResetCachedData();
 		}
 
 		scene.deserialize(assetManager, filePathName);
@@ -647,7 +647,7 @@ namespace AstralRaytracer
 			AstralRaytracer::UI::AppStateInfo& appStateInfo
 	)
 	{
-		if(assetManager.LoadProject(filePathName))
+		if(assetManager.loadProject(filePathName))
 		{
 			if(scene.hasSceneLoaded())
 			{
