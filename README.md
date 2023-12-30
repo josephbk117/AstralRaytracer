@@ -4,10 +4,14 @@
 
 <h1 align="center">Astral Raytracer</h1>
 
+<p align="center">Astral Raytracer is a C++ ray tracing renderer that provides a simple implementation for understanding basic ray tracing principles.</p>
 <p align="center">
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/C++-20-blue.svg" alt="C++ Version"></a>
+  &nbsp;&nbsp;
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/gcc-11+-blue.svg" alt="GCC Version"></a>
+  &nbsp;&nbsp;
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/clang-17+-blue.svg" alt="Clang Version"></a>
+  &nbsp;&nbsp;
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/MSVC-19+-blue.svg" alt="MSVC Version"></a>
 </p>
 
@@ -15,6 +19,7 @@
   <a href="https://github.com/josephbk117/AstralRaytracer/actions/workflows/cmake-multi-platform.yml">
     <img src="https://github.com/josephbk117/AstralRaytracer/actions/workflows/cmake-multi-platform.yml/badge.svg" alt="CMake on Multiple Platforms">
   </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="https://app.deepsource.com/gh/josephbk117/AstralRaytracer/">
     <img src="https://app.deepsource.com/gh/josephbk117/AstralRaytracer.svg/?label=active+issues&show_trend=true&token=J2GPtWdzkCS5vHib-9fzUIPk" alt="DeepSource">
   </a>
