@@ -628,7 +628,7 @@ namespace AstralRaytracer
 		if(scene.hasSceneLoaded())
 		{
 			scene.unload();
-			assetManager.ClearCachedData();
+			assetManager.ClearAndResetCachedData();
 		}
 
 		scene.deserialize(assetManager, filePathName);

@@ -24,7 +24,7 @@ namespace AstralRaytracer
 			AssetManager();
 
 			bool LoadProject(const fs::path& absolutePath);
-			void ClearCachedData();
+			void ClearAndResetCachedData();
 
 			[[nodiscard]]
 			TextureDataRGBF LoadTextureAsset(const fs::path& path, const std::string& name);

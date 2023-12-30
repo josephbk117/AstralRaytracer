@@ -18,10 +18,7 @@ namespace AstralRaytracer
 		std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
 		m_randomNumGenerator= std::mt19937(seq);
 
-		// Add Default Material
-		m_materialNameAndPathMap.insert({
-				0, {"Default Material", "NIL"}
-    });
+		ClearAndResetCachedData();
 	}
 
 	bool AssetManager::LoadProject(const fs::path& absolutePath)
@@ -42,14 +39,14 @@ namespace AstralRaytracer
 		m_defaultScenePath   = data["Default Scene"].as<std::string>();
 		m_currentRelativePath= absolutePath.parent_path().generic_string() + "/";
 
-		ClearCachedData();
+		ClearAndResetCachedData();
 
 		ASTRAL_LOG_TRACE("Project file loaded successfully: {}", absolutePathStr);
 
 		return true;
 	}
 
-	void AssetManager::ClearCachedData()
+	void AssetManager::ClearAndResetCachedData()
 	{
 		m_traceableNameAndPathMap.clear();
 		m_materialNameAndPathMap.clear();
@@ -58,6 +55,11 @@ namespace AstralRaytracer
 		textureCount  = 0;
 		matCount      = 1;
 		traceableCount= 0;
+
+		// Add Default Material
+		m_materialNameAndPathMap.insert({
+				0, {"Default Material", "NIL"}
+    });
 	}
 
 	TextureDataRGBF AssetManager::LoadTextureAsset(const fs::path& path, const std::string& name)
