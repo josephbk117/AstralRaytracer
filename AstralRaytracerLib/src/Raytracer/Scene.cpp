@@ -139,9 +139,9 @@ namespace AstralRaytracer
 			const auto& tex= textures[texIndex];
 			for(auto it : tex)
 			{
-				addTexture(assetManager.LoadTextureAsset(
-						it.second.as<std::string>(), it.first.as<std::string>()
-				));
+				addTexture(
+						assetManager.LoadTextureAsset(it.second.as<std::string>(), it.first.as<std::string>())
+				);
 				ASTRAL_LOG_TRACE("Texture at index : {}, {}", texIndex, it.first.as<std::string>());
 			}
 		}
