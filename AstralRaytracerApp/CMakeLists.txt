@@ -35,6 +35,7 @@ target_include_directories(AstralRaytracerApp
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/imguizmo
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/efsw/include
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/mimalloc/include
+                           PUBLIC ${PROJECT_SOURCE_DIR}/external/glm
 )
 
 # Link the executable with the library

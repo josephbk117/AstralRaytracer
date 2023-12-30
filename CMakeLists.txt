@@ -31,6 +31,7 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 
 
+add_subdirectory(external/glm)
 set(MI_WIN_REDIRECT OFF)
 #set(MI_BUILD_OBJECT OFF)
 #set(MI_BUILD_SHARED OFF)
