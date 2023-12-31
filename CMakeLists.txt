@@ -51,7 +51,15 @@ add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
 #set(SPDLOG_USE_STD_FORMAT ON)
 add_subdirectory(external/spdlog)
 
-set(OPTION_BUILD_WITH_LTO ON)
+#enabling LTO has issues on clang
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release" AND (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    message("Link Time Optimisation enabled for glBinding")
+    set(OPTION_BUILD_WITH_LTO ON)
+else()
+    message("Link Time Optimisation disabled for glBinding")
+    set(OPTION_BUILD_WITH_LTO OFF)
+endif()
 set(OPTION_BUILD_TOOLS OFF)
 set(OPTION_BUILD_EXAMPLES OFF)
 add_subdirectory(external/glBinding EXCLUDE_FROM_ALL)
