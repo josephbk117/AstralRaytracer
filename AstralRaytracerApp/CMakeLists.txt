@@ -1,7 +1,8 @@
 file(GLOB_RECURSE HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h")
 file(GLOB_RECURSE SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 file(GLOB_RECURSE IMGUI_FILES "${PROJECT_SOURCE_DIR}/external/imgui/*")
-file(GLOB         IMGUIZMO_FILES "${PROJECT_SOURCE_DIR}/external/imguizmo/*")
+file(GLOB         IMGUIZMO_HEADER_FILES "${PROJECT_SOURCE_DIR}/external/imguizmo/*.h")
+file(GLOB         IMGUIZMO_SOURCE_FILES "${PROJECT_SOURCE_DIR}/external/imguizmo/*.cpp")
 
 # Add resources as a subdirectory
 add_subdirectory(app_assets)
@@ -20,7 +21,8 @@ add_executable(AstralRaytracerApp
                ${HEADER_FILES}
                ${SOURCE_FILES}
                ${IMGUI_FILES}
-               ${IMGUIZMO_FILES}
+               ${IMGUIZMO_HEADER_FILES}
+               ${IMGUIZMO_SOURCE_FILES}
                ${IMGUI_FILE_DIALOG_FILES}
 )
 
