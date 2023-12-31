@@ -339,7 +339,7 @@ namespace AstralRaytracer
 	void Window::drawSampleProgress(const uint32 frameIndex)
 	{
 		std::array<char, 32> overlay= {};
-		sprintf(overlay.data(), "Samples: %d/%d", frameIndex, 1000);
+		snprintf(overlay.data(), overlay.size(), "Samples: %d/%d", frameIndex, 1000);
 
 		const float32 progress= glm::clamp(frameIndex / 1000.0f, 0.0f, 1.0f);
 		ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
