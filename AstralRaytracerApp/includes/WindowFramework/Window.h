@@ -62,6 +62,8 @@ namespace AstralRaytracer
 
 			void initialize();
 
+			void imGuiInit();
+
 			void SetWindowIcon(const std::filesystem::path& iconPath);
 
 			void clear() const;

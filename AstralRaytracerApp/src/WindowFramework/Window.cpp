@@ -13,23 +13,25 @@ namespace AstralRaytracer
 
 	void Window::initialize()
 	{
+		ASTRAL_LOG_TRACE("Window creation started");
 		if(!glfwInit())
 		{
+			ASTRAL_LOG_ERROR("Window failed to initialize");
 			exit(EXIT_FAILURE);
 		}
-
-		GLFWmonitor* primaryMonitor= glfwGetPrimaryMonitor();
-		// Get the video mode of the primary monitor
-		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+		GLFWmonitor* primaryMonitor= glfwGetPrimaryMonitor();
+		// Get the video mode of the primary monitor
+		const GLFWvidmode* mode= glfwGetVideoMode(primaryMonitor);
 		m_glfwWindow= glfwCreateWindow(mode->width, mode->height, m_name.c_str(), nullptr, nullptr);
 
 		if(m_glfwWindow == nullptr)
 		{
+			ASTRAL_LOG_ERROR("Window creation failed");
 			glfwTerminate();
 			exit(EXIT_FAILURE);
 		}
@@ -43,6 +45,15 @@ namespace AstralRaytracer
 
 		glbinding::initialize(glfwGetProcAddress);
 
+		gl::glViewport(0, 0, mode->width, mode->height);
+
+		ASTRAL_LOG_TRACE("Window creation finished");
+
+		imGuiInit();
+	}
+
+	void Window::imGuiInit()
+	{
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGui::StyleColorsDark();
@@ -62,7 +73,7 @@ namespace AstralRaytracer
 		m_tertiaryFont=
 				fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", tertiaryFontSize);
 
-		// Setup Imgui File Dialog Callbacks
+		// Setup ImGui File Dialog Callbacks
 		auto createThumbnailFunc=
 				std::bind(&AstralRaytracer::Window::createThumbnailCallback, this, std::placeholders::_1);
 		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(createThumbnailFunc);
@@ -71,8 +82,6 @@ namespace AstralRaytracer
 		auto destroyThumbnailFunc=
 				std::bind(&AstralRaytracer::Window::destroyThumbnailCallback, this, std::placeholders::_1);
 		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(destroyThumbnailFunc);
-
-		gl::glViewport(0, 0, mode->width, mode->height);
 
 		setDefaultTheme();
 	}
