@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <optional>
 #include <unordered_map>
+#include <uuid.h>
 
 namespace AstralRaytracer
 {
@@ -58,7 +59,6 @@ namespace AstralRaytracer
 
 			[[nodiscard]]
 			bool isProjectOpen() const;
-
 		private:
 			uint32 textureCount  = 0;
 			uint32 matCount      = 1;

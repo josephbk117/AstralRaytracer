@@ -15,7 +15,7 @@
 #include <string>
 #include <typeindex>
 #include <typeinfo>
-#include <uuid.h>
+#include <array>
 
 #ifndef __APPLE__
 	#define SUPPORT_STD_EXECUTION

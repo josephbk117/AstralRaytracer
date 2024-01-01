@@ -1,8 +1,9 @@
 #pragma once
-#include "Common.h"
 #include "ColourData.h"
+#include "Common.h"
 #include "Raytracer/Transform.h"
 
+#include <uuid.h>
 #include <yaml-cpp/yaml.h>
 
 namespace AstralRaytracer
@@ -133,13 +134,13 @@ namespace AstralRaytracer
 		class Serializable
 		{
 			public:
-				Serializable()                                  = default;
+				Serializable()                                                              = default;
 				virtual void serialize(AssetManager& assetManager, YAML::Emitter& out) const= 0;
-				virtual void deserialize(AssetManager& assetManager, YAML::Node& node)        = 0;
+				virtual void deserialize(AssetManager& assetManager, YAML::Node& node)      = 0;
 
 				void setUUID(uuids::uuid id) { m_id= id; };
 
-				uuids::uuid getUUID() const { return m_id; }
+				const uuids::uuid& getUUID() const { return m_id; }
 			protected:
 				uuids::uuid m_id;
 		};
