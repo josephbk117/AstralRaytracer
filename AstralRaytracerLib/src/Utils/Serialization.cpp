@@ -29,5 +29,7 @@ namespace AstralRaytracer
 			return out;
 		}
 
+		const uuids::uuid& Serializable::getUUID() const { return m_id; }
+
 	} // namespace Serialization
 } // namespace AstralRaytracer

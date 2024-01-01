@@ -2,7 +2,6 @@
 #include "ColourData.h"
 #include "Common.h"
 
-#include <array>
 #include <vector>
 
 template<typename T, uint8 ComponentCount>
@@ -16,16 +15,22 @@ class TextureData
 		TextureData();
 		TextureData(uint32 width, uint32 height);
 		~TextureData()= default;
-		void                  resize(uint32 width, uint32 height);
-		void                  setTextureData(const std::vector<T>& data);
+		void resize(uint32 width, uint32 height);
+		void setTextureData(const std::vector<T>& data);
+		[[nodiscard]]
 		const std::vector<T>& getTextureData() const;
-		uint32                getWidth() const noexcept;
-		uint32                getHeight() const noexcept;
-		constexpr uint8       getComponentCount() const noexcept;
+		[[nodiscard]]
+		uint32 getWidth() const noexcept;
+		[[nodiscard]]
+		uint32 getHeight() const noexcept;
+		[[nodiscard]]
+		constexpr uint8 getComponentCount() const noexcept;
 		void
 		setTexelColorAtPixelIndex(uint32 index, const glm::vec<ComponentCount, T, glm::defaultp>& rgb);
 		void setTexelColor(const std::array<T, ComponentCount>& texel, uint32 x, uint32 y);
+		[[nodiscard]]
 		glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(uint32 x, uint32 y) const;
+		[[nodiscard]]
 		glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(float32 u, float32 v) const;
 };
 

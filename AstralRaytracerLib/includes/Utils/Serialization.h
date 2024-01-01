@@ -140,7 +140,8 @@ namespace AstralRaytracer
 
 				void setUUID(uuids::uuid id) { m_id= id; };
 
-				const uuids::uuid& getUUID() const { return m_id; }
+				[[nodiscard]]
+				const uuids::uuid& getUUID() const;
 			protected:
 				uuids::uuid m_id;
 		};

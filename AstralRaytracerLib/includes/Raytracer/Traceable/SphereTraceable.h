@@ -6,18 +6,21 @@ namespace AstralRaytracer
 	class SphereTraceable: public Traceable
 	{
 		public:
-		SphereTraceable()= default;
-		void    setRadius(float32 radius) { m_radius= radius; };
-		float32 getRadius() const { return m_radius; }
+			SphereTraceable()= default;
 
-		virtual void setScale(const glm::vec3& scale) override;
+			void setRadius(float32 radius) { m_radius= radius; };
 
-		bool trace(const Ray& rayIn, HitInfo& hitInfo) const override;
+			[[nodiscard]]
+			float32 getRadius() const;
 
-		void serialize(AssetManager& assetManager, YAML::Emitter& out) const override;
-		void deserialize(AssetManager& assetManager, YAML::Node& node) override;
+			virtual void setScale(const glm::vec3& scale) override;
 
+			[[nodiscard]]
+			bool trace(const Ray& rayIn, HitInfo& hitInfo) const override;
+
+			void serialize(AssetManager& assetManager, YAML::Emitter& out) const override;
+			void deserialize(AssetManager& assetManager, YAML::Node& node) override;
 		private:
-		float32 m_radius= 1.0f;
+			float32 m_radius= 1.0f;
 	};
 } // namespace AstralRaytracer

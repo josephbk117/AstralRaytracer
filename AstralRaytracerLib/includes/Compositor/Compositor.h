@@ -16,7 +16,8 @@ namespace AstralRaytracer
 
 			void processImage(const Scene& scene, const glm::u32vec2& resolution, uint32 inputTextureId);
 
-			uint32 getTextureId() const { return m_outputTextureId; };
+			[[nodiscard]]
+			uint32 getTextureId() const;
 		private:
 			uint32 m_outputTextureId= 0;
 

@@ -40,7 +40,10 @@ class ShaderProgram
 		void addAttribute(const std::string& attributeName);
 		void use() const;
 		void unuse() const;
+
+		[[nodiscard]]
 		const std::unordered_map<std::string, UniformData>& getUniformData() const;
+		[[nodiscard]]
 		gl::GLint getUniformLocation(const std::string& uniformName) const;
 
 		void setUniformValue(

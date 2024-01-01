@@ -11,11 +11,14 @@ namespace AstralRaytracer
 			RenderTexture()= default;
 			~RenderTexture();
 
-			void         init(const glm::u32vec2& size);
-			gl::GLuint   getFBO() const;
-			gl::GLuint   getTexture() const;
-			void         bind() const;
-			void         unbind() const;
+			void init(const glm::u32vec2& size);
+			[[nodiscard]]
+			gl::GLuint getFBO() const;
+			[[nodiscard]]
+			gl::GLuint getTexture() const;
+			void       bind() const;
+			void       unbind() const;
+			[[nodiscard]]
 			glm::u32vec2 getSize() const;
 			void         resize(const glm::u32vec2& size);
 		private:

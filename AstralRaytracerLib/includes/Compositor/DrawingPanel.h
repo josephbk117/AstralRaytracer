@@ -6,8 +6,9 @@ class DrawingPanel
 	public:
 		DrawingPanel();
 		~DrawingPanel();
-		void   init(float32 width, float32 height);
-		void   setTextureID(uint32 textureID, uint32 index= 0);
+		void init(float32 width, float32 height);
+		void setTextureID(uint32 textureID, uint32 index= 0);
+		[[nodiscard]]
 		uint32 getTextureID(uint32 index= 0) const noexcept;
 		void   draw() const noexcept;
 	private:

@@ -49,13 +49,17 @@ namespace AstralRaytracer
 			[[nodiscard]]
 			std::optional<NameAndPath> getNameAndPathOfTraceable(uint32 id) const;
 
-			const std::string& getCurrentRelativePath() const { return m_currentRelativePath; }
+			[[nodiscard]]
+			const std::string& getCurrentRelativePath() const;
 
-			const std::string& getDefaultSceneRelativePath() const { return m_defaultScenePath; }
+			[[nodiscard]]
+			const std::string& getDefaultSceneRelativePath() const;
 
+			[[nodiscard]]
 			std::string getDefaultSceneAbsolutePath() const;
 
-			const std::string& getCurrentProjectName() const { return m_currentProjectName; }
+			[[nodiscard]]
+			const std::string& getCurrentProjectName() const;
 
 			[[nodiscard]]
 			bool isProjectOpen() const;
@@ -71,9 +75,11 @@ namespace AstralRaytracer
 
 			std::string m_currentProjectName;
 			std::string m_currentRelativePath= "../../../../";
-			std::string m_defaultScenePath;
+			std::string m_defaultSceneRelativePath;
 
+			[[nodiscard]]
 			uuids::uuid generateUUID();
+			[[nodiscard]]
 			std::string generateUUIDasString();
 	};
 } // namespace AstralRaytracer

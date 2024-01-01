@@ -32,8 +32,13 @@ struct ColourData
 
 		void setColour_32_bit(float32 r, float32 g, float32 b) { m_colour= glm::vec3(r, g, b); }
 
-		const glm::vec3& getColour_32_bit() const { return m_colour; }
+		[[nodiscard]]
+		const glm::vec3& getColour_32_bit() const
+		{
+			return m_colour;
+		}
 
+		[[nodiscard]]
 		glm::u8vec3 getColour_8_BitClamped() const
 		{
 			const glm::vec3& clamped= glm::min(m_colour, glm::vec3(1.0f)) * 255.0f;

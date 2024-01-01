@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstring>
 #define GLM_FORCE_INTRINSICS
+#include <array>
 #include <cstddef>
 #include <filesystem>
 #include <glm/glm.hpp>
@@ -15,7 +16,6 @@
 #include <string>
 #include <typeindex>
 #include <typeinfo>
-#include <array>
 
 #ifndef __APPLE__
 	#define SUPPORT_STD_EXECUTION
@@ -50,6 +50,7 @@ struct UiBounds
 		glm::vec2 min{ 0, 0 };
 		glm::vec2 max{ 1, 1 };
 
+		[[nodiscard]]
 		bool isPointInBounds(const glm::vec2 point) const
 		{
 			return point.x > min.x && point.x < max.x && point.y > min.y && point.y < max.y;
@@ -104,15 +105,21 @@ namespace AstralRaytracer
 	static const std::string FileExtensionForMaterial{ ".asmat" };
 	static const std::string FileExtensionForTraceable{ ".astra" };
 
+	[[nodiscard]]
 	std::string toString(AssetType assetType);
+	[[nodiscard]]
 	std::string toString(ResourceType resourceType);
 
-	const std::string&              getFileExtensionForAssetType(AssetType type);
+	[[nodiscard]]
+	const std::string& getFileExtensionForAssetType(AssetType type);
+	[[nodiscard]]
 	const std::vector<std::string>& getFileExtensionForResourceType(ResourceType type);
 
-	AssetType    getAssetTypeFromFilePath(const std::filesystem::path& filepath);
+	[[nodiscard]]
+	AssetType getAssetTypeFromFilePath(const std::filesystem::path& filepath);
+	[[nodiscard]]
 	ResourceType getResourceTypeFromFilePath(const std::filesystem::path& filepath);
-
+	[[nodiscard]]
 	FileType getFileTypeFromFilePath(const std::filesystem::path& filepath);
 
 } // namespace AstralRaytracer

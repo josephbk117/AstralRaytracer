@@ -35,9 +35,9 @@ namespace AstralRaytracer
 			return false;
 		}
 
-		m_currentProjectName = data["Project"].as<std::string>();
-		m_defaultScenePath   = data["Default Scene"].as<std::string>();
-		m_currentRelativePath= absolutePath.parent_path().generic_string() + "/";
+		m_currentProjectName      = data["Project"].as<std::string>();
+		m_defaultSceneRelativePath= data["Default Scene"].as<std::string>();
+		m_currentRelativePath     = absolutePath.parent_path().generic_string() + "/";
 
 		clearAndResetCachedData();
 
@@ -224,10 +224,19 @@ namespace AstralRaytracer
 		return std::nullopt;
 	}
 
+	const std::string& AssetManager::getCurrentRelativePath() const { return m_currentRelativePath; }
+
+	const std::string& AssetManager::getDefaultSceneRelativePath() const
+	{
+		return m_defaultSceneRelativePath;
+	}
+
 	std::string AssetManager::getDefaultSceneAbsolutePath() const
 	{
-		return m_currentRelativePath + m_defaultScenePath;
+		return m_currentRelativePath + m_defaultSceneRelativePath;
 	}
+
+	const std::string& AssetManager::getCurrentProjectName() const { return m_currentProjectName; }
 
 	bool AssetManager::isProjectOpen() const { return !m_currentProjectName.empty(); }
 

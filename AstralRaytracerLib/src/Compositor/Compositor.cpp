@@ -5,7 +5,7 @@
 
 namespace AstralRaytracer
 {
-	Compositor::Compositor() 
+	Compositor::Compositor()
 	{
 		m_renderTexture1.init({ 32, 32 });
 		m_renderTexture2.init({ 32, 32 });
@@ -38,8 +38,7 @@ namespace AstralRaytracer
 				const uint32 selectedInputTex=
 						(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
 
-				scene.m_postProcessingStack[index]
-						->setMainColorTexture(inputTextureId);
+				scene.m_postProcessingStack[index]->setMainColorTexture(inputTextureId);
 				scene.m_postProcessingStack[index]->processImage(
 						m_dwPanel, selectedRenderTex, selectedInputTex
 				);
@@ -47,5 +46,7 @@ namespace AstralRaytracer
 			}
 		}
 	}
+
+	uint32 Compositor::getTextureId() const { return m_outputTextureId; }
 
 } // namespace AstralRaytracer

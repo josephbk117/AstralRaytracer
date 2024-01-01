@@ -2,6 +2,7 @@
 
 namespace AstralRaytracer
 {
+	float32 SphereTraceable::getRadius() const { return m_radius; }
 
 	void SphereTraceable::setScale(const glm::vec3& scale)
 	{
