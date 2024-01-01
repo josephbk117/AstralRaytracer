@@ -3,10 +3,8 @@
 #include "Raytracer/Renderer.h"
 #include "Utils/TextureManager.h"
 #include "WindowFramework/Input.h"
+#include "WindowFramework/UI/ImGuizmo/ImGuizmo.h"
 #include "WindowFramework/UI/ImageInspect.h"
-
-#include <ImGuizmo.h>
-#include <imgui_internal.h>
 
 namespace AstralRaytracer
 {

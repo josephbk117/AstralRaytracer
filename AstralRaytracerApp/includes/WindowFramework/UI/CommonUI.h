@@ -13,12 +13,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
-#ifdef IMGUI_API
-	// ImGuizmo needs to always be included after main ImGui headers
-	#include <ImGuizmo.h>
-#endif // IMGUI_API
-
+//--PREVENT AUTO HEADER FILE ORDERING--
 #include "FileDialog/ImGuiFileDialog.h"
+
+//--PREVENT AUTO HEADER FILE ORDERING--
 
 namespace AstralRaytracer
 {

@@ -2,6 +2,7 @@
 #include "UI/CommonUI.h"
 #include "UI/ContentBrowser.h"
 #include "UI/EnvironmentSettings.h"
+#include "UI/ImGuizmo/ImGuizmo.h"
 #include "UI/Inspector.h"
 #include "UI/PostProcessingStack.h"
 #include "UI/SceneHierarchy.h"
