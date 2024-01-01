@@ -125,14 +125,12 @@ namespace AstralRaytracer
 		}
 		m_texData.resize(width, height);
 
-		m_accumulatedColorData.resize(width * height * 3);
+		const size_t newSizePixelCount= width * height;
+		m_accumulatedColorData.resize(newSizePixelCount * 3);
 		resetFrameIndex();
-		m_rayIterator.resize(width * height);
 
-		for(uint32 index= 0; index < width * height; ++index)
-		{
-			m_rayIterator[index]= index;
-		}
+		m_rayIterator.resize(newSizePixelCount);
+		std::iota(m_rayIterator.begin(), m_rayIterator.end(), 0);
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
 
@@ -168,9 +166,9 @@ namespace AstralRaytracer
 
 			if(closestHitInfo.isValid())
 			{
-				const Material& mat= scene.m_materials.at(closestHitInfo.materialIndex);
+				const Material& mat= scene.m_materials[closestHitInfo.materialIndex];
 
-				const TextureDataRGBF& texData= scene.m_textures.at(mat.texture);
+				const TextureDataRGBF& texData= scene.m_textures[mat.texture];
 
 				glm::vec3 colorData= texData.getTexelColor(
 						closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f
