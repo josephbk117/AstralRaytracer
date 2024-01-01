@@ -60,7 +60,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install --fix-missing xorg-dev libglu1-mesa-dev
+        sudo apt-get install --fix-missing xorg-dev libglu1-mesa-dev pkg-config libgtk-3-dev libdbus-1-dev
 
     - name: Install latest Clang
       if: matrix.os == 'ubuntu-latest' && matrix.c_compiler == 'clang'
