@@ -16,7 +16,7 @@ namespace AstralRaytracer
 
 			const TextureDataRGBF& getTextureData() const { return m_texData; }
 
-			inline glm::vec3 getRayDirectionFromNormalizedCoord(
+			glm::vec3 getRayDirectionFromNormalizedCoord(
 					glm::vec2        coord,
 					const glm::mat4& inverseProjection,
 					const glm::mat4& inverseView

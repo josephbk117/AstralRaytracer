@@ -74,7 +74,6 @@ int main()
 			window.pollEvents();
 		}
 	}
-
 	window.shutdown();
 	return 0;
 }

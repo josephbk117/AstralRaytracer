@@ -107,7 +107,7 @@ namespace AstralRaytracer
 					AstralRaytracer::UI::AppStateInfo& appStateInfo
 			);
 
-			void drawMenuBar();
+			void drawMenuBar(Scene& scene, AssetManager& assetManager, UI::AppStateInfo& appStateInfo);
 			void drawFrameratePlot();
 			void drawSampleProgress(const uint32 frameIndex);
 
@@ -144,8 +144,6 @@ namespace AstralRaytracer
 			UI::EnvironmentSettings m_environmentSettings;
 
 			static void windowSizeCallback(GLFWwindow* window, int32 width, int32 height);
-			void        createThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo);
-			void        destroyThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo);
 			void        setSelectedObjectIndexFromMouseCoord(
 								 const glm::vec2&                   mousePos,
 								 AstralRaytracer::UI::AppStateInfo& appStateInfo,

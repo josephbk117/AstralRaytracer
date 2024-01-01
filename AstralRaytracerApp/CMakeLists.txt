@@ -33,6 +33,7 @@ target_include_directories(AstralRaytracerApp
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/efsw/include
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/mimalloc/include
                            PUBLIC ${PROJECT_SOURCE_DIR}/external/glm
+                           PUBLIC ${PROJECT_SOURCE_DIR}/external/nativefiledialog-extended/include
 )
 
 # Link the executable with the library
@@ -40,4 +41,5 @@ target_link_libraries(AstralRaytracerApp
                             PRIVATE AstralRaytracerLib
                             PRIVATE glfw
                             PRIVATE efsw
+                            PRIVATE nfd
 )

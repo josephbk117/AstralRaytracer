@@ -6,6 +6,8 @@
 #include "WindowFramework/UI/ImGuizmo/ImGuizmo.h"
 #include "WindowFramework/UI/ImageInspect.h"
 
+#include <nfd.hpp>
+
 namespace AstralRaytracer
 {
 	const std::string& Window::getName() const { return m_name; }
@@ -48,6 +50,12 @@ namespace AstralRaytracer
 
 		ASTRAL_LOG_TRACE("Window creation finished");
 
+		nfdresult_t nfdInitResult= NFD::Init();
+		if(nfdInitResult != nfdresult_t::NFD_OKAY)
+		{
+			ASTRAL_LOG_ERROR("NFD failed to initialize");
+		}
+
 		imGuiInit();
 	}
 
@@ -71,16 +79,6 @@ namespace AstralRaytracer
 				fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", secondaryFontSize);
 		m_tertiaryFont=
 				fontAtlas.AddFontFromFileTTF("app_assets/fonts/Roboto-Regular.ttf", tertiaryFontSize);
-
-		// Setup ImGui File Dialog Callbacks
-		auto createThumbnailFunc=
-				std::bind(&AstralRaytracer::Window::createThumbnailCallback, this, std::placeholders::_1);
-		ImGuiFileDialog::Instance()->SetCreateThumbnailCallback(createThumbnailFunc);
-
-		// Destroy thumbnails texture
-		auto destroyThumbnailFunc=
-				std::bind(&AstralRaytracer::Window::destroyThumbnailCallback, this, std::placeholders::_1);
-		ImGuiFileDialog::Instance()->SetDestroyThumbnailCallback(destroyThumbnailFunc);
 
 		setDefaultTheme();
 	}
@@ -355,8 +353,6 @@ namespace AstralRaytracer
 		IMGUIZMO_NAMESPACE::BeginFrame();
 		IMGUIZMO_NAMESPACE::SetOrthographic(false);
 
-		ImGuiFileDialog::Instance()->ManageGPUThumbnails();
-
 		constexpr ImGuiWindowFlags flags= ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
 																			ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings |
 																			ImGuiWindowFlags_MenuBar;
@@ -367,39 +363,7 @@ namespace AstralRaytracer
 
 		if(ImGui::Begin("Main Window", nullptr, flags))
 		{
-			drawMenuBar();
-
-			ImGuiFileDialog& fileDialog= *ImGuiFileDialog::Instance();
-
-			const ImVec2 minDialogRes    = UI::toImVec2(m_minResolution);
-			const ImVec2 viewportWorkSize= viewport->WorkSize;
-
-			if(fileDialog.Display(
-						 FileDialogProjectKey, ImGuiWindowFlags_NoCollapse, minDialogRes, viewportWorkSize
-				 ))
-			{
-				if(fileDialog.IsOk())
-				{
-					const std::string filePathName= fileDialog.GetFilePathName();
-					handleChooseProjectDialog(scene, assetManager, filePathName, appStateInfo);
-				}
-
-				fileDialog.Close();
-			}
-
-			if(fileDialog.Display(
-						 FileDialogSceneKey, ImGuiWindowFlags_NoCollapse, minDialogRes, viewportWorkSize
-				 ))
-			{
-				if(fileDialog.IsOk())
-				{
-					const std::string filePathName= fileDialog.GetFilePathName();
-					handleChooseSceneDialog(scene, assetManager, filePathName, appStateInfo);
-				}
-
-				fileDialog.Close();
-			}
-
+			drawMenuBar(scene, assetManager, appStateInfo);
 			drawToolbar(renderer, assetManager, appStateInfo);
 
 			constexpr int32 tableFlags= ImGuiTableFlags_BordersInner | ImGuiTableFlags_Resizable |
@@ -670,7 +634,7 @@ namespace AstralRaytracer
 		}
 	}
 
-	void Window::drawMenuBar()
+	void Window::drawMenuBar(Scene& scene, AssetManager& assetManager, UI::AppStateInfo& appStateInfo)
 	{
 		if(ImGui::BeginMenuBar())
 		{
@@ -678,17 +642,45 @@ namespace AstralRaytracer
 			{
 				if(ImGui::MenuItem("Open Project", "Ctrl+O"))
 				{
-					ImGuiFileDialog::Instance()->OpenDialog(
-							FileDialogProjectKey, "Choose Project", FileExtensionForProject.c_str(), ".", 1,
-							nullptr, ImGuiFileDialogFlags_Modal
-					);
+					const nfdu8filteritem_t filterItem[1]= {
+						{"Project", "asproj"}
+					};
+
+					NFD::UniquePathU8 outPath;
+					const nfdresult_t result= NFD::OpenDialog(outPath, filterItem, 1);
+
+					if(result == nfdresult_t::NFD_OKAY)
+					{
+						const std::string filePathName(outPath.get());
+
+						ASTRAL_LOG_INFO("Choose project {}", filePathName);
+						handleChooseProjectDialog(scene, assetManager, filePathName, appStateInfo);
+					}
+					else if(result == nfdresult_t::NFD_ERROR)
+					{
+						ASTRAL_LOG_ERROR(NFD::GetError());
+					}
 				}
 				if(ImGui::MenuItem("Open Scene", "Ctrl+O+S"))
 				{
-					ImGuiFileDialog::Instance()->OpenDialog(
-							FileDialogSceneKey, "Choose Scene", FileExtensionForScene.c_str(), ".", 1, nullptr,
-							ImGuiFileDialogFlags_Modal
-					);
+					const nfdu8filteritem_t filterItem[1]= {
+						{"Scene", "ascene"}
+					};
+
+					NFD::UniquePathU8 outPath;
+					const nfdresult_t result= NFD::OpenDialog(outPath, filterItem, 1);
+
+					if(result == nfdresult_t::NFD_OKAY)
+					{
+						const std::string filePathName(outPath.get());
+
+						ASTRAL_LOG_INFO("Choose scene {}", filePathName);
+						handleChooseSceneDialog(scene, assetManager, filePathName, appStateInfo);
+					}
+					else if(result == nfdresult_t::NFD_ERROR)
+					{
+						ASTRAL_LOG_ERROR(NFD::GetError());
+					}
 				}
 				ImGui::EndMenu();
 			}
@@ -750,50 +742,12 @@ namespace AstralRaytracer
 		gl::glViewport(0, 0, width, height);
 	}
 
-	void Window::createThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo)
-	{
-		if(thumbnailInfo != nullptr && static_cast<bool>(thumbnailInfo->isReadyToUpload) &&
-			 static_cast<bool>(thumbnailInfo->textureFileDatas))
-		{
-			gl::GLuint textureId= 0;
-			gl::glGenTextures(1, &textureId);
-			thumbnailInfo->textureID= textureId;
-
-			gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_LINEAR);
-			gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_LINEAR);
-			gl::glTexImage2D(
-					gl::GL_TEXTURE_2D, 0, gl::GL_RGBA, (gl::GLsizei)thumbnailInfo->textureWidth,
-					(gl::GLsizei)thumbnailInfo->textureHeight, 0, gl::GL_RGBA, gl::GL_UNSIGNED_BYTE,
-					thumbnailInfo->textureFileDatas
-			);
-			gl::glFinish();
-			gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
-
-			delete[] thumbnailInfo->textureFileDatas;
-			thumbnailInfo->textureFileDatas= nullptr;
-
-			thumbnailInfo->isReadyToUpload = static_cast<int32>(false);
-			thumbnailInfo->isReadyToDisplay= static_cast<int32>(true);
-		}
-	}
-
-	void Window::destroyThumbnailCallback(IGFD_Thumbnail_Info* thumbnailInfo)
-	{
-		if(thumbnailInfo != nullptr)
-		{
-			gl::GLuint texID= thumbnailInfo->textureID;
-			gl::glDeleteTextures(1, &texID);
-			gl::glFinish();
-		}
-	}
-
 	bool Window::shouldWindowClose() const { return glfwWindowShouldClose(m_glfwWindow); }
 
 	void Window::shutdown() const
 	{
+		NFD::Quit();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
