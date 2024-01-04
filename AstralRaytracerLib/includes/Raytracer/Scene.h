@@ -23,6 +23,8 @@ namespace AstralRaytracer
 			Scene();
 			~Scene();
 
+			void initialize();
+
 			[[nodiscard]]
 			const std::string& getName() const;
 
@@ -42,5 +44,7 @@ namespace AstralRaytracer
 			std::vector<std::unique_ptr<PostProcessing>> m_postProcessingStack;
 		private:
 			std::string m_name;
+
+			void setupDefaults();
 	};
 } // namespace AstralRaytracer

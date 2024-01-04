@@ -11,9 +11,11 @@
 
 namespace AstralRaytracer
 {
-	Scene::Scene() { unload(); }
+	Scene::Scene() { }
 
 	Scene::~Scene() { }
+
+	void Scene::initialize() { unload(); }
 
 	const std::string& Scene::getName() const { return m_name; }
 
@@ -190,7 +192,17 @@ namespace AstralRaytracer
 		m_textures.clear();
 		m_postProcessingStack.clear();
 
-		// Set up defaults
+		// Need all tracked assets to be empty before setting defaults
+		setupDefaults();
+	}
+
+	void Scene::setupDefaults()
+	{
+		ASTRAL_ASSERTM(
+				m_sceneTraceables.size() == 0 && m_materials.size() == 0 && m_textures.size() == 0 &&
+						m_postProcessingStack.size() == 0,
+				"Scene tried to set defaults while data already exists"
+		);
 
 		addMaterial(Material());
 		TextureDataRGBF defaultTexData(1, 1);

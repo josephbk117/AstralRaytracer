@@ -13,7 +13,7 @@ namespace AstralRaytracer
 	{
 		public:
 			Compositor();
-
+			void initialize();
 			void processImage(const Scene& scene, const glm::u32vec2& resolution, uint32 inputTextureId);
 
 			[[nodiscard]]

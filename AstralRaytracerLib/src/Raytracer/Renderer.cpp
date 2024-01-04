@@ -15,7 +15,11 @@
 namespace AstralRaytracer
 {
 
-	Renderer::Renderer()
+	Renderer::Renderer() { }
+
+	Renderer::~Renderer() { }
+
+	void Renderer::initialize()
 	{
 		constexpr uint32 initialWidth = 16;
 		constexpr uint32 initialHeight= 16;
@@ -26,8 +30,6 @@ namespace AstralRaytracer
 
 		onResize(32, 32);
 	}
-
-	Renderer::~Renderer() { }
 
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{

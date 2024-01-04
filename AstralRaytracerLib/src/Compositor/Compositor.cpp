@@ -5,7 +5,9 @@
 
 namespace AstralRaytracer
 {
-	Compositor::Compositor()
+	Compositor::Compositor() { }
+
+	void Compositor::initialize()
 	{
 		m_renderTexture1.init({ 32, 32 });
 		m_renderTexture2.init({ 32, 32 });

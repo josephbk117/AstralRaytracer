@@ -12,6 +12,7 @@ namespace AstralRaytracer
 			Renderer();
 			~Renderer();
 
+			void initialize();
 			void render(const Scene& scene, const Camera& cam);
 
 			const TextureDataRGBF& getTextureData() const { return m_texData; }
