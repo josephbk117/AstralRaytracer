@@ -24,7 +24,7 @@
 // SOFTWARE.
 //
 #pragma once
-#include <stdint.h>
+#include <cstdint>
 #include <imgui.h>
 
 struct ImRect;

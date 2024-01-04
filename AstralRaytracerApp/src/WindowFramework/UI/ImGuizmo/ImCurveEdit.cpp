@@ -27,7 +27,7 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <set>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 //--PREVENT AUTO HEADER FILE ORDERING--

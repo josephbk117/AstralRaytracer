@@ -27,10 +27,10 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 
 #include <array>
-#include <float.h>
+#include <cfloat>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <math.h>
+#include <cmath>
 #include <vector>
 
 //--PREVENT AUTO HEADER FILE ORDERING--
