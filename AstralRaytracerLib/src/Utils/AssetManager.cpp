@@ -41,7 +41,7 @@ namespace AstralRaytracer
 
 		clearAndResetCachedData();
 
-		ASTRAL_LOG_TRACE("Project file loaded successfully: {}", absolutePathStr);
+		ASTRAL_LOG_INFO("Project file loaded successfully: {}", absolutePathStr);
 
 		return true;
 	}

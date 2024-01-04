@@ -118,7 +118,7 @@ namespace AstralRaytracer
 		}
 		else
 		{
-			ASTRAL_LOG_TRACE("Successfully deserialized scene file : {}", absolutePathStr);
+			ASTRAL_LOG_INFO("Successfully deserialized scene file : {}", absolutePathStr);
 		}
 
 		std::ifstream stream(absolutePathStr);
@@ -131,7 +131,7 @@ namespace AstralRaytracer
 		}
 
 		m_name= data["Scene"].as<std::string>();
-		ASTRAL_LOG_TRACE("Scene : {}", m_name);
+		ASTRAL_LOG_INFO("Scene : {}", m_name);
 
 		const auto& textures= data["Textures"];
 		ASTRAL_LOG_TRACE("Number of textures : {}", textures.size());
