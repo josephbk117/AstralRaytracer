@@ -52,12 +52,12 @@ jobs:
             c_compiler: cl
 
     steps:
+    - name: Enable long paths for Git
+      run: git config --global core.longpaths true
+
     - uses: actions/checkout@v4
       with:
         submodules: recursive
-    
-    - name: Enable long paths for Git
-      run: git config --global core.longpaths true
 
     - name: Install xorg
       if: matrix.os == 'ubuntu-latest'
