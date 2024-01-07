@@ -1,6 +1,5 @@
 #include "Application.h"
 
-#include <hwinfo/hwinfo.h>
 #include <mimalloc.h>
 
 Application::Application(spdlog::level::level_enum logLevel)
@@ -14,40 +13,6 @@ Application::Application(spdlog::level::level_enum logLevel)
 
 	spdlog::default_logger_raw()->set_level(logLevel);
 	spdlog::default_logger_raw()->set_pattern("[Thread:%t][Time Delta(ms):+%-6i][%D %T][%l] %v");
-
-	logOperatingSystemInfo();
-	logCpuInfo();
-}
-
-void Application::logCpuInfo()
-{
-	std::vector<hwinfo::CPU> cpus= hwinfo::getAllCPUs();
-	for(const auto& cpu : cpus)
-	{
-
-		ASTRAL_LOG_INFO("CPU id: {}", cpu.id());
-		ASTRAL_LOG_INFO("CPU Vendor: {}", cpu.vendor());
-		ASTRAL_LOG_INFO("CPU Model: {}", cpu.modelName());
-		ASTRAL_LOG_INFO("CPU Physical Cores: {}", cpu.numLogicalCores());
-		ASTRAL_LOG_INFO("CPU Logical Cores: {}", cpu.numLogicalCores());
-		ASTRAL_LOG_INFO("CPU Max Frequency: {}", cpu.maxClockSpeed_MHz());
-		ASTRAL_LOG_INFO("CPU Regular Frequency: {}", cpu.regularClockSpeed_MHz());
-		ASTRAL_LOG_INFO(
-				"CPU Cache Size L1: {}, L2: {}, L3: {}", cpu.L1CacheSize_Bytes(), cpu.L2CacheSize_Bytes(),
-				cpu.L3CacheSize_Bytes()
-		);
-	}
-}
-
-void Application::logOperatingSystemInfo()
-{
-	hwinfo::OS os;
-
-	ASTRAL_LOG_INFO("OS name: {}", os.name());
-	ASTRAL_LOG_INFO("OS Version: {}", os.version());
-	ASTRAL_LOG_INFO("OS Kernel: {}", os.kernel());
-	ASTRAL_LOG_INFO("OS Architecture: {}", (os.is32bit() ? "32 bit" : "64 bit"));
-	ASTRAL_LOG_INFO("OS Endianess: {}", (os.isLittleEndian() ? "little endian" : "big endian"));
 }
 
 void Application::initialize()

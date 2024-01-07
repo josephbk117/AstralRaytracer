@@ -28,6 +28,3 @@
 [submodule "external/nativefiledialog-extended"]
 	path = external/nativefiledialog-extended
 	url = https://github.com/btzy/nativefiledialog-extended.git
-[submodule "external/hwinfo"]
-	path = external/hwinfo
-	url = https://github.com/lfreist/hwinfo.git

@@ -30,7 +30,6 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
-add_subdirectory(external/hwinfo)
 add_subdirectory(external/nativefiledialog-extended)
 add_subdirectory(external/glm)
 set(MI_WIN_REDIRECT OFF)

@@ -13,8 +13,6 @@ class Application
 {
 	public:
 		Application(spdlog::level::level_enum logLevel= spdlog::level::trace);
-		void logCpuInfo();
-		void logOperatingSystemInfo();
 		void initialize();
 		void run();
 		void shutdown();
