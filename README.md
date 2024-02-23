@@ -25,6 +25,14 @@
   </a>
 </p>
 
+
+## Video Preview
+
+
+https://github.com/josephbk117/AstralRaytracer/assets/21062972/5fb639ab-4752-4c1f-8c54-d62db33955ff
+
+
+
 ## Project Structure
 
 The project is organized into the following directories:
