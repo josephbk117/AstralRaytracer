@@ -26,26 +26,28 @@ namespace AstralRaytracer
 
 		m_outputTextureId= inputTextureId;
 
-		if(scene.m_postProcessingStack.size() > 0)
+		if(scene.m_postProcessingStack.size() <= 0)
 		{
-			scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture1, inputTextureId);
-			scene.m_postProcessingStack[0]->setMainColorTexture(inputTextureId);
-			m_outputTextureId= m_renderTexture1.getTexture();
-			for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
-			{
-				const bool isOddIndex= (index - 1) % 2 != 0;
+			return;
+		}
 
-				const RenderTexture& selectedRenderTex= (isOddIndex) ? m_renderTexture1 : m_renderTexture2;
+		scene.m_postProcessingStack[0]->processImage(m_dwPanel, m_renderTexture1, inputTextureId);
+		scene.m_postProcessingStack[0]->setMainColorTexture(inputTextureId);
+		m_outputTextureId= m_renderTexture1.getTexture();
+		for(uint32 index= 1; index < scene.m_postProcessingStack.size(); ++index)
+		{
+			const bool isOddIndex= (index - 1) % 2 != 0;
 
-				const uint32 selectedInputTex=
-						(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
+			const RenderTexture& selectedRenderTex= (isOddIndex) ? m_renderTexture1 : m_renderTexture2;
 
-				scene.m_postProcessingStack[index]->setMainColorTexture(inputTextureId);
-				scene.m_postProcessingStack[index]->processImage(
-						m_dwPanel, selectedRenderTex, selectedInputTex
-				);
-				m_outputTextureId= selectedRenderTex.getTexture();
-			}
+			const uint32 selectedInputTex=
+					(isOddIndex) ? m_renderTexture2.getTexture() : m_renderTexture1.getTexture();
+
+			scene.m_postProcessingStack[index]->setMainColorTexture(inputTextureId);
+			scene.m_postProcessingStack[index]->processImage(
+					m_dwPanel, selectedRenderTex, selectedInputTex
+			);
+			m_outputTextureId= selectedRenderTex.getTexture();
 		}
 	}
 

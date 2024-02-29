@@ -66,7 +66,7 @@ namespace AstralRaytracer
 			));
 		}
 
-		AABB boundingBox;
+		AABB boundingBox{};
 		boundingBox.min= glm::vec3(accessor.minValues[0], accessor.minValues[1], accessor.minValues[2]);
 		boundingBox.max= glm::vec3(accessor.maxValues[0], accessor.maxValues[1], accessor.maxValues[2]);
 

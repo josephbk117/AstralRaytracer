@@ -21,26 +21,26 @@ namespace AstralRaytracer
 
 		const float32 discriminant= b * b - 4.0f * a * c;
 
-		if(discriminant >= 0.0f)
+		if(discriminant < 0.0f)
 		{
-			float32 closestHit= (-b - glm::sqrt(discriminant)) / (2.0f * a);
-			// float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
-
-			if(closestHit < 0.0f)
-			{
-				return false;
-			}
-
-			hitInfo.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
-			hitInfo.worldSpaceNormal  = glm::normalize(hitInfo.worldSpacePosition);
-			hitInfo.worldSpacePosition+= m_transform.getPosition();
-
-			hitInfo.materialIndex= m_materialIndex;
-			hitInfo.hitDistance  = closestHit;
-			return true;
+			return false;
 		}
 
-		return false;
+		float32 closestHit= (-b - glm::sqrt(discriminant)) / (2.0f * a);
+		// float32 t0      = (-b + glm::sqrt(discriminant)) / (2.0f * a); // second hit
+
+		if(closestHit < 0.0f)
+		{
+			return false;
+		}
+
+		hitInfo.worldSpacePosition= adjustedOrigin + rayIn.direction * closestHit;
+		hitInfo.worldSpaceNormal  = glm::normalize(hitInfo.worldSpacePosition);
+		hitInfo.worldSpacePosition+= m_transform.getPosition();
+
+		hitInfo.materialIndex= m_materialIndex;
+		hitInfo.hitDistance  = closestHit;
+		return true;
 	}
 
 	void SphereTraceable::serialize(AssetManager& assetManager, YAML::Emitter& out) const

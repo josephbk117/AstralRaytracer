@@ -20,9 +20,11 @@ TextureDataRGB TextureManager::loadTextureDataFromFileRGB(const std::filesystem:
 
 	TextureDataRGB     texData(width, height);
 	std::vector<uint8> vecData;
-	vecData.resize(width * height * numChannels);
 
-	std::memcpy(vecData.data(), data, width * height * numChannels);
+	const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
+	vecData.resize(resizeCount);
+
+	std::memcpy(vecData.data(), data, resizeCount);
 
 	texData.setTextureData(vecData);
 	stbi_image_free(data);
@@ -40,9 +42,11 @@ TextureDataRGBA TextureManager::loadTextureDataFromFileRGBA(const std::filesyste
 
 	TextureDataRGBA    texData(width, height);
 	std::vector<uint8> vecData;
-	vecData.resize(width * height * numChannels);
 
-	std::memcpy(vecData.data(), data, width * height * numChannels);
+	const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
+	vecData.resize(resizeCount);
+
+	std::memcpy(vecData.data(), data, resizeCount);
 
 	texData.setTextureData(vecData);
 	stbi_image_free(data);
@@ -60,11 +64,11 @@ TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesyste
 
 	TextureDataRGBF      texData(width, height);
 	std::vector<float32> vecData;
-	vecData.resize(width * height * numChannels);
 
-	std::memcpy(
-			vecData.data(), data, static_cast<size_t>(width) * height * numChannels * sizeof(float32)
-	);
+	const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
+	vecData.resize(resizeCount);
+
+	std::memcpy(vecData.data(), data, resizeCount * sizeof(float32));
 
 	// Apply gamma
 #ifdef SUPPORT_STD_EXECUTION

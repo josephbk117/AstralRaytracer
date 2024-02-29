@@ -33,13 +33,15 @@ namespace AstralRaytracer
 				}
 			}
 		}
-		if(closestHitInfo.hitDistance > 0.0f &&
-			 closestHitInfo.hitDistance < std::numeric_limits<float32>::max())
+
+		if(closestHitInfo.hitDistance <= 0.0f ||
+			 closestHitInfo.hitDistance >= std::numeric_limits<float32>::max())
 		{
-			hitInfo= closestHitInfo;
-			return true;
+			return false;
 		}
-		return false;
+
+		hitInfo= closestHitInfo;
+		return true;
 	}
 
 	void StaticMesh::setPosition(const glm::vec3& position)

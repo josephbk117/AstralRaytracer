@@ -127,7 +127,7 @@ namespace AstralRaytracer
 		}
 		m_texData.resize(width, height);
 
-		const size_t newSizePixelCount= width * height;
+		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
 		m_accumulatedColorData.resize(newSizePixelCount * 3);
 		resetFrameIndex();
 
@@ -142,10 +142,9 @@ namespace AstralRaytracer
 	void Renderer::resetFrameIndex()
 	{
 		m_frameIndex= 1;
-		std::memset(
-				m_accumulatedColorData.data(), 0,
-				m_texData.getWidth() * m_texData.getHeight() * 3 * sizeof(float32)
-		);
+		const size_t bufferSize=
+				static_cast<size_t>(m_texData.getWidth()) * m_texData.getHeight() * 3 * sizeof(float32);
+		std::memset(m_accumulatedColorData.data(), 0, bufferSize);
 	}
 
 	glm::vec3
