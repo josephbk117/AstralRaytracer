@@ -40,9 +40,9 @@ namespace YAML
 	};
 
 	template<>
-	struct convert<ColourData>
+	struct convert<AstralRaytracer::ColourData>
 	{
-			static Node encode(const ColourData& rhs)
+			static Node encode(const AstralRaytracer::ColourData& rhs)
 			{
 				Node      node;
 				glm::vec3 colour= rhs.getColour_32_bit();
@@ -52,7 +52,7 @@ namespace YAML
 				return node;
 			}
 
-			static bool decode(const Node& node, ColourData& rhs)
+			static bool decode(const Node& node, AstralRaytracer::ColourData& rhs)
 			{
 				if(!node.IsSequence() || node.size() != 3)
 				{
@@ -62,7 +62,7 @@ namespace YAML
 				const float32 y= node[1].as<float32>();
 				const float32 z= node[2].as<float32>();
 
-				rhs= ColourData(x, y, z);
+				rhs= AstralRaytracer::ColourData(x, y, z);
 				return true;
 			}
 	};
