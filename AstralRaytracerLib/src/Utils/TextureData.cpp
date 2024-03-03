@@ -12,29 +12,25 @@ namespace AstralRaytracer
 	{
 		m_width = width;
 		m_height= height;
-
-		ASTRAL_ASSERTM(ComponentCount <= 4, "Invalid Component count");
-
 		m_data.resize(width * height * ComponentCount);
 	}
 
 	template<typename T, uint8 ComponentCount>
 	void TextureData<T, ComponentCount>::resize(uint32 width, uint32 height)
 	{
-		if(m_width == width && m_height == height)
-		{
-			return;
-		}
-
 		m_width = width;
 		m_height= height;
-
 		m_data.resize(width * height * ComponentCount);
 	}
 
 	template<typename T, uint8 ComponentCount>
 	void TextureData<T, ComponentCount>::setTextureData(const std::vector<T>& data)
 	{
+		ASTRAL_ASSERTM(
+				m_width * m_height * ComponentCount == data.size(),
+				"Can't set texture data, invalid input data size"
+		);
+
 		m_data= data;
 	}
 
