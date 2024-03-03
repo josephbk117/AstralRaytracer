@@ -8,11 +8,16 @@ namespace AstralRaytracer
 	}
 
 	template<typename T, uint8 ComponentCount>
-	TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
+	TextureData<T, ComponentCount>::TextureData(
+			uint32                width,
+			uint32                height,
+			const std::vector<T>& data /*= {}*/
+	)
 	{
 		m_width = width;
 		m_height= height;
 		m_data.resize(width * height * ComponentCount);
+		setTextureData(data);
 	}
 
 	template<typename T, uint8 ComponentCount>

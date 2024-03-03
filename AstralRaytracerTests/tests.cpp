@@ -1,4 +1,5 @@
 #include <Utils/TextureData.h>
+#include <gtest/gtest-spi.h>
 #include <gtest/gtest.h>
 
 class TextureDataTest: public testing::Test
@@ -35,20 +36,27 @@ class TextureDataTest: public testing::Test
 
 		void SetUp() override
 		{
-			TextureRGB  = AstralRaytracer::TextureDataRGB(width, height);
-			TextureRGBA = AstralRaytracer::TextureDataRGBA(width, height);
-			TextureRGBF = AstralRaytracer::TextureDataRGBF(width, height);
-			TextureRGBAF= AstralRaytracer::TextureDataRGBAF(width, height);
-
-			// Fill textures with data
-			TextureRGB.setTextureData(RGBColorData1);
+			TextureRGB  = AstralRaytracer::TextureDataRGB(width, height, RGBColorData1);
+			TextureRGBA = AstralRaytracer::TextureDataRGBA(width, height, RGBAColorData1);
+			TextureRGBF = AstralRaytracer::TextureDataRGBF(width, height, RGBFColorData1);
+			TextureRGBAF= AstralRaytracer::TextureDataRGBAF(width, height, RGBAFColorData1);
 		}
 
 		// Inherited via Test
 		void TestBody() override { }
 };
 
-TEST_F(TextureDataTest, ValidateTextureDataGetAndSetData)
+using TextureDataDeathTest= TextureDataTest;
+
+TEST_F(TextureDataDeathTest, ValidateTextureDataHandleMismatchedDataAssignment)
+{
+	EXPECT_DEATH(TextureRGB.setTextureData(RGBColorData2), "");
+	EXPECT_DEATH(TextureRGBA.setTextureData(RGBAColorData2), "");
+	EXPECT_DEATH(TextureRGBF.setTextureData(RGBFColorData2), "");
+	EXPECT_DEATH(TextureRGBAF.setTextureData(RGBAFColorData2), "");
+}
+
+TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
 {
 	TextureRGB.setTextureData(RGBColorData1);
 	TextureRGBA.setTextureData(RGBAColorData1);
@@ -58,7 +66,6 @@ TEST_F(TextureDataTest, ValidateTextureDataGetAndSetData)
 	// First Pixel
 	EXPECT_EQ(TextureRGB.getTexelColor(0u, 0u), TextureRGB.getTexelColor(0.0f, 0.0f));
 	EXPECT_EQ(TextureRGBA.getTexelColor(0u, 0u), TextureRGBA.getTexelColor(0.0f, 0.0f));
-
 	EXPECT_EQ(TextureRGBF.getTexelColor(0u, 0u), TextureRGBF.getTexelColor(0.0f, 0.0f));
 	EXPECT_EQ(TextureRGBAF.getTexelColor(0u, 0u), TextureRGBAF.getTexelColor(0.0f, 0.0f));
 
@@ -84,17 +91,13 @@ TEST_F(TextureDataTest, ValidateTextureDataGetAndSetData)
 	);
 
 	// Last Pixel
-	EXPECT_EQ(TextureRGB.getTexelColor(width - 1, height - 1), TextureRGB.getTexelColor(1.0f, 1.0f));
-	EXPECT_EQ(
-			TextureRGBA.getTexelColor(width - 1, height - 1), TextureRGBA.getTexelColor(1.0f, 1.0f)
-	);
+	const uint32 lastX= width - 1;
+	const uint32 lastY= height - 1;
 
-	EXPECT_EQ(
-			TextureRGBF.getTexelColor(width - 1, height - 1), TextureRGBF.getTexelColor(1.0f, 1.0f)
-	);
-	EXPECT_EQ(
-			TextureRGBAF.getTexelColor(width - 1, height - 1), TextureRGBAF.getTexelColor(1.0f, 1.0f)
-	);
+	EXPECT_EQ(TextureRGB.getTexelColor(lastX, lastY), TextureRGB.getTexelColor(1.0f, 1.0f));
+	EXPECT_EQ(TextureRGBA.getTexelColor(lastX, lastY), TextureRGBA.getTexelColor(1.0f, 1.0f));
+	EXPECT_EQ(TextureRGBF.getTexelColor(lastX, lastY), TextureRGBF.getTexelColor(1.0f, 1.0f));
+	EXPECT_EQ(TextureRGBAF.getTexelColor(lastX, lastY), TextureRGBAF.getTexelColor(1.0f, 1.0f));
 }
 
 TEST_F(TextureDataTest, ValidateTextureDataComponentCounts)

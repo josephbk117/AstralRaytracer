@@ -15,7 +15,7 @@ namespace AstralRaytracer
 			uint32         m_height;
 		public:
 			TextureData();
-			TextureData(uint32 width, uint32 height);
+			TextureData(uint32 width, uint32 height, const std::vector<T>& data= {});
 			~TextureData()= default;
 			void resize(uint32 width, uint32 height);
 			void setTextureData(const std::vector<T>& data);
