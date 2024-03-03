@@ -80,18 +80,19 @@ namespace AstralRaytracer
 			uint32                               y
 	)
 	{
-		const int32 i= ((float32)m_width * (float32)y + (float32)x) * 4.0f;
+		const uint32 index= (m_width * y + x) * ComponentCount;
 
-		m_data[i]    = texel[0];
-		m_data[i + 1]= texel[1];
-		m_data[i + 2]= texel[2];
+		m_data[index]    = texel[0];
+		m_data[index + 1]= texel[1];
+		m_data[index + 2]= texel[2];
 	}
 
 	template<typename T, uint8 ComponentCount>
 	glm::vec<ComponentCount, T, glm::defaultp>
 	TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 	{
-		const uint32                               index= (m_width * y + x) * ComponentCount;
+		const uint32 index= (m_width * y + x) * ComponentCount;
+
 		glm::vec<ComponentCount, T, glm::defaultp> out;
 
 		for(uint32 compIndex= 0; compIndex < ComponentCount; ++compIndex)
