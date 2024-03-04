@@ -50,10 +50,10 @@ using TextureDataDeathTest= TextureDataTest;
 
 TEST_F(TextureDataDeathTest, ValidateTextureDataHandleMismatchedDataAssignment)
 {
-	EXPECT_DEATH(TextureRGB.setTextureData(RGBColorData2), "");
-	EXPECT_DEATH(TextureRGBA.setTextureData(RGBAColorData2), "");
-	EXPECT_DEATH(TextureRGBF.setTextureData(RGBFColorData2), "");
-	EXPECT_DEATH(TextureRGBAF.setTextureData(RGBAFColorData2), "");
+	EXPECT_DEATH(TextureRGB.setTextureData(RGBColorData2), "Mismatched data size");
+	EXPECT_DEATH(TextureRGBA.setTextureData(RGBAColorData2), "Mismatched data size");
+	EXPECT_DEATH(TextureRGBF.setTextureData(RGBFColorData2), "Mismatched data size");
+	EXPECT_DEATH(TextureRGBAF.setTextureData(RGBAFColorData2), "Mismatched data size");
 }
 
 TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
@@ -63,41 +63,40 @@ TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
 	TextureRGBF.setTextureData(RGBFColorData1);
 	TextureRGBAF.setTextureData(RGBAFColorData1);
 
-	// First Pixel
-	EXPECT_EQ(TextureRGB.getTexelColor(0u, 0u), TextureRGB.getTexelColor(0.0f, 0.0f));
-	EXPECT_EQ(TextureRGBA.getTexelColor(0u, 0u), TextureRGBA.getTexelColor(0.0f, 0.0f));
-	EXPECT_EQ(TextureRGBF.getTexelColor(0u, 0u), TextureRGBF.getTexelColor(0.0f, 0.0f));
-	EXPECT_EQ(TextureRGBAF.getTexelColor(0u, 0u), TextureRGBAF.getTexelColor(0.0f, 0.0f));
+	// Parameterized test for getting texel color
+	struct TexelTestParams
+	{
+			uint32  x;
+			uint32  y;
+			float32 normalizedX;
+			float32 normalizedY;
+	};
 
-	const uint32 midPointXIndex= width * 0.5f;
-	const uint32 midPointYIndex= height * 0.5f;
+	std::vector<TexelTestParams> testParams= {
+		{0,					0,          0.0f, 0.0f},
+		{ width / 2, height / 2, 0.5f, 0.5f},
+		{ width - 1, height - 1, 1.0f, 1.0f}
+	};
 
-	// Mid Pixel
-	EXPECT_EQ(
-			TextureRGB.getTexelColor(midPointXIndex, midPointYIndex), TextureRGB.getTexelColor(0.5f, 0.5f)
-	);
-	EXPECT_EQ(
-			TextureRGBA.getTexelColor(midPointXIndex, midPointYIndex),
-			TextureRGBA.getTexelColor(0.5f, 0.5f)
-	);
-
-	EXPECT_EQ(
-			TextureRGBF.getTexelColor(midPointXIndex, midPointYIndex),
-			TextureRGBF.getTexelColor(0.5f, 0.5f)
-	);
-	EXPECT_EQ(
-			TextureRGBAF.getTexelColor(midPointXIndex, midPointYIndex),
-			TextureRGBAF.getTexelColor(0.5f, 0.5f)
-	);
-
-	// Last Pixel
-	const uint32 lastX= width - 1;
-	const uint32 lastY= height - 1;
-
-	EXPECT_EQ(TextureRGB.getTexelColor(lastX, lastY), TextureRGB.getTexelColor(1.0f, 1.0f));
-	EXPECT_EQ(TextureRGBA.getTexelColor(lastX, lastY), TextureRGBA.getTexelColor(1.0f, 1.0f));
-	EXPECT_EQ(TextureRGBF.getTexelColor(lastX, lastY), TextureRGBF.getTexelColor(1.0f, 1.0f));
-	EXPECT_EQ(TextureRGBAF.getTexelColor(lastX, lastY), TextureRGBAF.getTexelColor(1.0f, 1.0f));
+	for(const auto& params : testParams)
+	{
+		EXPECT_EQ(
+				TextureRGB.getTexelColor(params.x, params.y),
+				TextureRGB.getTexelColor(params.normalizedX, params.normalizedY)
+		);
+		EXPECT_EQ(
+				TextureRGBA.getTexelColor(params.x, params.y),
+				TextureRGBA.getTexelColor(params.normalizedX, params.normalizedY)
+		);
+		EXPECT_EQ(
+				TextureRGBF.getTexelColor(params.x, params.y),
+				TextureRGBF.getTexelColor(params.normalizedX, params.normalizedY)
+		);
+		EXPECT_EQ(
+				TextureRGBAF.getTexelColor(params.x, params.y),
+				TextureRGBAF.getTexelColor(params.normalizedX, params.normalizedY)
+		);
+	}
 }
 
 TEST_F(TextureDataTest, ValidateTextureDataComponentCounts)

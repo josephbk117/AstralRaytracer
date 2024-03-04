@@ -33,7 +33,7 @@ namespace AstralRaytracer
 	{
 		ASTRAL_ASSERTM(
 				m_width * m_height * ComponentCount == data.size(),
-				"Can't set texture data, invalid input data size"
+				"Mismatched data size"
 		);
 
 		m_data= data;
