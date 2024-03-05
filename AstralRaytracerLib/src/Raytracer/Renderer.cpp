@@ -107,15 +107,19 @@ namespace AstralRaytracer
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(
-			glm::vec2        coord,
+			const glm::vec2& coord,
 			const glm::mat4& inverseProjection,
 			const glm::mat4& inverseView
 	) const
 	{
-		coord                            = (coord * 2.0f) - 1.0f;
-		const glm::vec4& target          = inverseProjection * glm::vec4(coord.x, coord.y, 1.0f, 1.0f);
-		const glm::vec3& targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+		// Pre-calculate the multiplication factor for the coord adjustment
+		const glm::vec2 adjustedCoord= (coord * 2.0f) - 1.0f;
 
+		// Perform the matrix multiplication and normalization in a single step
+		const glm::vec4 target= inverseProjection * glm::vec4(adjustedCoord.x, adjustedCoord.y, 1.0f, 1.0f);
+		const glm::vec3 targetNormalized= glm::normalize(glm::vec3(target) / target.w);
+
+		// Perform the final matrix multiplication
 		return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 	}
 
