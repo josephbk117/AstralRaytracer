@@ -105,15 +105,57 @@ namespace AstralRaytracer
 
 	template<typename T, uint32 ComponentCount>
 	glm::vec<ComponentCount, T, glm::defaultp>
-	TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v) const
+	TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v, SamplingType samplingType)
+			const
 	{
 		const int32 xIndex= u * (m_width - 1);
 		const int32 yIndex= v * (m_height - 1);
 
-		const uint32 modXIndex= glm::abs(xIndex) % m_width;
-		const uint32 modYIndex= glm::abs(yIndex) % m_height;
+		uint32 finalXIndex= 0;
+		uint32 finalYIndex= 0;
 
-		return getTexelColor(modXIndex, modYIndex);
+		switch(samplingType)
+		{
+			case SamplingType::REPEAT:
+				{
+					finalXIndex= glm::abs(xIndex) % m_width;
+					finalYIndex= glm::abs(yIndex) % m_height;
+				}
+				break;
+			case SamplingType::MIRRORED_REPEAT:
+				{
+					finalXIndex= glm::abs(xIndex) % (2 * m_width);
+					if(finalXIndex >= m_width)
+					{
+						finalXIndex= 2 * m_width - finalXIndex - 1;
+					}
+					finalYIndex= glm::abs(yIndex) % (2 * m_height);
+					if(finalYIndex >= m_height)
+					{
+						finalYIndex= 2 * m_height - finalYIndex - 1;
+					}
+				}
+				break;
+			case SamplingType::CLAMP_TO_EDGE:
+				{
+					finalXIndex= glm::clamp(xIndex, 0, static_cast<int32>(m_width - 1));
+					finalYIndex= glm::clamp(yIndex, 0, static_cast<int32>(m_height - 1));
+				}
+				break;
+			case SamplingType::CLAMP_TO_BORDER:
+				{
+					if(xIndex < 0 || xIndex >= m_width || yIndex < 0 || yIndex >= m_height)
+					{
+						return glm::vec<ComponentCount, T, glm::defaultp>(0);
+					}
+					finalXIndex= xIndex;
+					finalYIndex= yIndex;
+				}
+				break;
+			default: break;
+		}
+
+		return getTexelColor(finalXIndex, finalYIndex);
 	}
 
 	template class TextureData<uint8, 3>;

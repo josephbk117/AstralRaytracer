@@ -108,24 +108,36 @@ TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
 		{ width - 1, height - 1, 1.0f, 1.0f}
 	};
 
+	constexpr uint32 minSampleTypeIndex= static_cast<uint32>(AstralRaytracer::SamplingType::MIN);
+	constexpr uint32 maxSampleTypeIndex= static_cast<uint32>(AstralRaytracer::SamplingType::MAX);
 	for(const auto& params : testParams)
 	{
-		EXPECT_EQ(
-				TextureRGB.getTexelColor(params.x, params.y),
-				TextureRGB.getTexelColor(params.normalizedX, params.normalizedY)
-		);
-		EXPECT_EQ(
-				TextureRGBA.getTexelColor(params.x, params.y),
-				TextureRGBA.getTexelColor(params.normalizedX, params.normalizedY)
-		);
-		EXPECT_EQ(
-				TextureRGBF.getTexelColor(params.x, params.y),
-				TextureRGBF.getTexelColor(params.normalizedX, params.normalizedY)
-		);
-		EXPECT_EQ(
-				TextureRGBAF.getTexelColor(params.x, params.y),
-				TextureRGBAF.getTexelColor(params.normalizedX, params.normalizedY)
-		);
+		for(uint32 enumIndex= minSampleTypeIndex; enumIndex <= maxSampleTypeIndex; ++enumIndex)
+		{
+			const AstralRaytracer::SamplingType samplingType=
+					static_cast<AstralRaytracer::SamplingType>(enumIndex);
+
+			EXPECT_EQ(
+					TextureRGB.getTexelColor(params.x, params.y),
+					TextureRGB.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
+
+			);
+			EXPECT_EQ(
+					TextureRGBA.getTexelColor(params.x, params.y),
+					TextureRGBA.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
+
+			);
+			EXPECT_EQ(
+					TextureRGBF.getTexelColor(params.x, params.y),
+					TextureRGBF.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
+
+			);
+			EXPECT_EQ(
+					TextureRGBAF.getTexelColor(params.x, params.y),
+					TextureRGBAF.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
+
+			);
+		}
 	}
 }
 

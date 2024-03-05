@@ -172,7 +172,8 @@ namespace AstralRaytracer
 				const TextureDataRGBF& texData= scene.m_textures[mat.texture];
 
 				glm::vec3 colorData= texData.getTexelColor(
-						closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f
+						closestHitInfo.worldSpacePosition.x * 0.1f, closestHitInfo.worldSpacePosition.z * 0.1f,
+						SamplingType::MIRRORED_REPEAT
 				);
 
 				contribution*= mat.albedo.getColour_32_bit() * colorData;
@@ -197,7 +198,7 @@ namespace AstralRaytracer
 
 				// No intersection; add background color
 
-				const glm::vec3& skyColor= skyTexData.getTexelColor(u, v);
+				const glm::vec3& skyColor= skyTexData.getTexelColor(u, v, SamplingType::CLAMP_TO_EDGE);
 				light+= skyColor * contribution;
 			}
 		}

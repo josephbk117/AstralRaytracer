@@ -6,6 +6,17 @@
 
 namespace AstralRaytracer
 {
+	enum class SamplingType : uint32
+	{
+		INVALID,
+		MIN,
+		REPEAT= MIN,
+		CLAMP_TO_EDGE,
+		MIRRORED_REPEAT,
+		CLAMP_TO_BORDER,
+		MAX= CLAMP_TO_BORDER
+	};
+
 	template<typename T, uint32 ComponentCount>
 	class TextureData
 	{
@@ -39,7 +50,8 @@ namespace AstralRaytracer
 			[[nodiscard]]
 			glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(uint32 x, uint32 y) const;
 			[[nodiscard]]
-			glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(float32 u, float32 v) const;
+			glm::vec<ComponentCount, T, glm::defaultp>
+			getTexelColor(float32 u, float32 v, SamplingType samplingType) const;
 	};
 
 	using TextureDataRGB  = TextureData<uint8, 3>;
