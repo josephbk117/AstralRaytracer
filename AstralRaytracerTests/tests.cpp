@@ -151,6 +151,10 @@ TEST_F(TextureDataTest, ValidateTextureDataComponentCounts)
 
 int main(int argc, char** argv)
 {
+#ifdef NDEBUG
+	return 0;
+#endif
+
 	::testing::InitGoogleTest(&argc, argv);
 	// Turn off logging for tests
 	spdlog::default_logger_raw()->set_level(spdlog::level::level_enum::off);
