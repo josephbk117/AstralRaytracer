@@ -10,6 +10,9 @@
 
 namespace AstralRaytracer
 {
+
+	Window::~Window() { glfwTerminate(); }
+
 	const std::string& Window::getName() const { return m_name; }
 
 	void Window::initialize()
@@ -752,7 +755,6 @@ namespace AstralRaytracer
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
-		glfwTerminate();
 	}
 
 	void Window::swapBuffers() const { glfwSwapBuffers(m_glfwWindow); }
