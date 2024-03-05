@@ -19,10 +19,6 @@
   <a href="https://github.com/josephbk117/AstralRaytracer/actions/workflows/cmake-multi-platform.yml">
     <img src="https://github.com/josephbk117/AstralRaytracer/actions/workflows/cmake-multi-platform.yml/badge.svg" alt="CMake on Multiple Platforms">
   </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://app.deepsource.com/gh/josephbk117/AstralRaytracer/">
-    <img src="https://app.deepsource.com/gh/josephbk117/AstralRaytracer.svg/?label=active+issues&show_trend=true&token=J2GPtWdzkCS5vHib-9fzUIPk" alt="DeepSource">
-  </a>
 </p>
 
 
