@@ -17,7 +17,7 @@ namespace AstralRaytracer
 		MAX= CLAMP_TO_BORDER
 	};
 
-	template<typename T, uint32 ComponentCount>
+	template<class T, uint32 ComponentCount> requires std::is_arithmetic_v<T>
 	class TextureData
 	{
 		private:
