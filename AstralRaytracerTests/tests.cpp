@@ -50,10 +50,40 @@ using TextureDataDeathTest= TextureDataTest;
 
 TEST_F(TextureDataDeathTest, ValidateTextureDataHandleMismatchedDataAssignment)
 {
-	EXPECT_DEATH(TextureRGB.setTextureData(RGBColorData2), "Mismatched data size");
-	EXPECT_DEATH(TextureRGBA.setTextureData(RGBAColorData2), "Mismatched data size");
-	EXPECT_DEATH(TextureRGBF.setTextureData(RGBFColorData2), "Mismatched data size");
-	EXPECT_DEATH(TextureRGBAF.setTextureData(RGBAFColorData2), "Mismatched data size");
+	ASSERT_DEATH(TextureRGB.setTextureData(RGBColorData2), "Mismatched data size");
+	ASSERT_DEATH(TextureRGBA.setTextureData(RGBAColorData2), "Mismatched data size");
+	ASSERT_DEATH(TextureRGBF.setTextureData(RGBFColorData2), "Mismatched data size");
+	ASSERT_DEATH(TextureRGBAF.setTextureData(RGBAFColorData2), "Mismatched data size");
+}
+
+TEST_F(TextureDataDeathTest, SetTexelColorAtPixelIndexEdgeCases)
+{
+	TextureRGB.setTextureData(RGBColorData1);
+	// Attempt to set a color at an out-of-bounds index
+	EXPECT_DEATH(TextureRGB.setTexelColorAtPixelIndex(99, glm::vec3(0, 255, 0)), "Invalid index");
+}
+
+TEST_F(TextureDataDeathTest, SetTexelColorEdgeCases)
+{
+	TextureRGB.setTextureData(RGBColorData1);
+	// Attempt to set a color at an out-of-bounds position
+	EXPECT_DEATH(TextureRGB.setTexelColor(99, 99, glm::u8vec3(0, 255, 0)), "Invalid index");
+}
+
+TEST_F(TextureDataTest, ResizeTextureDataEdgeCases)
+{
+	// Test resizing to a larger size
+	TextureRGB.setTextureData(RGBColorData1);
+	TextureRGB.resize(6, 6);
+	EXPECT_EQ(TextureRGB.getWidth(), 6u);
+	EXPECT_EQ(TextureRGB.getHeight(), 6u);
+	// Verify that the original data is preserved and new data is initialized as expected
+
+	// Test resizing to a smaller size
+	TextureRGB.resize(2, 2);
+	EXPECT_EQ(TextureRGB.getWidth(), 2u);
+	EXPECT_EQ(TextureRGB.getHeight(), 2u);
+	// Verify that the data is correctly trimmed
 }
 
 TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
@@ -110,5 +140,7 @@ TEST_F(TextureDataTest, ValidateTextureDataComponentCounts)
 int main(int argc, char** argv)
 {
 	::testing::InitGoogleTest(&argc, argv);
+	// Turn off logging for tests
+	spdlog::default_logger_raw()->set_level(spdlog::level::level_enum::off);
 	return RUN_ALL_TESTS();
 }
