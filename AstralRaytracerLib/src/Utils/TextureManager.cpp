@@ -11,81 +11,82 @@
 
 namespace AstralRaytracer
 {
-	TextureDataRGB TextureManager::loadTextureDataFromFileRGB(const std::filesystem::path& path)
+	template<ArithMeticType T, uint32 componentCount>
+	void TextureManager::loadTextureDataFromFile(
+			const std::filesystem::path&    path,
+			TextureData<T, componentCount>& textureData,
+			bool                            gamma
+	)
 	{
-		int32 width;
-		int32 height;
-		int32 numChannels;
-
-		stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 3);
-		assert(data);
-
-		TextureDataRGB     texData(width, height);
-		std::vector<uint8> vecData;
-
-		const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
-		vecData.resize(resizeCount);
-
-		std::memcpy(vecData.data(), data, resizeCount);
-
-		texData.setTextureData(vecData);
-		stbi_image_free(data);
-		return texData;
-	}
-
-	TextureDataRGBA TextureManager::loadTextureDataFromFileRGBA(const std::filesystem::path& path)
-	{
-		int32 width;
-		int32 height;
-		int32 numChannels;
-
-		stbi_uc* data= stbi_load(path.string().c_str(), &width, &height, &numChannels, 4);
-		assert(data);
-
-		TextureDataRGBA    texData(width, height);
-		std::vector<uint8> vecData;
-
-		const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
-		vecData.resize(resizeCount);
-
-		std::memcpy(vecData.data(), data, resizeCount);
-
-		texData.setTextureData(vecData);
-		stbi_image_free(data);
-		return texData;
-	}
-
-	TextureDataRGBF TextureManager::loadTextureDataFromFileRGBF(const std::filesystem::path& path)
-	{
-		int32 width;
-		int32 height;
-		int32 numChannels;
-
-		float32* data= stbi_loadf(path.string().c_str(), &width, &height, &numChannels, 3);
-		assert(data);
-
-		TextureDataRGBF      texData(width, height);
-		std::vector<float32> vecData;
-
-		const size_t resizeCount= static_cast<size_t>(width) * height * numChannels;
-		vecData.resize(resizeCount);
-
-		std::memcpy(vecData.data(), data, resizeCount * sizeof(float32));
-
-		// Apply gamma
-#ifdef SUPPORT_STD_EXECUTION
-		std::for_each(
-				std::execution::par_unseq, vecData.begin(), vecData.end(),
-#else
-		std::for_each(
-				vecData.begin(), vecData.end(),
-#endif // SUPPORT_STD_EXECUTION,
-				[=](float32& value) { value= glm::pow(value, 1.0f / 2.2f); }
+		// Determine size of T
+		constexpr size_t sizeOfT= sizeof(T);
+		static_assert(
+				sizeOfT == sizeof(uint8) || sizeOfT == sizeof(uint16) || sizeOfT == sizeof(float32),
+				"Unsupported type"
 		);
 
-		texData.setTextureData(vecData);
+		// Use scoped enumeration for size options
+		enum class SizeOption : uint8
+		{
+			OneByte,
+			TwoByte,
+			FourByte
+		};
+		constexpr SizeOption sizeOption= (sizeOfT == sizeof(uint8))    ? SizeOption::OneByte
+																		 : (sizeOfT == sizeof(uint16)) ? SizeOption::TwoByte
+																																	 : SizeOption::FourByte;
+
+		int32 width      = 0;
+		int32 height     = 0;
+		int32 numChannels= 0;
+
+		T* data= nullptr;
+
+		const std::string pathString= path.string();
+		switch(sizeOption)
+		{
+			case SizeOption::OneByte:
+				data= reinterpret_cast<T*>(
+						stbi_load(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+				break;
+			case SizeOption::TwoByte:
+				data= reinterpret_cast<T*>(
+						stbi_load_16(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+				break;
+			case SizeOption::FourByte:
+				data= reinterpret_cast<T*>(
+						stbi_loadf(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+				break;
+		}
+
+		assert(data);
+
+		textureData.resize(width, height);
+
+		const size_t   resizeCount= static_cast<size_t>(width) * height * numChannels;
+		std::vector<T> vecData(resizeCount);
+
+		std::memcpy(vecData.data(), data, resizeCount * sizeOfT);
+
+		if(gamma)
+		{
+			// Apply gamma
+#ifdef SUPPORT_STD_EXECUTION
+			std::for_each(
+					std::execution::par_unseq, vecData.begin(), vecData.end(),
+#else
+			std::for_each(
+					vecData.begin(), vecData.end(),
+#endif // SUPPORT_STD_EXECUTION
+					[=](T& value) { value= glm::pow(value, 1.0f / 2.2f); }
+			);
+		}
+
+		textureData.setTextureData(std::move(vecData));
 		stbi_image_free(data);
-		return texData;
 	}
 
 	uint32 TextureManager::loadTextureFromTextureData(TextureDataRGBF& textureData, bool gamma)
@@ -173,5 +174,27 @@ namespace AstralRaytracer
 
 		return gl::GLenum::GL_INVALID_ENUM;
 	}
+
+	template void AstralRaytracer::TextureManager::loadTextureDataFromFile<uint8, 3>(
+			const std::filesystem::path&,
+			TextureData<uint8, 3>&,
+			bool
+	);
+
+	template void AstralRaytracer::TextureManager::loadTextureDataFromFile<uint8, 4>(
+			const std::filesystem::path&,
+			TextureData<uint8, 4>&,
+			bool
+	);
+	template void AstralRaytracer::TextureManager::loadTextureDataFromFile<float32, 3>(
+			const std::filesystem::path&,
+			TextureData<float32, 3>&,
+			bool
+	);
+	template void AstralRaytracer::TextureManager::loadTextureDataFromFile<float32, 4>(
+			const std::filesystem::path&,
+			TextureData<float32, 4>&,
+			bool
+	);
 
 } // namespace AstralRaytracer

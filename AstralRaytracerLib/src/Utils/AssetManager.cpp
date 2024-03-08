@@ -67,7 +67,13 @@ namespace AstralRaytracer
 		NameAndPath nameAndPath= { name, path.string() };
 		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
 		textureCount++;
-		return TextureManager::loadTextureDataFromFileRGBF(m_currentRelativePath + path.string());
+
+		TextureDataRGBF outputTextureData;
+		TextureManager::loadTextureDataFromFile(
+				m_currentRelativePath + path.string(), outputTextureData, true
+		);
+
+		return outputTextureData;
 	}
 
 	bool AssetManager::loadMaterialAsset(

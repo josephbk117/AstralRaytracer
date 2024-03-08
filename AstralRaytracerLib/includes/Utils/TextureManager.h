@@ -12,12 +12,14 @@ namespace AstralRaytracer
 		public:
 			TextureManager()                     = delete;
 			TextureManager(const TextureManager&)= delete;
-			[[nodiscard]]
-			static TextureDataRGB loadTextureDataFromFileRGB(const std::filesystem::path& path);
-			[[nodiscard]]
-			static TextureDataRGBA loadTextureDataFromFileRGBA(const std::filesystem::path& path);
-			[[nodiscard]]
-			static TextureDataRGBF loadTextureDataFromFileRGBF(const std::filesystem::path& path);
+
+			template<ArithMeticType T, uint32 componentCount>
+			static void loadTextureDataFromFile(
+					const std::filesystem::path&    path,
+					TextureData<T, componentCount>& textureData,
+					bool                            gamma
+			);
+
 			[[nodiscard]]
 			static uint32 loadTextureFromTextureData(TextureDataRGBF& textureData, bool gamma);
 			static void   updateTexture(const TextureDataRGBF& textureData, uint32 textureId);
@@ -35,4 +37,5 @@ namespace AstralRaytracer
 					uint32               textureID
 			);
 	};
+
 } // namespace AstralRaytracer

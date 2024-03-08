@@ -31,7 +31,8 @@ namespace AstralRaytracer
 			TextureData();
 			TextureData(uint32 width, uint32 height);
 			TextureData(uint32 width, uint32 height, const std::vector<T>& data);
-			~TextureData()= default;
+			TextureData(const TextureData&)= default;
+			~TextureData()                 = default;
 			void resize(uint32 width, uint32 height);
 			void setTextureData(const std::vector<T>& data);
 
@@ -42,7 +43,7 @@ namespace AstralRaytracer
 			[[nodiscard]]
 			uint32 getHeight() const noexcept;
 			[[nodiscard]]
-			constexpr uint32 getComponentCount() const noexcept;
+			inline constexpr uint32 getComponentCount() const noexcept;
 
 			void setTexelColorAtPixelIndex(
 					uint32                                            index,

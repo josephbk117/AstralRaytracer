@@ -88,8 +88,8 @@ namespace AstralRaytracer
 
 	void Window::SetWindowIcon(const std::filesystem::path& iconPath)
 	{
-		AstralRaytracer::TextureDataRGBA iconTexData=
-				AstralRaytracer::TextureManager::loadTextureDataFromFileRGBA(iconPath);
+		AstralRaytracer::TextureDataRGBA iconTexData;
+		AstralRaytracer::TextureManager::loadTextureDataFromFile(iconPath, iconTexData, false);
 
 		GLFWimage image[1]{};
 		image[0].width = iconTexData.getWidth();
