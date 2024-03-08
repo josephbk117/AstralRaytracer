@@ -9,7 +9,7 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
-add_executable(AstralRaytracerTests tests.cpp)
+add_executable(AstralRaytracerTests tests.cpp "UtilsTests/TextureData_Test.h" "UtilsTests/TextureManager_Test.h")
 
 # Include glm headers
 target_include_directories(AstralRaytracerTests
