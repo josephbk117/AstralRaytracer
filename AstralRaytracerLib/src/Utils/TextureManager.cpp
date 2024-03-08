@@ -257,7 +257,9 @@ namespace AstralRaytracer
 		const gl::GLenum dataType      = getTextureDataType<T>();
 		const gl::GLenum internalFormat= getTextureFormatFromComponentCount(componentCount);
 
-		gl::glTexImage2D(gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, width, height, 0, format, dataType, data);
+		gl::glTexImage2D(
+				gl::GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data
+		);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_T, gl::GL_CLAMP_TO_EDGE);
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MIN_FILTER, gl::GL_NEAREST);
