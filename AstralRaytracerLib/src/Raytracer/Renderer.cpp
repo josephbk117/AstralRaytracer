@@ -25,8 +25,8 @@ namespace AstralRaytracer
 		constexpr uint32 initialHeight= 16;
 
 		// Made initial resolution small so that OnResize can run
-		m_texData  = TextureDataRGBF(initialWidth, initialHeight);
-		m_textureId= TextureManager::loadTextureFromTextureData(m_texData, false);
+		m_texData.resize(initialWidth, initialHeight);
+		m_textureId= TextureManager::loadTextureFromTextureData<float32, 3>(m_texData, false);
 
 		onResize(32, 32);
 	}
