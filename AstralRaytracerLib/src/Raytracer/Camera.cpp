@@ -24,8 +24,6 @@ namespace AstralRaytracer
 	{
 		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
 		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
-		m_lastMousePosition= glm::vec2(0.0f);
-		m_resolution       = { 1, 1 };
 
 		recalculateView();
 		recalculateProjection(m_resolution);
@@ -51,7 +49,7 @@ namespace AstralRaytracer
 
 	void Camera::rotate(glm::vec2 rot)
 	{
-		const float32 rotSpeed= 0.5f;
+		constexpr float32 rotSpeed= 0.5f;
 
 		const float32 pitchDelta= rot.y * rotSpeed;
 		const float32 yawDelta  = rot.x * rotSpeed;
@@ -64,6 +62,8 @@ namespace AstralRaytracer
 		);
 
 		m_direction= glm::rotate(q, m_direction);
+		m_right    = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+		m_up       = glm::normalize(glm::cross(m_right, m_direction));
 	}
 
 	void Camera::setVerticalFov(float32 vFov, float32 sensorHeight)
@@ -80,15 +80,9 @@ namespace AstralRaytracer
 
 	float32 Camera::getFStop() const { return m_focalLength / m_apertureDiameter; }
 
-	const glm::vec3 Camera::getRight() const
-	{
-		return glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
-	}
+	const glm::vec3 Camera::getRight() const { return m_right; }
 
-	const glm::vec3 Camera::getUp() const
-	{
-		return glm::normalize(glm::cross(getRight(), m_direction));
-	}
+	const glm::vec3 Camera::getUp() const { return m_up; }
 
 	void Camera::recalculateView()
 	{

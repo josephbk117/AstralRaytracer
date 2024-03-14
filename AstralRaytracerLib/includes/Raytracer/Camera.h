@@ -74,7 +74,7 @@ namespace AstralRaytracer
 			inline void recalculateView();
 			inline void recalculateProjection(const glm::u32vec2& resolution);
 
-			glm::u32vec2 m_resolution{ 500, 500 };
+			glm::u32vec2 m_resolution{ 1, 1 };
 
 			glm::mat4 m_projection       = glm::identity<glm::mat4>();
 			glm::mat4 m_view             = glm::identity<glm::mat4>();
@@ -83,6 +83,8 @@ namespace AstralRaytracer
 
 			glm::vec3 m_position{ 0.0f };
 			glm::vec3 m_direction{ 0.0f };
+			glm::vec3 m_right{ 0.0f };
+			glm::vec3 m_up{ 0.0f };
 
 			float32 m_focalLength     = 0.0f;
 			float32 m_sensorHeight    = 0.0f;
@@ -91,6 +93,6 @@ namespace AstralRaytracer
 			float32 m_nearClip        = 0.0f;
 			float32 m_farClip         = 0.0f;
 
-			glm::vec2 m_lastMousePosition;
+			glm::vec2 m_lastMousePosition{ 0.0f };
 	};
 } // namespace AstralRaytracer
