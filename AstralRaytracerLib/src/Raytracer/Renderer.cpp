@@ -53,8 +53,9 @@ namespace AstralRaytracer
 				[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex, &inverseView,
 				 &inverseProjection, &scene, &cam](uint32 index)
 				{
-					uint32       seedVal         = index * m_frameIndex;
-					const uint32 pixelAccessIndex= index * 3;
+					uint32 seedVal= index * m_frameIndex;
+
+					const size_t pixelAccessIndex= static_cast<size_t>(index) * 3;
 
 					const float32 randFloat1= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
 					const float32 randFloat2= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
@@ -85,19 +86,19 @@ namespace AstralRaytracer
 					glm::vec3 focalPoint= cam.getPosition() + cam.getFocusDistance() * rayDir;
 					rayDir              = glm::normalize(focalPoint - rayOrigin);
 
-					const glm::vec3& outColor=
+					const glm::vec3 outColor=
 							perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
 					float32& redChannel  = m_accumulatedColorData[pixelAccessIndex];
-					float32& greenChannel= m_accumulatedColorData[pixelAccessIndex + 1u];
-					float32& blueChannel = m_accumulatedColorData[pixelAccessIndex + 2u];
+					float32& greenChannel= m_accumulatedColorData[pixelAccessIndex + 1];
+					float32& blueChannel = m_accumulatedColorData[pixelAccessIndex + 2];
 
 					redChannel+= outColor.r;
 					greenChannel+= outColor.g;
 					blueChannel+= outColor.b;
 
-					const glm::vec3  finalColorVec(redChannel, greenChannel, blueChannel);
-					const glm::vec3& finalColorData= finalColorVec * oneOverFrameIndex;
+					const glm::vec3 finalColorVec(redChannel, greenChannel, blueChannel);
+					const glm::vec3 finalColorData= finalColorVec * oneOverFrameIndex;
 					m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
 				}
 		);
@@ -116,7 +117,8 @@ namespace AstralRaytracer
 		const glm::vec2 adjustedCoord= (coord * 2.0f) - 1.0f;
 
 		// Perform the matrix multiplication and normalization in a single step
-		const glm::vec4 target= inverseProjection * glm::vec4(adjustedCoord.x, adjustedCoord.y, 1.0f, 1.0f);
+		const glm::vec4 target=
+				inverseProjection * glm::vec4(adjustedCoord.x, adjustedCoord.y, 1.0f, 1.0f);
 		const glm::vec3 targetNormalized= glm::normalize(glm::vec3(target) / target.w);
 
 		// Perform the final matrix multiplication
