@@ -60,7 +60,7 @@ namespace AstralRaytracer
 		));
 
 		m_direction= glm::rotate(q, m_direction);
-		m_right    = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
+		m_right    = glm::normalize(glm::cross(m_direction, MathConstants::UpDirection));
 		m_up       = glm::normalize(glm::cross(m_right, m_direction));
 	}
 
