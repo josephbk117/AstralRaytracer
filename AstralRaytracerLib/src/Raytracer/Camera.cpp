@@ -22,8 +22,8 @@ namespace AstralRaytracer
 				m_nearClip(nearClip),
 				m_farClip(farClip)
 	{
-		m_direction        = glm::vec3(0.0f, 0.0f, -1.0f);
-		m_position         = glm::vec3(0.0f, 1.0f, 3.0f);
+		m_direction= glm::vec3(0.0f, 0.0f, -1.0f);
+		m_position = glm::vec3(0.0f, 1.0f, 3.0f);
 
 		recalculateView();
 		recalculateProjection(m_resolution);
@@ -40,12 +40,11 @@ namespace AstralRaytracer
 
 	void Camera::moveRight(float32 units)
 	{
-		const glm::vec3  upDir(0.0f, 1.0f, 0.0f);
-		const glm::vec3& rightDir= glm::cross(m_direction, upDir);
+		const glm::vec3& rightDir= glm::cross(m_direction, MathConstants::UpDirection);
 		m_position+= rightDir * units;
 	}
 
-	void Camera::moveUp(float32 units) { m_position+= glm::vec3(0.0f, 1.0f, 0.0f) * units; }
+	void Camera::moveUp(float32 units) { m_position+= MathConstants::UpDirection * units; }
 
 	void Camera::rotate(glm::vec2 rot)
 	{
@@ -54,12 +53,11 @@ namespace AstralRaytracer
 		const float32 pitchDelta= rot.y * rotSpeed;
 		const float32 yawDelta  = rot.x * rotSpeed;
 
-		const glm::vec3  upDir(0.0f, 1.0f, 0.0f);
-		const glm::vec3& rightDir= glm::cross(m_direction, upDir);
+		const glm::vec3& rightDir= glm::cross(m_direction, MathConstants::UpDirection);
 
-		glm::quat q= glm::normalize(
-				glm::cross(glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, upDir))
-		);
+		glm::quat q= glm::normalize(glm::cross(
+				glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, MathConstants::UpDirection)
+		));
 
 		m_direction= glm::rotate(q, m_direction);
 		m_right    = glm::normalize(glm::cross(m_direction, glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -86,7 +84,7 @@ namespace AstralRaytracer
 
 	void Camera::recalculateView()
 	{
-		m_view       = glm::lookAt(m_position, m_position + m_direction, glm::vec3(0.0f, 1.0f, 0.0f));
+		m_view       = glm::lookAt(m_position, m_position + m_direction, MathConstants::UpDirection);
 		m_inverseView= glm::inverse(m_view);
 	}
 

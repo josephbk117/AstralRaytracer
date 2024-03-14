@@ -122,4 +122,14 @@ namespace AstralRaytracer
 	[[nodiscard]]
 	FileType getFileTypeFromFilePath(const std::filesystem::path& filepath);
 
+	namespace MathConstants
+	{
+		static const glm::vec3 UpDirection{ 0, 1, 0 };
+		static const glm::vec3 DownDirection{ 0, -1, 0 };
+		static const glm::vec3 RightDirection{ 1, 0, 0 };
+		static const glm::vec3 LeftDirection{ -1, 0, 0 };
+		static const glm::vec3 ForwardDirection{ 0, 0, 1 };
+		static const glm::vec3 BackwardDirection{ 0, 0, -1 };
+	}
+
 } // namespace AstralRaytracer
