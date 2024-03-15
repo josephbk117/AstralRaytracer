@@ -40,14 +40,18 @@ namespace AstralRaytracer
 		const glm::mat4& inverseView      = cam.getInverseView();
 		const glm::mat4& inverseProjection= cam.getInverseProjection();
 
-		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
-		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
+		const float32 oneOverBounceCount    = 1.0f / m_BounceCount;
+		const float32 oneOverFrameIndex     = 1.0f / m_frameIndex;
+		const float32 oneOverXAxisPixelCount= 1.0f / xAxisPixelCount;
+		const float32 oneOverImageHeight    = 1.0f / imageHeight;
 
 		const glm::vec3 camHorizontalDir= glm::normalize(glm::cross(cam.getUp(), cam.getDirection()));
 
 		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
-				[&](uint32 index)
+				[this, &inverseProjection, &inverseView, &camHorizontalDir, &oneOverBounceCount,
+				 &xAxisPixelCount, &scene, &cam, &oneOverFrameIndex, &oneOverXAxisPixelCount,
+				 &oneOverImageHeight](uint32 index)
 				{
 					uint32 seedVal= index * m_frameIndex;
 
@@ -57,10 +61,9 @@ namespace AstralRaytracer
 					const float32 randFloat2= Random::randomFloatSymmetric(seedVal);
 
 					const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) + randFloat1;
-					const float32 yIndex=
-							static_cast<float32>(pixelAccessIndex / xAxisPixelCount) + randFloat2;
+					const float32 yIndex= (pixelAccessIndex * oneOverXAxisPixelCount) + randFloat2;
 
-					const glm::vec2 coOrd{ xIndex / xAxisPixelCount, yIndex / imageHeight };
+					const glm::vec2 coOrd{ xIndex * oneOverXAxisPixelCount, yIndex * oneOverImageHeight };
 
 					glm::vec3 rayOrigin= cam.getPosition();
 
