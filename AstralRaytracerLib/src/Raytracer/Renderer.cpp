@@ -45,15 +45,14 @@ namespace AstralRaytracer
 
 		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
-				[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex, &inverseView,
-				 &inverseProjection, &scene, &cam](uint32 index)
+				[&](uint32 index)
 				{
 					uint32 seedVal= index * m_frameIndex;
 
 					const size_t pixelAccessIndex= static_cast<size_t>(index) * 3;
 
-					const float32 randFloat1= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
-					const float32 randFloat2= (Random::randomFloat(seedVal) * 2.0f) - 1.0f;
+					const float32 randFloat1= Random::randomFloatSymmetric(seedVal);
+					const float32 randFloat2= Random::randomFloatSymmetric(seedVal);
 
 					const float32 xIndex= (pixelAccessIndex % xAxisPixelCount) + randFloat1;
 					const float32 yIndex=
