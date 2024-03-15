@@ -25,6 +25,7 @@ namespace AstralRaytracer
 		m_direction= glm::vec3(0.0f, 0.0f, -1.0f);
 		m_position = glm::vec3(0.0f, 1.0f, 3.0f);
 
+		rotate({ 0.0f, 0.0f });
 		recalculateView();
 		recalculateProjection(m_resolution);
 	}
