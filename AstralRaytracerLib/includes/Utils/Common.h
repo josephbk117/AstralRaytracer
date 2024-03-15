@@ -91,6 +91,29 @@ namespace AstralRaytracer
 		MAX= FONT
 	};
 
+	namespace MathConstants
+	{
+		static const glm::vec3 UpDirection{ 0, 1, 0 };
+		static const glm::vec3 DownDirection{ 0, -1, 0 };
+		static const glm::vec3 RightDirection{ 1, 0, 0 };
+		static const glm::vec3 LeftDirection{ -1, 0, 0 };
+		static const glm::vec3 ForwardDirection{ 0, 0, 1 };
+		static const glm::vec3 BackwardDirection{ 0, 0, -1 };
+	} // namespace MathConstants
+
+	namespace Errors
+	{
+		enum class GenericError : uint8
+		{
+			INVALID,
+			MIN,
+			SUCCESS= MIN,
+			WARNING,
+			FAILURE,
+			MAX= FAILURE
+		};
+	}
+
 	static const std::string              invalidString{};
 	static const std::vector<std::string> invalidVectorOfString{};
 	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp",
@@ -121,15 +144,8 @@ namespace AstralRaytracer
 	ResourceType getResourceTypeFromFilePath(const std::filesystem::path& filepath);
 	[[nodiscard]]
 	FileType getFileTypeFromFilePath(const std::filesystem::path& filepath);
-
-	namespace MathConstants
-	{
-		static const glm::vec3 UpDirection{ 0, 1, 0 };
-		static const glm::vec3 DownDirection{ 0, -1, 0 };
-		static const glm::vec3 RightDirection{ 1, 0, 0 };
-		static const glm::vec3 LeftDirection{ -1, 0, 0 };
-		static const glm::vec3 ForwardDirection{ 0, 0, 1 };
-		static const glm::vec3 BackwardDirection{ 0, 0, -1 };
-	}
+	[[nodiscard]]
+	Errors::GenericError
+	getFileContent(const std::filesystem::path& filepath, std::string& outFileContent);
 
 } // namespace AstralRaytracer
