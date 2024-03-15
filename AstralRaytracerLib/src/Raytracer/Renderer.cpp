@@ -17,7 +17,7 @@ namespace AstralRaytracer
 
 	Renderer::Renderer() { }
 
-	Renderer::~Renderer() { }
+	Renderer::~Renderer() { renderEnd(); }
 
 	void Renderer::initialize()
 	{
@@ -31,9 +31,36 @@ namespace AstralRaytracer
 		onResize(32, 32);
 	}
 
+	void Renderer::renderStart(const Scene& scene, const Camera& cam)
+	{
+		if(m_state != RendererState::NOT_STARTED)
+		{
+			return;
+		}
+		m_state= RendererState::STARTED;
+		renderEnd();
+
+		onResize(cam.getResolution().x, cam.getResolution().y);
+
+		m_renderingThread= std::thread([this, &scene, &cam]() { this->render(scene, cam); });
+	}
+
+	void Renderer::renderEnd()
+	{
+		if(m_renderingThread.joinable())
+		{
+			m_renderingThread.join();
+		}
+	}
+
 	void Renderer::render(const Scene& scene, const Camera& cam)
 	{
-		onResize(cam.getResolution().x, cam.getResolution().y);
+		if(m_state != RendererState::STARTED)
+		{
+			return;
+		}
+
+		m_state= RendererState::PROCESSING;
 
 		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
 		const float32    imageHeight      = m_texData.getHeight();
@@ -101,8 +128,22 @@ namespace AstralRaytracer
 				}
 		);
 
+		m_state= RendererState::DONE;
+	}
+
+	bool Renderer::onRenderComplete()
+	{
+		if(m_state != RendererState::DONE)
+		{
+			return false;
+		}
+
+		m_state= RendererState::NOT_STARTED;
+
 		TextureManager::updateTexture(m_texData, m_textureId);
 		++m_frameIndex;
+
+		return true;
 	}
 
 	glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(
@@ -129,6 +170,7 @@ namespace AstralRaytracer
 		{
 			return false;
 		}
+
 		m_texData.resize(width, height);
 
 		const size_t newSizePixelCount= static_cast<size_t>(width) * height;

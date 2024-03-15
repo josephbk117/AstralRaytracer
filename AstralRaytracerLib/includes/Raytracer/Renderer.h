@@ -9,11 +9,23 @@ namespace AstralRaytracer
 	class Renderer
 	{
 		public:
+			enum class RendererState
+			{
+				NOT_STARTED,
+				STARTED,
+				PROCESSING,
+				EXIT,
+				DONE
+			};
+
 			Renderer();
 			~Renderer();
 
 			void initialize();
-			void render(const Scene& scene, const Camera& cam);
+
+			void renderStart(const Scene& scene, const Camera& cam);
+			void renderEnd();
+			bool onRenderComplete();
 
 			const TextureDataRGBF& getTextureData() const { return m_texData; }
 
@@ -44,6 +56,11 @@ namespace AstralRaytracer
 			bool onResize(uint32 width, uint32 height);
 			void resetFrameIndex();
 		private:
+			void render(const Scene& scene, const Camera& cam);
+
+			std::thread   m_renderingThread;
+			RendererState m_state= RendererState::NOT_STARTED;
+
 			TextureDataRGBF      m_texData;
 			std::vector<float32> m_accumulatedColorData;
 			float32              m_maxLuminance= 0;

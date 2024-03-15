@@ -39,27 +39,28 @@ void Application::run()
 	float64 prevTime= AstralRaytracer::Input::getTimeSinceStart();
 	while(!m_window.shouldWindowClose())
 	{
-		const float32 currentTimeSinceStart= AstralRaytracer::Input::getTimeSinceStart();
-
-		const float32 deltaTime= currentTimeSinceStart - prevTime;
-		prevTime               = currentTimeSinceStart;
-
-		// Process Input
-		m_window.processInput(appStateInfo, deltaTime, m_renderer, m_cam, m_scene);
-
 		m_window.clear();
 
 		if(appStateInfo.isSceneDirty || appStateInfo.cameraUpdatedThisFrame)
 		{
+			m_renderer.renderEnd();
 			m_renderer.resetFrameIndex();
 			appStateInfo.isSceneDirty= false;
 		}
 
 		// Render scene
-		m_renderer.render(m_scene, m_cam);
-		m_compositor.processImage(m_scene, m_cam.getResolution(), m_renderer.getTextureId());
+		m_renderer.renderStart(m_scene, m_cam);
+		if(m_renderer.onRenderComplete())
+		{
+			m_compositor.processImage(m_scene, m_cam.getResolution(), m_renderer.getTextureId());
+			appStateInfo.outputTextureId= reinterpret_cast<ImTextureID>(m_compositor.getTextureId());
 
-		appStateInfo.outputTextureId= reinterpret_cast<ImTextureID>(m_compositor.getTextureId());
+			const float32 currentTimeSinceStart= AstralRaytracer::Input::getTimeSinceStart();
+			const float32 deltaTime            = currentTimeSinceStart - prevTime;
+			prevTime                           = currentTimeSinceStart;
+
+			m_window.processInput(appStateInfo, deltaTime, m_renderer, m_cam, m_scene);
+		}
 
 		// Display UI
 		m_window.startUI();
