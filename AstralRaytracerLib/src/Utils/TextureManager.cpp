@@ -183,15 +183,8 @@ namespace AstralRaytracer
 
 		if(gamma)
 		{
-			// Apply gamma
-#ifdef SUPPORT_STD_EXECUTION
-			std::for_each(
-					std::execution::par_unseq, vecData.begin(), vecData.end(),
-#else
-			std::for_each(
-					vecData.begin(), vecData.end(),
-#endif // SUPPORT_STD_EXECUTION
-					[=](T& value) { value= glm::pow(value, 1.0f / 2.2f); }
+			runParallel(
+					vecData.begin(), vecData.end(), [=](T& value) { value= glm::pow(value, 1.0f / 2.2f); }
 			);
 		}
 

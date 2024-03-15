@@ -4,6 +4,7 @@
 #include <cstring>
 #define GLM_FORCE_INTRINSICS
 #include <array>
+#include <execution>
 #include <cstddef>
 #include <filesystem>
 #include <glm/glm.hpp>
@@ -147,5 +148,20 @@ namespace AstralRaytracer
 	[[nodiscard]]
 	Errors::GenericError
 	getFileContent(const std::filesystem::path& filepath, std::string& outFileContent);
+
+	template<typename Iterator, typename Function>
+	void runParallel(Iterator first, Iterator last, Function func)
+	{
+		// Apply gamma
+#ifdef SUPPORT_STD_EXECUTION
+		std::for_each(
+				std::execution::par_unseq, first, last,
+#else
+		std::for_each(
+				first, last,
+#endif // SUPPORT_STD_EXECUTION
+				func
+		);
+	}
 
 } // namespace AstralRaytracer

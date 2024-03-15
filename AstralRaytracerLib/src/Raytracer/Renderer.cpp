@@ -43,13 +43,8 @@ namespace AstralRaytracer
 		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
 		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
-#ifdef SUPPORT_STD_EXECUTION
-		std::for_each(
-				std::execution::par_unseq, m_rayIterator.begin(), m_rayIterator.end(),
-#else
-		std::for_each(
+		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
-#endif // SUPPORT_STD_EXECUTION,
 				[this, xAxisPixelCount, imageHeight, oneOverBounceCount, oneOverFrameIndex, &inverseView,
 				 &inverseProjection, &scene, &cam](uint32 index)
 				{
