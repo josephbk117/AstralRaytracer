@@ -613,6 +613,7 @@ namespace AstralRaytracer
 		scene.deserialize(assetManager, filePathName);
 		setWindowTitle(assetManager, scene);
 
+		appStateInfo.selectedObjectIndex= 0;
 		appStateInfo.isSceneDirty= true;
 	}
 
@@ -633,6 +634,7 @@ namespace AstralRaytracer
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
 			setWindowTitle(assetManager, scene);
 
+			appStateInfo.selectedObjectIndex = 0;
 			appStateInfo.isSceneDirty= true;
 			return;
 		}
