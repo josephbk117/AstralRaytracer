@@ -4,8 +4,8 @@
 #include <cstring>
 #define GLM_FORCE_INTRINSICS
 #include <array>
-#include <execution>
 #include <cstddef>
+#include <execution>
 #include <filesystem>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -130,9 +130,33 @@ namespace AstralRaytracer
 	static const std::string FileExtensionForTraceable{ ".astra" };
 
 	[[nodiscard]]
-	std::string toString(AssetType assetType);
+	inline constexpr std::string toString(AssetType assetType)
+	{
+		switch(assetType)
+		{
+			case AssetType::PROJECT: return "Project";
+			case AssetType::SCENE: return "Scene";
+			case AssetType::TEXTURE: return "Texture";
+			case AssetType::MATERIAL: return "Material";
+			case AssetType::TRACEABLE: return "Traceable";
+			case AssetType::INVALID:
+			default: return "UNKNOWN";
+		}
+	}
+
 	[[nodiscard]]
-	std::string toString(ResourceType resourceType);
+	inline constexpr std::string toString(ResourceType resourceType)
+	{
+		switch(resourceType)
+		{
+			case ResourceType::IMAGE: return "Image";
+			case ResourceType::MODEL: return "Model";
+			case ResourceType::TEXT_FILE: return "Text";
+			case ResourceType::FONT: return "Font";
+			case ResourceType::INVALID:
+			default: return "UNKNOWN";
+		}
+	}
 
 	[[nodiscard]]
 	const std::string& getFileExtensionForAssetType(AssetType type);
