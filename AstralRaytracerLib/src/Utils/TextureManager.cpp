@@ -227,11 +227,12 @@ namespace AstralRaytracer
 	{
 		uint32 textureID;
 		gl::glGenTextures(1, &textureID);
-		const T* const data= textureData.getTextureData().data();
-		assert(data);
-		loadTextureFromRawData(
-				data, textureData.getWidth(), textureData.getHeight(), componentCount, textureID
-		);
+
+		const T* const data     = textureData.getTextureData().data();
+		const uint32   texWidth = textureData.getWidth();
+		const uint32   texHeight= textureData.getHeight();
+
+		loadTextureFromRawData(data, texWidth, texHeight, componentCount, textureID);
 		return textureID;
 	}
 
