@@ -3,11 +3,6 @@
 namespace AstralRaytracer
 {
 	template<ArithMeticType T, uint32 ComponentCount>
-	TextureData<T, ComponentCount>::TextureData(): m_width(0), m_height(0)
-	{
-	}
-
-	template<ArithMeticType T, uint32 ComponentCount>
 	TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
 	{
 		resize(width, height);
@@ -40,7 +35,7 @@ namespace AstralRaytracer
 	}
 
 	template<ArithMeticType T, uint32 ComponentCount>
-	const std::vector<T>& TextureData<T, ComponentCount>::getTextureData() const
+	const std::vector<T>& TextureData<T, ComponentCount>::getTextureData() const noexcept
 	{
 		return m_data;
 	}

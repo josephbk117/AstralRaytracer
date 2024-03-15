@@ -25,10 +25,10 @@ namespace AstralRaytracer
 	{
 		private:
 			std::vector<T> m_data;
-			uint32         m_width;
-			uint32         m_height;
+			uint32         m_width{ 0 };
+			uint32         m_height{ 0 };
 		public:
-			TextureData();
+			TextureData() = default;
 			TextureData(uint32 width, uint32 height);
 			TextureData(uint32 width, uint32 height, const std::vector<T>& data);
 			TextureData(const TextureData&)= default;
@@ -37,7 +37,7 @@ namespace AstralRaytracer
 			void setTextureData(const std::vector<T>& data);
 
 			[[nodiscard]]
-			const std::vector<T>& getTextureData() const;
+			const std::vector<T>& getTextureData() const noexcept;
 			[[nodiscard]]
 			uint32 getWidth() const noexcept;
 			[[nodiscard]]
