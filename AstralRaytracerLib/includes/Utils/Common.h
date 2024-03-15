@@ -130,7 +130,7 @@ namespace AstralRaytracer
 	static const std::string FileExtensionForTraceable{ ".astra" };
 
 	[[nodiscard]]
-	inline constexpr std::string toString(AssetType assetType)
+	inline constexpr std::string_view toString(AssetType assetType)
 	{
 		switch(assetType)
 		{
@@ -145,7 +145,7 @@ namespace AstralRaytracer
 	}
 
 	[[nodiscard]]
-	inline constexpr std::string toString(ResourceType resourceType)
+	inline constexpr std::string_view toString(ResourceType resourceType)
 	{
 		switch(resourceType)
 		{

@@ -19,7 +19,7 @@ namespace AstralRaytracer
 				ImGui::TextUnformatted(m_currentFIle.filename().string().c_str());
 				ImGui::SameLine();
 
-				std::string typeNameStr= "";
+				std::string_view typeNameStr;
 				switch(fileType)
 				{
 					case FileType::ASSET:
@@ -35,7 +35,7 @@ namespace AstralRaytracer
 					default: typeNameStr= "Unsupported"; break;
 				}
 
-				ImGui::TextUnformatted(typeNameStr.c_str());
+				ImGui::TextUnformatted(typeNameStr.data());
 			}
 		}
 
