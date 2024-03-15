@@ -2,13 +2,13 @@
 
 namespace AstralRaytracer
 {
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
 	{
 		resize(width, height);
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	TextureData<T, ComponentCount>::TextureData(
 			uint32                width,
 			uint32                height,
@@ -19,7 +19,7 @@ namespace AstralRaytracer
 		setTextureData(data);
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::resize(uint32 width, uint32 height)
 	{
 		m_width = width;
@@ -27,38 +27,38 @@ namespace AstralRaytracer
 		m_data.resize(width * height * ComponentCount);
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTextureData(const std::vector<T>& data)
 	{
 		ASTRAL_ASSERTM(m_width * m_height * ComponentCount == data.size(), "Mismatched data size");
 		m_data= data;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	const std::vector<T>& TextureData<T, ComponentCount>::getTextureData() const noexcept
 	{
 		return m_data;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	uint32 TextureData<T, ComponentCount>::getWidth() const noexcept
 	{
 		return m_width;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	uint32 TextureData<T, ComponentCount>::getHeight() const noexcept
 	{
 		return m_height;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	constexpr uint32 TextureData<T, ComponentCount>::getComponentCount() const noexcept
 	{
 		return ComponentCount;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTexelColorAtPixelIndex(
 			uint32                                            index,
 			const glm::vec<ComponentCount, T, glm::defaultp>& rgb
@@ -71,7 +71,7 @@ namespace AstralRaytracer
 		m_data[index + 2]= rgb.b;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTexelColor(
 			uint32                                            x,
 			uint32                                            y,
@@ -82,7 +82,7 @@ namespace AstralRaytracer
 		setTexelColorAtPixelIndex(index, rgb);
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	glm::vec<ComponentCount, T, glm::defaultp>
 	TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 	{
@@ -98,7 +98,7 @@ namespace AstralRaytracer
 		return out;
 	}
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	glm::vec<ComponentCount, T, glm::defaultp>
 	TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v, SamplingType samplingType)
 			const

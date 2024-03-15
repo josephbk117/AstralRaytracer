@@ -16,35 +16,35 @@ namespace AstralRaytracer
 			[[nodiscard]]
 			static constexpr gl::GLenum getTextureFormatFromComponentCount(uint32 componentCount);
 
-			template<ArithMeticType T>
+			template<ArithmeticType T>
 			[[nodiscard]]
 			static gl::GLenum getTextureDataType();
 
-			template<ArithMeticType T>
+			template<ArithmeticType T>
 			[[nodiscard]]
 			static gl::GLenum getTextureInternalFormatType(uint32 componentCount);
 
-			template<ArithMeticType T, uint32 componentCount>
+			template<ArithmeticType T, uint32 componentCount>
 			static void loadTextureDataFromFile(
 					const std::filesystem::path&    path,
 					TextureData<T, componentCount>& textureData,
 					bool                            gamma
 			);
 
-			template<ArithMeticType T, uint32 componentCount>
+			template<ArithmeticType T, uint32 componentCount>
 			[[nodiscard]]
 			static uint32
 			loadTextureFromTextureData(const TextureData<T, componentCount>& textureData, bool gamma);
 
-			template<ArithMeticType T, uint32 componentCount>
+			template<ArithmeticType T, uint32 componentCount>
 			static void
 			updateTexture(const TextureData<T, componentCount>& textureData, uint32 textureId);
-			template<ArithMeticType T, uint32 componentCount>
+			template<ArithmeticType T, uint32 componentCount>
 			static void
 			resizeTexture(const TextureData<T, componentCount>& textureData, uint32 textureId);
 			static void saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path);
 		private:
-			template<ArithMeticType T>
+			template<ArithmeticType T>
 			static void loadTextureFromRawData(
 					const T* const data,
 					uint32         width,

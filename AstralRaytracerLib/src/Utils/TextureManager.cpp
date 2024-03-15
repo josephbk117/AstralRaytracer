@@ -24,7 +24,7 @@ namespace AstralRaytracer
 		return gl::GLenum::GL_INVALID_ENUM;
 	}
 
-	template<ArithMeticType T>
+	template<ArithmeticType T>
 	gl::GLenum TextureManager::getTextureDataType()
 	{
 		if(std::is_same_v<T, float32>)
@@ -59,7 +59,7 @@ namespace AstralRaytracer
 		static_assert(true, "Unsupported type");
 	}
 
-	template<ArithMeticType T>
+	template<ArithmeticType T>
 	gl::GLenum TextureManager::getTextureInternalFormatType(uint32 componentCount)
 	{
 		ASTRAL_ASSERTM(componentCount <= 4, "Invalid component count requested");
@@ -140,7 +140,7 @@ namespace AstralRaytracer
 		return gl::GLenum::GL_INVALID_ENUM;
 	}
 
-	template<ArithMeticType T, uint32 componentCount>
+	template<ArithmeticType T, uint32 componentCount>
 	void TextureManager::loadTextureDataFromFile(
 			const std::filesystem::path&    path,
 			TextureData<T, componentCount>& textureData,
@@ -218,7 +218,7 @@ namespace AstralRaytracer
 		stbi_image_free(data);
 	}
 
-	template<ArithMeticType T, uint32 componentCount>
+	template<ArithmeticType T, uint32 componentCount>
 	[[nodiscard]]
 	uint32 TextureManager::loadTextureFromTextureData(
 			const TextureData<T, componentCount>& textureData,
@@ -235,7 +235,7 @@ namespace AstralRaytracer
 		return textureID;
 	}
 
-	template<ArithMeticType T>
+	template<ArithmeticType T>
 	void TextureManager::loadTextureFromRawData(
 			const T* const data,
 			uint32         width,
@@ -266,7 +266,7 @@ namespace AstralRaytracer
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_MAG_FILTER, gl::GL_NEAREST);
 	}
 
-	template<ArithMeticType T, uint32 componentCount>
+	template<ArithmeticType T, uint32 componentCount>
 	void
 	TextureManager::updateTexture(const TextureData<T, componentCount>& textureData, uint32 textureId)
 	{
@@ -285,7 +285,7 @@ namespace AstralRaytracer
 		gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 	}
 
-	template<ArithMeticType T, uint32 componentCount>
+	template<ArithmeticType T, uint32 componentCount>
 	void
 	TextureManager::resizeTexture(const TextureData<T, componentCount>& textureData, uint32 textureId)
 	{

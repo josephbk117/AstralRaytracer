@@ -18,9 +18,9 @@ namespace AstralRaytracer
 	};
 
 	template<typename T>
-	concept ArithMeticType= std::is_arithmetic_v<T>;
+	concept ArithmeticType= std::is_arithmetic_v<T>;
 
-	template<ArithMeticType T, uint32 ComponentCount>
+	template<ArithmeticType T, uint32 ComponentCount>
 	class TextureData
 	{
 		private:
