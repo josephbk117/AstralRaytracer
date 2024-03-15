@@ -44,6 +44,13 @@ namespace AstralRaytracer
 			resizeTexture(const TextureData<T, componentCount>& textureData, uint32 textureId);
 			static void saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path);
 		private:
+			enum class ImageSizeOption
+			{
+				Byte,
+				Short,
+				Float
+			};
+
 			template<ArithmeticType T>
 			static void loadTextureFromRawData(
 					const T* const data,
@@ -51,6 +58,16 @@ namespace AstralRaytracer
 					uint32         height,
 					uint32         componentCount,
 					uint32         textureID
+			);
+
+			template<ArithmeticType T, uint32 componentCount>
+			[[nodiscard]]
+			static T* loadImageFromFile(
+					ImageSizeOption    sizeOption,
+					const std::string& pathString,
+					int32&             width,
+					int32&             height,
+					int32&             numChannels
 			);
 	};
 

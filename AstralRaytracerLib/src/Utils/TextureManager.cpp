@@ -147,7 +147,6 @@ namespace AstralRaytracer
 			bool                            gamma
 	)
 	{
-		// Determine size of T
 		constexpr size_t sizeOfT= sizeof(T);
 		static_assert(
 				sizeOfT == sizeof(uint8) || sizeOfT == sizeof(uint16) || sizeOfT == sizeof(float32),
@@ -155,15 +154,9 @@ namespace AstralRaytracer
 		);
 
 		// Use scoped enumeration for size options
-		enum class SizeOption : uint8
-		{
-			OneByte,
-			TwoByte,
-			FourByte
-		};
-		constexpr SizeOption sizeOption= (sizeOfT == sizeof(uint8))    ? SizeOption::OneByte
-																		 : (sizeOfT == sizeof(uint16)) ? SizeOption::TwoByte
-																																	 : SizeOption::FourByte;
+		constexpr ImageSizeOption sizeOption= (sizeOfT == sizeof(uint8))    ? ImageSizeOption::Byte
+																					: (sizeOfT == sizeof(uint16)) ? ImageSizeOption::Short
+																																				: ImageSizeOption::Float;
 
 		int32 width      = 0;
 		int32 height     = 0;
@@ -172,26 +165,14 @@ namespace AstralRaytracer
 		T* data= nullptr;
 
 		const std::string pathString= path.string();
-		switch(sizeOption)
-		{
-			case SizeOption::OneByte:
-				data= reinterpret_cast<T*>(
-						stbi_load(pathString.c_str(), &width, &height, &numChannels, componentCount)
-				);
-				break;
-			case SizeOption::TwoByte:
-				data= reinterpret_cast<T*>(
-						stbi_load_16(pathString.c_str(), &width, &height, &numChannels, componentCount)
-				);
-				break;
-			case SizeOption::FourByte:
-				data= reinterpret_cast<T*>(
-						stbi_loadf(pathString.c_str(), &width, &height, &numChannels, componentCount)
-				);
-				break;
-		}
 
-		assert(data);
+		data= loadImageFromFile<T, componentCount>(sizeOption, pathString, width, height, numChannels);
+
+		if(data == nullptr)
+		{
+			ASTRAL_LOG_ERROR("Failed to load texture data from file: " + pathString);
+			return;
+		}
 
 		textureData.resize(width, height);
 
@@ -268,6 +249,33 @@ namespace AstralRaytracer
 	}
 
 	template<ArithmeticType T, uint32 componentCount>
+	T* TextureManager::loadImageFromFile(
+			ImageSizeOption    sizeOption,
+			const std::string& pathString,
+			int32&             width,
+			int32&             height,
+			int32&             numChannels
+	)
+	{
+		switch(sizeOption)
+		{
+			case ImageSizeOption::Byte:
+				return reinterpret_cast<T*>(
+						stbi_load(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+			case ImageSizeOption::Short:
+				return reinterpret_cast<T*>(
+						stbi_load_16(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+			case ImageSizeOption::Float:
+				return reinterpret_cast<T*>(
+						stbi_loadf(pathString.c_str(), &width, &height, &numChannels, componentCount)
+				);
+			default: return nullptr;
+		}
+	}
+
+	template<ArithmeticType T, uint32 componentCount>
 	void
 	TextureManager::updateTexture(const TextureData<T, componentCount>& textureData, uint32 textureId)
 	{
@@ -319,6 +327,19 @@ namespace AstralRaytracer
 	template gl::GLenum TextureManager::getTextureDataType<uint8>();
 	template gl::GLenum TextureManager::getTextureDataType<float32>();
 
+	template uint8* TextureManager::
+			loadImageFromFile<uint8, 3>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+	template uint8* TextureManager::
+			loadImageFromFile<uint8, 4>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+	template uint16* TextureManager::
+			loadImageFromFile<uint16, 3>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+	template uint16* TextureManager::
+			loadImageFromFile<uint16, 4>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+	template float32* TextureManager::
+			loadImageFromFile<float32, 3>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+	template float32* TextureManager::
+			loadImageFromFile<float32, 4>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
+
 	template void
 	TextureManager::loadTextureFromRawData<uint8>(const uint8* const, uint32, uint32, uint32, uint32);
 	template void TextureManager::loadTextureFromRawData<
@@ -363,5 +384,4 @@ namespace AstralRaytracer
 	template void TextureManager::resizeTexture(const TextureData<uint8, 4>&, uint32);
 	template void TextureManager::resizeTexture(const TextureData<float32, 3>&, uint32);
 	template void TextureManager::resizeTexture(const TextureData<float32, 4>&, uint32);
-
 } // namespace AstralRaytracer
