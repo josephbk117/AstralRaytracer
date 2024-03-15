@@ -43,6 +43,8 @@ namespace AstralRaytracer
 		const float32 oneOverBounceCount= 1.0f / m_BounceCount;
 		const float32 oneOverFrameIndex = 1.0f / m_frameIndex;
 
+		const glm::vec3 camHorizontalDir= glm::normalize(glm::cross(cam.getUp(), cam.getDirection()));
+
 		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
 				[&](uint32 index)
@@ -67,8 +69,7 @@ namespace AstralRaytracer
 					{
 						glm::vec3 apertureSample= Random::unitDisk(seedVal) * cam.getApertureDiameter();
 						glm::vec3 apertureOffset=
-								glm::normalize(glm::cross(cam.getUp(), cam.getDirection())) * apertureSample.x +
-								cam.getUp() * apertureSample.y;
+								camHorizontalDir * apertureSample.x + cam.getUp() * apertureSample.y;
 
 						rayOrigin+= apertureOffset;
 					}
