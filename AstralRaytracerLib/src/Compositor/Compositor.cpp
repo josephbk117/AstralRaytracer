@@ -21,7 +21,7 @@ namespace AstralRaytracer
 	}
 
 	void
-	Compositor::processImage(const Scene& scene, const Resolution& resolution, uint32 inputTextureId)
+	Compositor::processImage(const Scene& scene, const Resolution& resolution, TextureId inputTextureId)
 	{
 		m_renderTexture1.resize(resolution);
 		m_renderTexture2.resize(resolution);

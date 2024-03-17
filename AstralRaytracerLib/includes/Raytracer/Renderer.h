@@ -34,16 +34,16 @@ namespace AstralRaytracer
 			) const;
 
 			glm::vec4
-			perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir) const;
+			perPixel(uint32& seedVal, const Scene& scene, CoOrd3DF& rayOrigin, Direction3D& rayDir) const;
 
 			void findClosestHit(
-					HitInfo&         closestHitInfo,
-					const Scene&     scene,
-					const glm::vec3& rayOrigin,
-					const glm::vec3& rayDir
+					HitInfo&           closestHitInfo,
+					const Scene&       scene,
+					const CoOrd3DF&    rayOrigin,
+					const Direction3D& rayDir
 			) const;
 
-			gl::GLuint getTextureId() const { return m_textureId; }
+			TextureId getTextureId() const { return m_textureId; }
 
 			void setBounceCount(uint32 count) { m_BounceCount= count; }
 

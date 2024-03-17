@@ -15,7 +15,7 @@ namespace AstralRaytracer
 		public:
 			Compositor();
 			void initialize();
-			void processImage(const Scene& scene, const Resolution& resolution, uint32 inputTextureId);
+			void processImage(const Scene& scene, const Resolution& resolution, TextureId inputTextureId);
 
 			[[nodiscard]]
 			TextureId getTextureId() const;

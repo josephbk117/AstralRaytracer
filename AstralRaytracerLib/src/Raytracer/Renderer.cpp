@@ -69,7 +69,8 @@ namespace AstralRaytracer
 		const float32 oneOverXAxisPixelCount= 1.0f / xAxisPixelCount;
 		const float32 oneOverImageHeight    = 1.0f / imageHeight;
 
-		const glm::vec3 camHorizontalDir= glm::normalize(glm::cross(cam.getUp(), cam.getForwardDirection()));
+		const glm::vec3 camHorizontalDir=
+				glm::normalize(glm::cross(cam.getUp(), cam.getForwardDirection()));
 
 		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
@@ -166,7 +167,7 @@ namespace AstralRaytracer
 
 	void Renderer::resize(uint32 width, uint32 height)
 	{
-		m_texData.resize({width, height});
+		m_texData.resize({ width, height });
 
 		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
 		m_accumulatedColorData.resize(newSizePixelCount * m_texData.getComponentCount());
@@ -203,7 +204,7 @@ namespace AstralRaytracer
 	}
 
 	glm::vec4
-	Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir)
+	Renderer::perPixel(uint32& seedVal, const Scene& scene, CoOrd3DF& rayOrigin, Direction3D& rayDir)
 			const
 	{
 		glm::vec3 light(0.0f);
@@ -269,10 +270,10 @@ namespace AstralRaytracer
 	}
 
 	void Renderer::findClosestHit(
-			HitInfo&         closestHitInfo,
-			const Scene&     scene,
-			const glm::vec3& rayOrigin,
-			const glm::vec3& rayDir
+			HitInfo&           closestHitInfo,
+			const Scene&       scene,
+			const CoOrd3DF&     rayOrigin,
+			const Direction3D& rayDir
 	) const
 	{
 		// Initialize closest hit distance to a large value
