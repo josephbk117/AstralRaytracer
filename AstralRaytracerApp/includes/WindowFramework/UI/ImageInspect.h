@@ -10,7 +10,7 @@ namespace AstralRaytracer
 {
 	namespace UI
 	{
-		inline void histogram(const TextureDataRGBF& texData)
+		inline void histogram(const TextureDataRGBAF& texData)
 		{
 			const int32 width = texData.getWidth();
 			const int32 height= texData.getHeight();
@@ -32,6 +32,7 @@ namespace AstralRaytracer
 				count[0][val0]++;
 				count[1][val1]++;
 				count[2][val2]++;
+				ptrCols++;
 			}
 
 			uint32        maxv  = count[0][0];
@@ -105,7 +106,7 @@ namespace AstralRaytracer
 		}
 
 		inline void
-		inspect(const TextureDataRGBF& texData, ImVec2 mouseUVCoord, ImVec2 displayedTextureSize)
+		inspect(const TextureDataRGBAF& texData, ImVec2 mouseUVCoord, ImVec2 displayedTextureSize)
 		{
 			const int32 width = texData.getWidth();
 			const int32 height= texData.getHeight();

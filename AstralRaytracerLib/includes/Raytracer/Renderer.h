@@ -25,7 +25,7 @@ namespace AstralRaytracer
 			void renderEnd();
 			bool onRenderComplete();
 
-			const TextureDataRGBF& getTextureData() const { return m_texData; }
+			const TextureDataRGBAF& getTextureData() const { return m_texData; }
 
 			glm::vec3 getRayDirectionFromNormalizedCoord(
 					const glm::vec2& coord,
@@ -33,7 +33,7 @@ namespace AstralRaytracer
 					const glm::mat4& inverseView
 			) const;
 
-			glm::vec3
+			glm::vec4
 			perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir) const;
 
 			void findClosestHit(
@@ -59,7 +59,7 @@ namespace AstralRaytracer
 			std::thread   m_renderingThread;
 			RendererState m_state= RendererState::NOT_STARTED;
 
-			TextureDataRGBF      m_texData;
+			TextureDataRGBAF     m_texData;
 			std::vector<float32> m_accumulatedColorData;
 			float32              m_maxLuminance= 0;
 			std::vector<uint32>  m_rayIterator;

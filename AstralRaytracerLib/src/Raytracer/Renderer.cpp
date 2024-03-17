@@ -26,7 +26,7 @@ namespace AstralRaytracer
 
 		// Made initial resolution small so that OnResize can run
 		m_texData.resize(initialWidth, initialHeight);
-		m_textureId= TextureManager::loadTextureFromTextureData<float32, 3>(m_texData, false);
+		m_textureId= TextureManager::loadTextureFromTextureData<float32, 4>(m_texData, false);
 
 		onResize(32, 32);
 	}
@@ -80,7 +80,7 @@ namespace AstralRaytracer
 				{
 					uint32 seedVal= index * m_frameIndex;
 
-					const size_t pixelAccessIndex= static_cast<size_t>(index) * 3;
+					const size_t pixelAccessIndex= static_cast<size_t>(index) * m_texData.getComponentCount();
 
 					const float32 randFloat1= Random::randomFloatSymmetric(seedVal);
 					const float32 randFloat2= Random::randomFloatSymmetric(seedVal);
@@ -109,19 +109,22 @@ namespace AstralRaytracer
 					glm::vec3 focalPoint= cam.getPosition() + cam.getFocusDistance() * rayDir;
 					rayDir              = glm::normalize(focalPoint - rayOrigin);
 
-					const glm::vec3 outColor=
+					const glm::vec4 outColor=
 							perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
 					float32& redChannel  = m_accumulatedColorData[pixelAccessIndex];
 					float32& greenChannel= m_accumulatedColorData[pixelAccessIndex + 1];
 					float32& blueChannel = m_accumulatedColorData[pixelAccessIndex + 2];
+					float32& alphaChannel= m_accumulatedColorData[pixelAccessIndex + 3];
 
 					redChannel+= outColor.r;
 					greenChannel+= outColor.g;
 					blueChannel+= outColor.b;
+					alphaChannel+= outColor.a;
 
-					const glm::vec3 finalColorVec(redChannel, greenChannel, blueChannel);
-					const glm::vec3 finalColorData= finalColorVec * oneOverFrameIndex;
+					const glm::vec4 finalColorVec(redChannel, greenChannel, blueChannel, 1.0f);
+					glm::vec4       finalColorData= finalColorVec * oneOverFrameIndex;
+
 					m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
 				}
 		);
@@ -172,7 +175,7 @@ namespace AstralRaytracer
 		m_texData.resize(width, height);
 
 		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
-		m_accumulatedColorData.resize(newSizePixelCount * 3);
+		m_accumulatedColorData.resize(newSizePixelCount * m_texData.getComponentCount());
 		resetFrameIndex();
 
 		m_rayIterator.resize(newSizePixelCount);
@@ -185,13 +188,13 @@ namespace AstralRaytracer
 
 	void Renderer::resetFrameIndex()
 	{
-		m_frameIndex= 1;
-		const size_t bufferSize=
-				static_cast<size_t>(m_texData.getWidth()) * m_texData.getHeight() * 3 * sizeof(float32);
+		m_frameIndex           = 1;
+		const size_t bufferSize= static_cast<size_t>(m_texData.getWidth()) * m_texData.getHeight() *
+														 m_texData.getComponentCount() * sizeof(float32);
 		std::memset(m_accumulatedColorData.data(), 0, bufferSize);
 	}
 
-	glm::vec3
+	glm::vec4
 	Renderer::perPixel(uint32& seedVal, const Scene& scene, glm::vec3& rayOrigin, glm::vec3& rayDir)
 			const
 	{
@@ -201,6 +204,11 @@ namespace AstralRaytracer
 		constexpr float32 kEpsilon= std::numeric_limits<float32>::epsilon();
 
 		const TextureDataRGBF& skyTexData= scene.m_textures[scene.m_textures.size() - 1];
+
+		HitInfo initialClosestHitInfo;
+		findClosestHit(initialClosestHitInfo, scene, rayOrigin, rayDir);
+
+		const float32 depth= initialClosestHitInfo.hitDistance;
 
 		for(uint32 bounceIndex= 0; bounceIndex < m_BounceCount; ++bounceIndex)
 		{
@@ -220,7 +228,9 @@ namespace AstralRaytracer
 						SamplingType::MIRRORED_REPEAT
 				);
 
-				contribution*= mat.albedo.getColour_32_bit() * colorData;
+				const glm::vec4& albedo= mat.albedo.getColour_32_bit();
+
+				contribution*= glm::vec3(albedo.r, albedo.g, albedo.b) * colorData;
 				light+= mat.getEmission() * colorData;
 
 				// Avoid self-intersection by moving the ray origin slightly
@@ -247,7 +257,7 @@ namespace AstralRaytracer
 			}
 		}
 
-		return light;
+		return glm::vec4(light.r, light.g, light.b, depth);
 	}
 
 	void Renderer::findClosestHit(

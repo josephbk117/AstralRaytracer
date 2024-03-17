@@ -65,7 +65,7 @@ namespace AstralRaytracer
 	)
 	{
 		ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount), "Invalid index");
-		memcpy(&m_data[index], &rgb, ComponentCount * sizeof(T));
+		std::memcpy(&m_data[index], &rgb, ComponentCount * sizeof(T));
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
@@ -84,9 +84,10 @@ namespace AstralRaytracer
 	TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
 	{
 		const uint32 index= (m_width * y + x) * ComponentCount;
+		ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount), "Invalid index");
 
 		glm::vec<ComponentCount, T, glm::defaultp> out;
-		memcpy(&out, &m_data[index], ComponentCount * sizeof(T));
+		std::memcpy(&out[0], &m_data[index], ComponentCount * sizeof(T));
 
 		return out;
 	}
