@@ -25,11 +25,12 @@ namespace AstralRaytracer
 				glm::u32vec2 rendererResolution{ 500, 500 };
 				ImTextureID  outputTextureId= 0;
 				UiBounds     uiBounds;
-				float32      resolutionScale       = 50.0f;
-				bool         isSceneDirty          = false;
-				bool         canSelectObjects      = false;
-				uint32       selectedObjectIndex   = 0;
-				bool         cameraUpdatedThisFrame= false;
+				float32      resolutionScale    = 50.0f;
+				uint32       selectedObjectIndex= 0;
+
+				bool isSceneDirty          = false;
+				bool canSelectObjects      = false;
+				bool cameraUpdatedThisFrame= false;
 		};
 
 		ImVec2       toImVec2(const glm::vec2& vec2);
