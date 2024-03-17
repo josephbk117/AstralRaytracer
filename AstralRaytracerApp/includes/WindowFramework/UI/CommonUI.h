@@ -21,12 +21,12 @@ namespace AstralRaytracer
 
 		struct AppStateInfo
 		{
-				glm::u32vec2 rendererSize{ 500, 500 };
-				glm::u32vec2 rendererResolution{ 500, 500 };
-				ImTextureID  outputTextureId= 0;
-				UiBounds     uiBounds;
-				float32      resolutionScale    = 50.0f;
-				uint32       selectedObjectIndex= 0;
+				Resolution  rendererSize{ 500, 500 };
+				Resolution  rendererResolution{ 500, 500 };
+				ImTextureID outputTextureId= 0;
+				UiBounds    uiBounds;
+				float32     resolutionScale    = 50.0f;
+				uint32      selectedObjectIndex= 0;
 
 				bool isSceneDirty          = false;
 				bool canSelectObjects      = false;
