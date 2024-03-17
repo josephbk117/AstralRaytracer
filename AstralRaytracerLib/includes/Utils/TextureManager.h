@@ -42,7 +42,11 @@ namespace AstralRaytracer
 			template<ArithmeticType T, uint32 componentCount>
 			static void
 			resizeTexture(const TextureData<T, componentCount>& textureData, uint32 textureId);
-			static void saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path);
+			template<ArithmeticType T, uint32 componentCount>
+			static void saveTextureToFile(
+					const TextureData<T, componentCount>& textureData,
+					const std::filesystem::path&          path
+			);
 		private:
 			enum class ImageSizeOption
 			{

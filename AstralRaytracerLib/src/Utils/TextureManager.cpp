@@ -307,18 +307,44 @@ namespace AstralRaytracer
 		gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 	}
 
-	void
-	TextureManager::saveTextureToFile(const TextureDataRGBF& data, const std::filesystem::path& path)
+	template<ArithmeticType T, uint32 componentCount>
+	void TextureManager::saveTextureToFile(
+			const TextureData<T, componentCount>& textureData,
+			const std::filesystem::path&          path
+	)
 	{
 		stbi_flip_vertically_on_write(static_cast<int32>(true));
-		stbi_write_hdr(
-				path.string().c_str(), data.getWidth(), data.getHeight(), data.getComponentCount(),
-				data.getTextureData().data()
-		);
+
+		const int32 width = textureData.getWidth();
+		const int32 height= textureData.getHeight();
+
+		const std::string pathStr= path.string();
+
+		if(std::is_same_v<T, uint8>)
+		{
+			const void* data= reinterpret_cast<const void*>(textureData.getTextureData().data());
+
+			const int32 strideInBytes= width * componentCount;
+			stbi_write_png(pathStr.c_str(), width, height, componentCount, data, strideInBytes);
+		}
+		else if(std::is_same_v<T, float32>)
+		{
+			const float* data= reinterpret_cast<const float*>(textureData.getTextureData().data());
+			stbi_write_hdr(pathStr.c_str(), width, height, componentCount, data);
+		}
 	}
 
 	template gl::GLenum TextureManager::getTextureDataType<uint8>();
 	template gl::GLenum TextureManager::getTextureDataType<float32>();
+
+	template void
+	TextureManager::saveTextureToFile(const TextureData<uint8, 3>&, const std::filesystem::path&);
+	template void
+	TextureManager::saveTextureToFile(const TextureData<uint8, 4>&, const std::filesystem::path&);
+	template void
+	TextureManager::saveTextureToFile(const TextureData<float32, 3>&, const std::filesystem::path&);
+	template void
+	TextureManager::saveTextureToFile(const TextureData<float32, 4>&, const std::filesystem::path&);
 
 	template uint8* TextureManager::
 			loadImageFromFile<uint8, 3>(ImageSizeOption, const std::string&, int32&, int32&, int32&);
