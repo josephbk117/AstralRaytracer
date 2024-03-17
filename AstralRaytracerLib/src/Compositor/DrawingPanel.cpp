@@ -4,10 +4,6 @@
 
 DrawingPanel::DrawingPanel()
 {
-	m_vboID    = 0;
-	m_vaoID    = 0;
-	m_width    = 0;
-	m_height   = 0;
 	m_textureID.fill(0);
 }
 
