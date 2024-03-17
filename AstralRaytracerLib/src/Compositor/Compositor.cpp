@@ -11,6 +11,7 @@ namespace AstralRaytracer
 	{
 		m_renderTexture1.init({ 32, 32 });
 		m_renderTexture2.init({ 32, 32 });
+		m_noAlphaPassThrough.init();
 		m_dwPanel.init(1.0f, 1.0f);
 		m_dwPanel.setTextureID(m_renderTexture1.getTexture());
 	}
@@ -25,6 +26,11 @@ namespace AstralRaytracer
 		m_renderTexture2.resize(resolution);
 
 		m_outputTextureId= inputTextureId;
+
+		// Using noAlphaPassThrough since depth is stored in alpha channel, prevents transparency
+
+		m_noAlphaPassThrough.processImage(m_dwPanel, m_renderTexture1, inputTextureId);
+		m_outputTextureId= m_renderTexture1.getTexture();
 
 		if(scene.m_postProcessingStack.size() <= 0)
 		{

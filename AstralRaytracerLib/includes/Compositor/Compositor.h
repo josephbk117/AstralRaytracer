@@ -1,4 +1,5 @@
 #pragma once
+#include "Compositor/PostProcessing/NoAlphaPassThroughPostProcess.h"
 #include "DrawingPanel.h"
 #include "RenderTexture.h"
 
@@ -24,5 +25,7 @@ namespace AstralRaytracer
 			RenderTexture m_renderTexture1;
 			RenderTexture m_renderTexture2;
 			DrawingPanel  m_dwPanel;
+
+			NoAlphaPassThroughPostProcessing m_noAlphaPassThrough;
 	};
 } // namespace AstralRaytracer
