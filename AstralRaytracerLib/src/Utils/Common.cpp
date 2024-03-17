@@ -122,19 +122,19 @@ namespace AstralRaytracer
 	{
 		const std::string filePathString= filepath.string();
 
-		std::ifstream shaderFile(filePathString.c_str());
-		if(shaderFile.fail())
+		std::ifstream fileStream(filePathString.c_str());
+		if(fileStream.fail())
 		{
-			shaderFile.close();
+			fileStream.close();
 			return Errors::GenericError::FAILURE;
 		}
 		std::string fileContents= "";
 		std::string line;
-		while(std::getline(shaderFile, line))
+		while(std::getline(fileStream, line))
 		{
 			fileContents+= line + "\n";
 		}
-		shaderFile.close();
+		fileStream.close();
 		return Errors::GenericError::SUCCESS;
 	}
 } // namespace AstralRaytracer
