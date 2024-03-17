@@ -59,8 +59,10 @@ namespace AstralRaytracer
 			return;
 		}
 
-		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
-		const float32    imageHeight      = m_texData.getHeight();
+		const Resolution& texRes= m_texData.getResolution();
+
+		const uint32     xAxisPixelCount  = texRes.x * m_texData.getComponentCount();
+		const float32    imageHeight      = texRes.y;
 		const glm::mat4& inverseView      = cam.getInverseView();
 		const glm::mat4& inverseProjection= cam.getInverseProjection();
 
@@ -195,10 +197,10 @@ namespace AstralRaytracer
 	{
 		m_frameIndex= 1;
 
+		const Resolution& texRes= m_texData.getResolution();
+
 		const size_t numBytes  = m_texData.getComponentCount() * sizeof(float32);
-		const uint32 width     = m_texData.getWidth();
-		const uint32 height    = m_texData.getHeight();
-		const size_t bufferSize= numBytes * width * height;
+		const size_t bufferSize= numBytes * texRes.x * texRes.y;
 
 		std::memset(m_accumulatedColorData.data(), 0, bufferSize);
 	}
@@ -272,7 +274,7 @@ namespace AstralRaytracer
 	void Renderer::findClosestHit(
 			HitInfo&           closestHitInfo,
 			const Scene&       scene,
-			const CoOrd3DF&     rayOrigin,
+			const CoOrd3DF&    rayOrigin,
 			const Direction3D& rayDir
 	) const
 	{

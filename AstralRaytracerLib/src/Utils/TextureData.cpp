@@ -38,6 +38,12 @@ namespace AstralRaytracer
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
+	const Resolution& TextureData<T, ComponentCount>::getResolution() const noexcept
+	{
+		return m_resolution;
+	}
+
+	template<ArithmeticType T, uint32 ComponentCount>
 	int32 TextureData<T, ComponentCount>::getWidth() const noexcept
 	{
 		return m_resolution.x;

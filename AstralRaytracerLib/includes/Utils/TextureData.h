@@ -38,6 +38,8 @@ namespace AstralRaytracer
 			[[nodiscard]]
 			const std::vector<T>& getTextureData() const noexcept;
 			[[nodiscard]]
+			const Resolution& getResolution() const noexcept;
+			[[nodiscard]]
 			int32 getWidth() const noexcept;
 			[[nodiscard]]
 			int32 getHeight() const noexcept;
@@ -49,7 +51,8 @@ namespace AstralRaytracer
 					const glm::vec<ComponentCount, T, glm::defaultp>& color
 			);
 
-			void setTexelColor(uint32 x, uint32 y, const glm::vec<ComponentCount, T, glm::defaultp>& color);
+			void
+			setTexelColor(uint32 x, uint32 y, const glm::vec<ComponentCount, T, glm::defaultp>& color);
 			[[nodiscard]]
 			glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(int32 x, int32 y) const;
 			[[nodiscard]]

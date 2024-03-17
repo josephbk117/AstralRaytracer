@@ -158,15 +158,14 @@ namespace AstralRaytracer
 																					: (sizeOfT == sizeof(uint16)) ? ImageSizeOption::Short
 																																				: ImageSizeOption::Float;
 
-		int32 width      = 0;
-		int32 height     = 0;
-		int32 numChannels= 0;
-
-		T* data= nullptr;
+		int32      numChannels= 0;
+		Resolution imageRes{ 0 };
 
 		const std::string pathString= path.string();
 
-		data= loadImageFromFile<T, componentCount>(sizeOption, pathString, width, height, numChannels);
+		T* data= loadImageFromFile<T, componentCount>(
+				sizeOption, pathString, imageRes.x, imageRes.y, numChannels
+		);
 
 		if(data == nullptr)
 		{
@@ -174,9 +173,9 @@ namespace AstralRaytracer
 			return;
 		}
 
-		textureData.resize({width, height});
+		textureData.resize(imageRes);
 
-		const size_t   resizeCount= static_cast<size_t>(width) * height * numChannels;
+		const size_t   resizeCount= static_cast<size_t>(imageRes.x) * imageRes.y * numChannels;
 		std::vector<T> vecData(resizeCount);
 
 		std::memcpy(vecData.data(), data, resizeCount * sizeOfT);
@@ -274,14 +273,13 @@ namespace AstralRaytracer
 	{
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
 
-		const int32 texWidth = textureData.getWidth();
-		const int32 texHeight= textureData.getHeight();
-
 		constexpr gl::GLenum format  = getTextureFormatFromComponentCount(componentCount);
 		const gl::GLenum     dataType= getTextureDataType<T>();
 
+		const Resolution& texRes= textureData.getResolution();
+
 		gl::glTexSubImage2D(
-				gl::GL_TEXTURE_2D, 0, 0, 0, texWidth, texHeight, format, dataType,
+				gl::GL_TEXTURE_2D, 0, 0, 0, texRes.x, texRes.y, format, dataType,
 				textureData.getTextureData().data()
 		);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
@@ -293,15 +291,14 @@ namespace AstralRaytracer
 	{
 		gl::glBindTexture(gl::GL_TEXTURE_2D, textureId);
 
-		const int32 texWidth = textureData.getWidth();
-		const int32 texHeight= textureData.getHeight();
+		const Resolution& texRes= textureData.getResolution();
 
 		constexpr gl::GLenum format        = getTextureFormatFromComponentCount(componentCount);
 		const gl::GLenum     dataType      = getTextureDataType<T>();
 		const gl::GLenum     internalFormat= getTextureInternalFormatType<T>(componentCount);
 
 		gl::glTexImage2D(
-				gl::GL_TEXTURE_2D, 0, internalFormat, texWidth, texHeight, 0, format, dataType,
+				gl::GL_TEXTURE_2D, 0, internalFormat, texRes.x, texRes.y, 0, format, dataType,
 				textureData.getTextureData().data()
 		);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
@@ -313,8 +310,7 @@ namespace AstralRaytracer
 			const std::filesystem::path&          path
 	)
 	{
-		const int32 width = textureData.getWidth();
-		const int32 height= textureData.getHeight();
+		const Resolution& texRes= textureData.getResolution();
 
 		const std::string pathStr= path.string();
 
@@ -322,15 +318,15 @@ namespace AstralRaytracer
 		{
 			const void* data= reinterpret_cast<const void*>(textureData.getTextureData().data());
 
-			const int32 strideInBytes= width * componentCount;
-			stbi_write_png(pathStr.c_str(), width, height, componentCount, data, strideInBytes);
+			const int32 strideInBytes= texRes.x * componentCount;
+			stbi_write_png(pathStr.c_str(), texRes.x, texRes.y, componentCount, data, strideInBytes);
 		}
 		else if(std::is_same_v<T, float32>)
 		{
 			stbi_flip_vertically_on_write(static_cast<int32>(true));
 
 			const float* data= reinterpret_cast<const float*>(textureData.getTextureData().data());
-			stbi_write_hdr(pathStr.c_str(), width, height, componentCount, data);
+			stbi_write_hdr(pathStr.c_str(), texRes.x, texRes.y, componentCount, data);
 		}
 	}
 
