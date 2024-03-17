@@ -313,8 +313,6 @@ namespace AstralRaytracer
 			const std::filesystem::path&          path
 	)
 	{
-		stbi_flip_vertically_on_write(static_cast<int32>(true));
-
 		const int32 width = textureData.getWidth();
 		const int32 height= textureData.getHeight();
 
@@ -329,6 +327,8 @@ namespace AstralRaytracer
 		}
 		else if(std::is_same_v<T, float32>)
 		{
+			stbi_flip_vertically_on_write(static_cast<int32>(true));
+
 			const float* data= reinterpret_cast<const float*>(textureData.getTextureData().data());
 			stbi_write_hdr(pathStr.c_str(), width, height, componentCount, data);
 		}
