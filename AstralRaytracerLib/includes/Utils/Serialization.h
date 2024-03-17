@@ -62,7 +62,7 @@ namespace YAML
 				const float32 y= node[1].as<float32>();
 				const float32 z= node[2].as<float32>();
 
-				rhs= AstralRaytracer::ColourData(x, y, z);
+				rhs= AstralRaytracer::ColourData(x, y, z, 1.0f);
 				return true;
 			}
 	};
@@ -119,6 +119,7 @@ namespace AstralRaytracer
 	namespace Serialization
 	{
 		YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& vec3);
+		YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& vec4);
 		YAML::Emitter& operator<<(YAML::Emitter& out, const ColourData& colourData);
 		YAML::Emitter& operator<<(YAML::Emitter& out, const Transform& transform);
 
