@@ -333,8 +333,8 @@ namespace AstralRaytracer
 	void Window::setWindowTitle(const AssetManager& assetManager, const Scene& activeScene)
 	{
 		const std::string& projectName= assetManager.getCurrentProjectName();
-		const std::string& sceneName  = activeScene.getName();
-		glfwSetWindowTitle(m_glfwWindow, (m_name + " | " + projectName + " | " + sceneName).c_str());
+		const std::string_view sceneName  = activeScene.getName();
+		glfwSetWindowTitle(m_glfwWindow, (m_name + " | " + projectName + " | " + sceneName.data()).c_str());
 	}
 
 	void Window::drawSampleProgress(const uint32 frameIndex)
