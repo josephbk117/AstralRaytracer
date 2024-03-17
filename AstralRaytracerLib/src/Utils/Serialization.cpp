@@ -11,6 +11,13 @@ namespace AstralRaytracer
 			return out;
 		}
 
+		YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& vec4)
+		{
+			out << YAML::Flow;
+			out << YAML::BeginSeq << vec4.x << vec4.y << vec4.z << vec4.w << YAML::EndSeq;
+			return out;
+		}
+
 		YAML::Emitter& operator<<(YAML::Emitter& out, const ColourData& colourData)
 		{
 			out << colourData.getColour_32_bit();
