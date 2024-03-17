@@ -72,4 +72,8 @@ void Application::run()
 	}
 }
 
-void Application::shutdown() { m_window.shutdown(); }
+void Application::shutdown()
+{
+	m_renderer.renderEnd();
+	m_window.shutdown();
+}
