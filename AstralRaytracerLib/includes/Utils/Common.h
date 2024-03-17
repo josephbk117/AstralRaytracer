@@ -58,6 +58,12 @@ struct UiBounds
 		}
 };
 
+struct AABB
+{
+		glm::vec3 min{ -1, -1, -1 };
+		glm::vec3 max{ 1, 1, 1 };
+};
+
 namespace AstralRaytracer
 {
 	enum class FileType

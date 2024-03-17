@@ -10,6 +10,7 @@ namespace AstralRaytracer
 	{
 		public:
 			Traceable()= default;
+			Traceable(const AABB& boundingBox);
 			virtual ~Traceable(){};
 
 			virtual void setPosition(const glm::vec3& position) { m_transform.setPosition(position); }
@@ -46,5 +47,8 @@ namespace AstralRaytracer
 		protected:
 			Transform m_transform;
 			uint32    m_materialIndex= 0; // points to default material
+
+			AABB m_boundingBox;
+			AABB m_initialBoundingBox;
 	};
 } // namespace AstralRaytracer

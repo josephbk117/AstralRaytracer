@@ -7,12 +7,6 @@
 
 namespace AstralRaytracer
 {
-	struct AABB
-	{
-			glm::vec3 min;
-			glm::vec3 max;
-	};
-
 	class StaticMesh: public Traceable
 	{
 		public:
@@ -20,9 +14,8 @@ namespace AstralRaytracer
 			StaticMesh(const std::filesystem::path& meshFilePath);
 
 			StaticMesh(const std::vector<TriangleTraceable>& triangles, const AABB& boundingBox)
-					: m_triangles(triangles), m_boundingBox(boundingBox)
+					: m_triangles(triangles), Traceable(boundingBox)
 			{
-				m_initialBoundingBox= boundingBox;
 			}
 
 			StaticMesh(
@@ -30,9 +23,8 @@ namespace AstralRaytracer
 					const AABB&                           boundingBox,
 					const std::string&                    srcFilePath
 			)
-					: m_triangles(triangles), m_boundingBox(boundingBox), m_sourceMeshFilePath(srcFilePath)
+					: m_triangles(triangles), Traceable(boundingBox), m_sourceMeshFilePath(srcFilePath)
 			{
-				m_initialBoundingBox= boundingBox;
 			}
 
 			[[nodiscard]]
@@ -51,8 +43,6 @@ namespace AstralRaytracer
 			bool intersectsBoundingBox(const Ray& rayIn) const;
 
 			std::string                    m_sourceMeshFilePath;
-			AABB                           m_boundingBox;
-			AABB                           m_initialBoundingBox;
 			std::vector<TriangleTraceable> m_triangles;
 	};
 } // namespace AstralRaytracer

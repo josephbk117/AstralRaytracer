@@ -2,6 +2,8 @@
 
 namespace AstralRaytracer
 {
+	Traceable::Traceable(const AABB& boundingBox): m_initialBoundingBox(boundingBox), m_boundingBox(boundingBox) { }
+
 	const glm::vec3& Traceable::getPosition() const { return m_transform.getPosition(); }
 
 	float32 Traceable::getRotation() const { return m_transform.getRotation(); }
