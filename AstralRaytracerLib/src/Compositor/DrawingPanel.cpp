@@ -2,10 +2,7 @@
 
 #include <glbinding/gl/gl.h>
 
-DrawingPanel::DrawingPanel()
-{
-	m_textureID.fill(0);
-}
+DrawingPanel::DrawingPanel() { m_textureID.fill(0); }
 
 DrawingPanel::~DrawingPanel()
 {
@@ -83,15 +80,18 @@ void DrawingPanel::init(float32 width, float32 height)
 	gl::glBindVertexArray(0);
 }
 
-void DrawingPanel::setTextureID(uint32 textureID, uint32 index) { m_textureID[index] = textureID; }
+void DrawingPanel::setTextureID(TextureId textureID, uint32 index)
+{
+	m_textureID[index]= textureID;
+}
 
-uint32 DrawingPanel::getTextureID(uint32 index) const noexcept { return m_textureID[index]; }
+TextureId DrawingPanel::getTextureID(uint32 index) const noexcept { return m_textureID[index]; }
 
 void DrawingPanel::draw() const noexcept
 {
 	gl::glActiveTexture(gl::GL_TEXTURE0);
 	gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID[0]);
-	if(m_textureID[1] != 0) 
+	if(m_textureID[1] != 0)
 	{
 		gl::glActiveTexture(gl::GL_TEXTURE1);
 		gl::glBindTexture(gl::GL_TEXTURE_2D, m_textureID[1]);
