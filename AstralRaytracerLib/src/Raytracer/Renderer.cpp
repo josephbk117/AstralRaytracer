@@ -36,11 +36,12 @@ void Renderer::initialize()
 
 void Renderer::renderStart(const Scene &scene, const Camera &cam)
 {
-    if (m_state != RendererState::NOT_STARTED)
+    if (getState() != RendererState::NOT_STARTED)
     {
         return;
     }
-    m_state = RendererState::STARTED;
+
+    setState(RendererState::STARTED);
     renderEnd();
 
     onResize(cam.getResolution());
@@ -58,7 +59,7 @@ void Renderer::renderEnd()
 
 void Renderer::render(const Scene &scene, const Camera &cam)
 {
-    if (m_state != RendererState::STARTED)
+    if (getState() != RendererState::STARTED)
     {
         return;
     }
@@ -127,7 +128,17 @@ void Renderer::render(const Scene &scene, const Camera &cam)
                     m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
                 });
 
-    m_state = RendererState::DONE;
+    setState(RendererState::DONE);
+}
+
+Renderer::RendererState Renderer::getState() const
+{
+    return m_state.load();
+}
+
+void Renderer::setState(RendererState renderState)
+{
+    m_state.store(renderState);
 }
 
 bool Renderer::onRenderComplete()

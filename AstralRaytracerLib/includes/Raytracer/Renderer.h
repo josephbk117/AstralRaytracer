@@ -3,6 +3,7 @@
 #include "Utils/Common.h"
 #include "Utils/ShaderProgram.h"
 #include "Utils/TextureData.h"
+#include <atomic>
 
 namespace AstralRaytracer
 {
@@ -64,8 +65,11 @@ class Renderer
     void resize(const Resolution &resolution);
     void render(const Scene &scene, const Camera &cam);
 
+    RendererState getState() const;
+    void setState(RendererState renderState);
+
     std::thread m_renderingThread;
-    RendererState m_state = RendererState::NOT_STARTED;
+    std::atomic<RendererState> m_state{RendererState::NOT_STARTED};
 
     TextureDataRGBAF m_texData;
     std::vector<float32> m_accumulatedColorData;
