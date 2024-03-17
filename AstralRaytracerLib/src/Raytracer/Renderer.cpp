@@ -24,11 +24,10 @@ namespace AstralRaytracer
 		constexpr uint32 initialWidth = 16;
 		constexpr uint32 initialHeight= 16;
 
-		// Made initial resolution small so that OnResize can run
 		m_texData.resize(initialWidth, initialHeight);
 		m_textureId= TextureManager::loadTextureFromTextureData<float32, 4>(m_texData, false);
 
-		onResize(32, 32);
+		resize(initialWidth, initialHeight);
 	}
 
 	void Renderer::renderStart(const Scene& scene, const Camera& cam)
@@ -165,13 +164,8 @@ namespace AstralRaytracer
 		return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 	}
 
-	bool Renderer::onResize(uint32 width, uint32 height)
+	void Renderer::resize(uint32 width, uint32 height)
 	{
-		if(m_texData.getWidth() == width && m_texData.getHeight() == height)
-		{
-			return false;
-		}
-
 		m_texData.resize(width, height);
 
 		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
@@ -182,6 +176,16 @@ namespace AstralRaytracer
 		std::iota(m_rayIterator.begin(), m_rayIterator.end(), 0);
 
 		TextureManager::resizeTexture(m_texData, m_textureId);
+	}
+
+	bool Renderer::onResize(uint32 width, uint32 height)
+	{
+		if(m_texData.getWidth() == width && m_texData.getHeight() == height)
+		{
+			return false;
+		}
+
+		resize(width, height);
 
 		return true;
 	}

@@ -54,6 +54,7 @@ namespace AstralRaytracer
 			bool onResize(uint32 width, uint32 height);
 			void resetFrameIndex();
 		private:
+			void resize(uint32 width, uint32 height);
 			void render(const Scene& scene, const Camera& cam);
 
 			std::thread   m_renderingThread;
