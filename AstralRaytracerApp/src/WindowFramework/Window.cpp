@@ -115,7 +115,7 @@ namespace AstralRaytracer
 		);
 		coOrd.y= 1.0f - coOrd.y;
 
-		const glm::vec3& rayDir= renderer.getRayDirectionFromNormalizedCoord(
+		const Direction3D& rayDir= renderer.getRayDirectionFromNormalizedCoord(
 				coOrd, cam.getInverseProjection(), cam.getInverseView()
 		);
 		renderer.findClosestHit(closestHitInfo, scene, cam.getPosition(), rayDir);
@@ -164,7 +164,7 @@ namespace AstralRaytracer
 
 		//------- Object selection--------//
 
-		const glm::vec2& mousePos= Input::getMousePosition(*this);
+		const CoOrd2DF& mousePos= Input::getMousePosition(*this);
 		if(appStateInfo.canSelectObjects && !appStateInfo.isSceneDirty &&
 			 Input::isMouseButtonDown(*this, MouseButtonIndex::MOUSE_BUTTON_LEFT) &&
 			 appStateInfo.uiBounds.isPointInBounds(mousePos))
@@ -180,18 +180,18 @@ namespace AstralRaytracer
 		const uint32  camResolutionX= appStateInfo.rendererSize.x * resScale;
 		const uint32  camResolutionY= appStateInfo.rendererSize.y * resScale;
 
-		const glm::u32vec2 newCamRes(camResolutionX, camResolutionY);
+		const Resolution newCamRes(camResolutionX, camResolutionY);
 
-		static glm::vec2 lastMousePosition(0.0f);
+		static CoOrd2DF lastMousePosition(0.0f);
 
-		if(lastMousePosition == glm::vec2(0.0f))
+		if(lastMousePosition == CoOrd2DF(0.0f))
 		{
 			lastMousePosition= Input::getMousePosition(*this);
 			return;
 		}
 
-		const glm::vec2& mouseDelta= (mousePos - lastMousePosition);
-		lastMousePosition          = mousePos;
+		const Direction2D& mouseDelta= (mousePos - lastMousePosition);
+		lastMousePosition            = mousePos;
 
 		const bool forceRecalculate= cam.getResolution() != newCamRes;
 
@@ -614,7 +614,7 @@ namespace AstralRaytracer
 		setWindowTitle(assetManager, scene);
 
 		appStateInfo.selectedObjectIndex= 0;
-		appStateInfo.isSceneDirty= true;
+		appStateInfo.isSceneDirty       = true;
 	}
 
 	void Window::handleChooseProjectDialog(
@@ -634,8 +634,8 @@ namespace AstralRaytracer
 			scene.deserialize(assetManager, assetManager.getDefaultSceneAbsolutePath());
 			setWindowTitle(assetManager, scene);
 
-			appStateInfo.selectedObjectIndex = 0;
-			appStateInfo.isSceneDirty= true;
+			appStateInfo.selectedObjectIndex= 0;
+			appStateInfo.isSceneDirty       = true;
 			return;
 		}
 	}
@@ -776,11 +776,10 @@ namespace AstralRaytracer
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
-	glm::u32vec2 Window::getResolution() const
+	Resolution Window::getResolution() const
 	{
-		int32 width;
-		int32 height;
-		glfwGetWindowSize(m_glfwWindow, &width, &height);
-		return { width, height };
+		Resolution res{};
+		glfwGetWindowSize(m_glfwWindow, &res.x, &res.y);
+		return res;
 	}
 } // namespace AstralRaytracer

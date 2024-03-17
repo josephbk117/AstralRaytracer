@@ -8,9 +8,9 @@ namespace AstralRaytracer
 		gl::glDeleteTextures(1, &m_texture);
 	}
 
-	void RenderTexture::init(const glm::u32vec2& size)
+	void RenderTexture::init(const Resolution& resolution)
 	{
-		m_size= size;
+		m_resolution= resolution;
 		// Step 2: Create FBO
 		gl::glGenFramebuffers(1, &m_framebuffer);
 		gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_framebuffer);
@@ -20,8 +20,8 @@ namespace AstralRaytracer
 
 		gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
 		gl::glTexImage2D(
-				gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_size.x, m_size.y, 0, gl::GL_RGB, gl::GL_FLOAT,
-				nullptr
+				gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_resolution.x, m_resolution.y, 0, gl::GL_RGB,
+				gl::GL_FLOAT, nullptr
 		);
 
 		gl::glTexParameteri(gl::GL_TEXTURE_2D, gl::GL_TEXTURE_WRAP_S, gl::GL_CLAMP_TO_EDGE);
@@ -51,29 +51,29 @@ namespace AstralRaytracer
 
 	gl::GLuint RenderTexture::getFBO() const { return m_framebuffer; }
 
-	gl::GLuint RenderTexture::getTexture() const { return m_texture; }
+	TextureId RenderTexture::getTexture() const { return m_texture; }
 
 	void RenderTexture::bind() const
 	{
 		gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, m_framebuffer);
-		gl::glViewport(0, 0, m_size.x, m_size.y);
+		gl::glViewport(0, 0, m_resolution.x, m_resolution.y);
 	}
 
 	void RenderTexture::unbind() const { gl::glBindFramebuffer(gl::GL_FRAMEBUFFER, 0); }
 
-	glm::u32vec2 RenderTexture::getSize() const { return m_size; }
+	const Resolution& RenderTexture::getSize() const { return m_resolution; }
 
-	void RenderTexture::resize(const glm::u32vec2& size)
+	void RenderTexture::resize(const Resolution& resolution)
 	{
-		if(m_size != size)
+		if(m_resolution != resolution)
 		{
-			m_size= size;
+			m_resolution= resolution;
 			// Resize Texture Attachment
 
 			gl::glBindTexture(gl::GL_TEXTURE_2D, m_texture);
 			gl::glTexImage2D(
-					gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_size.x, m_size.y, 0, gl::GL_RGB, gl::GL_FLOAT,
-					nullptr
+					gl::GL_TEXTURE_2D, 0, gl::GL_RGB32F, m_resolution.x, m_resolution.y, 0, gl::GL_RGB,
+					gl::GL_FLOAT, nullptr
 			);
 			gl::glBindTexture(gl::GL_TEXTURE_2D, 0);
 		}

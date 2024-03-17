@@ -205,7 +205,7 @@ namespace AstralRaytracer
 		);
 
 		addMaterial(Material());
-		TextureDataRGBF defaultTexData(1, 1);
+		TextureDataRGBF defaultTexData({ 1, 1 });
 		defaultTexData.setTexelColorAtPixelIndex(0, glm::vec3(1, 1, 1));
 		addTexture(std::move(defaultTexData));
 		addPostProcessing(std::make_unique<GammaCorrectionPostProcessing>());

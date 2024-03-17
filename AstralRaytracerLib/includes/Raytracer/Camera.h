@@ -14,18 +14,18 @@ namespace AstralRaytracer
 					float32 nearClip= 0.01f,
 					float32 farClip = 100.0f
 			);
-			void update(const glm::u32vec2& resolution);
+			void update(const Resolution& resolution);
 
 			void moveForward(float32 units);
 			void moveRight(float32 units);
 			void moveUp(float32 units);
 			void rotate(glm::vec2 rot);
 
-			const glm::u32vec2& getResolution() const { return m_resolution; }
+			const Resolution& getResolution() const { return m_resolution; }
 
 			const glm::vec3& getPosition() const { return m_position; }
 
-			const glm::vec3& getDirection() const { return m_direction; }
+			const glm::vec3& getForwardDirection() const { return m_forwardDir; }
 
 			void setFarClipDistance(float32 farClip) { m_farClip= farClip; }
 
@@ -59,9 +59,9 @@ namespace AstralRaytracer
 
 			float32 getFocusDistance() const { return m_focusDistance; }
 
-			const glm::vec3 getRight() const;
+			const Direction3D& getRight() const;
 
-			const glm::vec3 getUp() const;
+			const Direction3D& getUp() const;
 
 			const glm::mat4& getView() const { return m_view; }
 
@@ -72,19 +72,19 @@ namespace AstralRaytracer
 			const glm::mat4& getInverseView() const { return m_inverseView; };
 		private:
 			inline void recalculateView();
-			inline void recalculateProjection(const glm::u32vec2& resolution);
+			inline void recalculateProjection(const Resolution& resolution);
 
-			glm::u32vec2 m_resolution{ 1, 1 };
+			Resolution m_resolution{ 1, 1 };
 
 			glm::mat4 m_projection       = glm::identity<glm::mat4>();
 			glm::mat4 m_view             = glm::identity<glm::mat4>();
 			glm::mat4 m_inverseProjection= glm::identity<glm::mat4>();
 			glm::mat4 m_inverseView      = glm::identity<glm::mat4>();
 
-			glm::vec3 m_position{ 0.0f };
-			glm::vec3 m_direction{ 0.0f };
-			glm::vec3 m_right{ 0.0f };
-			glm::vec3 m_up{ 0.0f };
+			CoOrd3DF m_position{ 0.0f };
+			Direction3D m_forwardDir{ 0.0f };
+			Direction3D m_right{ 0.0f };
+			Direction3D m_up{ 0.0f };
 
 			float32 m_focalLength     = 0.0f;
 			float32 m_sensorHeight    = 0.0f;
@@ -93,6 +93,6 @@ namespace AstralRaytracer
 			float32 m_nearClip        = 0.0f;
 			float32 m_farClip         = 0.0f;
 
-			glm::vec2 m_lastMousePosition{ 0.0f };
+			CoOrd2DF m_lastMousePosition{ 0.0f };
 	};
 } // namespace AstralRaytracer

@@ -3,34 +3,31 @@
 namespace AstralRaytracer
 {
 	template<ArithmeticType T, uint32 ComponentCount>
-	TextureData<T, ComponentCount>::TextureData(uint32 width, uint32 height)
+	TextureData<T, ComponentCount>::TextureData(Resolution resolution)
 	{
-		resize(width, height);
+		resize(resolution);
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
-	TextureData<T, ComponentCount>::TextureData(
-			uint32                width,
-			uint32                height,
-			const std::vector<T>& data
-	)
+	TextureData<T, ComponentCount>::TextureData(Resolution resolution, const std::vector<T>& data)
 	{
-		resize(width, height);
+		resize(resolution);
 		setTextureData(data);
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
-	void TextureData<T, ComponentCount>::resize(uint32 width, uint32 height)
+	void TextureData<T, ComponentCount>::resize(Resolution resolution)
 	{
-		m_width = width;
-		m_height= height;
-		m_data.resize(width * height * ComponentCount);
+		m_resolution= resolution;
+		m_data.resize(m_resolution.x * m_resolution.y * ComponentCount);
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTextureData(const std::vector<T>& data)
 	{
-		ASTRAL_ASSERTM(m_width * m_height * ComponentCount == data.size(), "Mismatched data size");
+		ASTRAL_ASSERTM(
+				m_resolution.x * m_resolution.y * ComponentCount == data.size(), "Mismatched data size"
+		);
 		m_data= data;
 	}
 
@@ -41,15 +38,15 @@ namespace AstralRaytracer
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
-	uint32 TextureData<T, ComponentCount>::getWidth() const noexcept
+	int32 TextureData<T, ComponentCount>::getWidth() const noexcept
 	{
-		return m_width;
+		return m_resolution.x;
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
-	uint32 TextureData<T, ComponentCount>::getHeight() const noexcept
+	int32 TextureData<T, ComponentCount>::getHeight() const noexcept
 	{
-		return m_height;
+		return m_resolution.y;
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
@@ -61,29 +58,29 @@ namespace AstralRaytracer
 	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTexelColorAtPixelIndex(
 			uint32                                            index,
-			const glm::vec<ComponentCount, T, glm::defaultp>& rgb
+			const glm::vec<ComponentCount, T, glm::defaultp>& color
 	)
 	{
 		ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount), "Invalid index");
-		std::memcpy(&m_data[index], &rgb, ComponentCount * sizeof(T));
+		std::memcpy(&m_data[index], &color, ComponentCount * sizeof(T));
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
 	void TextureData<T, ComponentCount>::setTexelColor(
 			uint32                                            x,
 			uint32                                            y,
-			const glm::vec<ComponentCount, T, glm::defaultp>& rgb
+			const glm::vec<ComponentCount, T, glm::defaultp>& color
 	)
 	{
-		const uint32 index= (m_width * y + x) * ComponentCount;
-		setTexelColorAtPixelIndex(index, rgb);
+		const uint32 index= (m_resolution.x * y + x) * ComponentCount;
+		setTexelColorAtPixelIndex(index, color);
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
 	glm::vec<ComponentCount, T, glm::defaultp>
-	TextureData<T, ComponentCount>::getTexelColor(uint32 x, uint32 y) const
+	TextureData<T, ComponentCount>::getTexelColor(int32 x, int32 y) const
 	{
-		const uint32 index= (m_width * y + x) * ComponentCount;
+		const uint32 index= (m_resolution.x * y + x) * ComponentCount;
 		ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount), "Invalid index");
 
 		glm::vec<ComponentCount, T, glm::defaultp> out;
@@ -97,8 +94,8 @@ namespace AstralRaytracer
 	TextureData<T, ComponentCount>::getTexelColor(float32 u, float32 v, SamplingType samplingType)
 			const
 	{
-		const int32 xIndex= u * (m_width - 1);
-		const int32 yIndex= v * (m_height - 1);
+		const int32 xIndex= u * (m_resolution.x - 1);
+		const int32 yIndex= v * (m_resolution.y - 1);
 
 		uint32 finalXIndex= 0;
 		uint32 finalYIndex= 0;
@@ -107,33 +104,33 @@ namespace AstralRaytracer
 		{
 			case SamplingType::REPEAT:
 				{
-					finalXIndex= glm::abs(xIndex) % m_width;
-					finalYIndex= glm::abs(yIndex) % m_height;
+					finalXIndex= glm::abs(xIndex) % m_resolution.x;
+					finalYIndex= glm::abs(yIndex) % m_resolution.y;
 				}
 				break;
 			case SamplingType::MIRRORED_REPEAT:
 				{
-					finalXIndex= glm::abs(xIndex) % (2 * m_width);
-					if(finalXIndex >= m_width)
+					finalXIndex= glm::abs(xIndex) % (2 * m_resolution.x);
+					if(finalXIndex >= m_resolution.x)
 					{
-						finalXIndex= 2 * m_width - finalXIndex - 1;
+						finalXIndex= 2 * m_resolution.x - finalXIndex - 1;
 					}
-					finalYIndex= glm::abs(yIndex) % (2 * m_height);
-					if(finalYIndex >= m_height)
+					finalYIndex= glm::abs(yIndex) % (2 * m_resolution.y);
+					if(finalYIndex >= m_resolution.y)
 					{
-						finalYIndex= 2 * m_height - finalYIndex - 1;
+						finalYIndex= 2 * m_resolution.y - finalYIndex - 1;
 					}
 				}
 				break;
 			case SamplingType::CLAMP_TO_EDGE:
 				{
-					finalXIndex= glm::clamp(xIndex, 0, static_cast<int32>(m_width - 1));
-					finalYIndex= glm::clamp(yIndex, 0, static_cast<int32>(m_height - 1));
+					finalXIndex= glm::clamp(xIndex, 0, static_cast<int32>(m_resolution.x - 1));
+					finalYIndex= glm::clamp(yIndex, 0, static_cast<int32>(m_resolution.y - 1));
 				}
 				break;
 			case SamplingType::CLAMP_TO_BORDER:
 				{
-					if(xIndex < 0 || xIndex >= m_width || yIndex < 0 || yIndex >= m_height)
+					if(xIndex < 0 || xIndex >= m_resolution.x || yIndex < 0 || yIndex >= m_resolution.y)
 					{
 						return glm::vec<ComponentCount, T, glm::defaultp>(0);
 					}

@@ -24,7 +24,7 @@ namespace AstralRaytracer
 		constexpr uint32 initialWidth = 16;
 		constexpr uint32 initialHeight= 16;
 
-		m_texData.resize(initialWidth, initialHeight);
+		m_texData.resize({ initialWidth, initialHeight });
 		m_textureId= TextureManager::loadTextureFromTextureData<float32, 4>(m_texData, false);
 
 		resize(initialWidth, initialHeight);
@@ -69,7 +69,7 @@ namespace AstralRaytracer
 		const float32 oneOverXAxisPixelCount= 1.0f / xAxisPixelCount;
 		const float32 oneOverImageHeight    = 1.0f / imageHeight;
 
-		const glm::vec3 camHorizontalDir= glm::normalize(glm::cross(cam.getUp(), cam.getDirection()));
+		const glm::vec3 camHorizontalDir= glm::normalize(glm::cross(cam.getUp(), cam.getForwardDirection()));
 
 		runParallel(
 				m_rayIterator.begin(), m_rayIterator.end(),
@@ -166,7 +166,7 @@ namespace AstralRaytracer
 
 	void Renderer::resize(uint32 width, uint32 height)
 	{
-		m_texData.resize(width, height);
+		m_texData.resize({width, height});
 
 		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
 		m_accumulatedColorData.resize(newSizePixelCount * m_texData.getComponentCount());

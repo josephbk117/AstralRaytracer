@@ -9,18 +9,19 @@ namespace AstralRaytracer
 
 	void Compositor::initialize()
 	{
-		m_renderTexture1.init({ 32, 32 });
-		m_renderTexture2.init({ 32, 32 });
+		m_outputTextureId= 0;
+
+		const Resolution initialResolution{ 32, 32 };
+
+		m_renderTexture1.init(initialResolution);
+		m_renderTexture2.init(initialResolution);
 		m_noAlphaPassThrough.init();
 		m_dwPanel.init(1.0f, 1.0f);
 		m_dwPanel.setTextureID(m_renderTexture1.getTexture());
 	}
 
-	void Compositor::processImage(
-			const Scene&        scene,
-			const glm::u32vec2& resolution,
-			uint32              inputTextureId
-	)
+	void
+	Compositor::processImage(const Scene& scene, const Resolution& resolution, uint32 inputTextureId)
 	{
 		m_renderTexture1.resize(resolution);
 		m_renderTexture2.resize(resolution);
@@ -57,6 +58,6 @@ namespace AstralRaytracer
 		}
 	}
 
-	uint32 Compositor::getTextureId() const { return m_outputTextureId; }
+	TextureId Compositor::getTextureId() const { return m_outputTextureId; }
 
 } // namespace AstralRaytracer

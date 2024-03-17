@@ -15,12 +15,12 @@ namespace AstralRaytracer
 		public:
 			Compositor();
 			void initialize();
-			void processImage(const Scene& scene, const glm::u32vec2& resolution, uint32 inputTextureId);
+			void processImage(const Scene& scene, const Resolution& resolution, uint32 inputTextureId);
 
 			[[nodiscard]]
-			uint32 getTextureId() const;
+			TextureId getTextureId() const;
 		private:
-			uint32 m_outputTextureId= 0;
+			TextureId m_outputTextureId= 0;
 
 			RenderTexture m_renderTexture1;
 			RenderTexture m_renderTexture2;

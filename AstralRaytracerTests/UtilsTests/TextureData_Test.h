@@ -9,8 +9,7 @@ class TextureDataTest: public testing::Test
 		const int32 RGBComponentCount = 3;
 		const int32 RGBAComponentCount= 4;
 
-		const uint32 width = 3;
-		const uint32 height= 3;
+		const Resolution resolution{ 3, 3 };
 
 		AstralRaytracer::TextureDataRGB   TextureRGB;
 		AstralRaytracer::TextureDataRGBA  TextureRGBA;
@@ -43,10 +42,10 @@ class TextureDataTest: public testing::Test
 
 		void SetUp() override
 		{
-			TextureRGB  = AstralRaytracer::TextureDataRGB(width, height, RGBColorData1);
-			TextureRGBA = AstralRaytracer::TextureDataRGBA(width, height, RGBAColorData1);
-			TextureRGBF = AstralRaytracer::TextureDataRGBF(width, height, RGBFColorData1);
-			TextureRGBAF= AstralRaytracer::TextureDataRGBAF(width, height, RGBAFColorData1);
+			TextureRGB  = AstralRaytracer::TextureDataRGB(resolution, RGBColorData1);
+			TextureRGBA = AstralRaytracer::TextureDataRGBA(resolution, RGBAColorData1);
+			TextureRGBF = AstralRaytracer::TextureDataRGBF(resolution, RGBFColorData1);
+			TextureRGBAF= AstralRaytracer::TextureDataRGBAF(resolution, RGBAFColorData1);
 		}
 
 		// Inherited via Test
@@ -81,15 +80,18 @@ TEST_F(TextureDataTest, ResizeTextureDataEdgeCases)
 {
 	// Test resizing to a larger size
 	TextureRGB.setTextureData(RGBColorData1);
-	TextureRGB.resize(6, 6);
-	EXPECT_EQ(TextureRGB.getWidth(), 6u);
-	EXPECT_EQ(TextureRGB.getHeight(), 6u);
+
+	Resolution res1{ 6, 8 };
+	TextureRGB.resize(res1);
+	EXPECT_EQ(TextureRGB.getWidth(), res1.x);
+	EXPECT_EQ(TextureRGB.getHeight(), res1.y);
 	// Verify that the original data is preserved and new data is initialized as expected
 
 	// Test resizing to a smaller size
-	TextureRGB.resize(2, 2);
-	EXPECT_EQ(TextureRGB.getWidth(), 2u);
-	EXPECT_EQ(TextureRGB.getHeight(), 2u);
+	Resolution res2{ 2, 3 };
+	TextureRGB.resize(res2);
+	EXPECT_EQ(TextureRGB.getWidth(), res2.x);
+	EXPECT_EQ(TextureRGB.getHeight(), res2.y);
 	// Verify that the data is correctly trimmed
 }
 
@@ -103,16 +105,19 @@ TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
 	// Parameterized test for getting texel color
 	struct TexelTestParams
 	{
-			uint32  x;
-			uint32  y;
-			float32 normalizedX;
-			float32 normalizedY;
+			Resolution res;
+			float32    normalizedX;
+			float32    normalizedY;
 	};
 
+	CoOrd2D startPoint{ 0, 0 };
+	CoOrd2D midPoint= resolution / 2;
+	CoOrd2D endPoint= resolution - 1;
+
 	std::vector<TexelTestParams> testParams= {
-		{0,					0,          0.0f, 0.0f},
-		{ width / 2, height / 2, 0.5f, 0.5f},
-		{ width - 1, height - 1, 1.0f, 1.0f}
+		{startPoint, 0.0f, 0.0f},
+    { midPoint,  0.5f, 0.5f},
+    { endPoint,  1.0f, 1.0f}
 	};
 
 	constexpr uint32 minSampleTypeIndex= static_cast<uint32>(AstralRaytracer::SamplingType::MIN);
@@ -124,23 +129,25 @@ TEST_F(TextureDataTest, ValidateTextureDataGetTexelCompare)
 			const AstralRaytracer::SamplingType samplingType=
 					static_cast<AstralRaytracer::SamplingType>(enumIndex);
 
+			CoOrd2D pixCoord= params.res;
+
 			EXPECT_EQ(
-					TextureRGB.getTexelColor(params.x, params.y),
+					TextureRGB.getTexelColor(pixCoord.x, pixCoord.y),
 					TextureRGB.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
 
 			);
 			EXPECT_EQ(
-					TextureRGBA.getTexelColor(params.x, params.y),
+					TextureRGBA.getTexelColor(pixCoord.x, pixCoord.y),
 					TextureRGBA.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
 
 			);
 			EXPECT_EQ(
-					TextureRGBF.getTexelColor(params.x, params.y),
+					TextureRGBF.getTexelColor(pixCoord.x, pixCoord.y),
 					TextureRGBF.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
 
 			);
 			EXPECT_EQ(
-					TextureRGBAF.getTexelColor(params.x, params.y),
+					TextureRGBAF.getTexelColor(pixCoord.x, pixCoord.y),
 					TextureRGBAF.getTexelColor(params.normalizedX, params.normalizedY, samplingType)
 
 			);

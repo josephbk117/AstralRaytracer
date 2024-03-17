@@ -25,34 +25,33 @@ namespace AstralRaytracer
 	{
 		private:
 			std::vector<T> m_data;
-			uint32         m_width{ 0 };
-			uint32         m_height{ 0 };
+			Resolution     m_resolution{ 0 };
 		public:
-			TextureData() = default;
-			TextureData(uint32 width, uint32 height);
-			TextureData(uint32 width, uint32 height, const std::vector<T>& data);
+			TextureData()= default;
+			TextureData(Resolution resolution);
+			TextureData(Resolution resolution, const std::vector<T>& data);
 			TextureData(const TextureData&)= default;
 			~TextureData()                 = default;
-			void resize(uint32 width, uint32 height);
+			void resize(Resolution resolution);
 			void setTextureData(const std::vector<T>& data);
 
 			[[nodiscard]]
 			const std::vector<T>& getTextureData() const noexcept;
 			[[nodiscard]]
-			uint32 getWidth() const noexcept;
+			int32 getWidth() const noexcept;
 			[[nodiscard]]
-			uint32 getHeight() const noexcept;
+			int32 getHeight() const noexcept;
 			[[nodiscard]]
 			inline constexpr uint32 getComponentCount() const noexcept;
 
 			void setTexelColorAtPixelIndex(
 					uint32                                            index,
-					const glm::vec<ComponentCount, T, glm::defaultp>& rgb
+					const glm::vec<ComponentCount, T, glm::defaultp>& color
 			);
 
-			void setTexelColor(uint32 x, uint32 y, const glm::vec<ComponentCount, T, glm::defaultp>& rgb);
+			void setTexelColor(uint32 x, uint32 y, const glm::vec<ComponentCount, T, glm::defaultp>& color);
 			[[nodiscard]]
-			glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(uint32 x, uint32 y) const;
+			glm::vec<ComponentCount, T, glm::defaultp> getTexelColor(int32 x, int32 y) const;
 			[[nodiscard]]
 			glm::vec<ComponentCount, T, glm::defaultp>
 			getTexelColor(float32 u, float32 v, SamplingType samplingType) const;

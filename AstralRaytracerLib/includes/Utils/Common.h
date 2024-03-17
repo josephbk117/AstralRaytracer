@@ -44,15 +44,26 @@ using uint8 = uint8_t;
 using float32= float;
 using float64= double;
 
-using uintptr= std::uintptr_t;
+using uintptr  = std::uintptr_t;
+using TextureId= std::size_t;
+
+using Resolution = glm::i32vec2;
+using CoOrd2D    = glm::ivec2;
+using CoOrd3D    = glm::ivec3;
+using CoOrd4D    = glm::ivec4;
+using CoOrd2DF   = glm::vec2;
+using CoOrd3DF   = glm::vec3;
+using CoOrd4DF   = glm::vec4;
+using Direction2D= glm::vec2;
+using Direction3D= glm::vec3;
 
 struct UiBounds
 {
-		glm::vec2 min{ 0, 0 };
-		glm::vec2 max{ 1, 1 };
+		CoOrd2DF min{ 0, 0 };
+		CoOrd2DF max{ 1, 1 };
 
 		[[nodiscard]]
-		bool isPointInBounds(const glm::vec2 point) const
+		bool isPointInBounds(const CoOrd2DF point) const
 		{
 			return point.x > min.x && point.x < max.x && point.y > min.y && point.y < max.y;
 		}
@@ -100,12 +111,12 @@ namespace AstralRaytracer
 
 	namespace MathConstants
 	{
-		static const glm::vec3 UpDirection{ 0, 1, 0 };
-		static const glm::vec3 DownDirection{ 0, -1, 0 };
-		static const glm::vec3 RightDirection{ 1, 0, 0 };
-		static const glm::vec3 LeftDirection{ -1, 0, 0 };
-		static const glm::vec3 ForwardDirection{ 0, 0, 1 };
-		static const glm::vec3 BackwardDirection{ 0, 0, -1 };
+		static const Direction3D UpDirection{ 0, 1, 0 };
+		static const Direction3D DownDirection{ 0, -1, 0 };
+		static const Direction3D RightDirection{ 1, 0, 0 };
+		static const Direction3D LeftDirection{ -1, 0, 0 };
+		static const Direction3D ForwardDirection{ 0, 0, 1 };
+		static const Direction3D BackwardDirection{ 0, 0, -1 };
 	} // namespace MathConstants
 
 	namespace Errors

@@ -117,7 +117,7 @@ namespace AstralRaytracer
 			void startUI() const;
 			void endUI() const;
 
-			glm::u32vec2 getResolution() const;
+			Resolution getResolution() const;
 		private:
 			static constexpr const char* FileDialogProjectKey= "ChooseProjectDialog";
 			static constexpr const char* FileDialogSceneKey  = "ChooseSceneDialog";

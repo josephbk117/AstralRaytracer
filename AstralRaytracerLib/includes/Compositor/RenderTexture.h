@@ -11,19 +11,19 @@ namespace AstralRaytracer
 			RenderTexture()= default;
 			~RenderTexture();
 
-			void init(const glm::u32vec2& size);
+			void init(const Resolution& size);
 			[[nodiscard]]
 			gl::GLuint getFBO() const;
 			[[nodiscard]]
-			gl::GLuint getTexture() const;
-			void       bind() const;
-			void       unbind() const;
+			TextureId getTexture() const;
+			void      bind() const;
+			void      unbind() const;
 			[[nodiscard]]
-			glm::u32vec2 getSize() const;
-			void         resize(const glm::u32vec2& size);
+			const Resolution& getSize() const;
+			void              resize(const Resolution& resolution);
 		private:
-			glm::u32vec2 m_size{ 1, 1 };
-			gl::GLuint   m_framebuffer= 0;
-			gl::GLuint   m_texture    = 0;
+			Resolution m_resolution{ 1, 1 };
+			gl::GLuint m_framebuffer= 0;
+			gl::GLuint m_texture    = 0;
 	};
 } // namespace AstralRaytracer

@@ -22,26 +22,26 @@ namespace AstralRaytracer
 				m_nearClip(nearClip),
 				m_farClip(farClip)
 	{
-		m_direction= glm::vec3(0.0f, 0.0f, -1.0f);
-		m_position = glm::vec3(0.0f, 1.0f, 3.0f);
+		m_forwardDir= Direction3D(0.0f, 0.0f, -1.0f);
+		m_position = CoOrd3DF(0.0f, 1.0f, 3.0f);
 
 		rotate({ 0.0f, 0.0f });
 		recalculateView();
 		recalculateProjection(m_resolution);
 	}
 
-	void Camera::update(const glm::u32vec2& resolution)
+	void Camera::update(const Resolution& resolution)
 	{
 		m_resolution= resolution;
 		recalculateView();
 		recalculateProjection(resolution);
 	}
 
-	void Camera::moveForward(float32 units) { m_position+= m_direction * units; }
+	void Camera::moveForward(float32 units) { m_position+= m_forwardDir * units; }
 
 	void Camera::moveRight(float32 units)
 	{
-		const glm::vec3& rightDir= glm::cross(m_direction, MathConstants::UpDirection);
+		const Direction3D rightDir= glm::cross(m_forwardDir, MathConstants::UpDirection);
 		m_position+= rightDir * units;
 	}
 
@@ -54,15 +54,15 @@ namespace AstralRaytracer
 		const float32 pitchDelta= rot.y * rotSpeed;
 		const float32 yawDelta  = rot.x * rotSpeed;
 
-		const glm::vec3& rightDir= glm::cross(m_direction, MathConstants::UpDirection);
+		const Direction3D rightDir= glm::cross(m_forwardDir, MathConstants::UpDirection);
 
 		glm::quat q= glm::normalize(glm::cross(
 				glm::angleAxis(-pitchDelta, rightDir), glm::angleAxis(-yawDelta, MathConstants::UpDirection)
 		));
 
-		m_direction= glm::rotate(q, m_direction);
-		m_right    = glm::normalize(glm::cross(m_direction, MathConstants::UpDirection));
-		m_up       = glm::normalize(glm::cross(m_right, m_direction));
+		m_forwardDir= glm::rotate(q, m_forwardDir);
+		m_right    = glm::normalize(glm::cross(m_forwardDir, MathConstants::UpDirection));
+		m_up       = glm::normalize(glm::cross(m_right, m_forwardDir));
 	}
 
 	void Camera::setVerticalFov(float32 vFov, float32 sensorHeight)
@@ -79,17 +79,17 @@ namespace AstralRaytracer
 
 	float32 Camera::getFStop() const { return m_focalLength / m_apertureDiameter; }
 
-	const glm::vec3 Camera::getRight() const { return m_right; }
+	const Direction3D& Camera::getRight() const { return m_right; }
 
-	const glm::vec3 Camera::getUp() const { return m_up; }
+	const Direction3D& Camera::getUp() const { return m_up; }
 
 	void Camera::recalculateView()
 	{
-		m_view       = glm::lookAt(m_position, m_position + m_direction, MathConstants::UpDirection);
+		m_view       = glm::lookAt(m_position, m_position + m_forwardDir, MathConstants::UpDirection);
 		m_inverseView= glm::inverse(m_view);
 	}
 
-	void Camera::recalculateProjection(const glm::u32vec2& resolution)
+	void Camera::recalculateProjection(const Resolution& resolution)
 	{
 		const float32 aspectRatio= static_cast<float32>(resolution.x) / resolution.y;
 

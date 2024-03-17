@@ -174,7 +174,7 @@ namespace AstralRaytracer
 			return;
 		}
 
-		textureData.resize(width, height);
+		textureData.resize({width, height});
 
 		const size_t   resizeCount= static_cast<size_t>(width) * height * numChannels;
 		std::vector<T> vecData(resizeCount);
