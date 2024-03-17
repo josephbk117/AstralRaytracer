@@ -121,13 +121,12 @@ namespace AstralRaytracer
 		};
 	}
 
-	static const std::string              invalidString{};
-	static const std::vector<std::string> invalidVectorOfString{};
-	static const std::vector<std::string> fileExtensionForImages{ ".png", ".jpg", ".jpeg", ".bmp",
-																																".hdr" };
-	static const std::vector<std::string> fileExtensionForModels{ ".gltf", ".glb" };
-	static const std::vector<std::string> fileExtensionForText{ ".txt", ".md", ".csv" };
-	static const std::vector<std::string> fileExtensionForFont{ ".ttf" };
+	static const std::vector<std::string_view> InvalidVectorOfStringViews{};
+	static const std::vector<std::string_view> FileExtensionForImages{ ".png", ".jpg", ".jpeg",
+																																		 ".bmp", ".hdr" };
+	static const std::vector<std::string_view> FileExtensionForModels{ ".gltf", ".glb" };
+	static const std::vector<std::string_view> FileExtensionForText{ ".txt", ".md", ".csv" };
+	static const std::vector<std::string_view> FileExtensionForFont{ ".ttf" };
 
 	static constexpr std::string_view FileExtensionForProject{ ".asproj" };
 	static constexpr std::string_view FileExtensionForScene{ ".ascene" };
@@ -167,7 +166,7 @@ namespace AstralRaytracer
 	[[nodiscard]]
 	const std::string_view getFileExtensionForAssetType(AssetType type);
 	[[nodiscard]]
-	const std::vector<std::string>& getFileExtensionForResourceType(ResourceType type);
+	const std::vector<std::string_view>& getFileExtensionForResourceType(ResourceType type);
 
 	[[nodiscard]]
 	AssetType getAssetTypeFromFilePath(const std::filesystem::path& filepath);

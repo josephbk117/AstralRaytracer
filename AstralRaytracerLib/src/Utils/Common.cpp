@@ -19,20 +19,20 @@ namespace AstralRaytracer
 			case AssetType::MATERIAL: return FileExtensionForMaterial;
 			case AssetType::TRACEABLE: return FileExtensionForTraceable;
 			case AssetType::INVALID:
-			default: return invalidString;
+			default: return {};
 		}
 	}
 
-	const std::vector<std::string>& getFileExtensionForResourceType(ResourceType type)
+	const std::vector<std::string_view>& getFileExtensionForResourceType(ResourceType type)
 	{
 		switch(type)
 		{
-			case ResourceType::IMAGE: return fileExtensionForImages;
-			case ResourceType::MODEL: return fileExtensionForModels;
-			case ResourceType::TEXT_FILE: return fileExtensionForText;
-			case ResourceType::FONT: return fileExtensionForFont;
+			case ResourceType::IMAGE: return FileExtensionForImages;
+			case ResourceType::MODEL: return FileExtensionForModels;
+			case ResourceType::TEXT_FILE: return FileExtensionForText;
+			case ResourceType::FONT: return FileExtensionForFont;
 			case ResourceType::INVALID:
-			default: return invalidVectorOfString;
+			default: return InvalidVectorOfStringViews;
 		}
 	}
 
@@ -73,26 +73,26 @@ namespace AstralRaytracer
 	{
 		const std::string& extension= filepath.extension().string();
 
-		auto it= std::find(fileExtensionForImages.begin(), fileExtensionForImages.end(), extension);
-		if(it != fileExtensionForImages.end())
+		auto it= std::find(FileExtensionForImages.begin(), FileExtensionForImages.end(), extension);
+		if(it != FileExtensionForImages.end())
 		{
 			return ResourceType::IMAGE;
 		}
 
-		it= std::find(fileExtensionForModels.begin(), fileExtensionForModels.end(), extension);
-		if(it != fileExtensionForModels.end())
+		it= std::find(FileExtensionForModels.begin(), FileExtensionForModels.end(), extension);
+		if(it != FileExtensionForModels.end())
 		{
 			return ResourceType::MODEL;
 		}
 
-		it= std::find(fileExtensionForText.begin(), fileExtensionForText.end(), extension);
-		if(it != fileExtensionForText.end())
+		it= std::find(FileExtensionForText.begin(), FileExtensionForText.end(), extension);
+		if(it != FileExtensionForText.end())
 		{
 			return ResourceType::TEXT_FILE;
 		}
 
-		it= std::find(fileExtensionForFont.begin(), fileExtensionForFont.end(), extension);
-		if(it != fileExtensionForFont.end())
+		it= std::find(FileExtensionForFont.begin(), FileExtensionForFont.end(), extension);
+		if(it != FileExtensionForFont.end())
 		{
 			return ResourceType::FONT;
 		}
