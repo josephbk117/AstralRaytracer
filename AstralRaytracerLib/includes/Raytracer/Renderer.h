@@ -9,12 +9,10 @@ namespace AstralRaytracer
 	class Renderer
 	{
 		public:
-			enum class RendererState
+			enum class RendererState : uint8
 			{
 				NOT_STARTED,
 				STARTED,
-				PROCESSING,
-				EXIT,
 				DONE
 			};
 

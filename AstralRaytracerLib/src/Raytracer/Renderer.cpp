@@ -60,8 +60,6 @@ namespace AstralRaytracer
 			return;
 		}
 
-		m_state= RendererState::PROCESSING;
-
 		const uint32     xAxisPixelCount  = m_texData.getWidth() * m_texData.getComponentCount();
 		const float32    imageHeight      = m_texData.getHeight();
 		const glm::mat4& inverseView      = cam.getInverseView();
