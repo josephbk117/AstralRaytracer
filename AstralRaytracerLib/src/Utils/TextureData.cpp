@@ -65,10 +65,7 @@ namespace AstralRaytracer
 	)
 	{
 		ASTRAL_ASSERTM(index <= (m_data.size() - ComponentCount), "Invalid index");
-
-		m_data[index]    = rgb.r;
-		m_data[index + 1]= rgb.g;
-		m_data[index + 2]= rgb.b;
+		memcpy(&m_data[index], &rgb, ComponentCount * sizeof(T));
 	}
 
 	template<ArithmeticType T, uint32 ComponentCount>
@@ -89,11 +86,7 @@ namespace AstralRaytracer
 		const uint32 index= (m_width * y + x) * ComponentCount;
 
 		glm::vec<ComponentCount, T, glm::defaultp> out;
-
-		for(uint32 compIndex= 0; compIndex < ComponentCount; ++compIndex)
-		{
-			out[compIndex]= m_data[index + compIndex];
-		}
+		memcpy(&out, &m_data[index], ComponentCount * sizeof(T));
 
 		return out;
 	}
