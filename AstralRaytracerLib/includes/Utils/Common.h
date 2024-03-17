@@ -129,11 +129,11 @@ namespace AstralRaytracer
 	static const std::vector<std::string> fileExtensionForText{ ".txt", ".md", ".csv" };
 	static const std::vector<std::string> fileExtensionForFont{ ".ttf" };
 
-	static const std::string FileExtensionForProject{ ".asproj" };
-	static const std::string FileExtensionForScene{ ".ascene" };
-	static const std::string FileExtensionForTexture{ ".astex" };
-	static const std::string FileExtensionForMaterial{ ".asmat" };
-	static const std::string FileExtensionForTraceable{ ".astra" };
+	static constexpr std::string_view FileExtensionForProject{ ".asproj" };
+	static constexpr std::string_view FileExtensionForScene{ ".ascene" };
+	static constexpr std::string_view FileExtensionForTexture{ ".astex" };
+	static constexpr std::string_view FileExtensionForMaterial{ ".asmat" };
+	static constexpr std::string_view FileExtensionForTraceable{ ".astra" };
 
 	[[nodiscard]]
 	inline constexpr std::string_view toString(AssetType assetType)
@@ -165,7 +165,7 @@ namespace AstralRaytracer
 	}
 
 	[[nodiscard]]
-	const std::string& getFileExtensionForAssetType(AssetType type);
+	const std::string_view getFileExtensionForAssetType(AssetType type);
 	[[nodiscard]]
 	const std::vector<std::string>& getFileExtensionForResourceType(ResourceType type);
 

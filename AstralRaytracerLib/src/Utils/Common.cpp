@@ -9,7 +9,7 @@
 
 namespace AstralRaytracer
 {
-	const std::string& getFileExtensionForAssetType(AssetType type)
+	const std::string_view getFileExtensionForAssetType(AssetType type)
 	{
 		switch(type)
 		{

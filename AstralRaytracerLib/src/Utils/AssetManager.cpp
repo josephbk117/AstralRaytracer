@@ -148,7 +148,7 @@ namespace AstralRaytracer
 			const Material&    material
 	)
 	{
-		fs::path path= folderPath.string() + name + FileExtensionForMaterial;
+		fs::path path= folderPath.string() + name + FileExtensionForMaterial.data();
 
 		YAML::Emitter out;
 		out << YAML::BeginMap;
@@ -178,7 +178,7 @@ namespace AstralRaytracer
 			const std::unique_ptr<Traceable>& traceable
 	)
 	{
-		fs::path path= "/resources/traceables/" + name + FileExtensionForTraceable;
+		fs::path path= "/resources/traceables/" + name + FileExtensionForTraceable.data();
 
 		YAML::Emitter out;
 		out << YAML::BeginMap;
