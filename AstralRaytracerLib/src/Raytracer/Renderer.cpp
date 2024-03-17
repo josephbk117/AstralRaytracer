@@ -21,13 +21,12 @@ namespace AstralRaytracer
 
 	void Renderer::initialize()
 	{
-		constexpr uint32 initialWidth = 16;
-		constexpr uint32 initialHeight= 16;
+		const Resolution initialRes(16, 16);
 
-		m_texData.resize({ initialWidth, initialHeight });
+		m_texData.resize(initialRes);
 		m_textureId= TextureManager::loadTextureFromTextureData<float32, 4>(m_texData, false);
 
-		resize(initialWidth, initialHeight);
+		resize(initialRes);
 	}
 
 	void Renderer::renderStart(const Scene& scene, const Camera& cam)
@@ -39,7 +38,7 @@ namespace AstralRaytracer
 		m_state= RendererState::STARTED;
 		renderEnd();
 
-		onResize(cam.getResolution().x, cam.getResolution().y);
+		onResize(cam.getResolution());
 
 		m_renderingThread= std::thread([this, &scene, &cam]() { this->render(scene, cam); });
 	}
@@ -167,11 +166,11 @@ namespace AstralRaytracer
 		return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 	}
 
-	void Renderer::resize(uint32 width, uint32 height)
+	void Renderer::resize(const Resolution& resolution)
 	{
-		m_texData.resize({ width, height });
+		m_texData.resize(resolution);
 
-		const size_t newSizePixelCount= static_cast<size_t>(width) * height;
+		const size_t newSizePixelCount= static_cast<size_t>(resolution.x) * resolution.y;
 		m_accumulatedColorData.resize(newSizePixelCount * m_texData.getComponentCount());
 		resetFrameIndex();
 
@@ -181,14 +180,14 @@ namespace AstralRaytracer
 		TextureManager::resizeTexture(m_texData, m_textureId);
 	}
 
-	bool Renderer::onResize(uint32 width, uint32 height)
+	bool Renderer::onResize(const Resolution& resolution)
 	{
-		if(m_texData.getWidth() == width && m_texData.getHeight() == height)
+		if(m_texData.getResolution() == resolution)
 		{
 			return false;
 		}
 
-		resize(width, height);
+		resize(resolution);
 
 		return true;
 	}
