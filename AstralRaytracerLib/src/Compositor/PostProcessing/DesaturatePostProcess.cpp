@@ -2,12 +2,6 @@
 
 namespace AstralRaytracer
 {
-	const std::string& DesaturatePostProcessing::getName() const
-	{
-		static const std::string name("Desaturate");
-		return name;
-	}
-
 	void DesaturatePostProcessing::init()
 	{
 		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());

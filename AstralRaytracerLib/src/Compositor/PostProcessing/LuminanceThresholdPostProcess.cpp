@@ -1,11 +1,5 @@
 #include "Compositor/PostProcessing/LuminanceThresholdPostProcess.h"
 
-const std::string& AstralRaytracer::LuminanceThresholdPostProcessing::getName() const
-{
-	static const std::string name("Luminance Threshold");
-	return name;
-}
-
 void AstralRaytracer::LuminanceThresholdPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());

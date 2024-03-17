@@ -2,12 +2,6 @@
 
 namespace AstralRaytracer
 {
-	const std::string& GammaCorrectionPostProcessing::getName() const
-	{
-		static const std::string name("Gamma Correction");
-		return name;
-	}
-
 	void GammaCorrectionPostProcessing::init()
 	{
 		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());

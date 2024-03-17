@@ -91,11 +91,11 @@ namespace AstralRaytracer
 
 			for(uint32 index= 0; index < postProcessStack.size(); ++index)
 			{
-				const std::string& postProcessName= postProcessStack[index].get()->getName();
+				const std::string_view postProcessName= postProcessStack[index].get()->getName();
 
 				bool showHeader= true;
 				ImGui::PushID(index);
-				if(ImGui::CollapsingHeader(postProcessName.c_str(), &showHeader))
+				if(ImGui::CollapsingHeader(postProcessName.data(), &showHeader))
 				{
 					const std::unordered_map<std::string, UniformData>& uniformData=
 							postProcessStack[index].get()->getShader().getUniformData();

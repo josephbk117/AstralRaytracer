@@ -1,11 +1,5 @@
 #include "Compositor/PostProcessing/AddPostProcess.h"
 
-const std::string& AstralRaytracer::AddPostProcessing::getName() const
-{
-	static const std::string name("Add");
-	return name;
-}
-
 void AstralRaytracer::AddPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());

@@ -6,7 +6,7 @@ namespace AstralRaytracer
 	class LuminanceThresholdPostProcessing: public PostProcessing
 	{
 		public:
-			const std::string& getName() const override;
+			constexpr std::string_view getName() const override { return "Luminance Threshold"; }
 
 			void init() override;
 

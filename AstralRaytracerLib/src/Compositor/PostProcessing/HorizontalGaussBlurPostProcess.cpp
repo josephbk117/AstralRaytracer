@@ -1,12 +1,6 @@
 #include "Compositor/PostProcessing/HorizontalGaussBlurPostProcess.h"
 
-const std::string& AstralRaytracer::HorizontalGaussBlurPostProcessing::getName() const
-{
-	static const std::string name("Horizontal Gauss Blur");
-	return name;
-}
-
-void AstralRaytracer::HorizontalGaussBlurPostProcessing::init() 
+void AstralRaytracer::HorizontalGaussBlurPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 	m_shaderProgram.linkShaders();

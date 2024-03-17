@@ -1,12 +1,6 @@
 #include "Compositor/PostProcessing/NonLocalMeansPostProcess.h"
 
-const std::string& AstralRaytracer::NonLocalMeansPostProcessing::getName() const
-{
-	static const std::string name("Non-Local Means");
-	return name;
-}
-
-void AstralRaytracer::NonLocalMeansPostProcessing::init() 
+void AstralRaytracer::NonLocalMeansPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 	m_shaderProgram.linkShaders();

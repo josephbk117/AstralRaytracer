@@ -1,12 +1,6 @@
 #include "Compositor/PostProcessing/NoAlphaPassThroughPostProcess.h"
 
-const std::string& AstralRaytracer::NoAlphaPassThroughPostProcessing::getName() const
-{
-	static const std::string name("Vertical Gauss Blur");
-	return name;
-}
-
-void AstralRaytracer::NoAlphaPassThroughPostProcessing::init() 
+void AstralRaytracer::NoAlphaPassThroughPostProcessing::init()
 {
 	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
 	m_shaderProgram.linkShaders();

@@ -6,7 +6,7 @@ namespace AstralRaytracer
 	class NoAlphaPassThroughPostProcessing: public PostProcessing
 	{
 		public:
-			const std::string& getName() const override;
+			constexpr std::string_view getName() const override { return "No Alpha Pass Through"; }
 
 			void init() override;
 

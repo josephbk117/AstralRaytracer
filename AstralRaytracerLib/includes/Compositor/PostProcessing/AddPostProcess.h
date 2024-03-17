@@ -6,7 +6,7 @@ namespace AstralRaytracer
 	class AddPostProcessing: public PostProcessing
 	{
 		public:
-			const std::string& getName() const override;
+			constexpr std::string_view getName() const override { return "Add"; }
 
 			void init() override;
 

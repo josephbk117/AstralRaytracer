@@ -6,7 +6,7 @@ namespace AstralRaytracer
 	class GammaCorrectionPostProcessing: public PostProcessing
 	{
 		public:
-			const std::string& getName() const override;
+			constexpr std::string_view getName() const override { return "Gamma Correction"; }
 
 			void init() override;
 

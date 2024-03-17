@@ -13,7 +13,7 @@ namespace AstralRaytracer
 
 			virtual ~PostProcessing();
 
-			virtual const std::string& getName() const= 0;
+			virtual constexpr std::string_view getName() const= 0;
 
 			virtual void init()= 0;
 
