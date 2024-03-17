@@ -188,9 +188,13 @@ namespace AstralRaytracer
 
 	void Renderer::resetFrameIndex()
 	{
-		m_frameIndex           = 1;
-		const size_t bufferSize= static_cast<size_t>(m_texData.getWidth()) * m_texData.getHeight() *
-														 m_texData.getComponentCount() * sizeof(float32);
+		m_frameIndex= 1;
+
+		const size_t numBytes  = m_texData.getComponentCount() * sizeof(float32);
+		const uint32 width     = m_texData.getWidth();
+		const uint32 height    = m_texData.getHeight();
+		const size_t bufferSize= numBytes * width * height;
+
 		std::memset(m_accumulatedColorData.data(), 0, bufferSize);
 	}
 
