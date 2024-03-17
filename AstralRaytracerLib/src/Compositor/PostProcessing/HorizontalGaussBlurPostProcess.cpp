@@ -2,36 +2,33 @@
 
 void AstralRaytracer::HorizontalGaussBlurPostProcessing::init()
 {
-	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
-	m_shaderProgram.linkShaders();
+    m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
+    m_shaderProgram.linkShaders();
 
-	m_shaderProgram.use();
-	m_shaderProgram.setUniformValue("blurSize", 11, 1, 15);
-	m_shaderProgram.unuse();
+    m_shaderProgram.use();
+    m_shaderProgram.setUniformValue("blurSize", 11, 1, 15);
+    m_shaderProgram.unuse();
 }
 
-void AstralRaytracer::HorizontalGaussBlurPostProcessing::processImage(
-		DrawingPanel&        drawPanel,
-		const RenderTexture& renderTexture,
-		gl::GLuint           imageTexture
-) const
+void AstralRaytracer::HorizontalGaussBlurPostProcessing::processImage(DrawingPanel &drawPanel,
+                                                                      const RenderTexture &renderTexture,
+                                                                      gl::GLuint imageTexture) const
 {
-	renderTexture.bind();
-	gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+    renderTexture.bind();
+    gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-	m_shaderProgram.use();
-	drawPanel.setTextureID(imageTexture);
-	drawPanel.draw();
-	m_shaderProgram.unuse();
+    m_shaderProgram.use();
+    drawPanel.setTextureID(imageTexture);
+    drawPanel.draw();
+    m_shaderProgram.unuse();
 
-	renderTexture.unbind();
+    renderTexture.unbind();
 }
 
-const char* const
-AstralRaytracer::HorizontalGaussBlurPostProcessing::getFragmentShaderSrcCode() const
+const char *const AstralRaytracer::HorizontalGaussBlurPostProcessing::getFragmentShaderSrcCode() const
 {
-	return R"SHADER(
+    return R"SHADER(
 						#version 330 core
 						in vec2				textureUV;
 						in vec3				worldPos;

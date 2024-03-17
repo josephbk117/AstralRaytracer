@@ -2,35 +2,32 @@
 
 void AstralRaytracer::NoAlphaPassThroughPostProcessing::init()
 {
-	m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
-	m_shaderProgram.linkShaders();
+    m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
+    m_shaderProgram.linkShaders();
 
-	m_shaderProgram.use();
-	m_shaderProgram.unuse();
+    m_shaderProgram.use();
+    m_shaderProgram.unuse();
 }
 
-void AstralRaytracer::NoAlphaPassThroughPostProcessing::processImage(
-		DrawingPanel&        drawPanel,
-		const RenderTexture& renderTexture,
-		gl::GLuint           imageTexture
-) const
+void AstralRaytracer::NoAlphaPassThroughPostProcessing::processImage(DrawingPanel &drawPanel,
+                                                                     const RenderTexture &renderTexture,
+                                                                     gl::GLuint imageTexture) const
 {
-	renderTexture.bind();
-	gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+    renderTexture.bind();
+    gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-	m_shaderProgram.use();
-	drawPanel.setTextureID(imageTexture);
-	drawPanel.draw();
-	m_shaderProgram.unuse();
+    m_shaderProgram.use();
+    drawPanel.setTextureID(imageTexture);
+    drawPanel.draw();
+    m_shaderProgram.unuse();
 
-	renderTexture.unbind();
+    renderTexture.unbind();
 }
 
-const char* const
-AstralRaytracer::NoAlphaPassThroughPostProcessing::getFragmentShaderSrcCode() const
+const char *const AstralRaytracer::NoAlphaPassThroughPostProcessing::getFragmentShaderSrcCode() const
 {
-	return R"SHADER(
+    return R"SHADER(
 						#version 330 core
 						in vec2				textureUV;
 						in vec3				worldPos;

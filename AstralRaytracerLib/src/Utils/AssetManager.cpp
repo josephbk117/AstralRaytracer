@@ -10,247 +10,241 @@
 namespace AstralRaytracer
 {
 
-	AssetManager::AssetManager()
-	{
-		std::random_device rd;
-		auto               seed_data= std::array<int, std::mt19937::state_size>{};
-		std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
-		std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
-		m_randomNumGenerator= std::mt19937(seq);
+AssetManager::AssetManager()
+{
+    std::random_device rd;
+    auto seed_data = std::array<int, std::mt19937::state_size>{};
+    std::generate(std::begin(seed_data), std::end(seed_data), std::ref(rd));
+    std::seed_seq seq(std::begin(seed_data), std::end(seed_data));
+    m_randomNumGenerator = std::mt19937(seq);
 
-		clearAndResetCachedData();
-	}
+    clearAndResetCachedData();
+}
 
-	bool AssetManager::loadProject(const fs::path& absolutePath)
-	{
-		const std::string absolutePathStr= absolutePath.generic_string();
+bool AssetManager::loadProject(const fs::path &absolutePath)
+{
+    const std::string absolutePathStr = absolutePath.generic_string();
 
-		std::ifstream stream(absolutePathStr);
+    std::ifstream stream(absolutePathStr);
 
-		YAML::Node data= YAML::Load(stream);
+    YAML::Node data = YAML::Load(stream);
 
-		if(!data["Project"])
-		{
-			ASTRAL_LOG_WARN("Project failed to load: {}", absolutePathStr);
-			return false;
-		}
+    if (!data["Project"])
+    {
+        ASTRAL_LOG_WARN("Project failed to load: {}", absolutePathStr);
+        return false;
+    }
 
-		m_currentProjectName      = data["Project"].as<std::string>();
-		m_defaultSceneRelativePath= data["Default Scene"].as<std::string>();
-		m_currentRelativePath     = absolutePath.parent_path().generic_string() + "/";
+    m_currentProjectName = data["Project"].as<std::string>();
+    m_defaultSceneRelativePath = data["Default Scene"].as<std::string>();
+    m_currentRelativePath = absolutePath.parent_path().generic_string() + "/";
 
-		clearAndResetCachedData();
+    clearAndResetCachedData();
 
-		ASTRAL_LOG_INFO("Project file loaded successfully: {}", absolutePathStr);
+    ASTRAL_LOG_INFO("Project file loaded successfully: {}", absolutePathStr);
 
-		return true;
-	}
+    return true;
+}
 
-	void AssetManager::clearAndResetCachedData()
-	{
-		m_traceableNameAndPathMap.clear();
-		m_materialNameAndPathMap.clear();
-		m_textureNameAndPathMap.clear();
+void AssetManager::clearAndResetCachedData()
+{
+    m_traceableNameAndPathMap.clear();
+    m_materialNameAndPathMap.clear();
+    m_textureNameAndPathMap.clear();
 
-		textureCount  = 0;
-		matCount      = 1;
-		traceableCount= 0;
+    textureCount = 0;
+    matCount = 1;
+    traceableCount = 0;
 
-		// Add Default Material
-		m_materialNameAndPathMap.insert({
-				0, {"Default Material", "NIL"}
-    });
-	}
+    // Add Default Material
+    m_materialNameAndPathMap.insert({0, {"Default Material", "NIL"}});
+}
 
-	TextureDataRGBF AssetManager::loadTextureAsset(const fs::path& path, const std::string& name)
-	{
-		NameAndPath nameAndPath= { name, path.string() };
-		m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
-		textureCount++;
+TextureDataRGBF AssetManager::loadTextureAsset(const fs::path &path, const std::string &name)
+{
+    NameAndPath nameAndPath = {name, path.string()};
+    m_textureNameAndPathMap.emplace(textureCount, nameAndPath);
+    textureCount++;
 
-		TextureDataRGBF outputTextureData;
-		TextureManager::loadTextureDataFromFile(
-				m_currentRelativePath + path.string(), outputTextureData, true
-		);
+    TextureDataRGBF outputTextureData;
+    TextureManager::loadTextureDataFromFile(m_currentRelativePath + path.string(), outputTextureData, true);
 
-		return outputTextureData;
-	}
+    return outputTextureData;
+}
 
-	bool AssetManager::loadMaterialAsset(
-			const fs::path&    path,
-			const std::string& name,
-			Material&          outMaterial
-	)
-	{
-		NameAndPath nameAndPath= { name, path.string() };
-		m_materialNameAndPathMap.emplace(matCount, nameAndPath);
-		matCount++;
+bool AssetManager::loadMaterialAsset(const fs::path &path, const std::string &name, Material &outMaterial)
+{
+    NameAndPath nameAndPath = {name, path.string()};
+    m_materialNameAndPathMap.emplace(matCount, nameAndPath);
+    matCount++;
 
-		std::ifstream stream(m_currentRelativePath + path.string());
-		YAML::Node    data= YAML::Load(stream);
+    std::ifstream stream(m_currentRelativePath + path.string());
+    YAML::Node data = YAML::Load(stream);
 
-		if(!data["Material"])
-		{
-			return false;
-		}
+    if (!data["Material"])
+    {
+        return false;
+    }
 
-		outMaterial.deserialize(*this, data);
-		return true;
-	}
+    outMaterial.deserialize(*this, data);
+    return true;
+}
 
-	std::unique_ptr<AstralRaytracer::Traceable> AssetManager::loadTraceableAsset(const fs::path& path)
-	{
-		std::ifstream stream(m_currentRelativePath + path.string());
-		YAML::Node    data= YAML::Load(stream);
+std::unique_ptr<AstralRaytracer::Traceable> AssetManager::loadTraceableAsset(const fs::path &path)
+{
+    std::ifstream stream(m_currentRelativePath + path.string());
+    YAML::Node data = YAML::Load(stream);
 
-		if(!data["Traceable"])
-		{
-			return nullptr;
-		}
+    if (!data["Traceable"])
+    {
+        return nullptr;
+    }
 
-		NameAndPath nameAndPath= { data["Traceable"].as<std::string>(), path.string() };
-		m_traceableNameAndPathMap.emplace(traceableCount, nameAndPath);
+    NameAndPath nameAndPath = {data["Traceable"].as<std::string>(), path.string()};
+    m_traceableNameAndPathMap.emplace(traceableCount, nameAndPath);
 
-		traceableCount++;
+    traceableCount++;
 
-		Serialization::TraceableType type=
-				static_cast<Serialization::TraceableType>(data["Type"].as<uint32>());
-		switch(type)
-		{
-			case AstralRaytracer::Serialization::TraceableType::INVALID: return nullptr;
-			case AstralRaytracer::Serialization::TraceableType::SPEHRE:
-				{
-					auto sphere= std::make_unique<AstralRaytracer::SphereTraceable>();
-					sphere->deserialize(*this, data);
-					return sphere;
-				};
-			case AstralRaytracer::Serialization::TraceableType::TRIANGLE:
-				{
-					auto triangle= std::make_unique<AstralRaytracer::TriangleTraceable>();
-					triangle->deserialize(*this, data);
-					return triangle;
-				}
-			case AstralRaytracer::Serialization::TraceableType::STATIC_MESH:
-				{
-					auto mesh= std::make_unique<AstralRaytracer::StaticMesh>();
-					mesh->deserialize(*this, data);
-					return mesh;
-				}
-			default: break;
-		}
+    Serialization::TraceableType type = static_cast<Serialization::TraceableType>(data["Type"].as<uint32>());
+    switch (type)
+    {
+    case AstralRaytracer::Serialization::TraceableType::INVALID:
+        return nullptr;
+    case AstralRaytracer::Serialization::TraceableType::SPEHRE: {
+        auto sphere = std::make_unique<AstralRaytracer::SphereTraceable>();
+        sphere->deserialize(*this, data);
+        return sphere;
+    };
+    case AstralRaytracer::Serialization::TraceableType::TRIANGLE: {
+        auto triangle = std::make_unique<AstralRaytracer::TriangleTraceable>();
+        triangle->deserialize(*this, data);
+        return triangle;
+    }
+    case AstralRaytracer::Serialization::TraceableType::STATIC_MESH: {
+        auto mesh = std::make_unique<AstralRaytracer::StaticMesh>();
+        mesh->deserialize(*this, data);
+        return mesh;
+    }
+    default:
+        break;
+    }
 
-		return nullptr;
-	}
+    return nullptr;
+}
 
-	void AssetManager::saveMaterialAsset(
-			const fs::path&    folderPath,
-			const std::string& name,
-			const Material&    material
-	)
-	{
-		fs::path path= folderPath.string() + name + FileExtensionForMaterial.data();
+void AssetManager::saveMaterialAsset(const fs::path &folderPath, const std::string &name, const Material &material)
+{
+    fs::path path = folderPath.string() + name + FileExtensionForMaterial.data();
 
-		YAML::Emitter out;
-		out << YAML::BeginMap;
-		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
-		out << YAML::Key << "Material" << YAML::Value << name;
-		material.serialize(*this, out);
-		out << YAML::EndMap;
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
+    out << YAML::Key << "Material" << YAML::Value << name;
+    material.serialize(*this, out);
+    out << YAML::EndMap;
 
-		if(!fs::exists(folderPath) && fs::is_directory(folderPath))
-		{
-			fs::create_directory(folderPath);
-		}
+    if (!fs::exists(folderPath) && fs::is_directory(folderPath))
+    {
+        fs::create_directory(folderPath);
+    }
 
-		std::ofstream ofs(path);
-		ofs << out.c_str();
-		ofs.close();
-	}
+    std::ofstream ofs(path);
+    ofs << out.c_str();
+    ofs.close();
+}
 
-	void AssetManager::saveMaterialAsset(const std::string& name, const Material& material)
-	{
-		fs::path path= "/resources/materials/";
-		saveMaterialAsset(path, name, material);
-	}
+void AssetManager::saveMaterialAsset(const std::string &name, const Material &material)
+{
+    fs::path path = "/resources/materials/";
+    saveMaterialAsset(path, name, material);
+}
 
-	void AssetManager::SaveTraceableAsset(
-			const std::string&                name,
-			const std::unique_ptr<Traceable>& traceable
-	)
-	{
-		fs::path path= "/resources/traceables/" + name + FileExtensionForTraceable.data();
+void AssetManager::SaveTraceableAsset(const std::string &name, const std::unique_ptr<Traceable> &traceable)
+{
+    fs::path path = "/resources/traceables/" + name + FileExtensionForTraceable.data();
 
-		YAML::Emitter out;
-		out << YAML::BeginMap;
-		out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
-		out << YAML::Key << "Traceable" << YAML::Value << name;
-		traceable->serialize(*this, out);
-		out << YAML::EndMap;
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "UUID" << YAML::Value << generateUUIDasString();
+    out << YAML::Key << "Traceable" << YAML::Value << name;
+    traceable->serialize(*this, out);
+    out << YAML::EndMap;
 
-		const fs::path outputPath= fs::current_path().string() + path.string();
+    const fs::path outputPath = fs::current_path().string() + path.string();
 
-		fs::create_directory(outputPath.parent_path());
+    fs::create_directory(outputPath.parent_path());
 
-		std::ofstream ofs(outputPath);
-		ofs << out.c_str();
-		ofs.close();
-	}
+    std::ofstream ofs(outputPath);
+    ofs << out.c_str();
+    ofs.close();
+}
 
-	std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfTexture(uint32 id) const
-	{
-		auto it= m_textureNameAndPathMap.find(id);
-		if(it != m_textureNameAndPathMap.end())
-		{
-			return it->second;
-		}
+std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfTexture(uint32 id) const
+{
+    auto it = m_textureNameAndPathMap.find(id);
+    if (it != m_textureNameAndPathMap.end())
+    {
+        return it->second;
+    }
 
-		return std::nullopt;
-	}
+    return std::nullopt;
+}
 
-	std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(uint32 id) const
-	{
-		auto it= m_materialNameAndPathMap.find(id);
-		if(it != m_materialNameAndPathMap.end())
-		{
-			return it->second;
-		}
+std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(uint32 id) const
+{
+    auto it = m_materialNameAndPathMap.find(id);
+    if (it != m_materialNameAndPathMap.end())
+    {
+        return it->second;
+    }
 
-		return std::nullopt;
-	}
+    return std::nullopt;
+}
 
-	std::optional<AstralRaytracer::AssetManager::NameAndPath>
-	AssetManager::getNameAndPathOfTraceable(uint32 id) const
-	{
-		auto it= m_traceableNameAndPathMap.find(id);
-		if(it != m_traceableNameAndPathMap.end())
-		{
-			return it->second;
-		}
+std::optional<AstralRaytracer::AssetManager::NameAndPath> AssetManager::getNameAndPathOfTraceable(uint32 id) const
+{
+    auto it = m_traceableNameAndPathMap.find(id);
+    if (it != m_traceableNameAndPathMap.end())
+    {
+        return it->second;
+    }
 
-		return std::nullopt;
-	}
+    return std::nullopt;
+}
 
-	const std::string& AssetManager::getCurrentRelativePath() const { return m_currentRelativePath; }
+const std::string &AssetManager::getCurrentRelativePath() const
+{
+    return m_currentRelativePath;
+}
 
-	const std::string& AssetManager::getDefaultSceneRelativePath() const
-	{
-		return m_defaultSceneRelativePath;
-	}
+const std::string &AssetManager::getDefaultSceneRelativePath() const
+{
+    return m_defaultSceneRelativePath;
+}
 
-	std::string AssetManager::getDefaultSceneAbsolutePath() const
-	{
-		return m_currentRelativePath + m_defaultSceneRelativePath;
-	}
+std::string AssetManager::getDefaultSceneAbsolutePath() const
+{
+    return m_currentRelativePath + m_defaultSceneRelativePath;
+}
 
-	const std::string& AssetManager::getCurrentProjectName() const { return m_currentProjectName; }
+const std::string &AssetManager::getCurrentProjectName() const
+{
+    return m_currentProjectName;
+}
 
-	bool AssetManager::isProjectOpen() const { return !m_currentProjectName.empty(); }
+bool AssetManager::isProjectOpen() const
+{
+    return !m_currentProjectName.empty();
+}
 
-	uuids::uuid AssetManager::generateUUID()
-	{
-		return uuids::uuid_random_generator(m_randomNumGenerator)();
-	}
+uuids::uuid AssetManager::generateUUID()
+{
+    return uuids::uuid_random_generator(m_randomNumGenerator)();
+}
 
-	std::string AssetManager::generateUUIDasString() { return uuids::to_string(generateUUID()); }
+std::string AssetManager::generateUUIDasString()
+{
+    return uuids::to_string(generateUUID());
+}
 
 } // namespace AstralRaytracer

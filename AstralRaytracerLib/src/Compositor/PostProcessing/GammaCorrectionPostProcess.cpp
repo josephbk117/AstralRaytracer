@@ -2,38 +2,35 @@
 
 namespace AstralRaytracer
 {
-	void GammaCorrectionPostProcessing::init()
-	{
-		m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
-		m_shaderProgram.linkShaders();
+void GammaCorrectionPostProcessing::init()
+{
+    m_shaderProgram.compileShadersFromSrcCode(getVertexShaderSrcCode(), getFragmentShaderSrcCode());
+    m_shaderProgram.linkShaders();
 
-		m_shaderProgram.use();
-		m_shaderProgram.setUniformValue("gamma", 2.2f, 0.0f, 2.4f);
-		m_shaderProgram.unuse();
-	}
+    m_shaderProgram.use();
+    m_shaderProgram.setUniformValue("gamma", 2.2f, 0.0f, 2.4f);
+    m_shaderProgram.unuse();
+}
 
-	void GammaCorrectionPostProcessing::processImage(
-			DrawingPanel&        drawPanel,
-			const RenderTexture& renderTexture,
-			gl::GLuint           imageTexture
-	) const
+void GammaCorrectionPostProcessing::processImage(DrawingPanel &drawPanel, const RenderTexture &renderTexture,
+                                                 gl::GLuint imageTexture) const
 
-	{
-		renderTexture.bind();
-		gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
+{
+    renderTexture.bind();
+    gl::glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+    gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 
-		m_shaderProgram.use();
-		drawPanel.setTextureID(imageTexture);
-		drawPanel.draw();
-		m_shaderProgram.unuse();
+    m_shaderProgram.use();
+    drawPanel.setTextureID(imageTexture);
+    drawPanel.draw();
+    m_shaderProgram.unuse();
 
-		renderTexture.unbind();
-	}
+    renderTexture.unbind();
+}
 
-	const char* const GammaCorrectionPostProcessing::getFragmentShaderSrcCode() const
-	{
-		return R"SHADER(
+const char *const GammaCorrectionPostProcessing::getFragmentShaderSrcCode() const
+{
+    return R"SHADER(
 						#version 330 core
 						in vec2				textureUV;
 						in vec3				worldPos;
@@ -48,5 +45,5 @@ namespace AstralRaytracer
 							color = vec4(pow(texColor, vec3(1.0 / gamma)), 1.0);
 						}
 				)SHADER";
-	}
+}
 } // namespace AstralRaytracer

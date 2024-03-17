@@ -11,40 +11,39 @@
 
 namespace AstralRaytracer
 {
-	class Traceable;
-	class PostProcessing;
+class Traceable;
+class PostProcessing;
 } // namespace AstralRaytracer
 
 namespace AstralRaytracer
 {
-	class Scene
-	{
-		public:
-			Scene();
-			~Scene();
+class Scene
+{
+  public:
+    Scene();
+    ~Scene();
 
-			void initialize();
+    void initialize();
 
-			[[nodiscard]]
-			const std::string& getName() const;
+    [[nodiscard]] const std::string_view getName() const;
 
-			[[nodiscard]]
-			bool hasSceneLoaded() const;
-			void addTraceable(std::unique_ptr<Traceable>&& traceable);
-			void addMaterial(const Material& material);
-			void addTexture(TextureDataRGBF&& texture);
-			void addPostProcessing(std::unique_ptr<PostProcessing>&& postProcessing);
-			void serialize(const AssetManager& assetManager, const std::filesystem::path& path);
-			void deserialize(AssetManager& assetManager, const std::filesystem::path& path);
-			void unload();
+    [[nodiscard]] bool hasSceneLoaded() const;
+    void addTraceable(std::unique_ptr<Traceable> &&traceable);
+    void addMaterial(const Material &material);
+    void addTexture(TextureDataRGBF &&texture);
+    void addPostProcessing(std::unique_ptr<PostProcessing> &&postProcessing);
+    void serialize(const AssetManager &assetManager, const std::filesystem::path &path);
+    void deserialize(AssetManager &assetManager, const std::filesystem::path &path);
+    void unload();
 
-			std::vector<std::unique_ptr<Traceable>>      m_sceneTraceables;
-			std::vector<Material>                        m_materials;
-			std::vector<TextureDataRGBF>                 m_textures;
-			std::vector<std::unique_ptr<PostProcessing>> m_postProcessingStack;
-		private:
-			std::string m_name;
+    std::vector<std::unique_ptr<Traceable>> m_sceneTraceables;
+    std::vector<Material> m_materials;
+    std::vector<TextureDataRGBF> m_textures;
+    std::vector<std::unique_ptr<PostProcessing>> m_postProcessingStack;
 
-			void setupDefaults();
-	};
+  private:
+    std::string m_name;
+
+    void setupDefaults();
+};
 } // namespace AstralRaytracer

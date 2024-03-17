@@ -5,123 +5,124 @@
 
 namespace AstralRaytracer
 {
-	StaticMesh::StaticMesh(const std::filesystem::path& meshFilePath)
-	{
-		m_sourceMeshFilePath= meshFilePath.string();
+StaticMesh::StaticMesh(const std::filesystem::path &meshFilePath)
+{
+    m_sourceMeshFilePath = meshFilePath.string();
 
-		*this= ModelManager::getStaticMeshFromGLTF(meshFilePath.string());
-	}
+    *this = ModelManager::getStaticMeshFromGLTF(meshFilePath.string());
+}
 
-	const std::string& StaticMesh::getSourceMeshFilePath() const { return m_sourceMeshFilePath; }
+const std::string &StaticMesh::getSourceMeshFilePath() const
+{
+    return m_sourceMeshFilePath;
+}
 
-	bool StaticMesh::trace(const Ray& rayIn, HitInfo& hitInfo) const
-	{
-		if(!intersectsBoundingBox(rayIn))
-		{
-			return false;
-		}
+bool StaticMesh::trace(const Ray &rayIn, HitInfo &hitInfo) const
+{
+    if (!intersectsBoundingBox(rayIn))
+    {
+        return false;
+    }
 
-		HitInfo closestHitInfo;
-		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
-		{
-			HitInfo test_hitInfo;
-			if(m_triangles[triIndex].trace({ rayIn.worldSpacePosition, rayIn.direction }, test_hitInfo))
-			{
-				if(test_hitInfo.hitDistance < closestHitInfo.hitDistance)
-				{
-					closestHitInfo= test_hitInfo;
-				}
-			}
-		}
+    HitInfo closestHitInfo;
+    for (uint32 triIndex = 0; triIndex < m_triangles.size(); ++triIndex)
+    {
+        HitInfo test_hitInfo;
+        if (m_triangles[triIndex].trace({rayIn.worldSpacePosition, rayIn.direction}, test_hitInfo))
+        {
+            if (test_hitInfo.hitDistance < closestHitInfo.hitDistance)
+            {
+                closestHitInfo = test_hitInfo;
+            }
+        }
+    }
 
-		if(closestHitInfo.hitDistance <= 0.0f ||
-			 closestHitInfo.hitDistance >= std::numeric_limits<float32>::max())
-		{
-			return false;
-		}
+    if (closestHitInfo.hitDistance <= 0.0f || closestHitInfo.hitDistance >= std::numeric_limits<float32>::max())
+    {
+        return false;
+    }
 
-		hitInfo= closestHitInfo;
-		return true;
-	}
+    hitInfo = closestHitInfo;
+    return true;
+}
 
-	void StaticMesh::setPosition(const glm::vec3& position)
-	{
-		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
-		{
-			m_triangles[triIndex].setPosition(position);
-		}
+void StaticMesh::setPosition(const glm::vec3 &position)
+{
+    for (uint32 triIndex = 0; triIndex < m_triangles.size(); ++triIndex)
+    {
+        m_triangles[triIndex].setPosition(position);
+    }
 
-		Traceable::setPosition(position);
-	}
+    Traceable::setPosition(position);
+}
 
-	void StaticMesh::setScale(const glm::vec3& scale)
-	{
-		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
-		{
-			m_triangles[triIndex].setScale(scale);
-		}
+void StaticMesh::setScale(const glm::vec3 &scale)
+{
+    for (uint32 triIndex = 0; triIndex < m_triangles.size(); ++triIndex)
+    {
+        m_triangles[triIndex].setScale(scale);
+    }
 
-		m_boundingBox.max= m_initialBoundingBox.max * scale;
-		m_boundingBox.min= m_initialBoundingBox.min * scale;
+    m_boundingBox.max = m_initialBoundingBox.max * scale;
+    m_boundingBox.min = m_initialBoundingBox.min * scale;
 
-		Traceable::setScale(scale);
-	}
+    Traceable::setScale(scale);
+}
 
-	void StaticMesh::setMaterialIndex(uint32 materialIndex)
-	{
-		for(uint32 triIndex= 0; triIndex < m_triangles.size(); ++triIndex)
-		{
-			m_triangles[triIndex].setMaterialIndex(materialIndex);
-		}
-	}
+void StaticMesh::setMaterialIndex(uint32 materialIndex)
+{
+    for (uint32 triIndex = 0; triIndex < m_triangles.size(); ++triIndex)
+    {
+        m_triangles[triIndex].setMaterialIndex(materialIndex);
+    }
+}
 
-	void StaticMesh::serialize(AssetManager& assetManager, YAML::Emitter& out) const
-	{
-		using namespace Serialization;
-		Traceable::serialize(assetManager, out);
-		out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::STATIC_MESH);
-		out << YAML::Key << "Source Path" << YAML::Value << m_sourceMeshFilePath;
-	}
+void StaticMesh::serialize(AssetManager &assetManager, YAML::Emitter &out) const
+{
+    using namespace Serialization;
+    Traceable::serialize(assetManager, out);
+    out << YAML::Key << "Type" << YAML::Value << static_cast<uint32>(TraceableType::STATIC_MESH);
+    out << YAML::Key << "Source Path" << YAML::Value << m_sourceMeshFilePath;
+}
 
-	void StaticMesh::deserialize(AssetManager& assetManager, YAML::Node& node)
-	{
-		*this=
-				StaticMesh(assetManager.getCurrentRelativePath() + node["Source Path"].as<std::string>());
-		// Creates new StaticMesh so need to deserialize parent after
-		Traceable::deserialize(assetManager, node);
-		m_id= uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
-		setMaterialIndex(m_materialIndex);
-		setPosition(m_transform.getPosition());
-	}
+void StaticMesh::deserialize(AssetManager &assetManager, YAML::Node &node)
+{
+    *this = StaticMesh(assetManager.getCurrentRelativePath() + node["Source Path"].as<std::string>());
+    // Creates new StaticMesh so need to deserialize parent after
+    Traceable::deserialize(assetManager, node);
+    m_id = uuids::uuid::from_string(node["UUID"].as<std::string>()).value();
+    setMaterialIndex(m_materialIndex);
+    setPosition(m_transform.getPosition());
+}
 
-	bool StaticMesh::intersectsBoundingBox(const Ray& rayIn) const
-	{
-		const glm::vec3& direction         = rayIn.direction;
-		const glm::vec3& worldSpacePosition= rayIn.worldSpacePosition;
-		const glm::vec3& lb                = m_transform.getPosition() + m_boundingBox.min;
-		const glm::vec3& rt                = m_transform.getPosition() + m_boundingBox.max;
+bool StaticMesh::intersectsBoundingBox(const Ray &rayIn) const
+{
+    const glm::vec3 &direction = rayIn.direction;
+    const glm::vec3 &worldSpacePosition = rayIn.worldSpacePosition;
+    const glm::vec3 &lb = m_transform.getPosition() + m_boundingBox.min;
+    const glm::vec3 &rt = m_transform.getPosition() + m_boundingBox.max;
 
-		const float32 dirFracX= 1.0f / direction.x;
-		const float32 dirFracY= 1.0f / direction.y;
-		const float32 dirFracZ= 1.0f / direction.z;
+    const float32 dirFracX = 1.0f / direction.x;
+    const float32 dirFracY = 1.0f / direction.y;
+    const float32 dirFracZ = 1.0f / direction.z;
 
-		const float32 t1= (lb.x - worldSpacePosition.x) * dirFracX;
-		const float32 t2= (rt.x - worldSpacePosition.x) * dirFracX;
-		const float32 t3= (lb.y - worldSpacePosition.y) * dirFracY;
-		const float32 t4= (rt.y - worldSpacePosition.y) * dirFracY;
-		const float32 t5= (lb.z - worldSpacePosition.z) * dirFracZ;
-		const float32 t6= (rt.z - worldSpacePosition.z) * dirFracZ;
+    const float32 t1 = (lb.x - worldSpacePosition.x) * dirFracX;
+    const float32 t2 = (rt.x - worldSpacePosition.x) * dirFracX;
+    const float32 t3 = (lb.y - worldSpacePosition.y) * dirFracY;
+    const float32 t4 = (rt.y - worldSpacePosition.y) * dirFracY;
+    const float32 t5 = (lb.z - worldSpacePosition.z) * dirFracZ;
+    const float32 t6 = (rt.z - worldSpacePosition.z) * dirFracZ;
 
-		const float32 tMax= glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
+    const float32 tMax = glm::min(glm::min(glm::max(t1, t2), glm::max(t3, t4)), glm::max(t5, t6));
 
-		if(tMax < 0.0f)
-		{
-			return false;
-		}
+    if (tMax < 0.0f)
+    {
+        return false;
+    }
 
-		const float32 tMin= glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
+    const float32 tMin = glm::max(glm::max(glm::min(t1, t2), glm::min(t3, t4)), glm::min(t5, t6));
 
-		return tMin <= tMax;
-	}
+    return tMin <= tMax;
+}
 
 } // namespace AstralRaytracer

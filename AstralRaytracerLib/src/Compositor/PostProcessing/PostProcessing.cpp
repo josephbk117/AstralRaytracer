@@ -2,30 +2,35 @@
 
 namespace AstralRaytracer
 {
-	PostProcessing::~PostProcessing() { }
+PostProcessing::~PostProcessing()
+{
+}
 
-	void PostProcessing::setMainColorTexture(gl::GLuint mainColorTexture)
-	{
-		m_mainColorTexture= mainColorTexture;
-	}
+void PostProcessing::setMainColorTexture(gl::GLuint mainColorTexture)
+{
+    m_mainColorTexture = mainColorTexture;
+}
 
-	void PostProcessing::setUniform(const std::string& name, const UniformDataType& data)
-	{
-		m_shaderProgram.use();
-		m_shaderProgram.updateUniformData(name, data);
-		m_shaderProgram.unuse();
-	}
+void PostProcessing::setUniform(const std::string &name, const UniformDataType &data)
+{
+    m_shaderProgram.use();
+    m_shaderProgram.updateUniformData(name, data);
+    m_shaderProgram.unuse();
+}
 
-	UniformDataType PostProcessing::getUniform(const std::string& name) const
-	{
-		return m_shaderProgram.getUniformData().at(name).data;
-	}
+UniformDataType PostProcessing::getUniform(const std::string &name) const
+{
+    return m_shaderProgram.getUniformData().at(name).data;
+}
 
-	const ShaderProgram& PostProcessing::getShader() const { return m_shaderProgram; }
+const ShaderProgram &PostProcessing::getShader() const
+{
+    return m_shaderProgram;
+}
 
-	const char* const PostProcessing::getVertexShaderSrcCode() const
-	{
-		return R"SHADER(
+const char *const PostProcessing::getVertexShaderSrcCode() const
+{
+    return R"SHADER(
 						#version 330 core
 						in vec2			vertexPosition;
 						in vec2         texCoords;
@@ -39,5 +44,5 @@ namespace AstralRaytracer
 							textureUV    = texCoords;
 						}
 				)SHADER";
-	}
+}
 } // namespace AstralRaytracer

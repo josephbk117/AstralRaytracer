@@ -5,27 +5,27 @@
 
 namespace AstralRaytracer
 {
-	class Scene;
+class Scene;
 }
 
 namespace AstralRaytracer
 {
-	class Compositor
-	{
-		public:
-			Compositor();
-			void initialize();
-			void processImage(const Scene& scene, const Resolution& resolution, TextureId inputTextureId);
+class Compositor
+{
+  public:
+    Compositor();
+    void initialize();
+    void processImage(const Scene &scene, const Resolution &resolution, TextureId inputTextureId);
 
-			[[nodiscard]]
-			TextureId getTextureId() const;
-		private:
-			TextureId m_outputTextureId= 0;
+    [[nodiscard]] TextureId getTextureId() const;
 
-			RenderTexture m_renderTexture1;
-			RenderTexture m_renderTexture2;
-			DrawingPanel  m_dwPanel;
+  private:
+    TextureId m_outputTextureId = 0;
 
-			NoAlphaPassThroughPostProcessing m_noAlphaPassThrough;
-	};
+    RenderTexture m_renderTexture1;
+    RenderTexture m_renderTexture2;
+    DrawingPanel m_dwPanel;
+
+    NoAlphaPassThroughPostProcessing m_noAlphaPassThrough;
+};
 } // namespace AstralRaytracer
