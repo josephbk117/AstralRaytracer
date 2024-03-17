@@ -13,7 +13,7 @@ namespace AstralRaytracer
 
 	Window::~Window() { glfwTerminate(); }
 
-	const std::string& Window::getName() const { return m_name; }
+	const std::string_view Window::getName() const { return m_name.c_str(); }
 
 	void Window::initialize()
 	{
@@ -53,7 +53,7 @@ namespace AstralRaytracer
 
 		ASTRAL_LOG_TRACE("Window creation finished");
 
-		nfdresult_t nfdInitResult= NFD::Init();
+		const nfdresult_t nfdInitResult= NFD::Init();
 		if(nfdInitResult != nfdresult_t::NFD_OKAY)
 		{
 			ASTRAL_LOG_ERROR("NFD failed to initialize");

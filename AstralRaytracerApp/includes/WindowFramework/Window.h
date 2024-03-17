@@ -47,7 +47,7 @@ namespace AstralRaytracer
 			Window(const Window&)           = delete;
 			Window& operator=(const Window&)= delete;
 			~Window();
-			const std::string& getName() const;
+			const std::string_view getName() const;
 
 			const glm::u32vec2& getMinResolution() const { return m_minResolution; };
 
