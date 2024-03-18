@@ -16,21 +16,22 @@ class TextureDataTest : public testing::Test
     AstralRaytracer::TextureDataRGBF TextureRGBF;
     AstralRaytracer::TextureDataRGBAF TextureRGBAF;
 
-    const std::vector<uint8> RGBColorData1 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
+    static inline const std::vector<uint8> RGBColorData1 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
                                               0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
-    const std::vector<uint8> RGBColorData2 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
+    static inline const std::vector<uint8> RGBColorData2 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
 
-    const std::vector<uint8> RGBAColorData1 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1,
+    static inline const std::vector<uint8> RGBAColorData1 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1,
                                                0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1};
-    const std::vector<uint8> RGBAColorData2 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1};
+    static inline const std::vector<uint8> RGBAColorData2 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1,
+                                                            1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1};
 
-    const std::vector<float32> RGBFColorData1 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
+    static inline const std::vector<float32> RGBFColorData1 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1,
                                                  0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
-    const std::vector<float32> RGBFColorData2 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
+    static inline const std::vector<float32> RGBFColorData2 = {1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1};
 
-    const std::vector<float32> RGBAFColorData1 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1,
+    static inline const std::vector<float32> RGBAFColorData1 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1,
                                                   0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1};
-    const std::vector<float32> RGBAFColorData2 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1,
+    static inline const std::vector<float32> RGBAFColorData2 = {1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1,
                                                   1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1};
 
     void SetUp() override
