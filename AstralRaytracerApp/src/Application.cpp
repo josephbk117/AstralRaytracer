@@ -109,9 +109,9 @@ AstralRaytracer::Errors::GenericError Application::parseCommandLineArgs(int32 ar
 
     app.add_option("-d,--log-display", outLaunchOptions.logDisplay,
                    "Choose a log display: None, console_and_file, console, or file")
-        ->transform(CLI::CheckedTransformer(logLevelMap, CLI::ignore_case));
+        ->transform(CLI::CheckedTransformer(logDisplayMap, CLI::ignore_case));
 
-    app.add_option("-p,--project-path", outLaunchOptions.projectPath, "Project path");
+    app.add_option("-p,--project-path", outLaunchOptions.projectPath);
 
     try
     {
@@ -119,6 +119,7 @@ AstralRaytracer::Errors::GenericError Application::parseCommandLineArgs(int32 ar
     }
     catch (const CLI::ParseError &e)
     {
+        std::cerr << e.what() << std::endl;
         return AstralRaytracer::Errors::GenericError::FAILURE;
     }
 
