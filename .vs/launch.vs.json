@@ -1,0 +1,21 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "AstralRaytracerApp.exe (AstralRaytracerApp\\AstralRaytracerApp.exe)",
+      "name": "AstralRaytracerApp.exe (AstralRaytracerApp\\AstralRaytracerApp.exe)",
+      "args": [
+        "--log-level",
+        "info",
+        "--log-displaygg",
+        "console",
+        "--project-path",
+        "../../../../ExampleProject/defaultProject.asproj"
+
+      ]
+    }
+  ]
+}

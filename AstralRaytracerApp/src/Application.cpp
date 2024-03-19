@@ -1,5 +1,7 @@
 #include "Application.h"
 
+#include <CLI/CLI.hpp>
+#include <CLI/Validators.hpp>
 #include <mimalloc.h>
 
 namespace
@@ -22,37 +24,25 @@ spdlog::level::level_enum getSpdLogLevel(Application::LogLevel logLevel)
 }
 } // namespace
 
-Application::Application(LaunchOptions options)
+AstralRaytracer::Errors::GenericError Application::initialize(int32 argCount, char *argValues[])
 {
-    if (options.logLevel != LogLevel::None)
+    LaunchOptions options;
+
+    if (parseCommandLineArgs(argCount, argValues, options) != AstralRaytracer::Errors::GenericError::SUCCESS)
     {
-        mi_option_enable(mi_option_t::mi_option_verbose);
-        mi_option_enable(mi_option_t::mi_option_show_stats);
-        mi_option_enable(mi_option_t::mi_option_show_errors);
+        return AstralRaytracer::Errors::GenericError::FAILURE;
     }
 
-    mi_option_enable(mi_option_t::mi_option_allow_large_os_pages);
-    mi_option_set(mi_option_t::mi_option_purge_delay, 0);
+    internalInitialize(options);
 
-    spdlog::default_logger_raw()->set_level(getSpdLogLevel(options.logLevel));
-    spdlog::default_logger_raw()->set_pattern("[Thread:%t][Time Delta(ms):+%-6i][%D %T][%l] %v");
-}
-
-void Application::initialize()
-{
-    // Needs initialization in a certain order
-
-    m_window.initialize();
-    m_renderer.initialize();
-    m_scene.initialize();
-    m_compositor.initialize();
-
-    // Load default project
-    if (m_assetManager.loadProject(R"(../../../../ExampleProject/defaultProject.asproj)"))
+    // Load project if provided as argument
+    if (m_assetManager.loadProject(options.projectPath))
     {
         m_scene.deserialize(m_assetManager, m_assetManager.getDefaultSceneAbsolutePath());
         m_window.setWindowTitle(m_assetManager, m_scene);
     }
+
+    return AstralRaytracer::Errors::GenericError::SUCCESS;
 }
 
 void Application::run()
@@ -99,4 +89,63 @@ void Application::shutdown()
 {
     m_renderer.renderEnd();
     m_window.shutdown();
+}
+
+AstralRaytracer::Errors::GenericError Application::parseCommandLineArgs(int32 argCount, char *argValues[],
+                                                                        LaunchOptions &outLaunchOptions)
+{
+    CLI::App app{"A decent Raytracer", m_window.getName()};
+
+    const std::map<std::string, LogLevel> logLevelMap{
+        {"none", LogLevel::None}, {"error", LogLevel::Error}, {"warning", LogLevel::Warning}, {"info", LogLevel::Info}};
+
+    const std::map<std::string, LogDisplay> logDisplayMap{{"none", LogDisplay::None},
+                                                          {"console_and_file", LogDisplay::ConsoleAndFile},
+                                                          {"console", LogDisplay::Console},
+                                                          {"file", LogDisplay::File}};
+
+    app.add_option("-l,--log-level", outLaunchOptions.logLevel, "Choose a log level: None, Error, Warning, or Info")
+        ->transform(CLI::CheckedTransformer(logLevelMap, CLI::ignore_case));
+
+    app.add_option("-d,--log-display", outLaunchOptions.logDisplay,
+                   "Choose a log display: None, console_and_file, console, or file")
+        ->transform(CLI::CheckedTransformer(logDisplayMap, CLI::ignore_case));
+
+    app.add_option("-p,--project-path", outLaunchOptions.projectPath);
+
+    try
+    {
+        app.parse(argCount, argValues);
+    }
+    catch (const CLI::ParseError &e)
+    {
+        std::cerr << e.what() << std::endl;
+        return AstralRaytracer::Errors::GenericError::FAILURE;
+    }
+
+    return AstralRaytracer::Errors::GenericError::SUCCESS;
+}
+
+void Application::internalInitialize(LaunchOptions options)
+{
+    if (options.logLevel != LogLevel::None)
+    {
+        mi_option_enable(mi_option_t::mi_option_verbose);
+        mi_option_enable(mi_option_t::mi_option_verbose);
+        mi_option_enable(mi_option_t::mi_option_show_stats);
+        mi_option_enable(mi_option_t::mi_option_show_errors);
+    }
+
+    mi_option_enable(mi_option_t::mi_option_allow_large_os_pages);
+    mi_option_set(mi_option_t::mi_option_purge_delay, 0);
+
+    spdlog::default_logger_raw()->set_level(getSpdLogLevel(options.logLevel));
+    spdlog::default_logger_raw()->set_pattern("[Thread:%t][Time Delta(ms):+%-6i][%D %T][%l] %v");
+
+    // Needs initialization in a certain order
+
+    m_window.initialize();
+    m_renderer.initialize();
+    m_scene.initialize();
+    m_compositor.initialize();
 }
