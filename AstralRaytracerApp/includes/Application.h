@@ -30,12 +30,13 @@ class Application
 
     struct LaunchOptions
     {
-        LogLevel logLevel = LogLevel::Info;
-        LogDisplay logDisplay = LogDisplay::Console;
+        LogLevel logLevel = LogLevel::None;
+        LogDisplay logDisplay = LogDisplay::None;
+        std::filesystem::path projectPath;
     };
 
-    Application(LaunchOptions options);
-    void initialize();
+    Application() = default;
+    AstralRaytracer::Errors::GenericError initialize(int32 argCount, char *argValues[]);
     void run();
     void shutdown();
 
@@ -46,4 +47,7 @@ class Application
     AstralRaytracer::Camera m_cam{15.0f, 15.0f, 10.0f, 0.0f};
     AstralRaytracer::Scene m_scene;
     AstralRaytracer::Compositor m_compositor;
+
+    AstralRaytracer::Errors::GenericError parseCommandLineArgs(int32 argCount, char *argValues[], LaunchOptions& outLaunchOptions);
+    void internalInitialize(LaunchOptions options);
 };

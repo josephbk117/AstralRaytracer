@@ -1,13 +1,12 @@
 #include "Application.h"
 
-int main()
+int main(int argc, char *argv[])
 {
-    Application::LaunchOptions options;
-    options.logLevel = Application::LogLevel::Info;
-    options.logDisplay = Application::LogDisplay::Console;
-
-    Application app(options);
-    app.initialize();
+    Application app;
+    if (app.initialize(argc, argv) != AstralRaytracer::Errors::GenericError::SUCCESS)
+    {
+        return -1;
+    }
     app.run();
     app.shutdown();
     return 0;
