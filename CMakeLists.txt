@@ -50,7 +50,7 @@ set(BUILD_SHARED_LIBS OFF)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 add_subdirectory(external/glfw EXCLUDE_FROM_ALL)
-#set(SPDLOG_USE_STD_FORMAT ON)
+set(SPDLOG_USE_STD_FORMAT ON)
 add_subdirectory(external/spdlog)
 
 #enabling LTO has issues on clang
