@@ -114,20 +114,15 @@ void Renderer<T, ComponentCount>::render(const Scene &scene, const Camera &cam)
 
                     const glm::vec4 outColor = perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
-                    T &redChannel = m_accumulatedColorData[pixelAccessIndex];
-                    T &greenChannel = m_accumulatedColorData[pixelAccessIndex + 1];
-                    T &blueChannel = m_accumulatedColorData[pixelAccessIndex + 2];
-                    T &alphaChannel = m_accumulatedColorData[pixelAccessIndex + 3];
+                    glm::vec<ComponentCount, T, glm::defaultp> finalColorVec;
+                    for (uint32 channelIndex = 0; channelIndex < ComponentCount; ++channelIndex)
+                    {
+                        T &channelVal = m_accumulatedColorData[pixelAccessIndex + channelIndex];
+                        channelVal += outColor[channelIndex];
+                        finalColorVec[channelIndex] = channelVal * oneOverFrameIndex;
+                    }
 
-                    redChannel += outColor.r;
-                    greenChannel += outColor.g;
-                    blueChannel += outColor.b;
-                    alphaChannel += outColor.a;
-
-                    const glm::vec4 finalColorVec(redChannel, greenChannel, blueChannel, 1.0f);
-                    glm::vec4 finalColorData = finalColorVec * oneOverFrameIndex;
-
-                    m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorData);
+                    m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorVec);
                 });
 
     setState(RendererState::DONE);
