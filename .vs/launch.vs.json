@@ -10,11 +10,10 @@
       "args": [
         "--log-level",
         "info",
-        "--log-displaygg",
+        "--log-display",
         "console",
         "--project-path",
         "../../../../ExampleProject/defaultProject.asproj"
-
       ]
     }
   ]
