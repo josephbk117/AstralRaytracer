@@ -7,7 +7,7 @@
 
 namespace AstralRaytracer
 {
-class Renderer
+template <ArithmeticType T, uint32 ComponentCount> class Renderer
 {
   public:
     enum class RendererState : uint8
@@ -25,7 +25,7 @@ class Renderer
     void renderEnd();
     bool onRenderComplete();
 
-    const TextureDataRGBAF &getTextureData() const
+    const TextureData<T, ComponentCount> &getTextureData() const
     {
         return m_texData;
     }
@@ -71,8 +71,8 @@ class Renderer
     std::thread m_renderingThread;
     std::atomic<RendererState> m_state{RendererState::NOT_STARTED};
 
-    TextureDataRGBAF m_texData;
-    std::vector<float32> m_accumulatedColorData;
+    TextureData<T, ComponentCount> m_texData;
+    std::vector<T> m_accumulatedColorData;
     float32 m_maxLuminance = 0;
     std::vector<uint32> m_rayIterator;
     uint32 m_textureId = 0;

@@ -43,11 +43,12 @@ class Application
   private:
     AstralRaytracer::AssetManager m_assetManager;
     AstralRaytracer::Window m_window{"Astral Raytracer"};
-    AstralRaytracer::Renderer m_renderer;
+    AstralRaytracer::Renderer<float32, 4> m_renderer;
     AstralRaytracer::Camera m_cam{15.0f, 15.0f, 10.0f, 0.0f};
     AstralRaytracer::Scene m_scene;
     AstralRaytracer::Compositor m_compositor;
 
-    AstralRaytracer::Errors::GenericError parseCommandLineArgs(int32 argCount, char *argValues[], LaunchOptions& outLaunchOptions);
+    AstralRaytracer::Errors::GenericError parseCommandLineArgs(int32 argCount, char *argValues[],
+                                                               LaunchOptions &outLaunchOptions);
     void internalInitialize(LaunchOptions options);
 };

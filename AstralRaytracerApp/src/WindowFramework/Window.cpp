@@ -108,7 +108,7 @@ void Window::clear() const
 
 void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos,
                                                   AstralRaytracer::UI::AppStateInfo &appStateInfo,
-                                                  const AstralRaytracer::Renderer &renderer,
+                                                  const AstralRaytracer::Renderer<float32, 4> &renderer,
                                                   const AstralRaytracer::Camera &cam,
                                                   const AstralRaytracer::Scene &scene)
 {
@@ -127,8 +127,8 @@ void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos,
     }
 }
 
-void Window::processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, Renderer &renderer, Camera &cam,
-                          const Scene &scene)
+void Window::processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, Renderer<float32, 4> &renderer,
+                          Camera &cam, const Scene &scene)
 {
     m_frameTimes.push(deltaTime);
     if (m_frameTimes.size() > FrameSampleCount)
@@ -342,7 +342,7 @@ void Window::drawSampleProgress(const uint32 frameIndex)
     ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 }
 
-void Window::displayUI(UI::AppStateInfo &appStateInfo, Renderer &renderer, Scene &scene, Camera &cam,
+void Window::displayUI(UI::AppStateInfo &appStateInfo, Renderer<float32, 4> &renderer, Scene &scene, Camera &cam,
                        AssetManager &assetManager)
 {
     IMGUIZMO_NAMESPACE::BeginFrame();
@@ -501,7 +501,8 @@ void Window::displayUI(UI::AppStateInfo &appStateInfo, Renderer &renderer, Scene
     ImGui::End();
 }
 
-void Window::drawToolbar(AstralRaytracer::Renderer &renderer, const AstralRaytracer::AssetManager &assetManager,
+void Window::drawToolbar(AstralRaytracer::Renderer<float32, 4> &renderer,
+                         const AstralRaytracer::AssetManager &assetManager,
                          AstralRaytracer::UI::AppStateInfo &appStateInfo)
 {
     constexpr ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |

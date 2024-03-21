@@ -15,26 +15,27 @@
 namespace AstralRaytracer
 {
 
-Renderer::Renderer()
+template <ArithmeticType T, uint32 ComponentCount> Renderer<T, ComponentCount>::Renderer()
 {
 }
 
-Renderer::~Renderer()
+template <ArithmeticType T, uint32 ComponentCount> Renderer<T, ComponentCount>::~Renderer()
 {
     renderEnd();
 }
 
-void Renderer::initialize()
+template <ArithmeticType T, uint32 ComponentCount> void Renderer<T, ComponentCount>::initialize()
 {
     const Resolution initialRes(16, 16);
 
     m_texData.resize(initialRes);
-    m_textureId = TextureManager::loadTextureFromTextureData<float32, 4>(m_texData, false);
+    m_textureId = TextureManager::loadTextureFromTextureData<T, ComponentCount>(m_texData, false);
 
     resize(initialRes);
 }
 
-void Renderer::renderStart(const Scene &scene, const Camera &cam)
+template <ArithmeticType T, uint32 ComponentCount>
+void Renderer<T, ComponentCount>::renderStart(const Scene &scene, const Camera &cam)
 {
     if (getState() != RendererState::NOT_STARTED)
     {
@@ -49,7 +50,7 @@ void Renderer::renderStart(const Scene &scene, const Camera &cam)
     m_renderingThread = std::thread([this, &scene, &cam]() { this->render(scene, cam); });
 }
 
-void Renderer::renderEnd()
+template <ArithmeticType T, uint32 ComponentCount> void Renderer<T, ComponentCount>::renderEnd()
 {
     if (m_renderingThread.joinable())
     {
@@ -57,7 +58,8 @@ void Renderer::renderEnd()
     }
 }
 
-void Renderer::render(const Scene &scene, const Camera &cam)
+template <ArithmeticType T, uint32 ComponentCount>
+void Renderer<T, ComponentCount>::render(const Scene &scene, const Camera &cam)
 {
     if (getState() != RendererState::STARTED)
     {
@@ -112,10 +114,10 @@ void Renderer::render(const Scene &scene, const Camera &cam)
 
                     const glm::vec4 outColor = perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
-                    float32 &redChannel = m_accumulatedColorData[pixelAccessIndex];
-                    float32 &greenChannel = m_accumulatedColorData[pixelAccessIndex + 1];
-                    float32 &blueChannel = m_accumulatedColorData[pixelAccessIndex + 2];
-                    float32 &alphaChannel = m_accumulatedColorData[pixelAccessIndex + 3];
+                    T &redChannel = m_accumulatedColorData[pixelAccessIndex];
+                    T &greenChannel = m_accumulatedColorData[pixelAccessIndex + 1];
+                    T &blueChannel = m_accumulatedColorData[pixelAccessIndex + 2];
+                    T &alphaChannel = m_accumulatedColorData[pixelAccessIndex + 3];
 
                     redChannel += outColor.r;
                     greenChannel += outColor.g;
@@ -131,17 +133,18 @@ void Renderer::render(const Scene &scene, const Camera &cam)
     setState(RendererState::DONE);
 }
 
-Renderer::RendererState Renderer::getState() const
+template <ArithmeticType T, uint32 ComponentCount>
+Renderer<T, ComponentCount>::RendererState Renderer<T, ComponentCount>::getState() const
 {
     return m_state.load();
 }
 
-void Renderer::setState(RendererState renderState)
+template <ArithmeticType T, uint32 ComponentCount> void Renderer<T, ComponentCount>::setState(RendererState renderState)
 {
     m_state.store(renderState);
 }
 
-bool Renderer::onRenderComplete()
+template <ArithmeticType T, uint32 ComponentCount> bool Renderer<T, ComponentCount>::onRenderComplete()
 {
     if (m_state != RendererState::DONE)
     {
@@ -156,8 +159,10 @@ bool Renderer::onRenderComplete()
     return true;
 }
 
-glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(const glm::vec2 &coord, const glm::mat4 &inverseProjection,
-                                                       const glm::mat4 &inverseView) const
+template <ArithmeticType T, uint32 ComponentCount>
+glm::vec3 Renderer<T, ComponentCount>::getRayDirectionFromNormalizedCoord(const glm::vec2 &coord,
+                                                                          const glm::mat4 &inverseProjection,
+                                                                          const glm::mat4 &inverseView) const
 {
     // Pre-calculate the multiplication factor for the coord adjustment
     const glm::vec2 adjustedCoord = (coord * 2.0f) - 1.0f;
@@ -170,7 +175,8 @@ glm::vec3 Renderer::getRayDirectionFromNormalizedCoord(const glm::vec2 &coord, c
     return glm::vec3(inverseView * glm::vec4(targetNormalized, 0.0f));
 }
 
-void Renderer::resize(const Resolution &resolution)
+template <ArithmeticType T, uint32 ComponentCount>
+void Renderer<T, ComponentCount>::resize(const Resolution &resolution)
 {
     m_texData.resize(resolution);
 
@@ -184,7 +190,8 @@ void Renderer::resize(const Resolution &resolution)
     TextureManager::resizeTexture(m_texData, m_textureId);
 }
 
-bool Renderer::onResize(const Resolution &resolution)
+template <ArithmeticType T, uint32 ComponentCount>
+bool Renderer<T, ComponentCount>::onResize(const Resolution &resolution)
 {
     if (m_texData.getResolution() == resolution)
     {
@@ -196,7 +203,7 @@ bool Renderer::onResize(const Resolution &resolution)
     return true;
 }
 
-void Renderer::resetFrameIndex()
+template <ArithmeticType T, uint32 ComponentCount> void Renderer<T, ComponentCount>::resetFrameIndex()
 {
     m_frameIndex = 1;
 
@@ -208,7 +215,9 @@ void Renderer::resetFrameIndex()
     std::memset(m_accumulatedColorData.data(), 0, bufferSize);
 }
 
-glm::vec4 Renderer::perPixel(uint32 &seedVal, const Scene &scene, CoOrd3DF &rayOrigin, Direction3D &rayDir) const
+template <ArithmeticType T, uint32 ComponentCount>
+glm::vec4 Renderer<T, ComponentCount>::perPixel(uint32 &seedVal, const Scene &scene, CoOrd3DF &rayOrigin,
+                                                Direction3D &rayDir) const
 {
     glm::vec3 light(0.0f);
     glm::vec3 contribution(1.0f);
@@ -271,8 +280,9 @@ glm::vec4 Renderer::perPixel(uint32 &seedVal, const Scene &scene, CoOrd3DF &rayO
     return glm::vec4(light.r, light.g, light.b, depth);
 }
 
-void Renderer::findClosestHit(HitInfo &closestHitInfo, const Scene &scene, const CoOrd3DF &rayOrigin,
-                              const Direction3D &rayDir) const
+template <ArithmeticType T, uint32 ComponentCount>
+void Renderer<T, ComponentCount>::findClosestHit(HitInfo &closestHitInfo, const Scene &scene, const CoOrd3DF &rayOrigin,
+                                                 const Direction3D &rayDir) const
 {
     // Initialize closest hit distance to a large value
     closestHitInfo.hitDistance = std::numeric_limits<float32>::max();
@@ -288,5 +298,10 @@ void Renderer::findClosestHit(HitInfo &closestHitInfo, const Scene &scene, const
         }
     }
 }
+
+template class Renderer<uint8, 3>;
+template class Renderer<uint8, 4>;
+template class Renderer<float32, 3>;
+template class Renderer<float32, 4>;
 
 } // namespace AstralRaytracer
