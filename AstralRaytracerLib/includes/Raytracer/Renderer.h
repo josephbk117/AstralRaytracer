@@ -79,4 +79,10 @@ template <ArithmeticType T, uint32 ComponentCount> class Renderer
     uint32 m_frameIndex = 1;
     uint32 m_BounceCount = 4;
 };
+
+using RendererRGB = Renderer<uint8, 3>;
+using RendererRGBA = Renderer<uint8, 4>;
+using RendererRGBF = Renderer<float32, 3>;
+using RendererRGBAF = Renderer<float32, 4>;
+
 } // namespace AstralRaytracer

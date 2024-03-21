@@ -15,6 +15,10 @@ namespace AstralRaytracer
 class Scene;
 class Camera;
 template <ArithmeticType T, uint32 componentCount> class Renderer;
+using RendererRGB = Renderer<uint8, 3>;
+using RendererRGBA = Renderer<uint8, 4>;
+using RendererRGBF = Renderer<float32, 3>;
+using RendererRGBAF = Renderer<float32, 4>;
 class AssetManager;
 } // namespace AstralRaytracer
 
@@ -87,16 +91,16 @@ class Window
     void SetWindowIcon(const std::filesystem::path &iconPath);
 
     void clear() const;
-    void processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, Renderer<float32, 4> &renderer, Camera &cam,
+    void processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, RendererRGBAF &renderer, Camera &cam,
                       const Scene &scene);
 
     void setDefaultTheme() const;
     void setWindowTitle(const AssetManager &assetManager, const Scene &activeScene);
 
-    void displayUI(UI::AppStateInfo &appStateInfo, Renderer<float32, 4> &renderer, Scene &scene, Camera &cam,
+    void displayUI(UI::AppStateInfo &appStateInfo, RendererRGBAF &renderer, Scene &scene, Camera &cam,
                    AssetManager &assetManager);
 
-    void drawToolbar(AstralRaytracer::Renderer<float32, 4> &renderer, const AstralRaytracer::AssetManager &assetManager,
+    void drawToolbar(RendererRGBAF &renderer, const AstralRaytracer::AssetManager &assetManager,
                      AstralRaytracer::UI::AppStateInfo &appStateInfo);
 
     void handleChooseSceneDialog(AstralRaytracer::Scene &scene, AstralRaytracer::AssetManager &assetManager,
@@ -145,7 +149,7 @@ class Window
     static void windowSizeCallback(GLFWwindow *window, int32 width, int32 height);
     void setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos,
                                               AstralRaytracer::UI::AppStateInfo &appStateInfo,
-                                              const AstralRaytracer::Renderer<float32, 4> &renderer,
-                                              const AstralRaytracer::Camera &cam, const AstralRaytracer::Scene &scene);
+                                              const RendererRGBAF &renderer, const AstralRaytracer::Camera &cam,
+                                              const AstralRaytracer::Scene &scene);
 };
 } // namespace AstralRaytracer
