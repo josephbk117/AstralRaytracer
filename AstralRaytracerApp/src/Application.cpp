@@ -22,10 +22,25 @@ spdlog::level::level_enum getSpdLogLevel(Application::LogLevel logLevel)
         return spdlog::level::off;
     }
 }
+
+void printCmdArgs(int32 argCount, char *argValues[])
+{
+    std::cout << "Command line arguments:" << std::endl;
+
+    for (int32 i = 0; i < argCount; ++i)
+    {
+        std::cout << argValues[i] << std::endl;
+    }
+
+    std::cout << "---------------------------------" << std::endl;
+}
+
 } // namespace
 
 AstralRaytracer::Errors::GenericError Application::initialize(int32 argCount, char *argValues[])
 {
+    printCmdArgs(argCount, argValues);
+
     LaunchOptions options;
 
     if (parseCommandLineArgs(argCount, argValues, options) != AstralRaytracer::Errors::GenericError::SUCCESS)
