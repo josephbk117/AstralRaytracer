@@ -106,10 +106,8 @@ void Window::clear() const
     gl::glClear(gl::ClearBufferMask::GL_COLOR_BUFFER_BIT);
 }
 
-void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos,
-                                                  AstralRaytracer::UI::AppStateInfo &appStateInfo,
-                                                  const RendererRGBAF &renderer, const AstralRaytracer::Camera &cam,
-                                                  const AstralRaytracer::Scene &scene)
+void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos, UI::AppStateInfo &appStateInfo,
+                                                  const RendererRGBAF &renderer, const Camera &cam, const Scene &scene)
 {
     HitInfo closestHitInfo;
     glm::vec2 coOrd((mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
@@ -575,8 +573,8 @@ void Window::handleChooseSceneDialog(AstralRaytracer::Scene &scene, AstralRaytra
     appStateInfo.isSceneDirty = true;
 }
 
-void Window::handleChooseProjectDialog(AstralRaytracer::Scene &scene, AstralRaytracer::AssetManager &assetManager,
-                                       const std::string &filePathName, AstralRaytracer::UI::AppStateInfo &appStateInfo)
+void Window::handleChooseProjectDialog(Scene &scene, AssetManager &assetManager,
+                                       const std::string &filePathName, UI::AppStateInfo &appStateInfo)
 {
     if (assetManager.loadProject(filePathName))
     {

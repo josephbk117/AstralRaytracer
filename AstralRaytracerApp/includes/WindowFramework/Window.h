@@ -100,14 +100,13 @@ class Window
     void displayUI(UI::AppStateInfo &appStateInfo, RendererRGBAF &renderer, Scene &scene, Camera &cam,
                    AssetManager &assetManager);
 
-    void drawToolbar(RendererRGBAF &renderer, const AstralRaytracer::AssetManager &assetManager,
-                     AstralRaytracer::UI::AppStateInfo &appStateInfo);
+    void drawToolbar(RendererRGBAF &renderer, const AssetManager &assetManager, UI::AppStateInfo &appStateInfo);
 
-    void handleChooseSceneDialog(AstralRaytracer::Scene &scene, AstralRaytracer::AssetManager &assetManager,
-                                 const std::string &filePathName, AstralRaytracer::UI::AppStateInfo &appStateInfo);
+    void handleChooseSceneDialog(Scene &scene, AssetManager &assetManager, const std::string &filePathName,
+                                 UI::AppStateInfo &appStateInfo);
 
-    void handleChooseProjectDialog(AstralRaytracer::Scene &scene, AstralRaytracer::AssetManager &assetManager,
-                                   const std::string &filePathName, AstralRaytracer::UI::AppStateInfo &appStateInfo);
+    void handleChooseProjectDialog(Scene &scene, AssetManager &assetManager, const std::string &filePathName,
+                                   UI::AppStateInfo &appStateInfo);
 
     void drawMenuBar(Scene &scene, AssetManager &assetManager, UI::AppStateInfo &appStateInfo);
     void drawFrameratePlot();
@@ -147,9 +146,7 @@ class Window
     UI::EnvironmentSettings m_environmentSettings;
 
     static void windowSizeCallback(GLFWwindow *window, int32 width, int32 height);
-    void setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos,
-                                              AstralRaytracer::UI::AppStateInfo &appStateInfo,
-                                              const RendererRGBAF &renderer, const AstralRaytracer::Camera &cam,
-                                              const AstralRaytracer::Scene &scene);
+    void setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos, UI::AppStateInfo &appStateInfo,
+                                              const RendererRGBAF &renderer, const Camera &cam, const Scene &scene);
 };
 } // namespace AstralRaytracer
