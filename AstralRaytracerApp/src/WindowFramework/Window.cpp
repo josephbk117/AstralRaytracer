@@ -560,6 +560,12 @@ void Window::drawToolbar(BaseRenderer &renderer, const AstralRaytracer::AssetMan
 void Window::handleChooseSceneDialog(AstralRaytracer::Scene &scene, AstralRaytracer::AssetManager &assetManager,
                                      const std::string &filePathName, AstralRaytracer::UI::AppStateInfo &appStateInfo)
 {
+    if (!assetManager.isProjectOpen())
+    {
+        ASTRAL_LOG_WARN("There is no existing project open, Open project first");
+        return;
+    }
+
     if (scene.hasSceneLoaded())
     {
         scene.unload();
