@@ -136,6 +136,7 @@ glm::vec<ComponentCount, T, glm::defaultp> TextureData<T, ComponentCount>::getTe
 
 template class TextureData<uint8, 3>;
 template class TextureData<uint8, 4>;
+template class TextureData<float32, 1>;
 template class TextureData<float32, 3>;
 template class TextureData<float32, 4>;
 

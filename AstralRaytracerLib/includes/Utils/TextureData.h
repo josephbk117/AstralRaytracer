@@ -51,6 +51,7 @@ template <ArithmeticType T, uint32 ComponentCount> class TextureData
 
 using TextureDataRGB = TextureData<uint8, 3>;
 using TextureDataRGBA = TextureData<uint8, 4>;
+using TextureDataRF = TextureData<float32, 1>;
 using TextureDataRGBF = TextureData<float32, 3>;
 using TextureDataRGBAF = TextureData<float32, 4>;
 } // namespace AstralRaytracer

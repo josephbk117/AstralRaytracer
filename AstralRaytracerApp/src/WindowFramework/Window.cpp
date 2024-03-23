@@ -1,6 +1,6 @@
 #include "WindowFramework/Window.h"
 
-#include "Raytracer/Renderer.h"
+#include "Raytracer/Renderer/BaseRenderer.h"
 #include "Utils/TextureManager.h"
 #include "WindowFramework/Input.h"
 #include "WindowFramework/UI/ImGuizmo/ImGuizmo.h"
@@ -107,7 +107,7 @@ void Window::clear() const
 }
 
 void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos, UI::AppStateInfo &appStateInfo,
-                                                  const RendererRGBAF &renderer, const Camera &cam, const Scene &scene)
+                                                  const BaseRenderer &renderer, const Camera &cam, const Scene &scene)
 {
     HitInfo closestHitInfo;
     glm::vec2 coOrd((mousePos.x - appStateInfo.uiBounds.min.x) / appStateInfo.rendererSize.x,
@@ -124,7 +124,7 @@ void Window::setSelectedObjectIndexFromMouseCoord(const glm::vec2 &mousePos, UI:
     }
 }
 
-void Window::processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, RendererRGBAF &renderer, Camera &cam,
+void Window::processInput(UI::AppStateInfo &appStateInfo, float32 deltaTime, BaseRenderer &renderer, Camera &cam,
                           const Scene &scene)
 {
     m_frameTimes.push(deltaTime);
@@ -339,7 +339,7 @@ void Window::drawSampleProgress(const uint32 frameIndex)
     ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 }
 
-void Window::displayUI(UI::AppStateInfo &appStateInfo, RendererRGBAF &renderer, Scene &scene, Camera &cam,
+void Window::displayUI(UI::AppStateInfo &appStateInfo, BaseRenderer &renderer, Scene &scene, Camera &cam,
                        AssetManager &assetManager)
 {
     IMGUIZMO_NAMESPACE::BeginFrame();
@@ -419,7 +419,7 @@ void Window::displayUI(UI::AppStateInfo &appStateInfo, RendererRGBAF &renderer, 
                 if (io.KeyCtrl && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f && mouseUVCoord.x < 1.0f &&
                     mouseUVCoord.y < 1.0f)
                 {
-                    UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
+                    // UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
                 }
 
                 appStateInfo.uiBounds.min = {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
@@ -498,7 +498,7 @@ void Window::displayUI(UI::AppStateInfo &appStateInfo, RendererRGBAF &renderer, 
     ImGui::End();
 }
 
-void Window::drawToolbar(RendererRGBAF &renderer, const AstralRaytracer::AssetManager &assetManager,
+void Window::drawToolbar(BaseRenderer &renderer, const AstralRaytracer::AssetManager &assetManager,
                          AstralRaytracer::UI::AppStateInfo &appStateInfo)
 {
     constexpr ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
@@ -549,8 +549,8 @@ void Window::drawToolbar(RendererRGBAF &renderer, const AstralRaytracer::AssetMa
     ImGui::SameLine();
     if (ImGui::Button("screenshot", {sliderWidth, 0}))
     {
-        TextureManager::saveTextureToFile(renderer.getTextureData(),
-                                          assetManager.getCurrentRelativePath() + "screenshot.hdr");
+        // TextureManager::saveTextureToFile(renderer.getTextureData(),
+        //  assetManager.getCurrentRelativePath() + "screenshot.hdr");
     }
 
     ImGui::EndChild();
@@ -573,8 +573,8 @@ void Window::handleChooseSceneDialog(AstralRaytracer::Scene &scene, AstralRaytra
     appStateInfo.isSceneDirty = true;
 }
 
-void Window::handleChooseProjectDialog(Scene &scene, AssetManager &assetManager,
-                                       const std::string &filePathName, UI::AppStateInfo &appStateInfo)
+void Window::handleChooseProjectDialog(Scene &scene, AssetManager &assetManager, const std::string &filePathName,
+                                       UI::AppStateInfo &appStateInfo)
 {
     if (assetManager.loadProject(filePathName))
     {

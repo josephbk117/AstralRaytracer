@@ -71,28 +71,29 @@ void Application::run()
 
         if (appStateInfo.isSceneDirty || appStateInfo.cameraUpdatedThisFrame)
         {
-            m_renderer.renderEnd();
-            m_renderer.resetFrameIndex();
+            m_pbrRenderer.renderEnd();
+            m_pbrRenderer.resetFrameIndex();
+
             appStateInfo.isSceneDirty = false;
         }
 
         // Render scene
-        m_renderer.renderStart(m_scene, m_cam);
-        if (m_renderer.onRenderComplete())
+        m_pbrRenderer.renderStart(m_scene, m_cam);
+        if (m_pbrRenderer.onRenderComplete())
         {
-            m_compositor.processImage(m_scene, m_cam.getResolution(), m_renderer.getTextureId());
+            m_compositor.processImage(m_scene, m_cam.getResolution(), m_pbrRenderer.getTextureId());
             appStateInfo.outputTextureId = reinterpret_cast<ImTextureID>(m_compositor.getTextureId());
 
             const float32 currentTimeSinceStart = AstralRaytracer::Input::getTimeSinceStart();
             const float32 deltaTime = currentTimeSinceStart - prevTime;
             prevTime = currentTimeSinceStart;
 
-            m_window.processInput(appStateInfo, deltaTime, m_renderer, m_cam, m_scene);
+            m_window.processInput(appStateInfo, deltaTime, m_pbrRenderer, m_cam, m_scene);
         }
 
         // Display UI
         m_window.startUI();
-        m_window.displayUI(appStateInfo, m_renderer, m_scene, m_cam, m_assetManager);
+        m_window.displayUI(appStateInfo, m_pbrRenderer, m_scene, m_cam, m_assetManager);
         m_window.endUI();
 
         m_window.swapBuffers();
@@ -102,7 +103,7 @@ void Application::run()
 
 void Application::shutdown()
 {
-    m_renderer.renderEnd();
+    m_pbrRenderer.renderEnd();
     m_window.shutdown();
 }
 
@@ -160,7 +161,7 @@ void Application::internalInitialize(LaunchOptions options)
     // Needs initialization in a certain order
 
     m_window.initialize();
-    m_renderer.initialize();
+    m_pbrRenderer.initialize();
     m_scene.initialize();
     m_compositor.initialize();
 }

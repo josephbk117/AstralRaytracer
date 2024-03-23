@@ -328,6 +328,7 @@ template gl::GLenum TextureManager::getTextureDataType<float32>();
 
 template void TextureManager::saveTextureToFile(const TextureData<uint8, 3> &, const std::filesystem::path &);
 template void TextureManager::saveTextureToFile(const TextureData<uint8, 4> &, const std::filesystem::path &);
+template void TextureManager::saveTextureToFile(const TextureData<float32, 1> &, const std::filesystem::path &);
 template void TextureManager::saveTextureToFile(const TextureData<float32, 3> &, const std::filesystem::path &);
 template void TextureManager::saveTextureToFile(const TextureData<float32, 4> &, const std::filesystem::path &);
 
@@ -339,6 +340,8 @@ template uint16 *TextureManager::loadImageFromFile<uint16, 3>(ImageSizeOption, c
                                                               int32 &);
 template uint16 *TextureManager::loadImageFromFile<uint16, 4>(ImageSizeOption, const std::string &, int32 &, int32 &,
                                                               int32 &);
+template float32 *TextureManager::loadImageFromFile<float32, 1>(ImageSizeOption, const std::string &, int32 &, int32 &,
+                                                                int32 &);
 template float32 *TextureManager::loadImageFromFile<float32, 3>(ImageSizeOption, const std::string &, int32 &, int32 &,
                                                                 int32 &);
 template float32 *TextureManager::loadImageFromFile<float32, 4>(ImageSizeOption, const std::string &, int32 &, int32 &,
@@ -349,6 +352,7 @@ template void TextureManager::loadTextureFromRawData<float32>(const float32 *con
 
 template uint32 TextureManager::loadTextureFromTextureData<uint8, 3>(const TextureData<uint8, 3> &, bool);
 template uint32 TextureManager::loadTextureFromTextureData<uint8, 4>(const TextureData<uint8, 4> &, bool);
+template uint32 TextureManager::loadTextureFromTextureData<float32, 1>(const TextureData<float32, 1> &, bool);
 template uint32 TextureManager::loadTextureFromTextureData<float32, 3>(const TextureData<float32, 3> &, bool);
 template uint32 TextureManager::loadTextureFromTextureData<float32, 4>(const TextureData<float32, 4> &, bool);
 
@@ -356,6 +360,8 @@ template void TextureManager::loadTextureDataFromFile<uint8, 3>(const std::files
                                                                 bool);
 template void TextureManager::loadTextureDataFromFile<uint8, 4>(const std::filesystem::path &, TextureData<uint8, 4> &,
                                                                 bool);
+template void TextureManager::loadTextureDataFromFile<float32, 1>(const std::filesystem::path &,
+                                                                  TextureData<float32, 1> &, bool);
 template void TextureManager::loadTextureDataFromFile<float32, 3>(const std::filesystem::path &,
                                                                   TextureData<float32, 3> &, bool);
 template void TextureManager::loadTextureDataFromFile<float32, 4>(const std::filesystem::path &,
@@ -363,11 +369,13 @@ template void TextureManager::loadTextureDataFromFile<float32, 4>(const std::fil
 
 template void TextureManager::updateTexture(const TextureData<uint8, 3> &, uint32);
 template void TextureManager::updateTexture(const TextureData<uint8, 4> &, uint32);
+template void TextureManager::updateTexture(const TextureData<float32, 1> &, uint32);
 template void TextureManager::updateTexture(const TextureData<float32, 3> &, uint32);
 template void TextureManager::updateTexture(const TextureData<float32, 4> &, uint32);
 
 template void TextureManager::resizeTexture(const TextureData<uint8, 3> &, uint32);
 template void TextureManager::resizeTexture(const TextureData<uint8, 4> &, uint32);
+template void TextureManager::resizeTexture(const TextureData<float32, 1> &, uint32);
 template void TextureManager::resizeTexture(const TextureData<float32, 3> &, uint32);
 template void TextureManager::resizeTexture(const TextureData<float32, 4> &, uint32);
 } // namespace AstralRaytracer

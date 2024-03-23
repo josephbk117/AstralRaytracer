@@ -22,6 +22,10 @@
 #define SUPPORT_STD_EXECUTION
 #endif
 
+#ifdef SUPPORT_STD_EXECUTION
+#include <execution>
+#endif
+
 #define ASTRAL_LOG_TRACE(...) spdlog::trace(__VA_ARGS__)
 #define ASTRAL_LOG_DEBUG(...) spdlog::debug(__VA_ARGS__)
 #define ASTRAL_LOG_INFO(...) spdlog::info(__VA_ARGS__)

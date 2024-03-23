@@ -2,7 +2,8 @@
 
 #include "Compositor/Compositor.h"
 #include "Raytracer/Camera.h"
-#include "Raytracer/Renderer.h"
+#include "Raytracer/Renderer/DepthRenderer.h"
+#include "Raytracer/Renderer/PBRColorRenderer.h"
 #include "Utils/AssetManager.h"
 #include "Utils/Common.h"
 #include "WindowFramework/Input.h"
@@ -43,7 +44,7 @@ class Application
   private:
     AstralRaytracer::AssetManager m_assetManager;
     AstralRaytracer::Window m_window{"Astral Raytracer"};
-    AstralRaytracer::Renderer<float32, 4> m_renderer;
+    AstralRaytracer::PBRColorRenderer m_pbrRenderer;
     AstralRaytracer::Camera m_cam{15.0f, 15.0f, 10.0f, 0.0f};
     AstralRaytracer::Scene m_scene;
     AstralRaytracer::Compositor m_compositor;
