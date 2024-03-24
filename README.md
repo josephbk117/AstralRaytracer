@@ -8,7 +8,7 @@
 <p align="center">
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/C++-20-blue.svg" alt="C++ Version"></a>
   &nbsp;&nbsp;
-  <a href="https://shields.io/"><img src="https://img.shields.io/badge/gcc-11+-blue.svg" alt="GCC Version"></a>
+  <a href="https://shields.io/"><img src="https://img.shields.io/badge/gcc-13+-blue.svg" alt="GCC Version"></a>
   &nbsp;&nbsp;
   <a href="https://shields.io/"><img src="https://img.shields.io/badge/clang-17+-blue.svg" alt="Clang Version"></a>
   &nbsp;&nbsp;
@@ -51,6 +51,9 @@ The project utilizes the following third-party libraries:
 - **glBinding**: A library for accessing OpenGL bindings in a type-safe manner.
 - **yamlcpp**: A YAML parser and emitter in C++.
 - **stduuid**: A library for creating, parsing, and manipulating UUIDs.
+- **nativefiledialog-extended**: A small C library with that portably invokes native file dialogs.
+- **esfw**: A C++ cross-platform file system watcher and notifier.
+- **CLI11**: A command line parser for C++11 and beyond.
 
 ## Building the Project
 
