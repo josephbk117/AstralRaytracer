@@ -339,7 +339,7 @@ void Window::drawSampleProgress(const uint32 frameIndex)
     ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f), overlay.data());
 }
 
-void Window::displayUI(UI::AppStateInfo &appStateInfo, BaseRenderer &renderer, Scene &scene, Camera &cam,
+void Window::displayUI(UI::AppStateInfo &appStateInfo, RendererRGBF &renderer, Scene &scene, Camera &cam,
                        AssetManager &assetManager)
 {
     IMGUIZMO_NAMESPACE::BeginFrame();
@@ -419,7 +419,7 @@ void Window::displayUI(UI::AppStateInfo &appStateInfo, BaseRenderer &renderer, S
                 if (io.KeyCtrl && mouseUVCoord.x >= 0.f && mouseUVCoord.y >= 0.f && mouseUVCoord.x < 1.0f &&
                     mouseUVCoord.y < 1.0f)
                 {
-                    // UI::inspect(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
+                    UI::inspect<float32, 3>(renderer.getTextureData(), mouseUVCoord, imageDisplaySize);
                 }
 
                 appStateInfo.uiBounds.min = {ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y};
@@ -498,7 +498,7 @@ void Window::displayUI(UI::AppStateInfo &appStateInfo, BaseRenderer &renderer, S
     ImGui::End();
 }
 
-void Window::drawToolbar(BaseRenderer &renderer, const AstralRaytracer::AssetManager &assetManager,
+void Window::drawToolbar(RendererRGBF &renderer, const AstralRaytracer::AssetManager &assetManager,
                          AstralRaytracer::UI::AppStateInfo &appStateInfo)
 {
     constexpr ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
@@ -549,8 +549,8 @@ void Window::drawToolbar(BaseRenderer &renderer, const AstralRaytracer::AssetMan
     ImGui::SameLine();
     if (ImGui::Button("screenshot", {sliderWidth, 0}))
     {
-        // TextureManager::saveTextureToFile(renderer.getTextureData(),
-        //  assetManager.getCurrentRelativePath() + "screenshot.hdr");
+        TextureManager::saveTextureToFile(renderer.getTextureData(),
+                                          assetManager.getCurrentRelativePath() + "screenshot.hdr");
     }
 
     ImGui::EndChild();

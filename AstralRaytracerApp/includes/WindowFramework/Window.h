@@ -7,6 +7,7 @@
 #include "UI/PostProcessingStack.h"
 #include "UI/SceneHierarchy.h"
 #include "Utils/Common.h"
+#include "Raytracer/Renderer/GenericRenderer.h"
 
 #include <queue>
 
@@ -14,13 +15,8 @@ namespace AstralRaytracer
 {
 class Scene;
 class Camera;
-class BaseRenderer;
-template <ArithmeticType T, uint32 componentCount> class GenericRenderer;
-using RendererRGB = GenericRenderer<uint8, 3>;
-using RendererRGBA = GenericRenderer<uint8, 4>;
-using RendererRF = GenericRenderer<float32, 1>;
-using RendererRGBF = GenericRenderer<float32, 3>;
-using RendererRGBAF = GenericRenderer<float32, 4>;
+class PBRColorRenderer;
+class DepthRenderer;
 class AssetManager;
 } // namespace AstralRaytracer
 
@@ -99,10 +95,10 @@ class Window
     void setDefaultTheme() const;
     void setWindowTitle(const AssetManager &assetManager, const Scene &activeScene);
 
-    void displayUI(UI::AppStateInfo &appStateInfo, BaseRenderer &renderer, Scene &scene, Camera &cam,
+    void displayUI(UI::AppStateInfo &appStateInfo, RendererRGBF &renderer, Scene &scene, Camera &cam,
                    AssetManager &assetManager);
 
-    void drawToolbar(BaseRenderer &renderer, const AssetManager &assetManager, UI::AppStateInfo &appStateInfo);
+    void drawToolbar(RendererRGBF &renderer, const AssetManager &assetManager, UI::AppStateInfo &appStateInfo);
 
     void handleChooseSceneDialog(Scene &scene, AssetManager &assetManager, const std::string &filePathName,
                                  UI::AppStateInfo &appStateInfo);

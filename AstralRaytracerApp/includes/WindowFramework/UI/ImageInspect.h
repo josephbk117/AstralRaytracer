@@ -10,31 +10,29 @@ namespace AstralRaytracer
 {
 namespace UI
 {
-inline void histogram(const TextureDataRGBAF &texData)
+
+template <ArithmeticType T, uint32 ComponentCount> inline void histogram(const TextureData<T, ComponentCount> &texData)
 {
     const int32 width = texData.getWidth();
     const int32 height = texData.getHeight();
 
-    std::array<std::array<uint32, 256>, 3> count = {{{0}}};
+    std::array<std::array<uint32, 256>, ComponentCount> count = {{{0}}};
 
     const float32 *ptrCols = texData.getTextureData().data();
 
     ImGui::InvisibleButton("histogram", ImVec2(512, 256));
     for (int32 l = 0; l < height * width; l++)
     {
-        const int32 val0 = glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
-        const int32 val1 = glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
-        const int32 val2 = glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
-
-        count[0][val0]++;
-        count[1][val1]++;
-        count[2][val2]++;
-        ptrCols++;
+        for (uint32 channelIndex = 0; channelIndex < ComponentCount; ++channelIndex)
+        {
+            const int32 val = glm::min(static_cast<int32>(*ptrCols++ * 255.0f), 255); // Convert HDR to 0-255 range
+            count[channelIndex][val]++;
+        }
     }
 
     uint32 maxv = count[0][0];
     const uint32 *pCount = &count[0][0];
-    for (int32 i = 0; i < 3 * 256; i++, pCount++)
+    for (int32 i = 0; i < ComponentCount * 256; i++, pCount++)
     {
         maxv = (maxv > *pCount) ? maxv : *pCount;
     }
@@ -56,49 +54,45 @@ inline void histogram(const TextureDataRGBAF &texData)
     const float32 barWidth = (size.x / 256.f);
     for (int32 j = 0; j < 256; j++)
     {
-        // pixel count << 2 + color index(on 2 bits)
-        std::array<uint32_t, 3> cols = {{(count[0][j] << 2), (count[1][j] << 2) + 1, (count[2][j] << 2) + 2}};
-
-        if (cols[0] > cols[1])
+        std::array<uint32_t, ComponentCount> cols;
+        for (uint32_t channelIndex = 0; channelIndex < ComponentCount; ++channelIndex)
         {
-            std::swap(cols[0], cols[1]);
-        }
-        if (cols[1] > cols[2])
-        {
-            std::swap(cols[1], cols[2]);
-        }
-        if (cols[0] > cols[1])
-        {
-            std::swap(cols[0], cols[1]);
+            cols[channelIndex] = (count[channelIndex][j] << 2) + channelIndex;
         }
 
-        std::array<float32, 3> heights = {};
-        std::array<uint32, 3> colors = {};
+        // Sort cols array to ensure correct layering of colors in histogram bars
+        std::sort(cols.begin(), cols.end());
+
+        std::array<float32, ComponentCount> heights = {};
+        std::array<uint32, ComponentCount> colors = {};
 
         uint32 currentColor = 0xFFFFFFFF;
-        for (int32 i = 0; i < 3; i++)
+        // Arrange corresponding heights and colors arrays based on sorted cols array
+        for (uint32_t channelIndex = 0; channelIndex < ComponentCount; ++channelIndex)
         {
-            heights[i] = rmax.y - (cols[i] >> 2) * hFactor;
-            colors[i] = currentColor;
-            currentColor -= 0xFF << ((cols[i] & 3) * 8);
+            heights[channelIndex] = rmax.y - (cols[channelIndex] >> 2) * hFactor;
+            colors[channelIndex] = currentColor;
+            currentColor -= 0xFF << ((cols[channelIndex] & 3) * 8);
         }
 
         float32 currentHeight = rmax.y;
         const float32 left = rmin.x + barWidth * static_cast<float32>(j);
         const float32 right = left + barWidth;
-        for (int32 i = 0; i < 3; i++)
+        for (uint32 channelIndex = 0; channelIndex < ComponentCount; ++channelIndex)
         {
-            if (heights[i] >= currentHeight)
+            if (heights[channelIndex] >= currentHeight)
             {
                 continue;
             }
-            drawList->AddRectFilled(ImVec2(left, currentHeight), ImVec2(right, heights[i]), colors[i]);
-            currentHeight = heights[i];
+            drawList->AddRectFilled(ImVec2(left, currentHeight), ImVec2(right, heights[channelIndex]),
+                                    colors[channelIndex]);
+            currentHeight = heights[channelIndex];
         }
     }
 }
 
-inline void inspect(const TextureDataRGBAF &texData, ImVec2 mouseUVCoord, ImVec2 displayedTextureSize)
+template <ArithmeticType T, uint32 ComponentCount>
+inline void inspect(const TextureData<T, ComponentCount> &texData, ImVec2 mouseUVCoord, ImVec2 displayedTextureSize)
 {
     const int32 width = texData.getWidth();
     const int32 height = texData.getHeight();
@@ -164,7 +158,7 @@ inline void inspect(const TextureDataRGBAF &texData, ImVec2 mouseUVCoord, ImVec2
 
     const glm::u8vec3 &pixData = colData.getColour_8_BitClamped(); // Adjusted for HDR values
 
-    PixelUnion pixel;
+    PixelUnion pixel{};
     pixel.data[0] = pixData.r;
     pixel.data[1] = pixData.g;
     pixel.data[2] = pixData.b;
