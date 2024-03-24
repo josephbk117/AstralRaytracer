@@ -61,6 +61,9 @@ using CoOrd4DF = glm::vec4;
 using Direction2D = glm::vec2;
 using Direction3D = glm::vec3;
 
+template <typename T>
+concept ArithmeticType = std::is_arithmetic_v<T>;
+
 struct UiBounds
 {
     CoOrd2DF min{0, 0};

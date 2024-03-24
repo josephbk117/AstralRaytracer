@@ -17,9 +17,6 @@ enum class SamplingType : uint32
     MAX = CLAMP_TO_BORDER
 };
 
-template <typename T>
-concept ArithmeticType = std::is_arithmetic_v<T>;
-
 template <ArithmeticType T, uint32 ComponentCount> class TextureData
 {
   private:
