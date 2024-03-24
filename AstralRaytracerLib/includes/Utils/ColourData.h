@@ -16,9 +16,10 @@ struct ColourData
         m_colour = glm::vec4(r, g, b, a);
     }
 
-    ColourData(const glm::vec4 &normalized)
+    template <ArithmeticType T, uint32 ComponentCount>
+    ColourData(const glm::vec<ComponentCount, T, glm::defaultp> &normalized)
     {
-        m_colour = normalized;
+        std::memcpy(&m_colour, &normalized, sizeof(float32) * ComponentCount);
     }
 
     void setColour_8_Bit(const glm::vec4 &colour)
