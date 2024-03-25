@@ -30,10 +30,8 @@ void DepthRenderer::render(const Scene &scene, const Camera &cam)
     const float32 oneOverXAxisPixelCount = 1.0f / xAxisPixelCount;
     const float32 oneOverImageHeight = 1.0f / imageHeight;
 
-    const glm::vec3 camHorizontalDir = glm::normalize(glm::cross(cam.getUp(), cam.getForwardDirection()));
-
     runParallel(m_rayIterator.begin(), m_rayIterator.end(),
-                [this, &inverseProjection, &inverseView, &camHorizontalDir, &oneOverBounceCount, &xAxisPixelCount,
+                [this, &inverseProjection, &inverseView, &oneOverBounceCount, &xAxisPixelCount,
                  &scene, &cam, &oneOverFrameIndex, &oneOverXAxisPixelCount, &oneOverImageHeight](uint32 index) {
                     uint32 seedVal = index * m_frameIndex;
 
@@ -48,20 +46,10 @@ void DepthRenderer::render(const Scene &scene, const Camera &cam)
 
                     const glm::vec2 coOrd{xIndex * oneOverXAxisPixelCount, yIndex * oneOverImageHeight};
 
-                    glm::vec3 rayOrigin = cam.getPosition();
-
-                    // Depth of Field: Adjust the ray origin based on aperture size
-                    if (cam.getApertureDiameter() > 0.0f)
-                    {
-                        glm::vec3 apertureSample = Random::unitDisk(seedVal) * cam.getApertureDiameter();
-                        glm::vec3 apertureOffset = camHorizontalDir * apertureSample.x + cam.getUp() * apertureSample.y;
-
-                        rayOrigin += apertureOffset;
-                    }
+                    glm::vec3 rayOrigin = cam.getPosition();          
 
                     glm::vec3 rayDir = getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
 
-                    // Adjust ray direction
                     glm::vec3 focalPoint = cam.getPosition() + cam.getFocusDistance() * rayDir;
                     rayDir = glm::normalize(focalPoint - rayOrigin);
 

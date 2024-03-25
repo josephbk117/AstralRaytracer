@@ -31,11 +31,9 @@ void PBRColorRenderer::render(const Scene &scene, const Camera &cam)
     const float32 oneOverXAxisPixelCount = 1.0f / xAxisPixelCount;
     const float32 oneOverImageHeight = 1.0f / imageHeight;
 
-    const glm::vec3 camHorizontalDir = glm::normalize(glm::cross(cam.getUp(), cam.getForwardDirection()));
-
     runParallel(m_rayIterator.begin(), m_rayIterator.end(),
-                [this, &inverseProjection, &inverseView, &camHorizontalDir, &oneOverBounceCount, &xAxisPixelCount,
-                 &scene, &cam, &oneOverFrameIndex, &oneOverXAxisPixelCount, &oneOverImageHeight](uint32 index) {
+                [this, &inverseProjection, &inverseView, &oneOverBounceCount, &xAxisPixelCount, &scene, &cam,
+                 &oneOverFrameIndex, &oneOverXAxisPixelCount, &oneOverImageHeight](uint32 index) {
                     uint32 seedVal = index * m_frameIndex;
 
                     const uint32 texComponentData = m_texData.getComponentCount();
@@ -55,7 +53,8 @@ void PBRColorRenderer::render(const Scene &scene, const Camera &cam)
                     if (cam.getApertureDiameter() > 0.0f)
                     {
                         glm::vec3 apertureSample = Random::unitDisk(seedVal) * cam.getApertureDiameter();
-                        glm::vec3 apertureOffset = camHorizontalDir * apertureSample.x + cam.getUp() * apertureSample.y;
+                        glm::vec3 apertureOffset =
+                            cam.getHorizontalDir() * apertureSample.x + cam.getUp() * apertureSample.y;
 
                         rayOrigin += apertureOffset;
                     }
