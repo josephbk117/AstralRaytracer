@@ -102,6 +102,11 @@ class Camera
 
     const Direction3D &getUp() const;
 
+    const Direction3D &getHorizontalDir() const
+    {
+        return m_horizontalDir;
+    }
+
     const glm::mat4 &getView() const
     {
         return m_view;
@@ -135,6 +140,7 @@ class Camera
 
     CoOrd3DF m_position{0.0f};
     Direction3D m_forwardDir{0.0f};
+    Direction3D m_horizontalDir{0.0f};
     Direction3D m_right{0.0f};
     Direction3D m_up{0.0f};
 

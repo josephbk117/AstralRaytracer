@@ -58,6 +58,7 @@ void Camera::rotate(glm::vec2 rot)
     m_forwardDir = glm::rotate(q, m_forwardDir);
     m_right = glm::normalize(glm::cross(m_forwardDir, MathConstants::UpDirection));
     m_up = glm::normalize(glm::cross(m_right, m_forwardDir));
+    m_horizontalDir = glm::normalize(glm::cross(m_up, m_forwardDir));
 }
 
 void Camera::setVerticalFov(float32 vFov, float32 sensorHeight)
