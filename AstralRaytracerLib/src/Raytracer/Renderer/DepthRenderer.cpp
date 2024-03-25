@@ -31,12 +31,11 @@ void DepthRenderer::render(const Scene &scene, const Camera &cam)
     const float32 oneOverImageHeight = 1.0f / imageHeight;
 
     runParallel(m_rayIterator.begin(), m_rayIterator.end(),
-                [this, &inverseProjection, &inverseView, &oneOverBounceCount, &xAxisPixelCount,
-                 &scene, &cam, &oneOverFrameIndex, &oneOverXAxisPixelCount, &oneOverImageHeight](uint32 index) {
+                [this, &inverseProjection, &inverseView, &oneOverBounceCount, &xAxisPixelCount, &scene, &cam,
+                 &oneOverFrameIndex, &oneOverXAxisPixelCount, &oneOverImageHeight](uint32 index) {
                     uint32 seedVal = index * m_frameIndex;
 
-                    const uint32 texComponentData = m_texData.getComponentCount();
-                    const size_t pixelAccessIndex = static_cast<size_t>(index) * texComponentData;
+                    const size_t pixelAccessIndex = static_cast<size_t>(index);
 
                     const float32 randFloat1 = Random::randomFloatSymmetric(seedVal);
                     const float32 randFloat2 = Random::randomFloatSymmetric(seedVal);
@@ -44,26 +43,19 @@ void DepthRenderer::render(const Scene &scene, const Camera &cam)
                     const float32 xIndex = (pixelAccessIndex % xAxisPixelCount) + randFloat1;
                     const float32 yIndex = (pixelAccessIndex * oneOverXAxisPixelCount) + randFloat2;
 
-                    const glm::vec2 coOrd{xIndex * oneOverXAxisPixelCount, yIndex * oneOverImageHeight};
+                    const CoOrd2DF coOrd{xIndex * oneOverXAxisPixelCount, yIndex * oneOverImageHeight};
 
-                    glm::vec3 rayOrigin = cam.getPosition();          
+                    CoOrd3DF rayOrigin = cam.getPosition();
 
-                    glm::vec3 rayDir = getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
-
-                    glm::vec3 focalPoint = cam.getPosition() + cam.getFocusDistance() * rayDir;
-                    rayDir = glm::normalize(focalPoint - rayOrigin);
+                    Direction3D rayDir = getRayDirectionFromNormalizedCoord(coOrd, inverseProjection, inverseView);
 
                     const glm::vec1 outColor = perPixel(seedVal, scene, rayOrigin, rayDir) * oneOverBounceCount;
 
-                    glm::vec3 finalColorVec{};
-                    for (uint32 channelIndex = 0; channelIndex < texComponentData; ++channelIndex)
-                    {
-                        float &channelVal = m_accumulatedColorData[pixelAccessIndex + channelIndex];
-                        channelVal += outColor[channelIndex];
-                        finalColorVec[channelIndex] = channelVal * oneOverFrameIndex;
-                    }
+                    float &channelVal = m_accumulatedColorData[pixelAccessIndex];
+                    channelVal += outColor[0];
+                    const float32 finalColor = channelVal * oneOverFrameIndex;
 
-                    m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, finalColorVec);
+                    m_texData.setTexelColorAtPixelIndex(pixelAccessIndex, glm::vec1(finalColor));
                 });
 
     setState(RendererState::DONE);
