@@ -67,5 +67,7 @@ class AssetManager
 
     [[nodiscard]] uuids::uuid generateUUID();
     [[nodiscard]] std::string generateUUIDasString();
+
+    void initializeFileCache();
 };
 } // namespace AstralRaytracer
