@@ -83,6 +83,21 @@ struct AABB
 
 namespace AstralRaytracer
 {
+
+namespace FileSystem
+{
+
+struct PathNode
+{
+    PathNode *parent = nullptr;
+    std::filesystem::path pathStr;
+    std::vector<std::unique_ptr<PathNode>> nodes;
+    bool visited = false;
+};
+
+void traverseDirectoryFromRoot(std::unique_ptr<PathNode> &root);
+
+} // namespace FileSystem
 enum class FileType
 {
     INVALID,

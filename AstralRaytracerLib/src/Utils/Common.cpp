@@ -147,4 +147,75 @@ Errors::GenericError getFileContent(const std::filesystem::path &filepath, std::
     fileStream.close();
     return Errors::GenericError::SUCCESS;
 }
+
+void FileSystem::traverseDirectoryFromRoot(std::unique_ptr<PathNode> &root)
+{
+    PathNode *currentNode = root.get();
+
+    while (currentNode != nullptr)
+    {
+        if (!currentNode->visited)
+        {
+            currentNode->visited = true;
+
+            if (std::filesystem::is_directory(currentNode->pathStr))
+            {
+                std::filesystem::directory_iterator iter;
+
+                std::error_code ec;
+                iter = std::filesystem::directory_iterator(currentNode->pathStr, ec);
+
+                if (ec)
+                {
+                    ASTRAL_LOG_INFO("Failed to get directory iterator, reason: {}", ec.message());
+                    continue;
+                }
+
+                for (const auto &entry : iter)
+                {
+                    const std::filesystem::file_status entryFileStatus = std::filesystem::status(entry.path());
+                    const std::filesystem::perms entryFilePermission = entryFileStatus.permissions();
+                    const std::filesystem::file_type entryFileType = entryFileStatus.type();
+
+                    const bool ownerAccessible =
+                        (entryFilePermission & std::filesystem::perms::owner_all) != std::filesystem::perms::none;
+
+                    const bool isRegular = entryFileType == std::filesystem::file_type::directory ||
+                                           entryFileType == std::filesystem::file_type::regular;
+
+                    if (ownerAccessible && isRegular)
+                    {
+                        std::unique_ptr<PathNode> newNode = std::make_unique<PathNode>();
+                        newNode->parent = currentNode;
+                        newNode->pathStr = entry.path();
+
+                        currentNode->nodes.push_back(std::move(newNode));
+                    }
+                }
+            }
+        }
+
+        bool isEverythingVisited = true;
+
+        if (currentNode->nodes.size() > 0)
+        {
+            for (uint32_t nodeIndex = 0; nodeIndex < currentNode->nodes.size(); ++nodeIndex)
+            {
+                const auto &node = currentNode->nodes.at(nodeIndex);
+                if (!node->visited)
+                {
+                    currentNode = node.get();
+                    isEverythingVisited = false;
+                    break;
+                }
+            }
+        }
+
+        if (isEverythingVisited)
+        {
+            currentNode = currentNode->parent;
+        }
+    }
+}
+
 } // namespace AstralRaytracer

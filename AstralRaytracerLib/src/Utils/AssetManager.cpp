@@ -39,6 +39,7 @@ bool AssetManager::loadProject(const fs::path &absolutePath)
     m_defaultSceneRelativePath = data["Default Scene"].as<std::string>();
     m_currentRelativePath = absolutePath.parent_path().generic_string() + "/";
 
+    initializeFileCache();
     clearAndResetCachedData();
 
     ASTRAL_LOG_INFO("Project file loaded successfully: {}", absolutePathStr);
@@ -57,7 +58,8 @@ void AssetManager::clearAndResetCachedData()
     traceableCount = 0;
 
     // Add Default Material
-    m_materialNameAndPathMap.insert({uuids::uuid::from_string("00000000-0000-0000-0000-000000000000").value(), {"Default Material", "NIL"}});
+    m_materialNameAndPathMap.insert(
+        {uuids::uuid::from_string("00000000-0000-0000-0000-000000000000").value(), {"Default Material", "NIL"}});
 }
 
 TextureDataRGBF AssetManager::loadTextureAsset(const fs::path &path, const std::string &name)
@@ -281,6 +283,31 @@ uuids::uuid AssetManager::generateUUID()
 std::string AssetManager::generateUUIDasString()
 {
     return uuids::to_string(generateUUID());
+}
+
+namespace
+{
+void visitPathNode(std::unique_ptr<FileSystem::PathNode> &node)
+{
+    ASTRAL_LOG_INFO("Visiting: {}", node->pathStr.generic_string());
+
+    for (std::unique_ptr<FileSystem::PathNode> &child : node->nodes)
+    {
+        visitPathNode(child);
+    }
+}
+} // namespace
+
+void AssetManager::initializeFileCache()
+{
+    std::ofstream ofs(m_currentRelativePath + "FILECACHE");
+
+    auto rootNode = std::make_unique<FileSystem::PathNode>();
+    rootNode->pathStr = m_currentRelativePath;
+
+    FileSystem::traverseDirectoryFromRoot(rootNode);
+    visitPathNode(rootNode);
+    ofs.close();
 }
 
 } // namespace AstralRaytracer
