@@ -1,7 +1,7 @@
 UUID: 1334d6c9-7159-475e-a007-58e0b49493ab
 Traceable: Floor
 Transform: [0, 0, 0, 0, 1, 1, 1]
-Material: 2
+Material: 6dc6fb09-2181-4ff0-8de2-4dfa9047c395
 Type: 2
 vertex A: [-100, 0, -100]
 vertex B: [0, 0, 100]

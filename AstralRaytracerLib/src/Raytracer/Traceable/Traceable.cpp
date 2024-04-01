@@ -1,4 +1,5 @@
 #include "Raytracer/Traceable/Traceable.h"
+#include "Utils/AssetManager.h"
 
 namespace AstralRaytracer
 {
@@ -46,6 +47,6 @@ void Traceable::serialize(AssetManager &assetManager, YAML::Emitter &out) const
 void Traceable::deserialize(AssetManager &assetManager, YAML::Node &node)
 {
     m_transform = node["Transform"].as<Transform>();
-    m_materialIndex = node["Material"].as<uint32>();
+    m_materialIndex = assetManager.getMaterialIndex(uuids::uuid::from_string(node["Material"].as<std::string>()).value());
 }
 } // namespace AstralRaytracer

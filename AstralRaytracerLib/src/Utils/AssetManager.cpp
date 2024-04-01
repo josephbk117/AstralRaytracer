@@ -57,7 +57,7 @@ void AssetManager::clearAndResetCachedData()
     traceableCount = 0;
 
     // Add Default Material
-    m_materialNameAndPathMap.insert({0, {"Default Material", "NIL"}});
+    m_materialNameAndPathMap.insert({uuids::uuid::from_string("00000000-0000-0000-0000-000000000000").value(), {"Default Material", "NIL"}});
 }
 
 TextureDataRGBF AssetManager::loadTextureAsset(const fs::path &path, const std::string &name)
@@ -75,7 +75,6 @@ TextureDataRGBF AssetManager::loadTextureAsset(const fs::path &path, const std::
 bool AssetManager::loadMaterialAsset(const fs::path &path, const std::string &name, Material &outMaterial)
 {
     NameAndPath nameAndPath = {name, path.string()};
-    m_materialNameAndPathMap.emplace(matCount, nameAndPath);
     matCount++;
 
     std::ifstream stream(m_currentRelativePath + path.string());
@@ -87,6 +86,8 @@ bool AssetManager::loadMaterialAsset(const fs::path &path, const std::string &na
     }
 
     outMaterial.deserialize(*this, data);
+    m_materialNameAndPathMap.emplace(outMaterial.getUUID(), nameAndPath);
+
     return true;
 }
 
@@ -190,7 +191,25 @@ std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfTexture(u
     return std::nullopt;
 }
 
-std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(uint32 id) const
+std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(uint32 index) const
+{
+    auto it = m_materialNameAndPathMap.begin();
+
+    while (it != m_materialNameAndPathMap.end() && index > 0)
+    {
+        index--;
+        it++;
+    }
+
+    if (it != m_materialNameAndPathMap.end())
+    {
+        return it->second;
+    }
+
+    return std::nullopt;
+}
+
+std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(uuids::uuid id) const
 {
     auto it = m_materialNameAndPathMap.find(id);
     if (it != m_materialNameAndPathMap.end())
@@ -199,6 +218,23 @@ std::optional<AssetManager::NameAndPath> AssetManager::getNameAndPathOfMaterial(
     }
 
     return std::nullopt;
+}
+
+uint32 AssetManager::getMaterialIndex(uuids::uuid id) const
+{
+    auto it = m_materialNameAndPathMap.begin();
+    uint32 iterationCount = 0;
+    while (it != m_materialNameAndPathMap.end())
+    {
+        if (it->first == id)
+        {
+            return iterationCount;
+        }
+        iterationCount++;
+        it++;
+    }
+
+    return iterationCount;
 }
 
 std::optional<AstralRaytracer::AssetManager::NameAndPath> AssetManager::getNameAndPathOfTraceable(uint32 id) const

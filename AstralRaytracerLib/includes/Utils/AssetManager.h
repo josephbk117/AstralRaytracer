@@ -36,7 +36,9 @@ class AssetManager
     void SaveTraceableAsset(const std::string &name, const std::unique_ptr<Traceable> &traceable);
 
     [[nodiscard]] std::optional<NameAndPath> getNameAndPathOfTexture(uint32 id) const;
-    [[nodiscard]] std::optional<NameAndPath> getNameAndPathOfMaterial(uint32 id) const;
+    [[nodiscard]] std::optional<NameAndPath> getNameAndPathOfMaterial(uint32 index) const;
+    [[nodiscard]] std::optional<NameAndPath> getNameAndPathOfMaterial(uuids::uuid id) const;
+    [[nodiscard]] uint32 getMaterialIndex(uuids::uuid id) const;
     [[nodiscard]] std::optional<NameAndPath> getNameAndPathOfTraceable(uint32 id) const;
 
     [[nodiscard]] const std::string &getCurrentRelativePath() const;
@@ -55,7 +57,7 @@ class AssetManager
     uint32 traceableCount = 0;
 
     std::unordered_map<uint32, NameAndPath> m_traceableNameAndPathMap;
-    std::unordered_map<uint32, NameAndPath> m_materialNameAndPathMap;
+    std::unordered_map<uuids::uuid, NameAndPath> m_materialNameAndPathMap;
     std::unordered_map<uint32, NameAndPath> m_textureNameAndPathMap;
     std::mt19937 m_randomNumGenerator;
 

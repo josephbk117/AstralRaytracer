@@ -1,6 +1,6 @@
 UUID: f2312d82-70a3-40b1-bd30-5ed89688ef5a
 Traceable: Cube
 Transform: [2, 0, -1, 0, 1, 1, 1]
-Material: 1
+Material: 5b9eea82-b41b-41e1-8666-2bcd50c49e72
 Type: 3
 Source Path: models/testCube.gltf
