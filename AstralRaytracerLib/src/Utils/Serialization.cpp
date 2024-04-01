@@ -35,10 +35,5 @@ YAML::Emitter &operator<<(YAML::Emitter &out, const Transform &transform)
     return out;
 }
 
-const uuids::uuid &Serializable::getUUID() const
-{
-    return m_id;
-}
-
 } // namespace Serialization
 } // namespace AstralRaytracer

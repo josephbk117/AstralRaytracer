@@ -113,6 +113,9 @@ template <> struct convert<Transform>
 
 namespace AstralRaytracer
 {
+
+using AssetId = uuids::uuid;
+
 namespace Serialization
 {
 YAML::Emitter &operator<<(YAML::Emitter &out, const glm::vec3 &vec3);
@@ -136,15 +139,18 @@ class Serializable
     virtual void serialize(AssetManager &assetManager, YAML::Emitter &out) const = 0;
     virtual void deserialize(AssetManager &assetManager, YAML::Node &node) = 0;
 
-    void setUUID(uuids::uuid id)
+    void setUUID(AssetId id)
     {
         m_id = id;
-    };
+    }
 
-    [[nodiscard]] const uuids::uuid &getUUID() const;
+    [[nodiscard]] const AssetId &getUUID() const
+    {
+        return m_id;
+    }
 
   protected:
-    uuids::uuid m_id;
+    AssetId m_id;
 };
 } // namespace Serialization
 } // namespace AstralRaytracer
