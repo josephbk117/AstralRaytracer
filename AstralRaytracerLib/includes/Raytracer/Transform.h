@@ -22,11 +22,11 @@ class Transform
     const glm::vec3 &getPosition() const noexcept;
     float32 getRotation() const noexcept;
     const glm::vec3 &getScale() const noexcept;
-    bool operator==(const Transform &transform) const noexcept;
-    bool operator!=(const Transform &transform) const noexcept;
+    bool operator==(const Transform &rhs) const noexcept;
+    bool operator!=(const Transform &rhs) const noexcept;
 
   private:
-    glm::mat4 modelMatrix = glm::mat4(1.0);
+    glm::mat4 m_modelMatrix = glm::mat4(1.0);
     glm::vec3 m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);
     float32 m_rotation = 0.0f;
