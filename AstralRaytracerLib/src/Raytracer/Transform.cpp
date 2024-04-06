@@ -4,10 +4,7 @@
 
 Transform::Transform(const glm::vec3 &position, float32 rotation, const glm::vec3 &scale) noexcept
 {
-    m_position = position;
-    m_rotation = rotation;
-    m_scale = scale;
-    updateModelMatrix();
+    assignTransformAndUpdateModelMatrix(position, rotation, scale);
 }
 
 Transform::Transform() noexcept
@@ -17,11 +14,19 @@ Transform::Transform() noexcept
 
 Transform::Transform(const Transform &copy) noexcept
 {
-    m_position = copy.m_position;
-    m_rotation = copy.m_rotation;
-    m_scale = copy.m_scale;
+    assignTransformAndUpdateModelMatrix(copy.m_position, copy.m_rotation, copy.m_scale);
+}
 
-    updateModelMatrix();
+Transform &Transform::operator=(const Transform &rhs) noexcept
+{
+    if (&rhs == this)
+    {
+        return *this;
+    }
+
+    assignTransformAndUpdateModelMatrix(rhs.m_position, rhs.m_rotation, rhs.m_scale);
+
+    return *this;
 }
 
 const glm::mat4 &Transform::getMatrix() const
@@ -104,4 +109,12 @@ void Transform::updateModelMatrix()
     modelMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(m_position.x, m_position.y, m_position.z));
     modelMatrix = glm::rotate(modelMatrix, m_rotation, glm::vec3(0.0f, 1.0f, 0.0f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(m_scale.x, m_scale.y, m_scale.z));
+}
+
+void Transform::assignTransformAndUpdateModelMatrix(const glm::vec3 &position, float32 rotation, const glm::vec3 &scale)
+{
+    m_position = position;
+    m_rotation = rotation;
+    m_scale = scale;
+    updateModelMatrix();
 }

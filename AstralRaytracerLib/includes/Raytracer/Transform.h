@@ -7,6 +7,7 @@ class Transform
     Transform(const glm::vec3 &position, float32 rotation, const glm::vec3 &scale) noexcept;
     Transform() noexcept;
     Transform(const Transform &copy) noexcept;
+    Transform& operator=(const Transform &rhs) noexcept;
     const glm::mat4 &getMatrix() const;
     glm::mat4 &getMatrix();
     void setPosition(const glm::vec3 &position);
@@ -29,5 +30,7 @@ class Transform
     glm::vec3 m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 m_position = glm::vec3(0.0f, 0.0f, 0.0f);
     float32 m_rotation = 0.0f;
+
     void updateModelMatrix();
+    void assignTransformAndUpdateModelMatrix(const glm::vec3 &position, float32 rotation, const glm::vec3 &scale);
 };
